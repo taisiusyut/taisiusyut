@@ -1,0 +1,62 @@
+{
+  "private": true,
+  "name": "fullstack",
+  "version": "7.0.0",
+  "license": "MIT",
+  "author": "Pong <samfunghp@gmail.com>",
+  "scripts": {
+    "server": "yarn workspace @fullstack/server",
+    "dev": "lerna run dev --stream --parallel",
+    "postinstall": "lerna run postinstall --stream --parallel",
+    "heroku-postbuild": "yarn build"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.5.0",
+    "@typescript-eslint/parser": "^4.5.0",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.9.0",
+    "eslint-config-prettier": "^6.14.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "husky": "^4.3.0",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.4.2",
+    "prettier": "^2.1.2",
+    "rimraf": "^3.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --rule 'no-console: [\"error\", { allow: [\"warn\", \"error\"] }]' --max-warnings=0",
+      "prettier --ignore-path .eslintignore --write"
+    ],
+    "{*.json,.{babelrc,eslintrc,prettierrc}}": [
+      "prettier --ignore-path .eslintignore --write"
+    ],
+    "*.{css,scss}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ],
+    "*.{yml,md}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ]
+  },
+  "engines": {
+    "node": ">=12.x"
+  },
+  "resolutions": {
+    "webpack": "~4.43.0"
+  }
+}
