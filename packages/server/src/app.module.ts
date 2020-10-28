@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseSerializerInterceptor } from '@/utils/mongoose';
+import { UserModule } from '@/modules/user/user.module';
 
 const configure = (load: ConfigFactory[] = []) =>
   ConfigModule.forRoot({
@@ -17,7 +18,9 @@ const configure = (load: ConfigFactory[] = []) =>
     load
   });
 
-@Module({})
+@Module({
+  imports: [UserModule]
+})
 export class AppModule {
   static init(factory?: ConfigFactory[]): DynamicModule {
     return {
