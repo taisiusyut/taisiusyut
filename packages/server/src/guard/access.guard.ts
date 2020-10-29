@@ -1,29 +1,36 @@
 import { from, of, Observable } from 'rxjs';
-import { mergeMap, catchError } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { FastifyRequest } from 'fastify';
-import { Expose, ExposeOptions } from 'class-transformer';
 import {
   Inject,
   SetMetadata,
   ExecutionContext,
   CustomDecorator,
   ForbiddenException,
-  BadRequestException
+  BadRequestException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { UserRole, JWTSignPayload } from '@/typings';
 import { AuthService } from '@/modules/auth/auth.service';
 
-type AccessType = keyof typeof UserRole | 'EVERYONE' | 'SELF' | 'PASSWORD';
+type AccessType =
+  | keyof typeof UserRole
+  | 'Everyone'
+  | 'Self'
+  | 'Password'
+  | 'Role';
 
 export const Access = (...access: AccessType[]): CustomDecorator<string> =>
   SetMetadata('access', access);
 
-export const Group = (
-  groups: (keyof typeof UserRole)[],
-  options?: ExposeOptions
-): ReturnType<typeof Expose> => Expose({ groups, ...options });
+export function validateRole(target: UserRole, self?: UserRole) {
+  if (self === UserRole.Root) return true;
+  if (target === UserRole.Client) return true;
+  if (target === UserRole.Author && self === UserRole.Admin) return true;
+  return false;
+}
 
 export class AcessGuard extends AuthGuard('jwt') {
   constructor(
@@ -40,22 +47,23 @@ export class AcessGuard extends AuthGuard('jwt') {
         context.getClass()
       ]) || [];
 
-    const canActive = super.canActivate(context);
+    if (access.length === 0 || access.includes('Everyone')) {
+      return of(true);
+    }
 
-    const authorized$ =
-      typeof canActive === 'boolean' ? of(canActive) : from(canActive);
+    const canActivate = super.canActivate(context);
 
-    const evenyone = access.includes('EVERYONE');
+    const canActivate$ =
+      typeof canActivate === 'boolean' ? of(canActivate) : from(canActivate);
 
-    return authorized$.pipe(
-      catchError(() => of(evenyone)),
-      mergeMap<boolean, Promise<boolean>>(async active => {
-        if (active) {
+    return canActivate$.pipe(
+      mergeMap<boolean, Promise<boolean>>(async activate => {
+        if (activate) {
           const req = context.switchToHttp().getRequest<FastifyRequest<any>>();
           const user_id: string | null = req.body?.user_id || req.params?.id;
           const user: Partial<JWTSignPayload> = req.user || {};
 
-          if (access.includes('PASSWORD')) {
+          if (access.includes('Password')) {
             const { password } = req.body;
             if (password) {
               try {
@@ -72,10 +80,18 @@ export class AcessGuard extends AuthGuard('jwt') {
             }
           }
 
-          if (access.includes('SELF') && user_id && user_id === user.user_id)
+          if (access.includes('Self') && user_id && user_id === user.user_id)
             return true;
 
-          return evenyone || access.includes(UserRole[user.role] as AccessType);
+          if (access.includes('Role') && req.body?.role) {
+            const isValid = validateRole(req.body.role, user.role);
+            if (isValid) {
+              return validateRole(req.body.role, user.role);
+            }
+            throw new UnauthorizedException();
+          }
+
+          return access.includes(UserRole[user.role] as AccessType);
         }
         return false;
       })

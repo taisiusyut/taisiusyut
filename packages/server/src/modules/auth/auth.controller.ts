@@ -33,7 +33,7 @@ export class AuthController {
   ) {}
 
   @Post(routes.auth.registration)
-  @Access('EVERYONE')
+  @Access('Everyone')
   registration(@Body() createUserDto: CreateUserDto): Promise<User> {
     if (!createUserDto.role || createUserDto.role === UserRole.Client) {
       return this.userService.create(createUserDto);
