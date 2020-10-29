@@ -7,8 +7,7 @@ import {
   ExecutionContext,
   CustomDecorator,
   ForbiddenException,
-  BadRequestException,
-  UnauthorizedException
+  BadRequestException
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
@@ -86,9 +85,9 @@ export class AcessGuard extends AuthGuard('jwt') {
           if (access.includes('Role') && req.body?.role) {
             const isValid = validateRole(req.body.role, user.role);
             if (isValid) {
-              return validateRole(req.body.role, user.role);
+              return true;
             }
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
           }
 
           return access.includes(UserRole[user.role] as AccessType);

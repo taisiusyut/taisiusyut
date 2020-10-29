@@ -9,5 +9,11 @@
   "setupFilesAfterEnv": ["jest-extended"],
   "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/src/$1"
+  },
+  "globals": {
+    "root": {},
+    "admin": {},
+    "author": {},
+    "client": {}
   }
 }

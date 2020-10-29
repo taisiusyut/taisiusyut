@@ -1,7 +1,7 @@
-import { SuperAgentRequest } from 'superagent';
 import { CreateUserDto, UpdateUserDto } from '@/modules/user/dto';
 import { routes } from '@/constants/routes';
 import { rid } from '@/utils/rid';
+import { UserRole } from '@/typings';
 import qs from 'qs';
 
 export { CreateUserDto, UpdateUserDto };
@@ -14,34 +14,26 @@ export const createUserDto = (
     username: `e2e${name}`,
     password: `e2e-${rid()}`,
     email: `e2e-${rid()}@gmail.com`,
+    role: UserRole.Client,
     ...payload
   };
 };
 
-export function createUser(
-  token: string,
-  dto: Partial<CreateUserDto> = {}
-): SuperAgentRequest {
+export function createUser(token: string, dto: Partial<CreateUserDto> = {}) {
   return request
     .post(routes.create_user)
     .set('Authorization', `bearer ${token}`)
     .send(createUserDto(dto) as any);
 }
 
-export function getUsers(
-  token: string,
-  query: Record<string, any> = {}
-): SuperAgentRequest {
+export function getUsers(token: string, query: Record<string, any> = {}) {
   return request
     .get(routes.get_users)
     .set('Authorization', `bearer ${token}`)
     .query(qs.stringify(query));
 }
 
-export function updateUser(
-  token: string,
-  { id, ...changes }: UpdateUserDto
-): SuperAgentRequest {
+export function updateUser(token: string, { id, ...changes }: UpdateUserDto) {
   return request
     .patch(routes.update_user.generatePath({ id }))
     .set('Authorization', `bearer ${token}`)

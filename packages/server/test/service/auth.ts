@@ -1,7 +1,7 @@
 import { SuperAgentRequest, Response } from 'superagent';
 import { ConfigService } from '@nestjs/config';
 import { routes } from '@/constants/routes';
-import { Param$Login } from '@/typings';
+import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
 import { createUserDto, CreateUserDto, createUser } from './user';
 
 export async function login(payload: Param$Login): Promise<Response> {
@@ -44,10 +44,28 @@ export async function createUserAndLogin(
     : login(user);
 }
 
-export function refreshToken(token: string): SuperAgentRequest {
+export function refreshToken(token: string) {
   return request.post(routes.refresh_token).set('Cookie', [token]).send();
 }
 
-export function logout(): SuperAgentRequest {
+export function logout() {
   return request.post(routes.logout);
+}
+
+export async function setupUsers() {
+  const create = async (
+    role: UserRole,
+    exits?: Schema$Authenticated
+  ): Promise<Schema$Authenticated> =>
+    exits.token
+      ? exits
+      : createUserAndLogin(root.token, { role }).then(res => res.body);
+
+  root = root || (await loginAsDefaultRoot().then(res => res.body));
+
+  [admin, author, client] = await Promise.all([
+    create(UserRole.Admin, admin),
+    create(UserRole.Author, author),
+    create(UserRole.Client, client)
+  ]);
 }

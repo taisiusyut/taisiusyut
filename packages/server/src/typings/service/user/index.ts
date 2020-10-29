@@ -8,7 +8,6 @@ export enum UserRole {
   Author,
   Client
 }
-
 export interface BaseUser extends Timestamp {
   id: string;
   email: string;
