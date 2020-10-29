@@ -1,11 +1,10 @@
 import { Response } from 'supertest';
 import { HttpStatus } from '@nestjs/common';
-import { loginAsDefaultRoot, registration } from './service/auth';
 import { UserRole } from '@/typings';
-import { routes } from '@/main';
+import { loginAsDefaultRoot, registration } from './service/auth';
 
 describe('AuthController (e2e)', () => {
-  describe(`(POST) ${routes.login}`, () => {
+  describe(`(POST) Login`, () => {
     test('Login as default root', async () => {
       const response = await loginAsDefaultRoot();
       expect(response.status).toBe(HttpStatus.OK);
@@ -13,7 +12,7 @@ describe('AuthController (e2e)', () => {
     });
   });
 
-  describe(`(POST) ${routes.registration}`, () => {
+  describe(`(POST) Registration`, () => {
     test('These roles should not be registered', async () => {
       const roles = [UserRole.Root, UserRole.Admin, UserRole.Author];
       await expect(
