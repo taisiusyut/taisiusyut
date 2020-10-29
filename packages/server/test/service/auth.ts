@@ -52,6 +52,10 @@ export function logout() {
   return request.post(routes.logout);
 }
 
+export async function setupRoot() {
+  root = root.token ? root : await loginAsDefaultRoot().then(res => res.body);
+}
+
 export async function setupUsers() {
   const create = async (
     role: UserRole,
@@ -61,7 +65,7 @@ export async function setupUsers() {
       ? exits
       : createUserAndLogin(root.token, { role }).then(res => res.body);
 
-  root = root || (await loginAsDefaultRoot().then(res => res.body));
+  await setupRoot();
 
   [admin, author, client] = await Promise.all([
     create(UserRole.Admin, admin),

@@ -6,7 +6,8 @@ import {
   Res,
   UseGuards,
   HttpStatus,
-  BadRequestException
+  BadRequestException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
@@ -14,13 +15,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants/routes';
 import { JWTSignPayload, Schema$Authenticated, UserRole } from '@/typings';
 import { throwMongoError } from '@/utils/mongoose';
-import { Access } from '@/guard/access.guard';
 import { IsObjectId } from '@/decorators';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/user.schema';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
+import { RefreshToken } from './schemas/refreshToken.schema';
+import { formatJWTSignPayload } from './dto';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
@@ -33,12 +35,11 @@ export class AuthController {
   ) {}
 
   @Post(routes.auth.registration)
-  @Access('Everyone')
   registration(@Body() createUserDto: CreateUserDto): Promise<User> {
     if (!createUserDto.role || createUserDto.role === UserRole.Client) {
       return this.userService.create(createUserDto);
     }
-    throw new BadRequestException(`"role" property is not valid`);
+    throw new BadRequestException(`"role" is not valid`);
   }
 
   @Post(routes.auth.login)
@@ -75,6 +76,56 @@ export class AuthController {
       )
       .status(HttpStatus.OK)
       .send(response);
+  }
+
+  @Post(routes.auth.refresh_token)
+  async refreshToken(
+    @Req() req: FastifyRequest,
+    @Res() reply: FastifyReply
+  ): Promise<FastifyReply> {
+    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+
+    if (tokenFromCookies) {
+      const newRefreshToken = uuidv4();
+      let refreshToken: RefreshToken | null = null;
+
+      try {
+        refreshToken = await this.refreshTokenService.update(
+          { refreshToken: tokenFromCookies },
+          { refreshToken: newRefreshToken }
+        );
+      } catch (error) {
+        throwMongoError(error);
+      }
+
+      if (refreshToken) {
+        const refreshTokenJson = refreshToken.toJSON();
+        const signResult = this.authService.signJwt(refreshTokenJson);
+        const user = formatJWTSignPayload(refreshTokenJson);
+        const response: Schema$Authenticated = {
+          ...signResult,
+          user,
+          isDefaultAc: !IsObjectId(user.user_id)
+        };
+
+        return reply
+          .setCookie(
+            REFRESH_TOKEN_COOKIES,
+            newRefreshToken,
+            this.refreshTokenService.getCookieOpts()
+          )
+          .status(HttpStatus.OK)
+          .send(response);
+      }
+
+      return reply
+        .status(HttpStatus.BAD_REQUEST)
+        .send(new BadRequestException('Invalid refresh token'));
+    }
+
+    return reply
+      .status(HttpStatus.UNAUTHORIZED)
+      .send(new UnauthorizedException());
   }
 
   @Post(routes.auth.logout)

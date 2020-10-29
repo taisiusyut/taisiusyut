@@ -7,6 +7,7 @@ import { MongooseSerializerInterceptor } from '@/utils/mongoose';
 import { AcessGuard } from '@/guard/access.guard';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
+import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
 const configure = (load: ConfigFactory[] = []) =>
@@ -24,8 +25,10 @@ const configure = (load: ConfigFactory[] = []) =>
         .valid('development', 'production', 'test')
         .default('development'),
       JWT_SECRET: Joi.string().default('JWT_SECRET'),
-      JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(1),
-      REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(1),
+      JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number()
+        .min(1)
+        .default(7 * 24 * 60),
+      REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(15),
       DEFAULT_USERNAME: Joi.string().default('admin'),
       DEFAULT_PASSWORD: Joi.string().default('admin')
     })
@@ -53,16 +56,23 @@ export class AppModule {
         MongooseModule.forRootAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
-          useFactory: async (configService: ConfigService) => ({
-            uri: configService.get<string>(
-              'MONGODB_URI',
-              'mongodb://localhost:27017/fullstack'
-            ),
-            useNewUrlParser: true,
-            useFindAndModify: false,
-            useCreateIndex: true,
-            useUnifiedTopology: true
-          })
+          useFactory: async (configService: ConfigService) => {
+            mongoose.set('toJSON', {
+              virtuals: true, // clone '_id' to 'id'
+              versionKey: false // remove '__v',
+            });
+
+            return {
+              uri: configService.get<string>(
+                'MONGODB_URI',
+                'mongodb://localhost:27017/fullstack'
+              ),
+              useNewUrlParser: true,
+              useFindAndModify: false,
+              useCreateIndex: true,
+              useUnifiedTopology: true
+            };
+          }
         })
       ]
     };

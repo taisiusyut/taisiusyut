@@ -3,10 +3,15 @@ interface Header {
 }
 
 type Flag = Record<string, unknown>;
-type Schema = Record<string, { value: string; flag: Flag }>;
+type Cookies = Record<string, { value: string; flag: Flag }>;
 
-export function extractCookies({ 'set-cookie': cookies = [] }: Header): Schema {
-  return cookies.reduce((result, cookies) => {
+export function extractCookies(header: Header): Cookies;
+export function extractCookies(header: Header, key: string): Cookies[string];
+export function extractCookies(
+  { 'set-cookie': cookies = [] }: Header,
+  key?: string
+): Cookies | Cookies[string] {
+  const _cookies = cookies.reduce((result, cookies) => {
     const [target, ...flag] = cookies.split('; ');
     if (target) {
       const [name, value] = target.split('=');
@@ -19,6 +24,7 @@ export function extractCookies({ 'set-cookie': cookies = [] }: Header): Schema {
       };
     }
     return result;
-  }, {} as Schema);
-  // 'fullstack_refresh_token=6ea79ced-c7fa-40a0-a532-e981bbc7be44; Max-Age=60000; HttpOnly'.split('; ')
+  }, {} as Cookies);
+
+  return key ? _cookies[key] : _cookies;
 }

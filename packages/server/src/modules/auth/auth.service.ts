@@ -1,8 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from '@/modules/user/user.service';
 import { UserRole, JWTSignPayload, JWTSignResult } from '@/typings';
-import { UserService } from '../user/user.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { formatJWTSignPayload } from './dto/jwt-sign.dto';
 import bcrypt from 'bcrypt';
@@ -25,6 +25,12 @@ export class AuthService {
     if (user) {
       const valid = await bcrypt.compare(password, user.password);
       const { id: user_id, ...rest } = user.toJSON();
+
+      if (!user_id) {
+        throw new Error(
+          `user_id is not defined, please check mongoose "virtual" config`
+        );
+      }
 
       if (valid) {
         return formatJWTSignPayload({
