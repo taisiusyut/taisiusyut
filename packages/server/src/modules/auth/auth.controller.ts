@@ -5,14 +5,16 @@ import {
   Req,
   Res,
   UseGuards,
-  HttpStatus
+  HttpStatus,
+  BadRequestException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants/routes';
-import { JWTSignPayload, Schema$Authenticated } from '@/typings';
+import { JWTSignPayload, Schema$Authenticated, UserRole } from '@/typings';
 import { throwMongoError } from '@/utils/mongoose';
+import { Access } from '@/guard/access.guard';
 import { IsObjectId } from '@/decorators';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
@@ -20,7 +22,7 @@ import { User } from '@/modules/user/user.schema';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 
-const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
+export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
 @Controller(routes.auth.prefix)
 export class AuthController {
@@ -31,8 +33,12 @@ export class AuthController {
   ) {}
 
   @Post(routes.auth.registration)
-  register(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.create(createUserDto);
+  @Access('EVERYONE')
+  registration(@Body() createUserDto: CreateUserDto): Promise<User> {
+    if (!createUserDto.role || createUserDto.role === UserRole.Client) {
+      return this.userService.create(createUserDto);
+    }
+    throw new BadRequestException(`"role" property is not valid`);
   }
 
   @Post(routes.auth.login)

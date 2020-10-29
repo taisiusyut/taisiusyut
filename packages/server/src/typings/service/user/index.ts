@@ -3,7 +3,7 @@ import { Schema$Author, Param$CreateAuthor } from './author';
 import { Schema$Client, Param$CreateClient } from './client';
 
 export enum UserRole {
-  Root,
+  Root = 1,
   Admin,
   Author,
   Client

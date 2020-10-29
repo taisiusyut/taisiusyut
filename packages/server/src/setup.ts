@@ -8,6 +8,7 @@ import { MongooseExceptionFilter } from './utils/mongoose';
 import helmet from 'fastify-helmet';
 import rateLimit from 'fastify-rate-limit';
 import compression from 'fastify-compress';
+import cookieParser from 'fastify-cookie';
 import qs from 'qs';
 
 export type { NestFastifyApplication };
@@ -22,6 +23,7 @@ export function setupApp(app: NestFastifyApplication): void {
   app.useGlobalFilters(new MongooseExceptionFilter());
 
   app.register(compression, { encodings: ['gzip', 'deflate'] });
+  app.register(cookieParser);
   app.register(helmet);
 
   if (process.env.NODE_ENV === 'production') {

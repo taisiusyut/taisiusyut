@@ -16,11 +16,14 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService
   ) {}
 
-  async validateUser(username: string, pass: string): Promise<JWTSignPayload> {
+  async validateUser(
+    username: string,
+    password: string
+  ): Promise<JWTSignPayload> {
     const user = await this.userService.findOne({ username }, '+password');
 
     if (user) {
-      const valid = await bcrypt.compare(pass, user.password);
+      const valid = await bcrypt.compare(password, user.password);
       const { id: user_id, ...rest } = user.toJSON();
 
       if (valid) {
@@ -41,7 +44,7 @@ export class AuthService {
           this.configService.get('DEFAULT_PASSWORD')
         ];
 
-        if (username === defaultUsername && pass === defaultPassword) {
+        if (username === defaultUsername && password === defaultPassword) {
           return {
             user_id: defaultUsername,
             username: defaultUsername,

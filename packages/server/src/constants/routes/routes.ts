@@ -4,7 +4,7 @@ export const Routes = {
     prefix: '/auth',
     login: '/login',
     logout: '/logout',
-    registration: '/register',
+    registration: '/registration',
     refresh_token: '/refresh-token'
   },
   user: {
