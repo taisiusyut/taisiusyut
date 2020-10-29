@@ -1,5 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
 
+export * from './auth';
 export * from './user';
 
 export interface ApiResponse<T> {

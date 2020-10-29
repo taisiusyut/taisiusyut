@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseSerializerInterceptor } from '@/utils/mongoose';
+import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
 
 const configure = (load: ConfigFactory[] = []) =>
@@ -19,7 +20,7 @@ const configure = (load: ConfigFactory[] = []) =>
   });
 
 @Module({
-  imports: [UserModule]
+  imports: [AuthModule, UserModule]
 })
 export class AppModule {
   static init(factory?: ConfigFactory[]): DynamicModule {
