@@ -1,30 +1,10 @@
-import { Prop, PropOptions, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { InsertedUserSchema, UserRole } from '@/typings';
 import { Exclude } from 'class-transformer';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { InsertedUserSchema, UserRole } from '@/typings';
 import bcrypt from 'bcrypt';
-
-type PropertyDecorator = ReturnType<typeof Prop>;
 
 function hashPassword(password: string) {
   return bcrypt.hashSync(password, 10);
-}
-
-function IsClient(options?: PropOptions): PropertyDecorator {
-  return Prop({
-    ...options,
-    validate: function (this: InsertedUserSchema) {
-      return [UserRole.Client, UserRole.Author].includes(this.role);
-    }
-  });
-}
-
-function IsAuthor(options?: PropOptions): PropertyDecorator {
-  return Prop({
-    ...options,
-    validate: function (this: InsertedUserSchema) {
-      return [UserRole.Author].includes(this.role);
-    }
-  });
 }
 
 @Schema({
@@ -58,10 +38,10 @@ export class User implements InsertedUserSchema {
 
   updatedAt: string;
 
-  @IsClient({ type: String })
+  @Prop({ type: String })
   nickname?: string;
 
-  @IsAuthor({ type: String })
+  @Prop({ type: String })
   description?: string;
 
   constructor(payload: Partial<User>) {

@@ -1,10 +1,10 @@
-import { ValidationPipe } from '@nestjs/common';
 import {
   FastifyAdapter,
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
 import { FastifyServerOptions } from 'fastify';
-import { MongooseExceptionFilter } from './utils/mongoose';
+import { MongooseExceptionFilter } from '@/utils/mongoose';
+import { ExtendedValidationPipe } from '@/pipe';
 import helmet from 'fastify-helmet';
 import rateLimit from 'fastify-rate-limit';
 import compression from 'fastify-compress';
@@ -19,7 +19,7 @@ export const fastifyAdapter = () =>
   });
 
 export function setupApp(app: NestFastifyApplication): void {
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(new ExtendedValidationPipe());
   app.useGlobalFilters(new MongooseExceptionFilter());
 
   app.register(compression, { encodings: ['gzip', 'deflate'] });

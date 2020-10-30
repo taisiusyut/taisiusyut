@@ -21,8 +21,10 @@ type AccessType =
   | 'Password'
   | 'Role';
 
+const AccessMetakey = 'access';
+
 export const Access = (...access: AccessType[]): CustomDecorator<string> =>
-  SetMetadata('access', access);
+  SetMetadata(AccessMetakey, access);
 
 export function validateRole(target: UserRole, self?: UserRole) {
   if (self === UserRole.Root) return true;
@@ -41,7 +43,7 @@ export class AcessGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext): Observable<boolean> {
     const access =
-      this.reflector.getAllAndOverride<AccessType[]>('access', [
+      this.reflector.getAllAndOverride<AccessType[]>(AccessMetakey, [
         context.getHandler(),
         context.getClass()
       ]) || [];

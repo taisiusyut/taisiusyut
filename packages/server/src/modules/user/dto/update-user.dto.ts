@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsOptional, IsString } from 'class-validator';
 import { InsertedUserSchema, InsertedUpdateuser } from '@/typings';
+import { AuthorOnly } from '@/decorators';
 
 class Excluded implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   @Exclude()
@@ -33,6 +34,7 @@ class UpdateUser
 
   @IsString()
   @IsOptional()
+  @AuthorOnly()
   description?: string;
 
   @IsEmail()
