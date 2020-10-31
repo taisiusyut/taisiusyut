@@ -15,5 +15,14 @@ export const Routes = {
     get_users: '',
     update_user: '/:id',
     delete_user: '/:id'
+  },
+  book: {
+    prefix: '/book',
+    create_book: '',
+    get_books: '',
+    get_book: '/:id',
+    update_book: '/:id',
+    delete_book: '/:id',
+    public_book: '/:id/public'
   }
 };
