@@ -62,20 +62,24 @@ export async function setupRoot() {
   return root;
 }
 
-export async function setupUsers() {
+export async function createUsers(useGlobal = false) {
   await setupRoot();
 
   const create = async (
     role: UserRole,
     exits: Schema$Authenticated
   ): Promise<Schema$Authenticated> =>
-    exits.token
+    exits.token && useGlobal
       ? exits
       : createUserAndLogin(root.token, { role }).then(res => res.body);
 
-  [admin, author, client] = await Promise.all([
+  return await Promise.all([
     create(UserRole.Admin, admin),
     create(UserRole.Author, author),
     create(UserRole.Client, client)
   ]);
+}
+
+export async function setupUsers() {
+  [admin, author, client] = await createUsers(true);
 }

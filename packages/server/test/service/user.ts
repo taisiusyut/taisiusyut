@@ -33,9 +33,13 @@ export function getUsers(token: string, query: Record<string, any> = {}) {
     .query(qs.stringify(query));
 }
 
-export function updateUser(token: string, { id, ...changes }: UpdateUserDto) {
+export function updateUser(
+  token: string,
+  id: string,
+  changes: UpdateUserDto | Record<string, unknown>
+) {
   return request
     .patch(routes.update_user.generatePath({ id }))
     .set('Authorization', `bearer ${token}`)
-    .send((changes || {}) as any);
+    .send((changes || {}) as Record<string, unknown>);
 }

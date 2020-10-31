@@ -100,14 +100,10 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
       });
   }
 
-  async findOne(
-    { id, ...query }: FilterQuery<T>,
-    projection: any = ''
-  ): Promise<T> {
-    return this.model.findOne(
-      JSON.parse(JSON.stringify({ _id: id, ...query })),
-      projection
-    );
+  async findOne(query: FilterQuery<T>, projection: any = ''): Promise<T> {
+    // remove undefined fields
+    const payload = JSON.parse(JSON.stringify(query));
+    return this.model.findOne(payload, projection);
   }
 
   async findAll(query?: FilterQuery<D>): Promise<T[]> {

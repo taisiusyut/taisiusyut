@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Patch,
   Body,
   Request,
   ForbiddenException
@@ -10,7 +11,8 @@ import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { ObjectId } from '@/decorators';
 import { ExtendedValidationPipe } from '@/pipe/validation.pipe';
 import { UserRole } from '@/typings';
 
@@ -42,5 +44,32 @@ export class UserController {
     }
 
     return this.userService.create(createUserDto);
+  }
+
+  @Access('Root', 'Admin', 'Self')
+  @Patch(routes.user.update_user)
+  async update(
+    @Request() req: FastifyRequest,
+    @ObjectId('id') id: string,
+    @Body(ExtendedValidationPipe) updateUserDto: UpdateUserDto
+  ) {
+    const self = id === req.user.user_id;
+    let error: string;
+
+    if (!self) {
+      const targetUser = await this.userService.findOne({ _id: id });
+      // Root user should have one only.
+      // If the request user is the root user,
+      // `self` should be true and will not enter this section
+      if (targetUser.role === UserRole.Root) error = '';
+      if (targetUser.role === UserRole.Admin && req.user.role !== UserRole.Root)
+        error = 'Admin user cannot update by other admin';
+    }
+
+    if (typeof error === 'undefined') {
+      return this.userService.update({ _id: id }, updateUserDto);
+    }
+
+    throw new ForbiddenException(error);
   }
 }
