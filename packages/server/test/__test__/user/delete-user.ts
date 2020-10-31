@@ -5,8 +5,8 @@ import {
   setupRoot,
   setupUsers,
   createUserAndLogin
-} from '../service/auth';
-import { createUserDto, deleteUser } from '../service/user';
+} from '../../service/auth';
+import { createUserDto, deleteUser } from '../../service/user';
 
 export function testDeleteUser() {
   beforeAll(async () => {

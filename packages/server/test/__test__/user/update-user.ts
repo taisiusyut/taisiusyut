@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { Schema$Authenticated, Schema$User, UserRole } from '@/typings';
 import { rid } from '@/utils/rid';
-import { createUser, createUserDto, updateUser } from '../service/user';
+import { createUser, createUserDto, updateUser } from '../../service/user';
 import {
   createUserAndLogin,
   createUsers,
@@ -9,7 +9,7 @@ import {
   login,
   setupRoot,
   setupUsers
-} from '../service/auth';
+} from '../../service/auth';
 
 export function testUpdateUser() {
   let user: Schema$User;

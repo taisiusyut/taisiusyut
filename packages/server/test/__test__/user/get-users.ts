@@ -1,8 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { UserRole } from '@/typings';
-import { getUsers } from '../service/user';
-import { setupRoot, setupUsers } from '../service/auth';
-import '../matchers';
+import { getUsers } from '../../service/user';
+import { setupRoot, setupUsers } from '../../service/auth';
 
 export function testGetUsers() {
   beforeAll(async () => {

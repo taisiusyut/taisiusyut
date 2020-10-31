@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { UserRole } from '@/typings';
-import { createUser, createUserDto } from '../service/user';
-import { setupRoot, setupUsers } from '../service/auth';
+import { createUser, createUserDto } from '../../service/user';
+import { setupRoot, setupUsers } from '../../service/auth';
 
 export function testCreateUser() {
   beforeAll(async () => {

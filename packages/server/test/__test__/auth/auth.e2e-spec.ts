@@ -1,5 +1,6 @@
 import { Response } from 'supertest';
 import { HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { UserRole } from '@/typings';
 import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
 import {
@@ -11,10 +12,9 @@ import {
   createUserAndLogin,
   getToken,
   setupRoot
-} from './service/auth';
-import { createUser, createUserDto } from './service/user';
-import { extractCookies } from './service/cookies';
-import { ConfigService } from '@nestjs/config';
+} from '../../service/auth';
+import { createUser, createUserDto } from '../../service/user';
+import { extractCookies } from '../../service/cookies';
 
 describe('AuthController (e2e)', () => {
   const configService = app.get<ConfigService>(ConfigService);
