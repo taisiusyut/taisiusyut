@@ -4,24 +4,54 @@ import {
   Patch,
   Body,
   Request,
-  ForbiddenException
+  ForbiddenException,
+  Get,
+  Query
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
 import { ObjectId } from '@/decorators';
 import { ExtendedValidationPipe } from '@/pipe/validation.pipe';
 import { UserRole } from '@/typings';
+import { Condition } from '@/utils/mongoose';
 
 @Controller(routes.user.prefix)
 export class UserController {
+  private roles: Partial<Record<UserRole, { role: UserRole }[]>>;
+
   constructor(
     private readonly userService: UserService,
     private readonly configService: ConfigService
-  ) {}
+  ) {
+    const _roles = Object.values(UserRole).filter(
+      (v): v is UserRole => typeof v === 'number' && v !== UserRole.Root
+    );
+    this.roles = {
+      [UserRole.Root]: _roles.map(role => ({ role })),
+      [UserRole.Admin]: _roles
+        .filter(r => ![UserRole.Root, UserRole.Admin].includes(r))
+        .map(role => ({ role }))
+    };
+  }
+
+  @Access('Root', 'Admin')
+  @Get(routes.user.get_users)
+  getAll(@Query() query: GetUsersDto, @Request() req: FastifyRequest) {
+    const condition: Condition[] = req.user
+      ? [
+          { $or: this.roles[req.user.role] },
+          { $nor: [{ username: req.user.username }] } // Exclude self
+        ]
+      : undefined;
+    return this.userService.paginate({
+      ...query,
+      condition
+    });
+  }
 
   @Access('Root', 'Admin')
   @Post(routes.user.create_user)
