@@ -21,6 +21,7 @@ import { IsObjectId } from '@/decorators';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/user.schema';
+import { Access } from '@/guard/access.guard';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshToken } from './schemas/refreshToken.schema';
@@ -28,6 +29,7 @@ import { DeleteAccountDto, formatJWTSignPayload } from './dto';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
+@Access('Everyone')
 @Controller(routes.auth.prefix)
 export class AuthController {
   constructor(
@@ -146,15 +148,14 @@ export class AuthController {
       .send('OK');
   }
 
-  @Post(routes.auth.delete_account)
+  @Access('Jwt')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard('jwt'))
+  @Post(routes.auth.delete_account)
   async delete(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
     @Body() { password }: DeleteAccountDto
   ) {
-    console.log(' req.user.username', req.user.username);
     const payload = await this.authService.validateUser(
       req.user.username,
       password

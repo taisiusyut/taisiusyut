@@ -11,12 +11,15 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { UserRole, JWTSignPayload } from '@/typings';
 
-type AccessType = keyof typeof UserRole | 'Everyone' | 'Self';
+type AccessType = keyof typeof UserRole | 'Everyone' | 'Self' | 'Jwt';
 
-const AccessMetakey = 'access';
+const AccessMetakey = 'AccessMeta';
 
-export const Access = (...access: AccessType[]): CustomDecorator<string> =>
-  SetMetadata(AccessMetakey, access);
+export const Access = (
+  ...access: Exclude<AccessType, 'Jwt'>[] | ['Jwt']
+): CustomDecorator<string> => {
+  return SetMetadata(AccessMetakey, access);
+};
 
 export class AcessGuard extends AuthGuard('jwt') {
   constructor(@Inject(Reflector) private reflector: Reflector) {
@@ -24,13 +27,12 @@ export class AcessGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext): Observable<boolean> {
-    const access =
-      this.reflector.getAllAndOverride<AccessType[]>(AccessMetakey, [
-        context.getHandler(),
-        context.getClass()
-      ]) || [];
+    const access = this.reflector.getAllAndOverride<AccessType[]>(
+      AccessMetakey,
+      [context.getHandler(), context.getClass()]
+    ) || ['Jwt'];
 
-    if (access.length === 0 || access.includes('Everyone')) {
+    if (access.includes('Everyone')) {
       return of(true);
     }
 
@@ -42,8 +44,10 @@ export class AcessGuard extends AuthGuard('jwt') {
     return canActivate$.pipe(
       mergeMap<boolean, Promise<boolean>>(async activate => {
         if (activate) {
+          if (access.includes('Jwt')) return true;
+
           const req = context.switchToHttp().getRequest<FastifyRequest<any>>();
-          const user_id: string | null = req.body?.user_id || req.params?.id;
+          const user_id: string | undefined = req.params?.id;
           const user: Partial<JWTSignPayload> = req.user || {};
 
           if (access.includes('Self') && user_id && user_id === user.user_id)
@@ -51,6 +55,7 @@ export class AcessGuard extends AuthGuard('jwt') {
 
           return access.includes(UserRole[user.role] as AccessType);
         }
+
         return false;
       })
     );

@@ -21,6 +21,7 @@ import { ExtendedValidationPipe } from '@/pipe/validation.pipe';
 import { UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 
+@Access('Root', 'Admin')
 @Controller(routes.user.prefix)
 export class UserController {
   private roles: Partial<Record<UserRole, { role: UserRole }[]>>;
@@ -40,7 +41,6 @@ export class UserController {
     };
   }
 
-  @Access('Root', 'Admin')
   @Get(routes.user.get_users)
   getAll(@Query() query: GetUsersDto, @Request() req: FastifyRequest) {
     const condition: Condition[] = req.user
@@ -55,7 +55,6 @@ export class UserController {
     });
   }
 
-  @Access('Root', 'Admin')
   @Post(routes.user.create_user)
   create(
     @Request() req: FastifyRequest,
@@ -78,7 +77,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Access('Root', 'Admin')
   @Patch(routes.user.update_user)
   async update(
     @Request() req: FastifyRequest,
@@ -105,7 +103,6 @@ export class UserController {
     return this.userService.update({ _id: id }, updateUserDto);
   }
 
-  @Access('Root', 'Admin')
   @Delete(routes.user.delete_user)
   async delete(@Request() req: FastifyRequest, @ObjectId('id') id: string) {
     const self = id === req.user.user_id;

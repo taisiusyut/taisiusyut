@@ -39,10 +39,6 @@ describe('AuthController (e2e)', () => {
     return cookie;
   }
 
-  beforeEach(async () => {
-    await setupRoot();
-  });
-
   describe(`(POST) Login & Logout`, () => {
     test('Login with default root', async () => {
       const response = await loginAsDefaultRoot();
@@ -116,6 +112,8 @@ describe('AuthController (e2e)', () => {
   test.skip(
     'JWT expires',
     async () => {
+      await setupRoot();
+
       let response = await createUserAndLogin(root.token, {
         role: UserRole.Admin
       });
