@@ -96,7 +96,7 @@ export function deleteAccount(token: string, dto: DeleteAccountDto) {
 
 export function modifyPassword(token: string, dto: ModifyPasswordDto) {
   return request
-    .post(routes.modify_password)
+    .patch(routes.modify_password)
     .set('Authorization', `bearer ${token}`)
     .send(dto);
 }

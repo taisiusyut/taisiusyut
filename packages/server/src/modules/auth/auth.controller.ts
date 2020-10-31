@@ -9,7 +9,8 @@ import {
   BadRequestException,
   UnauthorizedException,
   ForbiddenException,
-  HttpCode
+  HttpCode,
+  Patch
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
@@ -176,7 +177,7 @@ export class AuthController {
 
   @Access('Jwt')
   @HttpCode(HttpStatus.OK)
-  @Post(routes.auth.modify_password)
+  @Patch(routes.auth.modify_password)
   async modifyPassword(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,

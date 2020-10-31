@@ -136,5 +136,5 @@ describe('AuthController (e2e)', () => {
   );
 
   describe(`(POST) Delete Account`, testDeleteAccount);
-  describe(`(POST) Modify Password`, testModifyPassword);
+  describe(`(PTCH) Modify Password`, testModifyPassword);
 });
