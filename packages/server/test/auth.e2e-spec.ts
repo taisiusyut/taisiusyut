@@ -96,7 +96,6 @@ describe('AuthController (e2e)', () => {
     test('Refresh', async () => {
       if (refreshTokenVal) {
         const response = await refreshToken(refreshTokenVal);
-        console.log(response.error);
         expect(response.error).toBeFalse();
         validateCookies(response);
       }

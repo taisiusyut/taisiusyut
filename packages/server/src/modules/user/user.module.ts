@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { Schema, MongooseFuzzySearchingField } from 'mongoose';
 import { fuzzySearch } from '@/utils/mongoose';
 import { Schema$User } from '@/typings';
@@ -10,6 +11,7 @@ import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
+    ConfigModule,
     MongooseModule.forFeatureAsync([
       {
         name: User.name,

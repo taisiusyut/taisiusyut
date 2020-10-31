@@ -53,19 +53,25 @@ export function logout() {
 }
 
 export async function setupRoot() {
-  root = root.token ? root : await loginAsDefaultRoot().then(res => res.body);
+  if (root.token) {
+    return root;
+  }
+  const token = await getToken(loginAsDefaultRoot());
+  const response = await createUserAndLogin(token, { role: UserRole.Root });
+  root = response.body;
+  return root;
 }
 
 export async function setupUsers() {
+  await setupRoot();
+
   const create = async (
     role: UserRole,
-    exits?: Schema$Authenticated
+    exits: Schema$Authenticated
   ): Promise<Schema$Authenticated> =>
     exits.token
       ? exits
       : createUserAndLogin(root.token, { role }).then(res => res.body);
-
-  await setupRoot();
 
   [admin, author, client] = await Promise.all([
     create(UserRole.Admin, admin),
