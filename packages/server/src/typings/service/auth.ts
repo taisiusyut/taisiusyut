@@ -44,3 +44,9 @@ export interface Schema$Authenticated extends JWTSignResult {
 export interface Param$DeleteAccount {
   password: string;
 }
+
+export interface Param$ModifyPassword {
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}

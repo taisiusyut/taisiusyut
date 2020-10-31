@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { routes } from '@/constants/routes';
 import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
 import { createUserDto, CreateUserDto, createUser } from './user';
-import { DeleteAccountDto } from '@/modules/auth/dto';
+import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
 
 export async function login(payload: Param$Login): Promise<Response> {
   return request.post(routes.login).send(payload);
@@ -90,6 +90,13 @@ export async function setupUsers() {
 export function deleteAccount(token: string, dto: DeleteAccountDto) {
   return request
     .post(routes.delete_account)
+    .set('Authorization', `bearer ${token}`)
+    .send(dto);
+}
+
+export function modifyPassword(token: string, dto: ModifyPasswordDto) {
+  return request
+    .post(routes.modify_password)
     .set('Authorization', `bearer ${token}`)
     .send(dto);
 }

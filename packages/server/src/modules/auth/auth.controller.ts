@@ -25,7 +25,11 @@ import { Access } from '@/guard/access.guard';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshToken } from './schemas/refreshToken.schema';
-import { DeleteAccountDto, formatJWTSignPayload } from './dto';
+import {
+  DeleteAccountDto,
+  formatJWTSignPayload,
+  ModifyPasswordDto
+} from './dto';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
@@ -148,6 +152,13 @@ export class AuthController {
       .send('OK');
   }
 
+  async validateUser(username: string, password: string) {
+    const payload = await this.authService.validateUser(username, password);
+    if (!payload) {
+      throw new ForbiddenException('Invalid password');
+    }
+  }
+
   @Access('Jwt')
   @HttpCode(HttpStatus.OK)
   @Post(routes.auth.delete_account)
@@ -156,24 +167,28 @@ export class AuthController {
     @Res() res: FastifyReply,
     @Body() { password }: DeleteAccountDto
   ) {
-    const payload = await this.authService.validateUser(
-      req.user.username,
-      password
-    );
-
-    if (!payload) {
-      throw new ForbiddenException('Invalid password');
-    }
+    await this.validateUser(req.user.username, password);
 
     await this.userService.delete({ _id: req.user.user_id });
-    await this.authService.logout(req.cookies[REFRESH_TOKEN_COOKIES]);
 
-    res
-      .setCookie(REFRESH_TOKEN_COOKIES, '', {
-        httpOnly: true,
-        expires: new Date(0)
-      })
-      .status(HttpStatus.OK)
-      .send('OK');
+    await this.logout(req, res);
+  }
+
+  @Access('Jwt')
+  @HttpCode(HttpStatus.OK)
+  @Post(routes.auth.modify_password)
+  async modifyPassword(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Body() { password, newPassword }: ModifyPasswordDto
+  ) {
+    await this.validateUser(req.user.username, password);
+
+    await this.userService.update(
+      { _id: req.user.user_id },
+      { password: newPassword }
+    );
+
+    await this.logout(req, res);
   }
 }

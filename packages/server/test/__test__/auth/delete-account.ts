@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { Schema$Authenticated, UserRole } from '@/typings';
 import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
 import {
@@ -8,7 +9,6 @@ import {
 } from '../../service/auth';
 import { extractCookies } from '../../service/cookies';
 import { createUserDto } from '../../service/user';
-import { HttpStatus } from '@nestjs/common';
 
 export function testDeleteAccount() {
   const mock = {
@@ -28,7 +28,7 @@ export function testDeleteAccount() {
   });
 
   test.each(['root', 'admin', 'author', 'client'])(
-    '%s delete account success',
+    '%s can delete account',
     async type => {
       const account = mock[type];
       let response = await createUserAndLogin(
@@ -43,9 +43,9 @@ export function testDeleteAccount() {
       response = await deleteAccount(auth[type].token, account);
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.OK);
-      // expect(
-      //   extractCookies(response.header, REFRESH_TOKEN_COOKIES).value
-      // ).toBeEmpty();
+      expect(
+        extractCookies(response.header, REFRESH_TOKEN_COOKIES).value
+      ).toBeEmpty();
 
       response = await login(account);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
