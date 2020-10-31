@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { Schema$Authenticated, Schema$User, UserRole } from '@/typings';
 import { rid } from '@/utils/rid';
 import { createUser, createUserDto, updateUser } from '../service/user';
@@ -9,7 +10,6 @@ import {
   setupRoot,
   setupUsers
 } from '../service/auth';
-import { HttpStatus } from '@nestjs/common';
 
 export function testUpdateUser() {
   let user: Schema$User;
@@ -75,11 +75,6 @@ export function testUpdateUser() {
       }
     }
   );
-
-  // ${'root'}   | ${'cannot'} | ${'admin'}  | ${HttpStatus.FORBIDDEN}
-  // ${'client'} | ${'cannot'} | ${'author'} | ${HttpStatus.FORBIDDEN}
-  // ${'client'} | ${'cannot'} | ${'client'} | ${HttpStatus.FORBIDDEN}
-  // ${'author'} | ${'cannot'} | ${'client'} | ${HttpStatus.FORBIDDEN}
 
   test.each`
     executor    | target

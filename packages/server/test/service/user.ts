@@ -43,3 +43,10 @@ export function updateUser(
     .set('Authorization', `bearer ${token}`)
     .send((changes || {}) as Record<string, unknown>);
 }
+
+export function deleteUser(token: string, id: string) {
+  return request
+    .delete(routes.update_user.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}

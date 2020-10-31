@@ -6,7 +6,9 @@ import {
   Request,
   ForbiddenException,
   Get,
-  Query
+  Query,
+  Delete,
+  BadRequestException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FastifyRequest } from 'fastify';
@@ -76,7 +78,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Access('Root', 'Admin', 'Self')
+  @Access('Root', 'Admin')
   @Patch(routes.user.update_user)
   async update(
     @Request() req: FastifyRequest,
@@ -96,10 +98,33 @@ export class UserController {
         error = 'Admin user cannot update by other admin';
     }
 
-    if (typeof error === 'undefined') {
-      return this.userService.update({ _id: id }, updateUserDto);
+    if (typeof error === 'string') {
+      throw new ForbiddenException(error);
     }
 
-    throw new ForbiddenException(error);
+    return this.userService.update({ _id: id }, updateUserDto);
+  }
+
+  @Access('Root', 'Admin')
+  @Delete(routes.user.delete_user)
+  async delete(@Request() req: FastifyRequest, @ObjectId('id') id: string) {
+    const self = id === req.user.user_id;
+    if (self) {
+      throw new BadRequestException(
+        `Should not delete account using this endpoint`
+      );
+    }
+
+    const targetUser = await this.userService.findOne({ _id: id });
+    let error: string;
+    if (targetUser.role === UserRole.Root) error = 'Cannot delete root user';
+    if (targetUser.role === UserRole.Admin && req.user.role !== UserRole.Root)
+      error = 'Admin user cannot delete by other admin';
+
+    if (error) {
+      throw new ForbiddenException(error);
+    }
+
+    return this.userService.delete({ _id: id });
   }
 }
