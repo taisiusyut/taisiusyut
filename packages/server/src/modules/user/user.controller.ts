@@ -77,6 +77,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Access('Root', 'Admin', 'Self')
   @Patch(routes.user.update_user)
   async update(
     @Request() req: FastifyRequest,
