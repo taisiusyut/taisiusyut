@@ -15,6 +15,7 @@ import {
 } from '../../service/auth';
 import { createUser, createUserDto } from '../../service/user';
 import { extractCookies } from '../../service/cookies';
+import { testDeleteAccount } from './delete-account';
 
 describe('AuthController (e2e)', () => {
   const configService = app.get<ConfigService>(ConfigService);
@@ -134,4 +135,6 @@ describe('AuthController (e2e)', () => {
     },
     jwtExpires * 2
   );
+
+  describe(`(POST) Delete Account`, testDeleteAccount);
 });

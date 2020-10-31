@@ -3,14 +3,15 @@ interface Header {
 }
 
 type Flag = Record<string, unknown>;
-type Cookies = Record<string, { value: string; flag: Flag }>;
+export type Cookie = { value: string; flag: Flag };
+export type Cookies = Record<string, Cookie>;
 
 export function extractCookies(header: Header): Cookies;
-export function extractCookies(header: Header, key: string): Cookies[string];
+export function extractCookies(header: Header, key: string): Cookie;
 export function extractCookies(
   { 'set-cookie': cookies = [] }: Header,
   key?: string
-): Cookies | Cookies[string] {
+): Cookies | Cookie {
   const _cookies = cookies.reduce((result, cookies) => {
     const [target, ...flag] = cookies.split('; ');
     if (target) {

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { routes } from '@/constants/routes';
 import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
 import { createUserDto, CreateUserDto, createUser } from './user';
+import { DeleteAccountDto } from '@/modules/auth/dto';
 
 export async function login(payload: Param$Login): Promise<Response> {
   return request.post(routes.login).send(payload);
@@ -57,7 +58,9 @@ export async function setupRoot() {
     return root;
   }
   const token = await getToken(loginAsDefaultRoot());
-  const response = await createUserAndLogin(token, { role: UserRole.Root });
+  const response = await createUserAndLogin(token, {
+    role: UserRole.Root
+  });
   root = response.body;
   return root;
 }
@@ -82,4 +85,11 @@ export async function createUsers(useGlobal = false) {
 
 export async function setupUsers() {
   [admin, author, client] = await createUsers(true);
+}
+
+export function deleteAccount(token: string, dto: DeleteAccountDto) {
+  return request
+    .post(routes.delete_account)
+    .set('Authorization', `bearer ${token}`)
+    .send(dto);
 }

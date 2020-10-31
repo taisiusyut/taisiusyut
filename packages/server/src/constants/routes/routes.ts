@@ -5,7 +5,9 @@ export const Routes = {
     login: '/login',
     logout: '/logout',
     registration: '/registration',
-    refresh_token: '/refresh-token'
+    refresh_token: '/refresh-token',
+    modify_password: '/modify-password',
+    delete_account: '/delete-account'
   },
   user: {
     prefix: '/user',

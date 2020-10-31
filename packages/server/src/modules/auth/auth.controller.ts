@@ -7,7 +7,9 @@ import {
   UseGuards,
   HttpStatus,
   BadRequestException,
-  UnauthorizedException
+  UnauthorizedException,
+  ForbiddenException,
+  HttpCode
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
@@ -22,7 +24,7 @@ import { User } from '@/modules/user/user.schema';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshToken } from './schemas/refreshToken.schema';
-import { formatJWTSignPayload } from './dto';
+import { DeleteAccountDto, formatJWTSignPayload } from './dto';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
@@ -136,6 +138,36 @@ export class AuthController {
     await this.authService.logout(req.cookies[REFRESH_TOKEN_COOKIES]);
 
     return res
+      .setCookie(REFRESH_TOKEN_COOKIES, '', {
+        httpOnly: true,
+        expires: new Date(0)
+      })
+      .status(HttpStatus.OK)
+      .send('OK');
+  }
+
+  @Post(routes.auth.delete_account)
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  async delete(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Body() { password }: DeleteAccountDto
+  ) {
+    console.log(' req.user.username', req.user.username);
+    const payload = await this.authService.validateUser(
+      req.user.username,
+      password
+    );
+
+    if (!payload) {
+      throw new ForbiddenException('Invalid password');
+    }
+
+    await this.userService.delete({ _id: req.user.user_id });
+    await this.authService.logout(req.cookies[REFRESH_TOKEN_COOKIES]);
+
+    res
       .setCookie(REFRESH_TOKEN_COOKIES, '', {
         httpOnly: true,
         expires: new Date(0)

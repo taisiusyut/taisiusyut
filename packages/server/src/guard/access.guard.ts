@@ -10,9 +10,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { UserRole, JWTSignPayload } from '@/typings';
-import { AuthService } from '@/modules/auth/auth.service';
 
-type AccessType = keyof typeof UserRole | 'Everyone' | 'Self' | 'Password';
+type AccessType = keyof typeof UserRole | 'Everyone' | 'Self';
 
 const AccessMetakey = 'access';
 
@@ -20,10 +19,7 @@ export const Access = (...access: AccessType[]): CustomDecorator<string> =>
   SetMetadata(AccessMetakey, access);
 
 export class AcessGuard extends AuthGuard('jwt') {
-  constructor(
-    @Inject(Reflector) private reflector: Reflector,
-    @Inject(AuthService) private readonly authService: AuthService
-  ) {
+  constructor(@Inject(Reflector) private reflector: Reflector) {
     super();
   }
 
@@ -49,17 +45,6 @@ export class AcessGuard extends AuthGuard('jwt') {
           const req = context.switchToHttp().getRequest<FastifyRequest<any>>();
           const user_id: string | null = req.body?.user_id || req.params?.id;
           const user: Partial<JWTSignPayload> = req.user || {};
-
-          if (access.includes('Password')) {
-            const { password } = req.body;
-            if (password) {
-              const payload = await this.authService.validateUser(
-                user.username,
-                password
-              );
-              if (!!payload) return true;
-            }
-          }
 
           if (access.includes('Self') && user_id && user_id === user.user_id)
             return true;
