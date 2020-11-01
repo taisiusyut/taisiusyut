@@ -1,7 +1,8 @@
-import { CreateBookDto, UpdateBookDto } from '@/modules/book/dto';
+import { CreateBookDto, GetBooksDto, UpdateBookDto } from '@/modules/book/dto';
 import { routes } from '@/constants';
 import { Param$CreateBook } from '@/typings';
 import { rid } from '@/utils/rid';
+import qs from 'qs';
 
 export function createBookDto(
   payload?: Partial<CreateBookDto>
@@ -25,4 +26,11 @@ export function updateBook(
     .patch(routes.update_book.generatePath({ id }))
     .set('Authorization', `bearer ${token}`)
     .send(payload);
+}
+
+export function getBooks(token: string, query: GetBooksDto = {}) {
+  return request
+    .get(routes.get_books)
+    .set('Authorization', `bearer ${token}`)
+    .query(qs.stringify(query));
 }

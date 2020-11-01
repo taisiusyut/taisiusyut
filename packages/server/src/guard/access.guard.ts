@@ -11,12 +11,18 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { UserRole, JWTSignPayload } from '@/typings';
 
-type AccessType = keyof typeof UserRole | 'Everyone' | 'Self' | 'Jwt';
+// TODO: add comment
+type AccessType =
+  | keyof typeof UserRole
+  | 'Everyone'
+  | 'Self'
+  | 'Jwt'
+  | 'Optional';
 
 const AccessMetakey = 'AccessMeta';
 
 export const Access = (
-  ...access: Exclude<AccessType, 'Jwt'>[] | ['Jwt']
+  ...access: Exclude<AccessType, 'Jwt'>[] | ['Jwt'] | ['Optional']
 ): CustomDecorator<string> => {
   return SetMetadata(AccessMetakey, access);
 };
@@ -43,6 +49,8 @@ export class AcessGuard extends AuthGuard('jwt') {
 
     return canActivate$.pipe(
       mergeMap<boolean, Promise<boolean>>(async activate => {
+        if (access.includes('Optional')) return true;
+
         if (activate) {
           if (access.includes('Jwt')) return true;
 
