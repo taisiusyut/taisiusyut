@@ -1,10 +1,21 @@
-import { Controller, Post, Body, Req, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Patch,
+  Delete,
+  Get,
+  Query
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { Access } from '@/guard/access.guard';
 import { routes } from '@/constants';
 import { BookService } from './book.service';
-import { CreateBookDto, UpdateBookDto } from './dto';
 import { ObjectId } from '@/decorators';
+import { UserRole } from '@/typings';
+import { CreateBookDto, UpdateBookDto } from './dto';
+import { BookStatusPipe } from './book-status.pipe';
 
 @Controller('book')
 export class BookController {
@@ -21,7 +32,11 @@ export class BookController {
 
   @Access('Root', 'Admin', 'Author')
   @Patch(routes.book.update_book)
-  update(@ObjectId('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+  update(
+    @ObjectId('id') id: string,
+    @Body(BookStatusPipe([UserRole.Root, UserRole.Admin]))
+    updateBookDto: UpdateBookDto
+  ) {
     return this.bookService.update({ _id: id }, updateBookDto);
   }
 }

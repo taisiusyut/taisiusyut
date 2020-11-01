@@ -21,7 +21,7 @@ export class ExtendedValidationPipe extends ValidationPipe {
     super({ transform: true });
   }
 
-  transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: any, metadata: ArgumentMetadata) {
     let role: UserRole;
 
     if (this.request) {
@@ -30,11 +30,22 @@ export class ExtendedValidationPipe extends ValidationPipe {
         : this.request.body?.role;
     }
 
-    this.transformOptions = {
-      ...this.transformOptions,
-      groups: role ? [UserRole[role]] : defaultGroups
-    };
+    const groups = role ? [UserRole[role]] : defaultGroups;
 
-    return super.transform(value, metadata);
+    if (role) {
+      this.transformOptions = {
+        ...this.transformOptions,
+        groups
+      };
+
+      this.validatorOptions = {
+        ...this.validatorOptions,
+        groups
+      };
+    }
+
+    const result = await super.transform(value, metadata);
+
+    return result;
   }
 }

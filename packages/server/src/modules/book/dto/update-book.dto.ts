@@ -1,6 +1,6 @@
-import { IsOptional } from 'class-validator';
-import { Exclude } from 'class-transformer';
-import { Schema$Book, Param$UpdateBook } from '@/typings';
+import { IsEnum, IsOptional } from 'class-validator';
+import { Exclude, Transform } from 'class-transformer';
+import { Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
 import { IsDescription, IsTags, IsTitle, IsCategory } from './';
 
 class Excluded implements Partial<Schema$Book> {
@@ -9,9 +9,6 @@ class Excluded implements Partial<Schema$Book> {
 
   @Exclude()
   author?: undefined;
-
-  @Exclude()
-  status?: undefined;
 
   @Exclude()
   createdAt?: undefined;
@@ -40,6 +37,11 @@ class UpdateBook
   @IsOptional()
   @IsTags()
   tags?: string[];
+
+  @IsOptional()
+  @IsEnum(BookStatus)
+  @Transform(Number)
+  status?: BookStatus;
 }
 
 export class UpdateBookDto
