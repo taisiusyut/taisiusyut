@@ -10,6 +10,7 @@ export enum BookStatus {
 
 export interface Schema$BookAuthor extends Partial<Schema$Author> {
   nickname: string;
+  description?: string;
 }
 
 export interface Schema$Book extends Timestamp {

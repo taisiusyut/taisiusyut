@@ -9,9 +9,6 @@ class Excluded implements Partial<Schema$BookAuthor> {
   password: undefined;
 
   @Exclude()
-  description: undefined;
-
-  @Exclude()
   role: undefined;
 
   @Exclude()
@@ -21,7 +18,7 @@ class Excluded implements Partial<Schema$BookAuthor> {
   updatedAt: undefined;
 }
 
-class PrivateProperty
+class Optional
   extends Excluded
   implements Partial<Omit<Schema$BookAuthor, keyof Excluded>> {
   @Private()
@@ -32,10 +29,12 @@ class PrivateProperty
 
   @Private()
   email?: string;
+
+  description?: string;
 }
 
 export class Author
-  extends PrivateProperty
-  implements Required<Omit<Schema$Author, keyof PrivateProperty>> {
+  extends Optional
+  implements Required<Omit<Schema$Author, keyof Optional>> {
   nickname: string;
 }
