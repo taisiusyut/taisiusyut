@@ -7,6 +7,7 @@ import { MongooseSerializerInterceptor } from '@/utils/mongoose';
 import { AcessGuard } from '@/guard/access.guard';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
+import { BookModule } from './modules/book/book.module';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
@@ -35,7 +36,7 @@ const configure = (load: ConfigFactory[] = []) =>
   });
 
 @Module({
-  imports: [AuthModule, UserModule],
+  imports: [AuthModule, UserModule, BookModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,

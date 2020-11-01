@@ -41,3 +41,13 @@ export interface Param$GetBooks extends Pagination, Search {
   createdAt?: DateRange;
   updatedAt?: DateRange;
 }
+
+export interface Schema$Category {
+  category: string;
+  total: number;
+}
+
+export interface Schema$Tags {
+  tag: string;
+  total: number;
+}
