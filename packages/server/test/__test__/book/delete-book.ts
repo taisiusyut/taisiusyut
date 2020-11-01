@@ -8,7 +8,7 @@ export function testDeleteBook() {
     await setupUsers();
   });
 
-  afterEach(() => app.get(BookService).clear());
+  beforeEach(() => app.get(BookService).clear());
 
   test.each`
     user        | expected    | status                  | length

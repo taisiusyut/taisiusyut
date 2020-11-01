@@ -32,17 +32,15 @@ export class ExtendedValidationPipe extends ValidationPipe {
 
     const groups = role ? [UserRole[role]] : defaultGroups;
 
-    if (role) {
-      this.transformOptions = {
-        ...this.transformOptions,
-        groups
-      };
+    this.transformOptions = {
+      ...this.transformOptions,
+      groups
+    };
 
-      this.validatorOptions = {
-        ...this.validatorOptions,
-        groups
-      };
-    }
+    this.validatorOptions = {
+      ...this.validatorOptions,
+      groups
+    };
 
     const result = await super.transform(value, metadata);
 
