@@ -38,7 +38,12 @@ export class User implements InsertedUserSchema {
 
   updatedAt: string;
 
-  @Prop({ type: String })
+  @Prop({
+    type: String,
+    default: function () {
+      return this.username;
+    }
+  })
   nickname?: string;
 
   @Prop({ type: String })

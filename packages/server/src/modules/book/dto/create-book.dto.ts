@@ -30,6 +30,10 @@ class CreateBook
   description?: string;
 
   @IsOptional()
+  @IsCategory()
+  category?: string;
+
+  @IsOptional()
   @IsTags()
   tags?: string[];
 }
@@ -41,7 +45,4 @@ export class CreateBookDto
     Required<Omit<Param$CreateBook, keyof CreateBook>> {
   @IsTitle()
   title: string;
-
-  @IsCategory()
-  category: string;
 }

@@ -21,7 +21,7 @@ import paginate from 'mongoose-paginate-v2';
             { name: 'title' },
             { name: 'author' },
             { name: 'category' },
-            { name: 'tags' }
+            'tags' // FIXME: wait for mongoose-fuzzy-searching
           ];
 
           schema.plugin(fuzzySearch, { fields });

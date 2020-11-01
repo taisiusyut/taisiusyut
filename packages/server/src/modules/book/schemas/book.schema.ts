@@ -21,13 +21,18 @@ export class Book implements Schema$Book {
   @Prop({ type: String, default: '' })
   description: string;
 
-  @Prop({ type: String, required: true, lowercase: true })
+  @Prop({ type: String, default: '' })
   category: string;
 
   @Prop({ type: [String], lowercase: true, default: [] })
   tags: string[];
 
-  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
+  @Prop({
+    type: Types.ObjectId,
+    ref: User.name,
+    required: true,
+    autopopulate: true
+  })
   @Type(() => Author)
   author: string;
 
