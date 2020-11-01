@@ -49,7 +49,7 @@ export function testCreateBook() {
 
   test.each`
     property    | value
-    ${'status'} | ${BookStatus.Approved}
+    ${'status'} | ${BookStatus.Public}
     ${'author'} | ${new ObjectId().toHexString()}
   `(
     '$property will not be update',

@@ -58,7 +58,7 @@ export function testUpdateBook() {
 
   test.each`
     property    | value
-    ${'status'} | ${BookStatus.Approved}
+    ${'status'} | ${BookStatus.Public}
     ${'author'} | ${new ObjectId().toHexString()}
   `(
     '$property will not be update by author',
@@ -73,7 +73,7 @@ export function testUpdateBook() {
   );
 
   test.each(['root', 'admin'])('%s can update book status', async user => {
-    const status = BookStatus.Approved;
+    const status = BookStatus.Public;
     const response = await updateBook(global[user].token, book.id, { status });
     expect(response.error).toBeFalse();
     expect(response.status).toBe(HttpStatus.OK);
