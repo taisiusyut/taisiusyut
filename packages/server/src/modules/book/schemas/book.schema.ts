@@ -12,7 +12,7 @@ import { Author } from './author';
     transform: (_model, raw) => new Book(raw)
   }
 })
-export class Book implements Schema$Book {
+export class Book implements Record<keyof Schema$Book, unknown> {
   id: string;
 
   @Prop({ type: String, required: true, unique: true })
@@ -34,7 +34,7 @@ export class Book implements Schema$Book {
     autopopulate: true
   })
   @Type(() => Author)
-  author: string;
+  author: Author | string;
 
   @Group(['Root', 'Admin', 'Author'])
   @Prop({ type: Number, default: BookStatus.Pending })

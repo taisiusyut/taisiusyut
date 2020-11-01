@@ -1,10 +1,10 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Schema$Author } from '@/typings';
+import { Schema$Author, Schema$BookAuthor } from '@/typings';
 import { groups } from '@/decorators';
 
 const Private = () => Expose({ groups: groups('Root', 'Admin') });
 
-class Excluded {
+class Excluded implements Partial<Schema$BookAuthor> {
   @Exclude()
   password: undefined;
 
@@ -21,7 +21,9 @@ class Excluded {
   updatedAt: undefined;
 }
 
-class PrivateProperty extends Excluded {
+class PrivateProperty
+  extends Excluded
+  implements Partial<Omit<Schema$BookAuthor, keyof Excluded>> {
   @Private()
   id?: string;
 

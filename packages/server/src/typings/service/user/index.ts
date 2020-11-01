@@ -14,7 +14,7 @@ export interface BaseUser extends Timestamp {
   username: string;
   password: string;
   role: UserRole;
-  nickname?: string;
+  nickname: string;
 }
 
 export interface Schema$Root extends BaseUser {

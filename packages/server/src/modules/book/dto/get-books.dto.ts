@@ -15,8 +15,8 @@ class Excluded
 class GetBooks
   extends Excluded
   implements
-    Partial<Omit<Schema$Book, keyof Excluded>>,
-    Partial<Omit<Param$GetBooks, keyof Excluded>> {
+    Partial<Omit<Param$GetBooks, keyof Excluded>>,
+    Partial<Omit<Record<keyof Schema$Book, unknown>, keyof Excluded>> {
   @IsOptional()
   @IsString()
   id?: string;
@@ -44,7 +44,6 @@ class GetBooks
   @IsOptional()
   @IsEnum(BookStatus)
   @Transform(Number)
-  @Group(['Root', 'Admin', 'Author'])
   status?: BookStatus;
 }
 

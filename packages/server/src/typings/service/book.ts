@@ -1,4 +1,5 @@
 import { Timestamp, Pagination, Search, DateRange } from './';
+import { Schema$Author } from './user';
 
 export enum BookStatus {
   Pending = 1,
@@ -7,14 +8,18 @@ export enum BookStatus {
   Public = 9999
 }
 
+export interface Schema$BookAuthor extends Partial<Schema$Author> {
+  nickname: string;
+}
+
 export interface Schema$Book extends Timestamp {
   id: string;
   title: string;
   description: string;
   category: string;
   tags: string[];
-  author: string; //ObjectId
-  status: BookStatus;
+  author: Schema$BookAuthor; //ObjectId
+  status?: BookStatus;
 }
 
 export interface Param$CreateBook {
