@@ -28,6 +28,13 @@ export function updateBook(
     .send(payload);
 }
 
+export function deleteBook(token: string, id: string) {
+  return request
+    .delete(routes.delete_book.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
 export function getBooks(token: string, query: GetBooksDto = {}) {
   return request
     .get(routes.get_books)

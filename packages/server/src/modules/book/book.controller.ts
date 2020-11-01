@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Req, Patch, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Patch,
+  Delete,
+  Get,
+  Query
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { Access } from '@/guard/access.guard';
 import { routes } from '@/constants';
@@ -38,6 +47,12 @@ export class BookController {
     updateBookDto: UpdateBookDto
   ) {
     return this.bookService.update({ _id: id }, updateBookDto);
+  }
+
+  @Access('Root', 'Admin')
+  @Delete(routes.book.delete_book)
+  delete(@ObjectId('id') id: string) {
+    return this.bookService.delete({ _id: id });
   }
 
   @Access('Optional')
