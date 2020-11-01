@@ -1,9 +1,9 @@
 import { SuperAgentRequest, Response } from 'superagent';
 import { ConfigService } from '@nestjs/config';
+import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
 import { routes } from '@/constants/routes';
 import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
 import { createUserDto, CreateUserDto, createUser } from './user';
-import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
 
 export async function login(payload: Param$Login): Promise<Response> {
   return request.post(routes.login).send(payload);
@@ -53,6 +53,20 @@ export function logout() {
   return request.post(routes.logout);
 }
 
+export function deleteAccount(token: string, dto: DeleteAccountDto) {
+  return request
+    .post(routes.delete_account)
+    .set('Authorization', `bearer ${token}`)
+    .send(dto);
+}
+
+export function modifyPassword(token: string, dto: ModifyPasswordDto) {
+  return request
+    .patch(routes.modify_password)
+    .set('Authorization', `bearer ${token}`)
+    .send(dto);
+}
+
 export async function setupRoot() {
   if (root.token) {
     return root;
@@ -85,18 +99,4 @@ export async function createUsers(useGlobal = false) {
 
 export async function setupUsers() {
   [admin, author, client] = await createUsers(true);
-}
-
-export function deleteAccount(token: string, dto: DeleteAccountDto) {
-  return request
-    .post(routes.delete_account)
-    .set('Authorization', `bearer ${token}`)
-    .send(dto);
-}
-
-export function modifyPassword(token: string, dto: ModifyPasswordDto) {
-  return request
-    .patch(routes.modify_password)
-    .set('Authorization', `bearer ${token}`)
-    .send(dto);
 }
