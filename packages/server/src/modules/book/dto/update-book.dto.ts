@@ -27,11 +27,11 @@ class UpdateBook
     Partial<Omit<Param$UpdateBook, keyof Excluded>> {
   @IsOptional()
   @IsTitle()
-  title: string;
+  title?: string;
 
   @IsOptional()
   @IsCategory()
-  category: string;
+  category?: string;
 
   @IsOptional()
   @IsDescription()
