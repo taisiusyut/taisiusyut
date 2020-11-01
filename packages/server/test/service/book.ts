@@ -41,3 +41,14 @@ export function getBooks(token: string, query: GetBooksDto = {}) {
     .set('Authorization', `bearer ${token}`)
     .query(qs.stringify(query));
 }
+
+export function getBook(
+  token: string,
+  id: string,
+  query?: Record<string, unknown>
+) {
+  return request
+    .get(routes.get_book.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .query(qs.stringify(query));
+}

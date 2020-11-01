@@ -101,7 +101,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
       });
   }
 
-  async findOne(query: FilterQuery<T>, projection: any = ''): Promise<T> {
+  async findOne(query: FilterQuery<T>, projection: any = ''): Promise<T | null> {
     // remove undefined fields
     const payload = JSON.parse(JSON.stringify(query));
     return this.model.findOne(payload, projection);

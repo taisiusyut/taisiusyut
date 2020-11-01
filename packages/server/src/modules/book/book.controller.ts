@@ -6,8 +6,10 @@ import {
   Patch,
   Delete,
   Get,
-  Query
+  Query,
+  NotFoundException
 } from '@nestjs/common';
+import { ObjectID } from 'mongodb';
 import { FastifyRequest } from 'fastify';
 import { Access } from '@/guard/access.guard';
 import { routes } from '@/constants';
@@ -56,6 +58,35 @@ export class BookController {
   }
 
   @Access('Optional')
+  @Get(routes.book.get_book)
+  async getBook(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
+    const user: JWTSignPayload = req.user;
+    const query: Parameters<BookService['findOne']>[0] = { _id: id };
+
+    if (!user?.role || user.role === UserRole.Client) {
+      query.status = BookStatus.Public;
+    }
+
+    const book = await this.bookService.findOne(query);
+
+    if (book) {
+      const author = (book.author as unknown) as { _id: ObjectID };
+      // make sure author cannot get other authors non-public book
+
+      if (
+        book.status === BookStatus.Public ||
+        user?.role === UserRole.Root ||
+        user?.role === UserRole.Admin ||
+        (user?.role === UserRole.Author && author._id.equals(user.user_id))
+      ) {
+        return book;
+      }
+    }
+
+    throw new NotFoundException('Book not found');
+  }
+
+  @Access('Optional')
   @Get(routes.book.get_books)
   getBooks(
     @Req() req: FastifyRequest,
@@ -68,6 +99,7 @@ export class BookController {
     if (!user?.role || user.role === UserRole.Client) {
       query.status = BookStatus.Public;
     } else if (user.role === UserRole.Author) {
+      // make sure author cannot get other authors non-public book
       if (query.status) {
         query.author = user.user_id;
       } else {

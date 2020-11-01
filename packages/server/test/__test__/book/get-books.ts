@@ -113,6 +113,12 @@ export function testGetBooks() {
         expect(response.body.data).not.toContainObject({
           status: expect.any(Number)
         });
+        expect(response.body.data).not.toContainObject({
+          id: expect.anything(),
+          email: expect.anything(),
+          username: expect.anything(),
+          password: expect.anything()
+        });
       } else if (user === 'author') {
       } else {
         expect(response.body.data).toContainObject({
