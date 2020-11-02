@@ -34,6 +34,7 @@ import paginate from 'mongoose-paginate-v2';
     ])
   ],
   controllers: [BookController],
-  providers: [BookService]
+  providers: [BookService],
+  exports: [BookService]
 })
 export class BookModule {}

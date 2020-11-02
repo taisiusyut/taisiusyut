@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Type } from 'class-transformer';
+import { Type, Exclude } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
@@ -28,6 +28,7 @@ export class Chapter implements Record<keyof Schema$Chapter, unknown> {
     autopopulate: false
   })
   @Type(() => Book)
+  @Exclude()
   book: string;
 
   @Group(['Root', 'Admin', 'Author'])
