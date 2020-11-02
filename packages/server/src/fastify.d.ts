@@ -2,23 +2,23 @@
 import * as _fastify from 'fastify';
 import { JWTSignPayload } from '@/typings';
 
+type MultipartHandler = (
+  field: string,
+  file: any,
+  filename: string,
+  encoding: string,
+  mimetype: string
+) => void;
+
+interface BodyEntry {
+  data: Buffer;
+  filename: string;
+  encoding: string;
+  mimetype: string;
+  limit: false;
+}
+
 declare module 'fastify' {
-  export type MultipartHandler = (
-    field: string,
-    file: any,
-    filename: string,
-    encoding: string,
-    mimetype: string
-  ) => void;
-
-  export interface BodyEntry {
-    data: Buffer;
-    filename: string;
-    encoding: string;
-    mimetype: string;
-    limit: false;
-  }
-
   interface FastifyRequest {
     // eslint-disable-next-line
     user?: JWTSignPayload;

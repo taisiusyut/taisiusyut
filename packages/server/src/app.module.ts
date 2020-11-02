@@ -9,6 +9,7 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
 import { BookModule } from '@/modules/book/book.module';
 import { ChapterModule } from '@/modules/chapter/chapter.module';
+import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
@@ -37,7 +38,13 @@ const configure = (load: ConfigFactory[] = []) =>
   });
 
 @Module({
-  imports: [AuthModule, UserModule, BookModule, ChapterModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    BookModule,
+    ChapterModule,
+    CloudinaryModule
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,

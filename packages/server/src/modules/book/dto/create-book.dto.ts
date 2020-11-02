@@ -1,4 +1,4 @@
-import { IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { Schema$Book, Param$CreateBook } from '@/typings';
 import { IsDescription, IsTags, IsBookName, IsCategory } from './';
@@ -28,6 +28,10 @@ class CreateBook
   @IsOptional()
   @IsDescription()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  cover?: string;
 
   @IsOptional()
   @IsCategory()

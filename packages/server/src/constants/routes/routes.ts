@@ -7,7 +7,8 @@ export const Routes = {
     registration: '/registration',
     refresh_token: '/refresh-token',
     modify_password: '/modify-password',
-    delete_account: '/delete-account'
+    delete_account: '/delete-account',
+    cloudinary_sign: '/cloudinary/sign'
   },
   user: {
     prefix: '/user',

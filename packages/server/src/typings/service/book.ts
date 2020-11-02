@@ -19,6 +19,7 @@ export interface Schema$Book extends Timestamp {
   description: string;
   category: string;
   tags: string[];
+  cover?: string;
   author: Schema$BookAuthor; //ObjectId
   status?: BookStatus;
 }
@@ -28,6 +29,7 @@ export interface Param$CreateBook {
   description?: string;
   category?: string;
   tags?: string[];
+  cover?: string;
 }
 
 export interface Param$UpdateBook {
@@ -36,6 +38,7 @@ export interface Param$UpdateBook {
   description?: string;
   category?: string;
   tags?: string[];
+  cover?: string | null;
 }
 
 export interface Param$GetBooks extends Pagination, Search {

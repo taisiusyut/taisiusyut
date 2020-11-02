@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
 import { IsDescription, IsTags, IsBookName, IsCategory } from './';
@@ -25,6 +25,10 @@ class UpdateBook
   @IsOptional()
   @IsBookName()
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  cover?: string;
 
   @IsOptional()
   @IsCategory()

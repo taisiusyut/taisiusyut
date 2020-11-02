@@ -21,6 +21,9 @@ export class Book implements Record<keyof Schema$Book, unknown> {
   @Prop({ type: String, default: '' })
   description: string;
 
+  @Prop({ type: String })
+  cover: string;
+
   @Prop({ type: String, default: '' })
   category: string;
 

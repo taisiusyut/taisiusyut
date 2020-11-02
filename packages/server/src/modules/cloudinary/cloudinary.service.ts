@@ -1,4 +1,4 @@
-import { from, defer, of, empty, Observable } from 'rxjs';
+import { from, defer, of, EMPTY, Observable } from 'rxjs';
 import {
   concatMap,
   tap,
@@ -96,18 +96,17 @@ export class CloudinaryService {
       : this.upload(payload.path, options);
   }
 
-  remove(payload: RemovePayload | RemovePayload[]): Observable<unknown> {
-    const source$ = from(Array.isArray(payload) ? payload : [payload]);
-    return source$.pipe(
-      mergeMap(payload => {
+  remove(payload: RemovePayload | RemovePayload[]) {
+    const source = Array.isArray(payload) ? payload : [payload];
+    return Promise.all(
+      source.map(async payload => {
         const public_id =
           typeof payload === 'string'
             ? /res.cloudinary.com/.test(payload)
               ? (payload.match(/[^/\\&?]+(?=(.\w{3,4})$)/) || [])[0]
               : undefined
             : payload.public_id;
-
-        return public_id ? cloudinary.v2.uploader.destroy(public_id) : empty();
+        return public_id ? cloudinary.v2.uploader.destroy(public_id) : EMPTY;
       })
     );
   }

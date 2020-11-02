@@ -8,6 +8,9 @@ class Excluded
   extends QueryDto
   implements Partial<Record<keyof Schema$Book, unknown>> {
   @Exclude()
+  cover?: string;
+
+  @Exclude()
   description?: string;
 }
 
