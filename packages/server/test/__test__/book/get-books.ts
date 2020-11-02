@@ -1,3 +1,4 @@
+import { BookService } from '@/modules/book/book.service';
 import {
   Schema$Authenticated,
   Schema$Book,
@@ -75,6 +76,7 @@ const mocks: Mocks = {
 
 export function testGetBooks() {
   beforeAll(async () => {
+    await app.get(BookService).clear();
     await setupRoot();
     await setupUsers();
     for (const author of mocks.authors) {

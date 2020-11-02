@@ -5,7 +5,6 @@ import { testGetBooks } from './get-books';
 import { testGetBook } from './get-book';
 
 describe('BookController (e2e)', () => {
-  //
   describe('(POST) Create Book', testCreateBook);
   describe('(PTCH) Update Book', testUpdateBook);
   describe('(DEL)  Delete Book', testDeleteBook);
