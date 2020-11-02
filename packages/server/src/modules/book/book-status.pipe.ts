@@ -14,9 +14,9 @@ export function BookStatusPipe(roles: UserRole[]): Type<PipeTransform> {
       private readonly request: FastifyRequest
     ) {}
 
-    async transform(value: unknown): Promise<unknown> {
+    async transform(value?: any): Promise<unknown> {
       const { user } = this.request;
-      if (!user.role || !roles.includes(user.role)) {
+      if (!user || !user.role || !roles.includes(user.role)) {
         if (value && typeof value === 'object') {
           delete value['status'];
         }

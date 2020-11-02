@@ -29,8 +29,8 @@ export function registration(dto: Partial<CreateUserDto>): SuperAgentRequest {
 export function loginAsDefaultRoot(): Promise<Response> {
   const configService = app.get<ConfigService>(ConfigService);
   return login({
-    username: configService.get('DEFAULT_USERNAME'),
-    password: configService.get('DEFAULT_PASSWORD')
+    username: configService.get('DEFAULT_USERNAME', ''),
+    password: configService.get('DEFAULT_PASSWORD', '')
   });
 }
 
@@ -100,3 +100,5 @@ export async function createUsers(useGlobal = false) {
 export async function setupUsers() {
   [admin, author, client] = await createUsers(true);
 }
+
+export const getUser = (user: unknown) => global[user as 'root'];

@@ -4,7 +4,8 @@ import {
   login,
   setupRoot,
   setupUsers,
-  createUserAndLogin
+  createUserAndLogin,
+  getUser
 } from '../../service/auth';
 import { createUserDto, deleteUser } from '../../service/user';
 
@@ -24,10 +25,12 @@ export function testDeleteUser() {
   `(
     '$executor can delete $target',
     async ({ executor, target }: Record<string, string>) => {
-      const executeUser: Schema$Authenticated = global[executor];
+      const executeUser: Schema$Authenticated = getUser(executor);
 
       // const self = target === 'self';
-      const key = target.slice(0, 1).toUpperCase() + target.slice(1);
+      const key = (target.slice(0, 1).toUpperCase() +
+        target.slice(1)) as keyof typeof UserRole;
+
       const userDto = createUserDto({ role: UserRole[key] });
       let response = await createUserAndLogin(root.token, {
         role: UserRole[key]
@@ -69,7 +72,7 @@ export function testDeleteUser() {
   `(
     '$executor cannot delete $target',
     async ({ executor, target, status }: Record<string, any>) => {
-      let targetUser = target === 'self' ? global[executor] : global[target];
+      let targetUser = target === 'self' ? getUser(executor) : getUser(target);
       if (executor === 'admin' && target === 'admin') {
         const response = await createUserAndLogin(root.token, {
           role: UserRole.Admin
@@ -77,7 +80,7 @@ export function testDeleteUser() {
         targetUser = response.body;
       }
 
-      await cannotDelete(global[executor], targetUser, status);
+      await cannotDelete(getUser(executor), targetUser, status);
     }
   );
 }

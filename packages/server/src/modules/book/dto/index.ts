@@ -14,7 +14,7 @@ export function IsTags(): ReturnType<typeof applyDecorators> {
       (Array.isArray(arr) ? arr : [arr]).map((s: unknown) =>
         typeof s === 'string' ? s.toLowerCase() : s
       )
-    )
+    ) as MethodDecorator
   );
 }
 

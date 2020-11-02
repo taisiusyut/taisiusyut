@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  InternalServerErrorException
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/modules/user/user.service';
@@ -67,14 +71,16 @@ export class AuthService {
   signJwt(payload: JWTSignPayload): JWTSignResult {
     const now = +new Date();
     const signPayload = formatJWTSignPayload(payload);
+    const minutes = this.configService.get<number>(
+      'JWT_TOKEN_EXPIRES_IN_MINUTES'
+    );
+
+    if (!minutes)
+      throw new InternalServerErrorException('Jwt expires not configured');
+
     return {
       token: this.jwtService.sign(signPayload),
-      expiry: new Date(
-        now +
-          this.configService.get<number>('JWT_TOKEN_EXPIRES_IN_MINUTES') *
-            60 *
-            1000
-      )
+      expiry: new Date(now + minutes * 60 * 1000)
     };
   }
 

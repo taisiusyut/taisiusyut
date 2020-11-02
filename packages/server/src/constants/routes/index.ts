@@ -20,7 +20,7 @@ export const routes = {
     const prefix = paths.prefix;
     for (const key in paths) {
       if (key !== 'prefix') {
-        acc[key] = prefix + paths[key];
+        acc[key as AllKeys] = prefix + paths[key as keyof typeof paths];
       }
     }
     return acc;

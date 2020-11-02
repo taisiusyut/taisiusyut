@@ -61,7 +61,9 @@ export class AcessGuard extends AuthGuard('jwt') {
           if (access.includes('Self') && user_id && user_id === user.user_id)
             return true;
 
-          return access.includes(UserRole[user.role] as AccessType);
+          return (
+            !!user.role && access.includes(UserRole[user.role] as AccessType)
+          );
         }
 
         return false;

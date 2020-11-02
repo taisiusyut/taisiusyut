@@ -37,6 +37,7 @@ declare module 'mongoose' {
 
   interface Model<T extends Document> {
     fuzzySearch(query: string | MongooseFuzzySearchingParams): Promise<T[]>;
+    toJSON(): Record<string, unknown>;
   }
 }
 

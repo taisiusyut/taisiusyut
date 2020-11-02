@@ -37,7 +37,7 @@ export function handleMongoError(
 
 export function throwMongoError(error: unknown): void {
   const [type, message] = handleMongoError(error) || [];
-  if (typeof type !== 'undefined') {
+  if (typeof type !== 'undefined' && message) {
     throw new HttpException(message, HttpStatus[type]);
   }
 }

@@ -22,7 +22,7 @@ export class ExtendedValidationPipe extends ValidationPipe {
   }
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    let role: UserRole;
+    let role: UserRole | undefined = undefined;
 
     if (this.request) {
       role = ['GET', 'PATCH'].includes(this.request.method)

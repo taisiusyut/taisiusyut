@@ -36,20 +36,22 @@ export class MongooseSerializerInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const contextOptions = this.getContextOptions(context);
     const req = context.switchToHttp().getRequest<FastifyRequest>();
-    const role = UserRole[req?.user?.role];
 
     const options = {
       ...this.defaultOptions,
       ...contextOptions
     };
 
+    if (req?.user?.role) {
+      options.groups = [...(options.groups || []), UserRole[req.user.role]];
+    }
+
     return next.handle().pipe(
       map((res: Res) =>
         this.serialize(res, {
           ...options,
-          // remove _id
-          excludePrefixes: ['_'],
-          groups: [...(options.groups || []), role]
+          // remove _id field
+          excludePrefixes: ['_']
         })
       )
     );
@@ -81,7 +83,7 @@ export class MongooseSerializerInterceptor implements NestInterceptor {
   }
 
   transformToPlain(
-    plainOrClass: unknown,
+    plainOrClass: any,
     options: ClassTransformOptions
   ): PlainLiteralObject {
     if (plainOrClass instanceof Model) {

@@ -43,12 +43,16 @@ export class UserController {
 
   @Get(routes.user.get_users)
   getAll(@Query() query: GetUsersDto, @Request() req: FastifyRequest) {
-    const condition: Condition[] = req.user
-      ? [
-          { $or: this.roles[req.user.role] },
-          { $nor: [{ username: req.user.username }] } // Exclude self
-        ]
-      : undefined;
+    let condition: Condition[] = [];
+
+    if (req.user) {
+      condition = [
+        ...condition,
+        { $or: this.roles[req.user.role] },
+        { $nor: [{ username: req.user.username }] } // Exclude self
+      ];
+    }
+
     return this.userService.paginate({
       ...query,
       condition
@@ -62,14 +66,14 @@ export class UserController {
   ) {
     if (
       createUserDto.role === UserRole.Root &&
-      req.user.username !== this.configService.get<string>('DEFAULT_USERNAME')
+      req.user?.username !== this.configService.get<string>('DEFAULT_USERNAME')
     ) {
       throw new ForbiddenException('Root user can only create by default root');
     }
 
     if (
       createUserDto.role === UserRole.Admin &&
-      req.user.role !== UserRole.Root
+      req.user?.role !== UserRole.Root
     ) {
       throw new ForbiddenException('Admin user cannot create by other admin');
     }
@@ -84,16 +88,19 @@ export class UserController {
     @ObjectId('id') id: string,
     @Body(ExtendedValidationPipe) updateUserDto: UpdateUserDto
   ) {
-    const self = id === req.user.user_id;
-    let error: string;
+    const self = id === req.user?.user_id;
+    let error: string | undefined;
 
     if (!self) {
       const targetUser = await this.userService.findOne({ _id: id });
       // Root user should have one only.
       // If the request user is the root user,
       // `self` should be true and will not enter this section
-      if (targetUser.role === UserRole.Root) error = '';
-      if (targetUser.role === UserRole.Admin && req.user.role !== UserRole.Root)
+      if (targetUser?.role === UserRole.Root) error = '';
+      if (
+        targetUser?.role === UserRole.Admin &&
+        req.user?.role !== UserRole.Root
+      )
         error = 'Admin user cannot update by other admin';
     }
 
@@ -106,7 +113,8 @@ export class UserController {
 
   @Delete(routes.user.delete_user)
   async delete(@Request() req: FastifyRequest, @ObjectId('id') id: string) {
-    const self = id === req.user.user_id;
+    const self = id === req.user?.user_id;
+
     if (self) {
       throw new BadRequestException(
         `Should not delete account using this endpoint`
@@ -114,9 +122,9 @@ export class UserController {
     }
 
     const targetUser = await this.userService.findOne({ _id: id });
-    let error: string;
-    if (targetUser.role === UserRole.Root) error = 'Cannot delete root user';
-    if (targetUser.role === UserRole.Admin && req.user.role !== UserRole.Root)
+    let error: string | undefined = undefined;
+    if (targetUser?.role === UserRole.Root) error = 'Cannot delete root user';
+    if (targetUser?.role === UserRole.Admin && req.user?.role !== UserRole.Root)
       error = 'Admin user cannot delete by other admin';
 
     if (error) {

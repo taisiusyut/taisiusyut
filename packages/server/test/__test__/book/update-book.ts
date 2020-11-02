@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BookStatus, Schema$Book } from '@/typings';
 import { UpdateBookDto } from '@/modules/book/dto';
 import { rid } from '@/utils/rid';
-import { setupUsers } from '../../service/auth';
+import { getUser, setupUsers } from '../../service/auth';
 import { updateBook, createBookDto, createBook } from '../../service/book';
 
 const tags = () => [rid(5), rid(5)].map(s => s.toLowerCase());
@@ -31,7 +31,7 @@ export function testUpdateBook() {
     ];
 
     for (const payload of params) {
-      const response = await updateBook(global[user].token, book.id, payload);
+      const response = await updateBook(getUser(user).token, book.id, payload);
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toMatchObject({
@@ -49,7 +49,7 @@ export function testUpdateBook() {
 
   test.each(['client'])('%s cannot update book', async user => {
     const response = await updateBook(
-      global[user].token,
+      getUser(user).token,
       book.id,
       createBookDto()
     );
@@ -74,7 +74,7 @@ export function testUpdateBook() {
 
   test.each(['root', 'admin'])('%s can update book status', async user => {
     const status = BookStatus.Public;
-    const response = await updateBook(global[user].token, book.id, { status });
+    const response = await updateBook(getUser(user).token, book.id, { status });
     expect(response.error).toBeFalse();
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toHaveProperty('status', status);

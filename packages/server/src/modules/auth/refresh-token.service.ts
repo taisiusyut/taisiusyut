@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -32,7 +32,8 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
         { [index]: num },
         {
           expireAfterSeconds:
-            configService.get<number>('REFRESH_TOKEN_EXPIRES_IN_MINUTES') * 60
+            configService.get<number>('REFRESH_TOKEN_EXPIRES_IN_MINUTES', 0) *
+            60
         }
       );
     }
@@ -53,11 +54,17 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
   }
 
   getCookieOpts(): CookieSerializeOptions {
+    const minutes = this.configService.get<number>(
+      'REFRESH_TOKEN_EXPIRES_IN_MINUTES'
+    );
+
+    if (!minutes)
+      throw new InternalServerErrorException(
+        `refresh token expires is not defined`
+      );
+
     return {
-      maxAge:
-        this.configService.get<number>('REFRESH_TOKEN_EXPIRES_IN_MINUTES') *
-        60 *
-        1000,
+      maxAge: minutes * 60 * 1000,
       httpOnly: true,
       secure: false
     };

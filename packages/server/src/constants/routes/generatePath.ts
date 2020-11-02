@@ -1,7 +1,7 @@
 // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/modules/generatePath.js
-import { compile } from 'path-to-regexp';
+import { compile, PathFunction } from 'path-to-regexp';
 
-const cache = {};
+const cache: Record<string, PathFunction> = {};
 const cacheLimit = 10000;
 let cacheCount = 0;
 
@@ -19,5 +19,5 @@ function compilePath(path: string) {
 }
 
 export function generatePath(path = '/', params = {}): string {
-  return path === '/' ? path : compilePath(path)(params, { pretty: true });
+  return path === '/' ? path : compilePath(path)(params);
 }

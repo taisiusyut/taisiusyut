@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, PropOptions, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { InsertedUserSchema, UserRole } from '@/typings';
 import bcrypt from 'bcrypt';
 
@@ -40,7 +40,7 @@ export class User implements InsertedUserSchema {
 
   @Prop({
     type: String,
-    default: function () {
+    default: function (this: PropOptions & User) {
       return this.username;
     }
   })

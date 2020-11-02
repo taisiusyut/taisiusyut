@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { UserRole } from '@/typings';
 import { getUsers } from '../../service/user';
-import { setupRoot, setupUsers } from '../../service/auth';
+import { getUser, setupRoot, setupUsers } from '../../service/auth';
 
 export function testGetUsers() {
   beforeAll(async () => {
@@ -34,7 +34,7 @@ export function testGetUsers() {
   });
 
   test.each(['author', 'client'])('%s get users forbidden', async type => {
-    const response = await getUsers(global[type].token);
+    const response = await getUsers(getUser(type).token);
     expect(response.status).toBe(HttpStatus.FORBIDDEN);
   });
 }

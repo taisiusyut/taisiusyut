@@ -101,18 +101,21 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
       });
   }
 
-  async findOne(query: FilterQuery<T>, projection: any = ''): Promise<T | null> {
+  async findOne(
+    query: FilterQuery<T>,
+    projection: any = ''
+  ): Promise<T | null> {
     // remove undefined fields
     const payload = JSON.parse(JSON.stringify(query));
     return this.model.findOne(payload, projection);
   }
 
   async findAll(query?: FilterQuery<D>): Promise<T[]> {
-    return this.model.find(query).exec();
+    return this.model.find(query || {}).exec();
   }
 
   async paginate(
-    query?: FilterQuery<T> & QueryDto,
+    query: FilterQuery<T> & QueryDto = {},
     { projection, ...options }: PaginateOptions = {}
   ) {
     const {

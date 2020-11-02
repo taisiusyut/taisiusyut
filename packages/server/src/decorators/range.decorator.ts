@@ -8,7 +8,8 @@ export function DateRannge(): ReturnType<typeof applyDecorators> {
         const [$gte, $lte] = payload;
         return { $gte, $lte };
       }
-    })
+      return {};
+    }) as MethodDecorator
   );
 }
 
@@ -19,6 +20,6 @@ export function NumberRannge(): ReturnType<typeof applyDecorators> {
         const [$gte, $lte] = payload.map(Number);
         return { $gte, $lte };
       }
-    })
+    }) as MethodDecorator
   );
 }

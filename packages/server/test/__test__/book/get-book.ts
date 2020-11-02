@@ -5,7 +5,7 @@ import {
   UserRole
 } from '@/typings';
 import { HttpStatus } from '@nestjs/common';
-import { createUserAndLogin, setupUsers } from '../../service/auth';
+import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
 import { createBook, getBook, updateBook } from '../../service/book';
 
 export function testGetBook() {
@@ -36,7 +36,7 @@ export function testGetBook() {
     '%s get book correctly',
     async user => {
       for (const book of books) {
-        const response = await getBook(global[user].token, book.id);
+        const response = await getBook(getUser(user).token, book.id);
         const noPermission = user === 'author' || user === 'client';
 
         if (book.status === BookStatus.Public) {

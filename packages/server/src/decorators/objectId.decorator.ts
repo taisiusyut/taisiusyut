@@ -12,7 +12,10 @@ export const IsObjectId = (value: string): boolean =>
 
 export const ObjectId = createParamDecorator(
   (key = 'id', ctx: ExecutionContext) => {
-    const request: FastifyRequest = ctx.switchToHttp().getRequest();
+    const request: FastifyRequest<Record<
+      string,
+      string
+    >> = ctx.switchToHttp().getRequest();
     const value = request.params[key];
     if (typeof value === 'string' && IsObjectId(value)) {
       return value;

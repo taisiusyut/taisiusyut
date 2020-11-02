@@ -55,7 +55,7 @@ export function testCreateUser() {
     function getTest(createdBy: 'admin' | 'author' | 'client') {
       return async function test(role: string) {
         const user = global[createdBy];
-        const target = UserRole[role as keyof UserRole];
+        const target = UserRole[role as keyof typeof UserRole];
         await expect(
           createUser(user.token, { role: target })
         ).resolves.toMatchObject({

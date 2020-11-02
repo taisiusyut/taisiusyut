@@ -37,7 +37,7 @@ export class BookController {
   create(@Req() req: FastifyRequest, @Body() createBookDto: CreateBookDto) {
     return this.bookService.create({
       ...createBookDto,
-      author: req.user.user_id
+      author: req.user?.user_id
     });
   }
 
@@ -60,7 +60,7 @@ export class BookController {
   @Access('Optional')
   @Get(routes.book.get_book)
   async getBook(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
-    const user: JWTSignPayload = req.user;
+    const user = req.user;
     const query: Parameters<BookService['findOne']>[0] = { _id: id };
 
     if (!user?.role || user.role === UserRole.Client) {
@@ -93,8 +93,8 @@ export class BookController {
     @Query(BookStatusPipe([UserRole.Root, UserRole.Admin, UserRole.Author]))
     query: GetBooksDto
   ) {
-    const user: JWTSignPayload = req.user;
-    const condition: Condition[] = req.user ? [] : undefined;
+    const user = req.user;
+    const condition: Condition[] = [];
 
     if (!user?.role || user.role === UserRole.Client) {
       query.status = BookStatus.Public;

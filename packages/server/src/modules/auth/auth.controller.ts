@@ -10,13 +10,14 @@ import {
   UnauthorizedException,
   ForbiddenException,
   HttpCode,
-  Patch
+  Patch,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants/routes';
-import { JWTSignPayload, Schema$Authenticated, UserRole } from '@/typings';
+import { Schema$Authenticated, UserRole } from '@/typings';
 import { throwMongoError } from '@/utils/mongoose';
 import { IsObjectId } from '@/decorators';
 import { UserService } from '@/modules/user/user.service';
@@ -57,7 +58,9 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
-    const user: JWTSignPayload = req.user;
+    const user = req.user;
+    if (!user) throw new InternalServerErrorException(`User is not defined`);
+
     const signPayload = this.authService.signJwt(user);
     const refreshToken = uuidv4();
 
@@ -168,6 +171,9 @@ export class AuthController {
     @Res() res: FastifyReply,
     @Body() { password }: DeleteAccountDto
   ) {
+    if (!req.user)
+      throw new InternalServerErrorException(`User is not defined`);
+
     await this.validateUser(req.user.username, password);
 
     await this.userService.delete({ _id: req.user.user_id });
@@ -183,6 +189,9 @@ export class AuthController {
     @Res() res: FastifyReply,
     @Body() { password, newPassword }: ModifyPasswordDto
   ) {
+    if (!req.user)
+      throw new InternalServerErrorException(`User is not defined`);
+
     await this.validateUser(req.user.username, password);
 
     await this.userService.update(

@@ -6,6 +6,7 @@ import {
   createUserAndLogin,
   createUsers,
   getToken,
+  getUser,
   login,
   setupRoot,
   setupUsers
@@ -71,7 +72,10 @@ export function testUpdateUser() {
       expect(response.error).toBeFalse();
       expect(response.body).not.toHaveProperty('password');
       if (property !== 'password') {
-        expect(response.body).toHaveProperty(property, user[property]);
+        expect(response.body).toHaveProperty(
+          property,
+          user[property as keyof Schema$User]
+        );
       }
     }
   );
@@ -92,8 +96,8 @@ export function testUpdateUser() {
     async ({ executor, target }: Record<string, any>) => {
       await setupUsers();
       const newEmal = `${rid(8)}@gmail.com`;
-      const executeUser: Schema$Authenticated = global[executor];
-      const targetUser: Schema$Authenticated = global[target];
+      const executeUser = getUser(executor);
+      const targetUser = getUser(target);
       const userId =
         target === 'self' ? executeUser.user.user_id : targetUser.user.user_id;
 
@@ -138,8 +142,8 @@ export function testUpdateUser() {
       '$executor cannot update $target',
       async ({ executor, target }: Record<string, any>) => {
         await forbiddenUpdate(
-          global[executor],
-          target === 'root' ? global[target] : mock[target]
+          getUser(executor),
+          target === 'root' ? getUser(target) : mock[target]
         );
       }
     );
@@ -152,7 +156,7 @@ export function testUpdateUser() {
     `(
       '$executor cannot update other $target',
       async ({ executor, target }: Record<string, any>) => {
-        await forbiddenUpdate(global[executor], mock[target]);
+        await forbiddenUpdate(getUser(executor), mock[target]);
       }
     );
   });

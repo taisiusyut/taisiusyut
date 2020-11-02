@@ -5,7 +5,12 @@ import {
   UserRole,
   BookStatus
 } from '@/typings';
-import { createUserAndLogin, setupRoot, setupUsers } from '../../service/auth';
+import {
+  createUserAndLogin,
+  setupRoot,
+  setupUsers,
+  getUser
+} from '../../service/auth';
 import { createBook, getBooks, updateBook } from '../../service/book';
 
 type BooksStats = Record<keyof typeof BookStatus, number>;
@@ -67,7 +72,8 @@ const mocks: Mocks = {
     .map(s => s.books.stats)
     .reduce((result, stats) => {
       Object.entries(stats).forEach(([key, value]) => {
-        result[key] = result[key] + value;
+        const k = key as keyof BooksStats;
+        result[k] = result[k] + value;
       });
       return result;
     }, bookStats),
@@ -107,7 +113,7 @@ export function testGetBooks() {
   `(
     `global $user get books correctly`,
     async ({ user, length }: Record<string, any>) => {
-      const response = await getBooks(global[user].token, { size: 100 });
+      const response = await getBooks(getUser(user).token, { size: 100 });
       expect(response.body.data).toHaveLength(length);
       expect(response.body.total).toBe(length);
 
@@ -146,12 +152,14 @@ export function testGetBooks() {
       });
     }
   );
+
   test.each(mocks.authors.map((author, index) => [index, author] as const))(
     `author-%s get books by status`,
     async (_index, { auth, books }) => {
       for (const status of bookStatus) {
+        const key = BookStatus[status] as keyof BooksStats;
         const response = await getBooks(auth.token, { size: 100, status });
-        const length = books.stats[BookStatus[status]];
+        const length = books.stats[key];
         expect(response.body.total).toBe(length);
         expect(response.body.data).toHaveLength(length);
         if (response.body.data.length) {
