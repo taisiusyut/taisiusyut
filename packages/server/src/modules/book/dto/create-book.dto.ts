@@ -1,7 +1,7 @@
 import { IsOptional } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { Schema$Book, Param$CreateBook } from '@/typings';
-import { IsDescription, IsTags, IsTitle, IsCategory } from './';
+import { IsDescription, IsTags, IsBookName, IsCategory } from './';
 
 class Excluded implements Partial<Schema$Book> {
   @Exclude()
@@ -43,6 +43,6 @@ export class CreateBookDto
   implements
     Required<Omit<Schema$Book, keyof CreateBook>>,
     Required<Omit<Param$CreateBook, keyof CreateBook>> {
-  @IsTitle()
-  title: string;
+  @IsBookName()
+  name: string;
 }

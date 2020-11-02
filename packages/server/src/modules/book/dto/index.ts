@@ -18,7 +18,7 @@ export function IsTags(): ReturnType<typeof applyDecorators> {
   );
 }
 
-export function IsTitle(): ReturnType<typeof applyDecorators> {
+export function IsBookName(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), IsNotEmpty(), MaxLength(20));
 }
 

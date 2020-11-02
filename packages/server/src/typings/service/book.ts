@@ -15,7 +15,7 @@ export interface Schema$BookAuthor extends Partial<Schema$Author> {
 
 export interface Schema$Book extends Timestamp {
   id: string;
-  title: string;
+  name: string;
   description: string;
   category: string;
   tags: string[];
@@ -24,7 +24,7 @@ export interface Schema$Book extends Timestamp {
 }
 
 export interface Param$CreateBook {
-  title: string;
+  name: string;
   description?: string;
   category?: string;
   tags?: string[];
@@ -32,7 +32,7 @@ export interface Param$CreateBook {
 
 export interface Param$UpdateBook {
   id: string;
-  title?: string;
+  name?: string;
   description?: string;
   category?: string;
   tags?: string[];
@@ -40,7 +40,7 @@ export interface Param$UpdateBook {
 
 export interface Param$GetBooks extends Pagination, Search {
   id?: string;
-  title?: string;
+  name?: string;
   category?: string;
   tags?: string[];
   author?: string; //ObjectId

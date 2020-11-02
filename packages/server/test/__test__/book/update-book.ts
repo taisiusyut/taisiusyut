@@ -19,7 +19,7 @@ export function testUpdateBook() {
 
   test.each(['root', 'admin', 'author'])('%s can update book', async user => {
     const params: UpdateBookDto[] = [
-      { title: rid(10) },
+      { name: rid(10) },
       { category: rid(5) },
       { description: rid(5) },
       { tags: tags() },

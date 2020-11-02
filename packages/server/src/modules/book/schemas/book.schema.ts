@@ -16,7 +16,7 @@ export class Book implements Record<keyof Schema$Book, unknown> {
   id: string;
 
   @Prop({ type: String, required: true, unique: true })
-  title: string;
+  name: string;
 
   @Prop({ type: String, default: '' })
   description: string;

@@ -7,7 +7,7 @@ import qs from 'qs';
 export function createBookDto(
   payload?: Partial<CreateBookDto>
 ): Param$CreateBook {
-  return { title: rid(10), ...payload };
+  return { name: rid(10), ...payload };
 }
 
 export function createBook(token: string, payload?: Partial<CreateBookDto>) {

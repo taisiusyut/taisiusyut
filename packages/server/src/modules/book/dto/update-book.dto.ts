@@ -1,7 +1,7 @@
 import { IsEnum, IsOptional } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
-import { IsDescription, IsTags, IsTitle, IsCategory } from './';
+import { IsDescription, IsTags, IsBookName, IsCategory } from './';
 
 class Excluded implements Partial<Schema$Book> {
   @Exclude()
@@ -23,8 +23,8 @@ class UpdateBook
     Partial<Omit<Schema$Book, keyof Excluded>>,
     Partial<Omit<Param$UpdateBook, keyof Excluded>> {
   @IsOptional()
-  @IsTitle()
-  title?: string;
+  @IsBookName()
+  name?: string;
 
   @IsOptional()
   @IsCategory()
