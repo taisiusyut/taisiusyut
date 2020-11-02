@@ -22,7 +22,14 @@ export const Routes = {
     get_books: '',
     get_book: '/:id',
     update_book: '/:id',
-    delete_book: '/:id',
-    public_book: '/:id/public'
+    delete_book: '/:id'
+  },
+  chapter: {
+    prefix: '/book/:bookID/chapters',
+    create_chapter: '',
+    get_chapters: '',
+    get_chapter: '/:chapterID',
+    update_chapter: '/:chapterID',
+    delete_chapter: '/:chapterID'
   }
 };

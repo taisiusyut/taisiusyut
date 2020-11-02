@@ -2,6 +2,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 
 export * from './auth';
 export * from './book';
+export * from './chapter';
 export * from './user';
 
 export interface ApiResponse<T> {
