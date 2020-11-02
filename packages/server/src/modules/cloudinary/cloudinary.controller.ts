@@ -10,7 +10,7 @@ export class CloudinaryController {
   constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   @Post(routes.cloudinary_sign)
-  @Access('Jwt')
+  @Access('Root', 'Admin', 'Author')
   cloudinarySign() {
     return this.cloudinaryService.sign();
   }

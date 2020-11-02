@@ -12,7 +12,7 @@ import { Author } from './author';
     transform: (_model, raw) => new Book(raw)
   }
 })
-export class Book implements Record<keyof Schema$Book, unknown> {
+export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   id: string;
 
   @Prop({ type: String, required: true, unique: true })
@@ -22,7 +22,7 @@ export class Book implements Record<keyof Schema$Book, unknown> {
   description: string;
 
   @Prop({ type: String })
-  cover: string;
+  cover?: string | null;
 
   @Prop({ type: String, default: '' })
   category: string;

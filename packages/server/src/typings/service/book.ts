@@ -19,7 +19,7 @@ export interface Schema$Book extends Timestamp {
   description: string;
   category: string;
   tags: string[];
-  cover?: string;
+  cover?: string | null;
   author: Schema$BookAuthor; //ObjectId
   status?: BookStatus;
 }

@@ -76,6 +76,7 @@ export async function setupRoot() {
     role: UserRole.Root
   });
   root = response.body;
+
   return root;
 }
 

@@ -28,7 +28,7 @@ class UpdateBook
 
   @IsOptional()
   @IsString()
-  cover?: string;
+  cover?: string | null;
 
   @IsOptional()
   @IsCategory()

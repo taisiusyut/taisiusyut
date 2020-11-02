@@ -27,6 +27,7 @@ const configure = (load: ConfigFactory[] = []) =>
       NODE_ENV: Joi.string()
         .valid('development', 'production', 'test')
         .default('development'),
+      CLOUDINARY_URL: Joi.string().allow('').default(''),
       JWT_SECRET: Joi.string().default('JWT_SECRET'),
       JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number()
         .min(1)
