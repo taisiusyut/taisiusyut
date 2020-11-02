@@ -1,13 +1,13 @@
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from '@/modules/book/dto';
 import { routes } from '@/constants';
-import { Param$CreateBook } from '@/typings';
+import { Param$CreateBook, Category } from '@/typings';
 import { rid } from '@/utils/rid';
 import qs from 'qs';
 
 export function createBookDto(
   payload?: Partial<CreateBookDto>
 ): Param$CreateBook {
-  return { name: rid(10), ...payload };
+  return { name: rid(10), category: Category['仙俠'], ...payload };
 }
 
 export function createBook(token: string, payload?: Partial<CreateBookDto>) {

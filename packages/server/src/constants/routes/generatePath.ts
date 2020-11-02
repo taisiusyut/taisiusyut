@@ -18,6 +18,6 @@ function compilePath(path: string) {
   return generator;
 }
 
-export function generatePath(path = '/', params = {}): string {
+export function generatePath(path = '/', params: any = {}): string {
   return path === '/' ? path : compilePath(path)(params);
 }

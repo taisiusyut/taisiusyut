@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
-import { BookStatus, Schema$Book } from '@/typings';
+import { BookStatus, Category, Schema$Book } from '@/typings';
 import { UpdateBookDto } from '@/modules/book/dto';
 import { rid } from '@/utils/rid';
 import { getUser, setupUsers } from '../../service/auth';
@@ -20,12 +20,12 @@ export function testUpdateBook() {
   test.each(['root', 'admin', 'author'])('%s can update book', async user => {
     const params: UpdateBookDto[] = [
       { name: rid(10) },
-      { category: rid(5) },
+      { category: Category['玄幻'] },
       { description: rid(5) },
       { tags: tags() },
       createBookDto({
         description: rid(10),
-        category: 'ohters',
+        category: Category['奇幻'],
         tags: tags()
       })
     ];

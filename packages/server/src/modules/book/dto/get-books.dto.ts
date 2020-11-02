@@ -1,8 +1,8 @@
 import { Exclude, Transform } from 'class-transformer';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { Schema$Book, Param$GetBooks, BookStatus } from '@/typings';
+import { Category, Schema$Book, Param$GetBooks, BookStatus } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
-import { IsCategory, IsTags, IsBookName } from '.';
+import { IsCategory, IsTags, IsBookName } from './';
 
 class Excluded
   extends QueryDto
@@ -29,7 +29,7 @@ class GetBooks
 
   @IsOptional()
   @IsCategory()
-  category?: string;
+  category?: Category;
 
   @IsString()
   @IsOptional()

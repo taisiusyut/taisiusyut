@@ -1,6 +1,6 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
-import { Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
+import { Category, Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
 import { IsDescription, IsTags, IsBookName, IsCategory } from './';
 
 class Excluded implements Partial<Schema$Book> {
@@ -32,7 +32,7 @@ class UpdateBook
 
   @IsOptional()
   @IsCategory()
-  category?: string;
+  category?: Category;
 
   @IsOptional()
   @IsDescription()

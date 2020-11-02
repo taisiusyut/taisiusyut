@@ -8,6 +8,21 @@ export enum BookStatus {
   Public = 9999
 }
 
+export enum Category {
+  '玄幻' = 1,
+  '奇幻',
+  '武俠',
+  '仙俠',
+  '都市',
+  '現實',
+  '軍事',
+  '歷史',
+  '遊戲',
+  '體育',
+  '科幻',
+  '懸疑'
+}
+
 export interface Schema$BookAuthor extends Partial<Schema$Author> {
   nickname: string;
   description?: string;
@@ -17,7 +32,7 @@ export interface Schema$Book extends Timestamp {
   id: string;
   name: string;
   description: string;
-  category: string;
+  category: Category;
   tags: string[];
   cover?: string | null;
   author: Schema$BookAuthor; //ObjectId
@@ -27,7 +42,7 @@ export interface Schema$Book extends Timestamp {
 export interface Param$CreateBook {
   name: string;
   description?: string;
-  category?: string;
+  category: Category;
   tags?: string[];
   cover?: string;
 }
@@ -36,13 +51,13 @@ export interface Param$UpdateBook {
   id: string;
   name?: string;
   description?: string;
-  category?: string;
+  category?: Category;
   tags?: string[];
   cover?: string | null;
 }
 
 export interface Param$GetBooks extends Pagination, Search {
-  category?: string;
+  category?: Category;
   tags?: string[];
   author?: string; //ObjectId
   createdAt?: DateRange;
@@ -50,7 +65,7 @@ export interface Param$GetBooks extends Pagination, Search {
 }
 
 export interface Schema$Category {
-  category: string;
+  category: Category;
   total: number;
 }
 

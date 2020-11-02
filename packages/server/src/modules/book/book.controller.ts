@@ -15,7 +15,7 @@ import { Access } from '@/guard/access.guard';
 import { routes } from '@/constants';
 import { BookService } from './book.service';
 import { ObjectId } from '@/decorators';
-import { BookStatus, JWTSignPayload, UserRole } from '@/typings';
+import { BookStatus, UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { BookStatusPipe } from './book-status.pipe';

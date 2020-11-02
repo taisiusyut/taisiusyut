@@ -30,7 +30,6 @@ import paginate from 'mongoose-paginate-v2';
           const fields: MongooseFuzzySearchingField<Schema$Book>[] = [
             { name: 'name' },
             { name: 'author' },
-            { name: 'category' },
             'tags' // FIXME: wait for mongoose-fuzzy-searching
           ];
 

@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/user.schema';
-import { Schema$Book, BookStatus } from '@/typings';
+import { Schema$Book, BookStatus, Category } from '@/typings';
 import { Group } from '@/decorators';
 import { Author } from './author';
 
@@ -24,8 +24,8 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Prop({ type: String })
   cover?: string | null;
 
-  @Prop({ type: String, default: '' })
-  category: string;
+  @Prop({ type: Number, required: true })
+  category: Category;
 
   @Prop({ type: [String], lowercase: true, default: [] })
   tags: string[];

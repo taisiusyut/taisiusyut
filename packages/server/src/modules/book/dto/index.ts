@@ -1,6 +1,13 @@
+import { Category } from '@/typings';
 import { applyDecorators } from '@nestjs/common';
 import { Transform } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength
+} from 'class-validator';
 
 export function IsDescription(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), MaxLength(200));
@@ -23,7 +30,10 @@ export function IsBookName(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsCategory(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), IsNotEmpty());
+  return applyDecorators(
+    IsEnum(Category),
+    Transform(Number) as MethodDecorator
+  );
 }
 
 export * from './create-book.dto';
