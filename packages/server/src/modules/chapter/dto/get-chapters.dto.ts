@@ -8,7 +8,9 @@ import {
 } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
 
-class Excluded extends QueryDto implements Partial<Schema$Chapter> {
+class Excluded
+  extends QueryDto
+  implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Exclude()
   id?: undefined;
 
@@ -20,12 +22,6 @@ class Excluded extends QueryDto implements Partial<Schema$Chapter> {
 
   @Exclude()
   content?: undefined;
-
-  @Exclude()
-  createdAt?: undefined;
-
-  @Exclude()
-  updatedAt?: undefined;
 }
 
 class GetChapters

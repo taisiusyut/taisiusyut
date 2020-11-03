@@ -21,9 +21,11 @@ import { testModifyPassword } from './modify-password';
 describe('AuthController (e2e)', () => {
   const configService = app.get<ConfigService>(ConfigService);
   const jwtExpires =
-    configService.get<number>('JWT_TOKEN_EXPIRES_IN_MINUTES') * 60 * 1000;
+    configService.get<number>('JWT_TOKEN_EXPIRES_IN_MINUTES', 1) * 60 * 1000;
   const refreshTokenExpires =
-    configService.get<number>('REFRESH_TOKEN_EXPIRES_IN_MINUTES') * 60 * 1000;
+    configService.get<number>('REFRESH_TOKEN_EXPIRES_IN_MINUTES', 1) *
+    60 *
+    1000;
 
   const delay = (ms: number) => new Promise(_ => setTimeout(_, ms));
 

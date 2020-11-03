@@ -33,7 +33,7 @@ export function testModifyPassword() {
   test.each(['root', 'admin', 'author', 'client'])(
     '%s can modify password',
     async type => {
-      const account: CreateUserDto = mock[type];
+      const account: CreateUserDto = mock[type as keyof typeof mock];
       let response = await createUserAndLogin(
         (auth.root || defaultRoot).token,
         account

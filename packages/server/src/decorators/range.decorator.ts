@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { Transform } from 'class-transformer';
 
-export function DateRannge(): ReturnType<typeof applyDecorators> {
+export function DateRange(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
     Transform((payload: [string, string]) => {
       if (Array.isArray(payload)) {

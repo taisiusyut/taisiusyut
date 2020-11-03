@@ -23,7 +23,7 @@ import {
   Order,
   Timestamp
 } from '@/typings';
-import { DateRannge } from '@/decorators';
+import { DateRange } from '@/decorators';
 
 export type Condition = Record<string, unknown>;
 
@@ -59,12 +59,12 @@ class Base implements QuerySchema {
 
   @IsOptional()
   @ValidateNested()
-  @DateRannge()
+  @DateRange()
   createdAt?: MongoDateRange;
 
   @IsOptional()
   @ValidateNested()
-  @DateRannge()
+  @DateRange()
   updatedAt?: MongoDateRange;
 }
 

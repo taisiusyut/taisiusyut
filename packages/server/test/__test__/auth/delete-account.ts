@@ -30,7 +30,7 @@ export function testDeleteAccount() {
   test.each(['root', 'admin', 'author', 'client'])(
     '%s can delete account',
     async type => {
-      const account = mock[type];
+      const account = mock[type as keyof typeof mock];
       let response = await createUserAndLogin(
         (auth.root || defaultRoot).token,
         account
