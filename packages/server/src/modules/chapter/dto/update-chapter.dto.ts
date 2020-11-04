@@ -12,6 +12,7 @@ import {
   Param$UpdateChapter,
   Schema$Chapter
 } from '@/typings';
+import { Group } from '@/decorators';
 
 class Excluded implements Partial<Schema$Chapter> {
   @Exclude()
@@ -47,7 +48,8 @@ class UpdateChapter
 
   @IsOptional()
   @IsEnum(ChapterType)
-  @Transform(Number)
+  @Transform(value => value && Number(value))
+  @Group(['Root', 'Admin'])
   status?: ChapterStatus;
 
   @IsOptional()

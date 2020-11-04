@@ -16,6 +16,7 @@ export enum ChapterType {
 export interface Schema$ChapterBook extends Partial<Schema$Book> {}
 
 export interface Schema$Chapter extends Timestamp {
+  id: string;
   name: string;
   content: string;
   status: ChapterStatus;
