@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
 import { ChapterStatus, Schema$Book } from '@/typings';
 import { createBook } from '../../service/book';
@@ -26,6 +27,18 @@ export function testCreateChapter() {
         ...payload,
         status: ChapterStatus.Private
       });
+    }
+  });
+
+  test('chapter cannot be create with unknown bookID', async () => {
+    const ids = ['123', new ObjectId().toHexString(), null];
+    for (const id of ids) {
+      const response = await createChapter(
+        author.token,
+        String(id),
+        createChapterDto()
+      );
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
   });
 }
