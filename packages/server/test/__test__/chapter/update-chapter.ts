@@ -75,6 +75,7 @@ export function testUpdateChapter() {
     property    | value
     ${'status'} | ${ChapterStatus.Public}
     ${'book'}   | ${new ObjectId().toHexString()}
+    ${'author'} | ${new ObjectId().toHexString()}
   `(
     '$property will not be update by author',
     async ({ property, value }: Record<string, string>) => {
@@ -107,7 +108,7 @@ export function testUpdateChapter() {
     }
   );
 
-  test("author cannot update other author's chapter", async () => {
+  test("author cannot update other author's book chapter", async () => {
     const token = await getToken(
       createUserAndLogin(root.token, {
         role: UserRole.Author
@@ -119,6 +120,6 @@ export function testUpdateChapter() {
       chapter.id,
       createChapterDto()
     );
-    expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
   });
 }
