@@ -21,7 +21,6 @@ export class Chapter implements Record<keyof Schema$Chapter, unknown> {
   content: string;
 
   @Prop({
-    select: false,
     type: Types.ObjectId,
     ref: Book.name,
     required: true,

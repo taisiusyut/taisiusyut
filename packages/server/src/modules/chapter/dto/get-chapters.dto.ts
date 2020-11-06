@@ -15,6 +15,9 @@ class Excluded
   id?: undefined;
 
   @Exclude()
+  book?: undefined;
+
+  @Exclude()
   bookID?: undefined;
 
   @Exclude()
