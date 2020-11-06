@@ -14,10 +14,10 @@ import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
 import { AccessPipe } from '@/pipe';
 import { BookService } from '@/modules/book/book.service';
-import { ChapterService } from './chapter.service';
-import { CreateChapterDto, UpdateChapterDto } from './dto';
 import { UserRole } from '@/typings';
+import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
+import { CreateChapterDto, UpdateChapterDto } from './dto';
 
 @Controller(routes.chapter.prefix)
 export class ChapterController {

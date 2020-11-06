@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
-import { ChapterStatus, Schema$Book } from '@/typings';
+import { BookStatus, ChapterStatus, Schema$Book } from '@/typings';
 import { createBook } from '../../service/book';
-import { setupUsers } from '../../service/auth';
+import { getUser, setupUsers } from '../../service/auth';
 import { createChapter, createChapterDto } from '../../service/chapter';
 
 export function testCreateChapter() {
@@ -32,7 +32,7 @@ export function testCreateChapter() {
     }
   });
 
-  test('chapter cannot be create with unknown bookID', async () => {
+  test('chapter cannot create with unknown bookID', async () => {
     const ids = ['123', new ObjectId().toHexString(), null];
     for (const id of ids) {
       const response = await createChapter(
@@ -43,4 +43,34 @@ export function testCreateChapter() {
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
   });
+
+  test.each(['root', 'admin', 'client'])(
+    `%s cannot create chapter`,
+    async user => {
+      const response = await createChapter(getUser(user).token, book.id);
+      expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    }
+  );
+
+  test.each`
+    property    | value
+    ${'status'} | ${BookStatus.Public}
+    ${'book'}   | ${new ObjectId().toHexString()}
+    ${'bookID'} | ${new ObjectId().toHexString()}
+    ${'author'} | ${new ObjectId().toHexString()}
+  `(
+    '$property will not exist after the chapter created',
+    async ({ property, value }: Record<string, string>) => {
+      const response = await createChapter(
+        author.token,
+        book.id,
+        createChapterDto({
+          [property]: value
+        })
+      );
+      expect(response.error).toBeFalse();
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body).not.toHaveProperty(property, value);
+    }
+  );
 }
