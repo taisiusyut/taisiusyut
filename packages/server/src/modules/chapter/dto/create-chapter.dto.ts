@@ -10,6 +10,9 @@ class Excluded implements Partial<Schema$Chapter> {
   status?: undefined;
 
   @Exclude()
+  author?: undefined;
+
+  @Exclude()
   book?: undefined;
 
   @Exclude()

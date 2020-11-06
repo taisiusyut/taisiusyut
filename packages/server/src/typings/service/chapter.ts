@@ -22,7 +22,8 @@ export interface Schema$Chapter extends Timestamp {
   status: ChapterStatus;
   type: ChapterType;
   price: number;
-  book: unknown;
+  book: string;
+  author: string;
 }
 
 export interface Param$CreateChapter {

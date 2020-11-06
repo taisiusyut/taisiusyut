@@ -3,16 +3,17 @@ import {
   Post,
   Body,
   BadRequestException,
-  Patch
+  Patch,
+  Req
 } from '@nestjs/common';
+import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
 import { AccessPipe } from '@/pipe';
+import { BookService } from '@/modules/book/book.service';
 import { ChapterService } from './chapter.service';
-import { CreateChapterDto } from './dto/create-chapter.dto';
-import { BookService } from '../book/book.service';
-import { UpdateChapterDto } from './dto';
+import { CreateChapterDto, UpdateChapterDto } from './dto';
 
 @Controller(routes.chapter.prefix)
 export class ChapterController {
@@ -24,13 +25,19 @@ export class ChapterController {
   @Access('Author')
   @Post(routes.chapter.create_chapter)
   async create(
+    @Req() req: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @Body() createChapterDto: CreateChapterDto
   ) {
-    const book = await this.bookService.findOne({ _id: bookID });
+    const author = req.user?.user_id;
+    const book = await this.bookService.findOne({ _id: bookID, author });
 
     if (book) {
-      return this.chapterService.create({ ...createChapterDto, book: bookID });
+      return this.chapterService.create({
+        ...createChapterDto,
+        book: bookID,
+        author
+      });
     }
 
     throw new BadRequestException('Book not found');

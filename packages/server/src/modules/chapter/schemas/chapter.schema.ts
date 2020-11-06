@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { Type, Exclude } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from '@/modules/user/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
 import { Group } from '@/decorators';
@@ -22,9 +23,17 @@ export class Chapter implements Record<keyof Schema$Chapter, unknown> {
 
   @Prop({
     type: Types.ObjectId,
+    ref: User.name,
+    required: true
+  })
+  @Type(() => User)
+  @Exclude()
+  author: string;
+
+  @Prop({
+    type: Types.ObjectId,
     ref: Book.name,
-    required: true,
-    autopopulate: false
+    required: true
   })
   @Type(() => Book)
   @Exclude()

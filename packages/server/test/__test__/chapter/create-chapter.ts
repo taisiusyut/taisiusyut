@@ -23,6 +23,8 @@ export function testCreateChapter() {
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).not.toHaveProperty('book');
+      expect(response.body).not.toHaveProperty('bookID');
+      expect(response.body).not.toHaveProperty('author');
       expect(response.body).toMatchObject({
         ...payload,
         status: ChapterStatus.Private
