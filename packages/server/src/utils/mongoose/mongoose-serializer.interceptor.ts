@@ -13,8 +13,7 @@ import {
   CallHandler,
   Inject,
   Optional,
-  Type,
-  Scope
+  Type
 } from '@nestjs/common';
 import { CLASS_SERIALIZER_OPTIONS } from '@nestjs/common/serializer/class-serializer.constants';
 import { ClassTransformOptions } from '@nestjs/common/interfaces/external/class-transform-options.interface';
@@ -26,7 +25,7 @@ type Res =
   | Array<PlainLiteralObject>
   | PaginateResult<unknown>;
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class MongooseSerializerInterceptor implements NestInterceptor {
   constructor(
     @Inject(Reflector) protected readonly reflector: Reflector,

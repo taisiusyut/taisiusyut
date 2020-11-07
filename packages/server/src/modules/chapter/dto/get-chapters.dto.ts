@@ -1,5 +1,5 @@
 import { Exclude, Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -13,12 +13,6 @@ class Excluded
   implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Exclude()
   id?: undefined;
-
-  @Exclude()
-  author?: undefined;
-
-  @Exclude()
-  book?: undefined;
 
   @Exclude()
   bookID?: undefined;
@@ -35,6 +29,14 @@ class GetChapters
   implements
     Partial<Omit<Param$GetChapters, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
+  @IsOptional()
+  @IsString()
+  author?: string;
+  
+  @IsOptional()
+  @IsString()
+  book?: string;
+
   @IsOptional()
   @IsEnum(ChapterType)
   @Transform(Number)

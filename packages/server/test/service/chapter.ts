@@ -54,9 +54,13 @@ export function deleteChapter(
     .send();
 }
 
-export function getChapters(token: string, query: GetChaptersDto = {}) {
+export function getChapters(
+  token: string,
+  bookID: string,
+  query: GetChaptersDto = {}
+) {
   return request
-    .get(routes.get_chapters)
+    .get(routes.get_chapters.generatePath({ bookID }))
     .set('Authorization', `bearer ${token}`)
     .query(qs.stringify(query));
 }

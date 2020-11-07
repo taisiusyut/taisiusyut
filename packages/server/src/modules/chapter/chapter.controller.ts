@@ -1,9 +1,11 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
   Patch,
   Req,
+  Query,
   BadRequestException,
   InternalServerErrorException
 } from '@nestjs/common';
@@ -14,13 +16,25 @@ import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
 import { AccessPipe } from '@/pipe';
 import { BookService } from '@/modules/book/book.service';
-import { UserRole } from '@/typings';
+import { ChapterStatus, ChapterType, UserRole } from '@/typings';
+import { Condition } from '@/utils/mongoose';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
-import { CreateChapterDto, UpdateChapterDto } from './dto';
+import { CreateChapterDto, GetChaptersDto, UpdateChapterDto } from './dto';
+
+const allChapterStatus = Object.values(ChapterStatus).filter(
+  (v): v is ChapterStatus => typeof v === 'number'
+);
+
+const allChapterType = Object.values(ChapterType).filter(
+  (v): v is ChapterType => typeof v === 'number'
+);
 
 @Controller(routes.chapter.prefix)
 export class ChapterController {
+  readonly chapterStatus = allChapterStatus.map(status => ({ status }));
+  readonly chapterTypes = allChapterType.map(type => ({ type }));
+
   constructor(
     private readonly chapterService: ChapterService,
     private readonly bookService: BookService
@@ -80,6 +94,40 @@ export class ChapterController {
 
     return this.chapterService.update(query, updateChapterDto, {
       upsert: false
+    });
+  }
+
+  @Access('Optional')
+  @Get(routes.chapter.get_chapters)
+  getChapters(
+    @Req() req: FastifyRequest,
+    @ObjectId('bookID') bookID: string,
+    @Query(AccessPipe) query: GetChaptersDto
+  ) {
+    const user = req.user;
+    const condition: Condition[] = [];
+
+    if (!user?.role || user.role === UserRole.Client) {
+      query.status = ChapterStatus.Public;
+    } else if (user.role === UserRole.Author) {
+      // make sure author cannot get other authors non-public chapters
+      if (query.status) {
+        query.author = user.user_id;
+      } else {
+        condition.push({
+          $or: this.chapterStatus.map(payload =>
+            payload.status === ChapterStatus.Public
+              ? payload
+              : { ...payload, author: user.user_id }
+          )
+        });
+      }
+    }
+
+    return this.chapterService.paginate({
+      ...query,
+      book: bookID,
+      condition
     });
   }
 }

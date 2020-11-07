@@ -15,3 +15,6 @@ export const AuthorOnly = (options?: ExposeOptions) =>
 
 export const ClientOnly = (options?: ExposeOptions) =>
   Expose({ ...options, groups: [UserRole[UserRole.Client]] });
+
+export const GET_CHAPTER = 'GET_CHAPTER';
+export const GetChpaterOnly = () => Expose({ groups: [GET_CHAPTER] });
