@@ -7,7 +7,7 @@ export function testCreateUser() {
   beforeAll(async () => {
     await setupRoot();
   });
-  test.each([
+  test.only.each([
     ['admin', { role: UserRole.Admin }],
     ['author', { role: UserRole.Author }],
     ['client', { role: UserRole.Client }]

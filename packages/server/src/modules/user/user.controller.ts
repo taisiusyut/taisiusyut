@@ -1,3 +1,4 @@
+import { FastifyRequest } from 'fastify';
 import {
   Controller,
   Post,
@@ -11,15 +12,14 @@ import {
   BadRequestException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
-import { UserService } from './user.service';
-import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
 import { ObjectId } from '@/decorators';
-import { ExtendedValidationPipe } from '@/pipe/validation.pipe';
+import { AccessPipe } from '@/pipe';
 import { UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
+import { UserService } from './user.service';
+import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
 
 @Access('Root', 'Admin')
 @Controller(routes.user.prefix)
@@ -62,7 +62,7 @@ export class UserController {
   @Post(routes.user.create_user)
   create(
     @Request() req: FastifyRequest,
-    @Body(ExtendedValidationPipe) createUserDto: CreateUserDto
+    @Body(AccessPipe) createUserDto: CreateUserDto
   ) {
     if (
       createUserDto.role === UserRole.Root &&
@@ -86,7 +86,7 @@ export class UserController {
   async update(
     @Request() req: FastifyRequest,
     @ObjectId('id') id: string,
-    @Body(ExtendedValidationPipe) updateUserDto: UpdateUserDto
+    @Body(AccessPipe) updateUserDto: UpdateUserDto
   ) {
     const self = id === req.user?.user_id;
     let error: string | undefined;

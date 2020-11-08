@@ -1,10 +1,11 @@
+import { FastifyServerOptions } from 'fastify';
 import {
   FastifyAdapter,
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
-import { FastifyServerOptions } from 'fastify';
+import { ValidationPipe } from '@nestjs/common';
 import { MongooseExceptionFilter } from '@/utils/mongoose';
-import { ExtendedValidationPipe } from '@/pipe';
+import { UserRole } from '@/typings';
 import helmet from 'fastify-helmet';
 import rateLimit from 'fastify-rate-limit';
 import compression from 'fastify-compress';
@@ -18,8 +19,17 @@ export const fastifyAdapter = () =>
     querystringParser: qs.parse as FastifyServerOptions['querystringParser']
   });
 
+const groups = Object.values(UserRole).filter(
+  (k): k is string => typeof k === 'string'
+);
+
 export function setupApp(app: NestFastifyApplication): void {
-  app.useGlobalPipes(new ExtendedValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { groups } // for access.pipe.ts
+    })
+  );
   app.useGlobalFilters(new MongooseExceptionFilter());
 
   app.register(compression, { encodings: ['gzip', 'deflate'] });

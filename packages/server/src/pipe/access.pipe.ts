@@ -16,11 +16,14 @@ import { UserRole } from '@/typings';
 export class AccessPipe implements PipeTransform {
   constructor(
     @Inject(REQUEST)
-    private readonly request: FastifyRequest
+    private readonly request: FastifyRequest<any>
   ) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    const role = this.request.user?.role;
+    // for user controller
+    const role = ['GET', 'PATCH'].includes(this.request.method)
+      ? this.request.user?.role
+      : this.request.body?.role;
 
     if (!role) {
       throw new UnauthorizedException();
