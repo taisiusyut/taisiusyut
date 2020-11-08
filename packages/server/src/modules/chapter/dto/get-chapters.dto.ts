@@ -1,5 +1,5 @@
 import { Exclude, Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -7,6 +7,8 @@ import {
   Param$GetChapters
 } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
+import { IsChapterStatus, IsChapterType, IsPrice } from './';
+import { Group } from '@/decorators';
 
 class Excluded
   extends QueryDto
@@ -32,24 +34,22 @@ class GetChapters
   @IsOptional()
   @IsString()
   author?: string;
-  
+
   @IsOptional()
   @IsString()
   book?: string;
 
   @IsOptional()
-  @IsEnum(ChapterType)
-  @Transform(Number)
+  @IsChapterStatus()
+  @Group(['Root', 'Admin', 'Author'])
   status?: ChapterStatus;
 
   @IsOptional()
-  @IsEnum(ChapterType)
-  @Transform(Number)
+  @IsChapterType()
   type?: ChapterType;
 
-  @IsNumber()
   @IsOptional()
-  @Transform(Number)
+  @IsPrice()
   price?: number;
 }
 

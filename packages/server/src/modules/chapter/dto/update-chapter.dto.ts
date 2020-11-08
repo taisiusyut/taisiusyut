@@ -1,11 +1,5 @@
-import { Exclude, Transform } from 'class-transformer';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString
-} from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { IsOptional } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -13,6 +7,13 @@ import {
   Schema$Chapter
 } from '@/typings';
 import { Group } from '@/decorators';
+import {
+  IsChapterName,
+  IsChapterStatus,
+  IsChapterType,
+  IsContent,
+  IsPrice
+} from './';
 
 class Excluded implements Partial<Schema$Chapter> {
   @Exclude()
@@ -42,30 +43,25 @@ class UpdateChapter
   implements
     Partial<Omit<Param$UpdateChapter, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
-  @IsString()
-  @IsNotEmpty()
   @IsOptional()
+  @IsChapterName()
   name?: string;
 
-  @IsString()
-  @IsNotEmpty()
   @IsOptional()
+  @IsContent()
   content?: string;
 
   @IsOptional()
-  @IsEnum(ChapterType)
-  @Transform(value => value && Number(value))
+  @IsChapterStatus()
   @Group(['Root', 'Admin'])
   status?: ChapterStatus;
 
   @IsOptional()
-  @IsEnum(ChapterType)
-  @Transform(Number)
+  @IsChapterType()
   type?: ChapterType;
 
-  @IsNumber()
   @IsOptional()
-  @Transform(Number)
+  @IsPrice()
   price?: number;
 }
 

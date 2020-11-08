@@ -1,4 +1,4 @@
-import { IsString, IsEnum } from 'class-validator';
+import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
 import { Transform, Exclude } from 'class-transformer';
 import {
   UserRole,
@@ -17,14 +17,7 @@ class Excluded implements Partial<Schema$RefreshToken> {
   updatedAt?: string;
 }
 
-// class CreateRefreshToken
-//   extends Excluded
-//   implements
-//     Partial<Omit<Param$CreateRefreshToken, keyof Excluded>>,
-//     Partial<Omit<Schema$RefreshToken, keyof Excluded>> {}
-
 export class CreateRefreshTokenDto
-  // extends CreateRefreshToken
   implements
     Required<Omit<Param$CreateRefreshToken, keyof Excluded>>,
     Required<Omit<Schema$RefreshToken, keyof Excluded>> {
@@ -32,15 +25,18 @@ export class CreateRefreshTokenDto
   user_id: string;
 
   @IsString()
+  @IsNotEmpty()
   username: string;
 
   @IsString()
+  @IsNotEmpty()
   nickname: string;
 
   @IsEnum(UserRole)
-  @Transform(Number)
+  @Transform(value => value && Number(value))
   role: UserRole;
 
   @IsString()
+  @IsNotEmpty()
   refreshToken: string;
 }

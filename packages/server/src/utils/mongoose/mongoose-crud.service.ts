@@ -39,12 +39,12 @@ interface MongoDateRange {
 class Base implements QuerySchema {
   @IsNumber()
   @IsOptional()
-  @Transform(Number)
+  @Transform(value => value && Number(value))
   page?: number;
 
   @IsNumber()
   @IsOptional()
-  @Transform(Number)
+  @Transform(value => value && Number(value))
   size?: number;
 
   @IsOptional()

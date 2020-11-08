@@ -1,7 +1,8 @@
-import { Exclude, Transform } from 'class-transformer';
-import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { IsEmail, IsOptional } from 'class-validator';
 import { UserRole, InsertedUserSchema, InsertedCreateuser } from '@/typings';
 import { IsUsername, IsPassword, AuthorOnly } from '@/decorators';
+import { IsNickname, IsDescription, IsUserRole } from './';
 
 class Excluded implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   @Exclude()
@@ -19,18 +20,17 @@ class CreateUser
   implements
     Partial<Omit<InsertedCreateuser, keyof Excluded>>,
     Partial<Omit<InsertedUserSchema, keyof Excluded>> {
-  @IsString()
   @IsOptional()
+  @IsNickname()
   nickname?: string;
 
-  @IsString()
   @IsOptional()
+  @IsDescription()
   @AuthorOnly()
   description?: string;
 
   @IsOptional()
-  @IsEnum(UserRole)
-  @Transform(Number)
+  @IsUserRole()
   role?: UserRole;
 }
 

@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { Schema$RefreshToken, Param$UpdateRefreshToken } from '@/typings';
 
@@ -31,5 +31,6 @@ export class UpdateRefreshTokenDto
     Required<Omit<Schema$RefreshToken, keyof Excluded>>,
     Required<Omit<Param$UpdateRefreshToken, keyof Excluded>> {
   @IsString()
+  @IsNotEmpty()
   refreshToken: string;
 }

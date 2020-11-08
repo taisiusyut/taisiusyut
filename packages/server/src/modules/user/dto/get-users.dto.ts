@@ -1,7 +1,8 @@
-import { Exclude, Transform } from 'class-transformer';
-import { IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Exclude } from 'class-transformer';
+import { IsEmail, IsOptional } from 'class-validator';
 import { UserRole, InsertedUserSchema, Param$GetUsers } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
+import { IsNickname, IsUserRole } from './';
 
 class Excluded
   extends QueryDto
@@ -24,17 +25,16 @@ class GetUsers
   implements
     Partial<Omit<Param$GetUsers, keyof Excluded>>,
     Partial<Omit<InsertedUserSchema, keyof Excluded>> {
-  @IsEmail()
   @IsOptional()
+  @IsEmail()
   email: string;
 
-  @IsString()
   @IsOptional()
+  @IsNickname()
   nickname?: string;
 
   @IsOptional()
-  @IsEnum(UserRole)
-  @Transform(Number)
+  @IsUserRole()
   role?: UserRole;
 }
 

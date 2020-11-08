@@ -44,7 +44,7 @@ class UpdateBook
 
   @IsOptional()
   @IsEnum(BookStatus)
-  @Transform(Number)
+  @Transform(value => value && Number(value))
   status?: BookStatus;
 }
 

@@ -1,6 +1,6 @@
-import { Exclude, Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Exclude } from 'class-transformer';
 import { ChapterType, Param$CreateChapter, Schema$Chapter } from '@/typings';
+import { IsChapterName, IsContent, IsChapterType, IsPrice } from './';
 
 class Excluded implements Partial<Schema$Chapter> {
   @Exclude()
@@ -30,20 +30,16 @@ class CreateChapter
   implements
     Partial<Omit<Param$CreateChapter, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
-  @IsString()
-  @IsNotEmpty()
+  @IsChapterName()
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsContent()
   content: string;
 
-  @IsEnum(ChapterType)
-  @Transform(Number)
+  @IsChapterType()
   type: ChapterType;
 
-  @IsNumber()
-  @Transform(Number)
+  @IsPrice()
   price: number;
 }
 
