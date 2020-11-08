@@ -111,7 +111,7 @@ export function testGetBooks() {
     ${'author'} | ${mocks.stats.Public}
     ${'client'} | ${mocks.stats.Public}
   `(
-    `global $user get books correctly`,
+    `global $user access books correctly`,
     async ({ user, length }: Record<string, any>) => {
       const response = await getBooks(getUser(user).token, { size: 100 });
       expect(response.body.data).toHaveLength(length);
@@ -141,7 +141,7 @@ export function testGetBooks() {
   );
 
   test.each(mocks.authors.map((author, index) => [index, author] as const))(
-    `author-%s get all public books and his/her books`,
+    `author-%s can access all public books and his/her books`,
     async (_index, { auth, books }) => {
       const response = await getBooks(auth.token, { size: 100 });
       const length = mocks.stats.Public - books.stats.Public + books.total;
@@ -154,7 +154,7 @@ export function testGetBooks() {
   );
 
   test.each(mocks.authors.map((author, index) => [index, author] as const))(
-    `author-%s get books by status`,
+    `author-%s can access books by status`,
     async (_index, { auth, books }) => {
       for (const status of bookStatus) {
         const key = BookStatus[status] as keyof BooksStats;
@@ -170,7 +170,7 @@ export function testGetBooks() {
       }
     }
   );
-  test(`client cannot get books by status`, async () => {
+  test(`client cannot access books by status`, async () => {
     for (const status of bookStatus) {
       if (status !== BookStatus.Public) {
         const response = await getBooks(client.token, { status });

@@ -33,7 +33,7 @@ export function testGetBook() {
   });
 
   test.each(['root', 'admin', 'author', 'client'])(
-    '%s get book correctly',
+    '%s access book correctly',
     async user => {
       for (const book of books) {
         const response = await getBook(getUser(user).token, book.id);
@@ -63,7 +63,7 @@ export function testGetBook() {
     }
   );
 
-  test(`author can get his/her non-public book`, async () => {
+  test(`author can access his/her non-public book`, async () => {
     for (const book of books) {
       if (book.status !== BookStatus.Public) {
         const response = await getBook(mockAuthor.token, book.id);

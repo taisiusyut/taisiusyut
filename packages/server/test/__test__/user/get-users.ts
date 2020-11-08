@@ -33,8 +33,11 @@ export function testGetUsers() {
     ]);
   });
 
-  test.each(['author', 'client'])('%s get users forbidden', async type => {
-    const response = await getUsers(getUser(type).token);
-    expect(response.status).toBe(HttpStatus.FORBIDDEN);
-  });
+  test.each(['author', 'client'])(
+    '%s cannot aceess other users',
+    async type => {
+      const response = await getUsers(getUser(type).token);
+      expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    }
+  );
 }

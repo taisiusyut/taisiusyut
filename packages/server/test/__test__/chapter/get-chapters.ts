@@ -128,7 +128,7 @@ export function testGetChapters() {
   });
 
   test.each(['root', 'admin', 'author', 'client'])(
-    `global %s get books correctly`,
+    `global %s can access chapters correctly`,
     async user => {
       for (const { book, chapters, stats } of mocks.authors) {
         const response = await getChapters(getUser(user).token, book.id, {
@@ -157,7 +157,7 @@ export function testGetChapters() {
   );
 
   test.each(stub.map((_, index) => index))(
-    `author-%s get all public chapeters and his/her chapeters`,
+    `author-%s can access all public chapeters and his/her chapeters`,
     async index => {
       const { auth } = mocks.authors[index];
       for (let i = 0; i < mocks.authors.length; i++) {
@@ -177,7 +177,7 @@ export function testGetChapters() {
   );
 
   test.each(stub.map((_, index) => index))(
-    `author-%s get chapters by status`,
+    `author-%s access chapters by status`,
     async index => {
       const { auth, book, stats } = mocks.authors[index];
       for (const k in chapterStatus) {
@@ -199,7 +199,7 @@ export function testGetChapters() {
     }
   );
 
-  test(`client cannot get chapetrs by status`, async () => {
+  test(`client cannot access chapetrs by status`, async () => {
     for (const { book, stats } of mocks.authors) {
       for (const k in chapterStatus) {
         const key = k as keyof Status;
