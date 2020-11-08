@@ -1,22 +1,18 @@
-import { classToPlain } from 'class-transformer';
 import { isObject } from 'class-validator';
+import { ClassTransformOptions } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Model } from 'mongoose';
 import { FastifyRequest } from 'fastify';
-import { Reflector } from '@nestjs/core';
 import {
+  Type,
   Injectable,
   PlainLiteralObject,
   ExecutionContext,
-  NestInterceptor,
   CallHandler,
-  Inject,
-  Optional,
-  Type
+  ClassSerializerInterceptor
 } from '@nestjs/common';
 import { CLASS_SERIALIZER_OPTIONS } from '@nestjs/common/serializer/class-serializer.constants';
-import { ClassTransformOptions } from '@nestjs/common/interfaces/external/class-transform-options.interface';
 import { PaginateResult, UserRole } from '@/typings';
 import { TEXT_SCORE } from './mongoose-crud.service';
 
@@ -26,14 +22,9 @@ type Res =
   | PaginateResult<unknown>;
 
 @Injectable()
-export class MongooseSerializerInterceptor implements NestInterceptor {
-  constructor(
-    @Inject(Reflector) protected readonly reflector: Reflector,
-    @Optional() protected readonly defaultOptions: ClassTransformOptions = {}
-  ) {}
-
+export class MongooseSerializerInterceptor extends ClassSerializerInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const contextOptions = this.getContextOptions(context);
+    const contextOptions = this._getContextOptions(context);
     const req = context.switchToHttp().getRequest<FastifyRequest>();
 
     const options = {
@@ -60,12 +51,7 @@ export class MongooseSerializerInterceptor implements NestInterceptor {
     response: Res,
     options: ClassTransformOptions
   ): PlainLiteralObject | PlainLiteralObject[] {
-    const isArray = Array.isArray(response);
-    if (!isObject(response) && !isArray) {
-      return response;
-    }
-
-    if ('data' in response && 'total' in response) {
+    if (isObject(response) && 'data' in response && 'total' in response) {
       return {
         ...response,
         data: response.data.map((item: PlainLiteralObject) =>
@@ -74,11 +60,7 @@ export class MongooseSerializerInterceptor implements NestInterceptor {
       };
     }
 
-    return isArray
-      ? (response as PlainLiteralObject[]).map(item =>
-          this.transformToPlain(item, options)
-        )
-      : this.transformToPlain(response, options);
+    return super.serialize(response, options);
   }
 
   transformToPlain(
@@ -89,26 +71,24 @@ export class MongooseSerializerInterceptor implements NestInterceptor {
       plainOrClass = plainOrClass.toJSON();
     }
 
-    const plainObject: PlainLiteralObject =
-      plainOrClass && plainOrClass.constructor !== Object
-        ? classToPlain(plainOrClass, options)
-        : plainOrClass;
-
-    delete plainObject[TEXT_SCORE];
+    const { [TEXT_SCORE]: textScore, ...plainObject } = super.transformToPlain(
+      plainOrClass,
+      options
+    );
 
     return plainObject;
   }
 
-  getContextOptions(
+  _getContextOptions(
     context: ExecutionContext
   ): ClassTransformOptions | undefined {
     return (
-      this.reflectSerializeMetadata(context.getHandler()) ||
-      this.reflectSerializeMetadata(context.getClass())
+      this._reflectSerializeMetadata(context.getHandler()) ||
+      this._reflectSerializeMetadata(context.getClass())
     );
   }
 
-  reflectSerializeMetadata(
+  _reflectSerializeMetadata(
     // eslint-disable-next-line @typescript-eslint/ban-types
     obj: Function | Type<any>
   ): ClassTransformOptions | undefined {
