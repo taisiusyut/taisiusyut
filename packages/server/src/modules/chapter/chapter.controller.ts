@@ -126,6 +126,7 @@ export class ChapterController {
       }
     }
 
+    // do not select these properties
     const projection: { [K in keyof Chapter]?: number } = {
       content: 0,
       createdAt: 0,
@@ -140,5 +141,38 @@ export class ChapterController {
       },
       { projection }
     );
+  }
+
+  @Access('Optional')
+  @Get(routes.chapter.get_chapter)
+  async getChapter(
+    @Req() { user }: FastifyRequest,
+    @ObjectId('bookID') bookID: string,
+    @ObjectId('chapterID') chapterID: string
+  ) {
+    const chapter = await this.chapterService.findOne({
+      _id: chapterID,
+      book: bookID
+    });
+
+    if (!chapter) {
+      throw new NotFoundException(`Chapter not found`);
+    }
+
+    if (
+      chapter.type === ChapterType.Pay ||
+      chapter.status !== ChapterStatus.Public
+    ) {
+      const hasPermission =
+        user?.role === UserRole.Root ||
+        user?.role === UserRole.Admin ||
+        (user?.role === UserRole.Author && user.user_id === chapter.author);
+
+      if (!hasPermission) {
+        throw new ForbiddenException();
+      }
+    }
+
+    return chapter;
   }
 }

@@ -65,14 +65,9 @@ export function getChapters(
     .query(qs.stringify(query));
 }
 
-export function getChapter(
-  token: string,
-  bookID: string,
-  chapterID: string,
-  query?: Record<string, unknown>
-) {
+export function getChapter(token: string, bookID: string, chapterID: string) {
   return request
     .get(routes.get_chapter.generatePath({ bookID, chapterID }))
     .set('Authorization', `bearer ${token}`)
-    .query(qs.stringify(query));
+    .send();
 }
