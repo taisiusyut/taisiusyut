@@ -1,26 +1,10 @@
-import { from, defer, of, EMPTY, Observable } from 'rxjs';
-import {
-  concatMap,
-  tap,
-  retry,
-  catchError,
-  zipAll,
-  mergeMap
-} from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Schema$CloudinarySign } from '@/typings';
-import cloudinary, {
-  TransformationOptions,
-  ConfigAndUrlOptions,
-  UploadApiOptions,
-  UploadApiResponse
-} from 'cloudinary';
-import { Uploaded } from '@/interceptor/multi-part.interceptor';
-import fs from 'fs';
+import cloudinary from 'cloudinary';
 
 type RemovePayload = string | { public_id: string };
-type UploadResponse = UploadApiResponse | null;
 
 @Injectable()
 export class CloudinaryService {
@@ -57,43 +41,6 @@ export class CloudinaryService {
         this.api_secret
       )
     };
-  }
-
-  getImageUrl(
-    public_id: string,
-    options: TransformationOptions | ConfigAndUrlOptions = {}
-  ): string {
-    return cloudinary.v2.url(public_id, options);
-  }
-
-  upload(path: string, options?: UploadApiOptions): Observable<UploadResponse> {
-    return defer(() => cloudinary.v2.uploader.upload(path, options)).pipe(
-      retry(2),
-      catchError(() => of(null)),
-      tap(() => fs.unlinkSync(path))
-    );
-  }
-
-  handleUploaded(
-    payload: Uploaded,
-    options?: UploadApiOptions
-  ): Observable<UploadResponse>;
-  handleUploaded(
-    payload: Uploaded[],
-    options?: UploadApiOptions
-  ): Observable<UploadResponse[]>;
-  handleUploaded(
-    payload: Uploaded | Uploaded[],
-    options?: UploadApiOptions
-  ): Observable<UploadResponse | UploadResponse[]> {
-    return Array.isArray(payload)
-      ? from(payload).pipe(
-          concatMap(uploaded =>
-            of<Observable<UploadResponse>>(this.upload(uploaded.path, options))
-          ),
-          zipAll()
-        )
-      : this.upload(payload.path, options);
   }
 
   remove(payload: RemovePayload | RemovePayload[]) {
