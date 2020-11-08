@@ -19,6 +19,7 @@ import {
 import {
   createChapter,
   createChapterDto,
+  getChapter,
   updateChapter
 } from '../../service/chapter';
 
@@ -79,11 +80,14 @@ export function testUpdateChapter() {
   `(
     '$property will not be update by author',
     async ({ property, value }: Record<string, string>) => {
-      const response = await updateChapter(author.token, book.id, chapter.id, {
+      let response = await updateChapter(author.token, book.id, chapter.id, {
         [property]: value
       });
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.OK);
+
+      response = await getChapter(root.token, book.id, chapter.id);
+
       expect(response.body).not.toHaveProperty(property, value);
     }
   );

@@ -4,7 +4,12 @@ import { BookStatus, Category, Schema$Book } from '@/typings';
 import { UpdateBookDto } from '@/modules/book/dto';
 import { rid } from '@/utils/rid';
 import { getUser, setupUsers } from '../../service/auth';
-import { updateBook, createBookDto, createBook } from '../../service/book';
+import {
+  updateBook,
+  createBookDto,
+  createBook,
+  getBook
+} from '../../service/book';
 
 const tags = () => [rid(5), rid(5)].map(s => s.toLowerCase());
 
@@ -63,11 +68,13 @@ export function testUpdateBook() {
   `(
     '$property will not be update by author',
     async ({ property, value }: Record<string, string>) => {
-      const response = await updateBook(author.token, book.id, {
+      let response = await updateBook(author.token, book.id, {
         [property]: value
       });
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.OK);
+
+      response = await getBook(root.token, book.id);
       expect(response.body).not.toHaveProperty(property, value);
     }
   );
