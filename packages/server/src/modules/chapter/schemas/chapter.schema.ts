@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
-import { Group, GetChpaterOnly } from '@/decorators';
+import { Group } from '@/decorators';
 
 @Schema({
   timestamps: true,
@@ -13,12 +13,14 @@ import { Group, GetChpaterOnly } from '@/decorators';
   }
 })
 export class Chapter implements Record<keyof Schema$Chapter, unknown> {
+  @Exclude()
+  _id: string;
+
   id: string;
 
   @Prop({ type: String, required: true, unique: true })
   name: string;
 
-  @GetChpaterOnly()
   @Prop({ type: String, default: '' })
   content: string;
 
@@ -50,10 +52,8 @@ export class Chapter implements Record<keyof Schema$Chapter, unknown> {
   @Prop({ type: Number, required: true })
   price: ChapterType;
 
-  @GetChpaterOnly()
   createdAt: string;
 
-  @GetChpaterOnly()
   updatedAt: string;
 
   constructor(payload: Partial<Chapter>) {

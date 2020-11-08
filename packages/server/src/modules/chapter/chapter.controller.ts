@@ -7,6 +7,8 @@ import {
   Req,
   Query,
   BadRequestException,
+  NotFoundException,
+  ForbiddenException,
   InternalServerErrorException
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
@@ -124,10 +126,19 @@ export class ChapterController {
       }
     }
 
-    return this.chapterService.paginate({
-      ...query,
-      book: bookID,
-      condition
-    });
+    const projection: { [K in keyof Chapter]?: number } = {
+      content: 0,
+      createdAt: 0,
+      updatedAt: 0
+    };
+
+    return this.chapterService.paginate(
+      {
+        ...query,
+        book: bookID,
+        condition
+      },
+      { projection }
+    );
   }
 }
