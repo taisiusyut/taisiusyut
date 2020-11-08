@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Patch,
+  Delete,
   Req,
   Query,
   BadRequestException,
@@ -97,6 +98,15 @@ export class ChapterController {
     return this.chapterService.update(query, updateChapterDto, {
       upsert: false
     });
+  }
+
+  @Access('Root', 'Admin')
+  @Delete(routes.chapter.delete_chapter)
+  delete(
+    @ObjectId('bookID') bookID: string,
+    @ObjectId('chapterID') chapterID: string
+  ) {
+    return this.chapterService.delete({ _id: chapterID, book: bookID });
   }
 
   @Access('Optional')

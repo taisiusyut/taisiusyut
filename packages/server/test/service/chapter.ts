@@ -49,7 +49,7 @@ export function deleteChapter(
   chapterID: string
 ) {
   return request
-    .delete(routes.delete_book.generatePath({ bookID, chapterID }))
+    .delete(routes.delete_chapter.generatePath({ bookID, chapterID }))
     .set('Authorization', `bearer ${token}`)
     .send();
 }
