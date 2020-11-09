@@ -17,8 +17,8 @@ import { BookService } from './book.service';
 import { ObjectId } from '@/decorators';
 import { BookStatus, UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
+import { AccessPipe } from '@/pipe';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
-import { BookStatusPipe } from './book-status.pipe';
 
 const allBookStatus = Object.values(BookStatus).filter(
   (v): v is BookStatus => typeof v === 'number'
@@ -51,8 +51,7 @@ export class BookController {
   @Patch(routes.book.update_book)
   update(
     @ObjectId('id') id: string,
-    @Body(BookStatusPipe([UserRole.Root, UserRole.Admin]))
-    updateBookDto: UpdateBookDto
+    @Body(AccessPipe) updateBookDto: UpdateBookDto
   ) {
     return this.bookService.update({ _id: id }, updateBookDto);
   }

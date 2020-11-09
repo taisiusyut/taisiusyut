@@ -2,6 +2,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Category, Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
 import { IsDescription, IsTags, IsBookName, IsCategory } from './';
+import { Group } from '@/decorators';
 
 class Excluded implements Partial<Schema$Book> {
   @Exclude()
@@ -45,6 +46,7 @@ class UpdateBook
   @IsOptional()
   @IsEnum(BookStatus)
   @Transform(value => value && Number(value))
+  @Group(['Root', 'Admin'])
   status?: BookStatus;
 }
 
