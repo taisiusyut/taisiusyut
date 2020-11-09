@@ -18,6 +18,7 @@ import { PaymentService } from './payment.service';
 import { CreatePaymentDto, UpdatePaymentDto, GetPaymentsDto } from './dto';
 import { BookService } from '../book/book.service';
 import { ChapterService } from '../chapter/chapter.service';
+import { AccessPipe } from '@/pipe';
 
 @Controller(routes.payment.prefix)
 export class PaymentController {
@@ -104,7 +105,30 @@ export class PaymentController {
 
   @Access('Jwt')
   @Get(routes.payment.get_payments)
-  findAll(@Req() { user }: FastifyRequest, @Query() query: GetPaymentsDto) {
-    return this.paymentService.findAll({ ...query, user: user?.user_id });
+  findAll(
+    @Req() { user }: FastifyRequest,
+    @Query(AccessPipe) query: GetPaymentsDto
+  ) {
+    if (!user) {
+      throw new InternalServerErrorException(`user is not defined`);
+    }
+
+    // expect root and admin, user can only get its payments
+    if (![UserRole.Root, UserRole.Admin].includes(user.role)) {
+      query.user = user.user_id;
+    }
+
+    /** TODO: wait for class-transformer update and use @Expose */
+    if (query.book) {
+      query['details.book'] = query.book;
+      delete query.book;
+    }
+
+    if (query.type) {
+      query['details.type'] = query.type;
+      delete query.type;
+    }
+
+    return this.paymentService.paginate(query);
   }
 }

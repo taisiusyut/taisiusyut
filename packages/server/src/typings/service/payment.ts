@@ -49,6 +49,5 @@ export interface Param$GetPayments extends Pagination {
   user?: string;
   type?: PaymentType;
   book?: string;
-  chapter?: string;
   status?: PaymentStatus;
 }

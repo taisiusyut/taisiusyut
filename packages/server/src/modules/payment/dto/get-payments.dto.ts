@@ -1,5 +1,11 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { Exclude, Expose, Transform } from 'class-transformer';
+import {
+  Exclude,
+  Expose,
+  Transform,
+  plainToClass,
+  classToClass
+} from 'class-transformer';
 import {
   Schema$Payment,
   Param$GetPayments,
@@ -39,18 +45,17 @@ export class GetPayments
   @IsOptional()
   @IsEnum(PaymentType)
   @Transform(value => value && Number(value))
-  @Expose({ name: 'details.type' })
   type?: PaymentType;
 
   @IsOptional()
   @IsString()
-  @Expose({ name: 'details.book' })
   book?: string;
 
-  @IsOptional()
-  @IsString()
-  @Expose({ name: 'details.chapter' })
-  chapter?: string;
+  @Exclude()
+  'details.type'?: PaymentType;
+
+  @Exclude()
+  'details.book'?: string;
 
   @IsOptional()
   @IsEnum(PaymentStatus)

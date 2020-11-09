@@ -7,7 +7,6 @@ import { BookModule } from '@/modules/book/book.module';
 import { Chapter, ChapterSchema } from './schemas/chapter.schema';
 import { ChapterService } from './chapter.service';
 import { ChapterController } from './chapter.controller';
-import autopopulate from 'mongoose-autopopulate';
 import paginate from 'mongoose-paginate-v2';
 
 @Module({
@@ -24,7 +23,7 @@ import paginate from 'mongoose-paginate-v2';
           ];
 
           schema.plugin(fuzzySearch, { fields });
-          schema.plugin(autopopulate);
+          // schema.plugin(autopopulate);
           schema.plugin(paginate);
 
           return schema;

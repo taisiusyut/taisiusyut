@@ -20,6 +20,7 @@ export class AccessPipe implements PipeTransform {
 
   async transform(value: any, metadata: ArgumentMetadata) {
     // for user controller
+    // TODO: check url instead of method type?
     const role = ['GET', 'PATCH'].includes(this.request.method)
       ? this.request.user?.role
       : this.request.body?.role;
