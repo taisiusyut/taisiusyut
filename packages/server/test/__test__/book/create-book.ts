@@ -34,7 +34,8 @@ export function testCreateBook() {
         status: BookStatus.Pending
       });
       expect(response.body.author).toEqual({
-        nickname: author.user.nickname
+        nickname: author.user.nickname,
+        description: expect.any(String)
       });
     }
   });
