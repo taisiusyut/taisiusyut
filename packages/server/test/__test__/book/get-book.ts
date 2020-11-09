@@ -10,7 +10,12 @@ import { createBook, getBook, updateBook } from '../../service/book';
 
 export function testGetBook() {
   const books: Schema$Book[] = [];
-  const bookStatus = [BookStatus.Public, BookStatus.Public, BookStatus.Pending];
+  const bookStatus = [
+    BookStatus.Public,
+    BookStatus.Public,
+    BookStatus.Pending,
+    BookStatus.Finished
+  ];
   let mockAuthor: Schema$Authenticated;
 
   beforeAll(async () => {
@@ -39,7 +44,10 @@ export function testGetBook() {
         const response = await getBook(getUser(user).token, book.id);
         const noPermission = user === 'author' || user === 'client';
 
-        if (book.status === BookStatus.Public) {
+        if (
+          book.status === BookStatus.Public ||
+          book.status === BookStatus.Finished
+        ) {
           if (noPermission) {
             expect(response.body.author).not.toMatchObject({
               id: expect.anything(),
@@ -63,9 +71,12 @@ export function testGetBook() {
     }
   );
 
-  test(`author can access his/her non-public book`, async () => {
+  test(`author can access his/her non-public or non-finish book`, async () => {
     for (const book of books) {
-      if (book.status !== BookStatus.Public) {
+      if (
+        book.status !== BookStatus.Public &&
+        book.status !== BookStatus.Finished
+      ) {
         const response = await getBook(mockAuthor.token, book.id);
         expect(response.status).toBe(HttpStatus.OK);
         expect(response.body.author).not.toMatchObject({

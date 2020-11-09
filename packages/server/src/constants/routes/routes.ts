@@ -23,7 +23,8 @@ export const Routes = {
     get_books: '',
     get_book: '/:id',
     update_book: '/:id',
-    delete_book: '/:id'
+    delete_book: '/:id',
+    finish_book: '/:id'
   },
   chapter: {
     prefix: '/book/:bookID/chapters',

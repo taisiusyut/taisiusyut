@@ -3,8 +3,9 @@ import { Schema$Author } from './user';
 
 export enum BookStatus {
   Pending = 1,
-  Approved = 2,
-  Private = 3,
+  Approved,
+  Private,
+  Finished,
   Public = 9999
 }
 

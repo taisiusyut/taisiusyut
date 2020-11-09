@@ -61,9 +61,9 @@ async function setupBooks(token: string, status: BookStatus) {
 }
 
 const authors = [
-  createBooks({ Public: 1, Pending: 2 }),
-  createBooks({ Public: 2, Pending: 2 }),
-  createBooks({ Public: 2, Pending: 1 })
+  createBooks({ Public: 1, Pending: 2, Finished: 1 }),
+  createBooks({ Public: 2, Pending: 2, Finished: 1 }),
+  createBooks({ Public: 2, Pending: 1, Finished: 1 })
 ].map<Author>(books => ({ books, auth: {} as Schema$Authenticated }));
 
 const mocks: Mocks = {
@@ -108,8 +108,8 @@ export function testGetBooks() {
     user        | length
     ${'root'}   | ${mocks.total}
     ${'admin'}  | ${mocks.total}
-    ${'author'} | ${mocks.stats.Public}
-    ${'client'} | ${mocks.stats.Public}
+    ${'author'} | ${mocks.stats.Public + mocks.stats.Finished}
+    ${'client'} | ${mocks.stats.Public + mocks.stats.Finished}
   `(
     `global $user access books correctly`,
     async ({ user, length }: Record<string, any>) => {
@@ -144,7 +144,11 @@ export function testGetBooks() {
     `author-%s can access all public books and his/her books`,
     async (_index, { auth, books }) => {
       const response = await getBooks(auth.token, { size: 100 });
-      const length = mocks.stats.Public - books.stats.Public + books.total;
+      // prettier-ignore
+      const length =
+        (mocks.stats.Public + mocks.stats.Finished) -
+        (books.stats.Public + books.stats.Finished) +
+        books.total;
       expect(response.body.total).toBe(length);
       expect(response.body.data).toHaveLength(length);
       expect(response.body.data).toContainObject({
@@ -170,17 +174,23 @@ export function testGetBooks() {
       }
     }
   );
-  test(`client cannot access books by status`, async () => {
+  test(`client access books by status`, async () => {
     for (const status of bookStatus) {
-      if (status !== BookStatus.Public) {
-        const response = await getBooks(client.token, { status });
-        const length = mocks.stats.Public;
+      const response = await getBooks(client.token, { size: 100, status });
+
+      if (status === BookStatus.Public || status === BookStatus.Finished) {
+        const length = mocks.stats[BookStatus[status] as keyof BooksStats];
         expect(response.body.total).toBe(length);
         expect(response.body.data).toHaveLength(length);
-        expect(response.body.data).not.toContainObject({
-          status: expect.any(Number)
-        });
+      } else {
+        const length = mocks.stats.Public + mocks.stats.Finished;
+        expect(response.body.total).toBe(length);
+        expect(response.body.data).toHaveLength(length);
       }
+
+      expect(response.body.data).not.toContainObject({
+        status: expect.any(Number)
+      });
     }
   });
 }

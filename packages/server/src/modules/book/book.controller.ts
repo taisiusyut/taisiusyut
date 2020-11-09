@@ -20,16 +20,22 @@ import { Condition } from '@/utils/mongoose';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { BookStatusPipe } from './book-status.pipe';
 
+const allBookStatus = Object.values(BookStatus).filter(
+  (v): v is BookStatus => typeof v === 'number'
+);
+
 @Controller('book')
 export class BookController {
-  private bookStatus: { status: BookStatus }[];
+  private bookStatus = allBookStatus.map(status => ({ status }));
+  private publicStatus = [
+    { status: BookStatus.Public },
+    { status: BookStatus.Finished }
+  ];
 
-  constructor(private readonly bookService: BookService) {
-    const allBookStatus = Object.values(BookStatus).filter(
-      (v): v is BookStatus => typeof v === 'number'
-    );
+  constructor(private readonly bookService: BookService) {}
 
-    this.bookStatus = allBookStatus.map(status => ({ status }));
+  isPublicStatus(status: BookStatus) {
+    return [BookStatus.Public, BookStatus.Finished].includes(status);
   }
 
   @Access('Author')
@@ -61,10 +67,13 @@ export class BookController {
   @Get(routes.book.get_book)
   async getBook(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
     const user = req.user;
-    const query: Parameters<BookService['findOne']>[0] = { _id: id };
+    const query: Parameters<BookService['findOne']>[0] = {
+      _id: id
+    };
 
+    // make sure client/tourist cannot access other books status
     if (!user?.role || user.role === UserRole.Client) {
-      query.status = BookStatus.Public;
+      query.$or = this.publicStatus;
     }
 
     const book = await this.bookService.findOne(query);
@@ -74,9 +83,9 @@ export class BookController {
       // make sure author cannot get other authors non-public book
 
       if (
-        book.status === BookStatus.Public ||
         user?.role === UserRole.Root ||
         user?.role === UserRole.Admin ||
+        this.isPublicStatus(book.status) ||
         (user?.role === UserRole.Author && author._id.equals(user.user_id))
       ) {
         return book;
@@ -88,16 +97,15 @@ export class BookController {
 
   @Access('Optional')
   @Get(routes.book.get_books)
-  getBooks(
-    @Req() req: FastifyRequest,
-    @Query(BookStatusPipe([UserRole.Root, UserRole.Admin, UserRole.Author]))
-    query: GetBooksDto
-  ) {
+  getBooks(@Req() req: FastifyRequest, @Query() query: GetBooksDto) {
     const user = req.user;
     const condition: Condition[] = [];
 
     if (!user?.role || user.role === UserRole.Client) {
-      query.status = BookStatus.Public;
+      if (!query.status || !this.isPublicStatus(query.status)) {
+        delete query.status;
+        condition.push({ $or: this.publicStatus });
+      }
     } else if (user.role === UserRole.Author) {
       // make sure author cannot get other authors non-public book
       if (query.status) {
@@ -105,7 +113,7 @@ export class BookController {
       } else {
         condition.push({
           $or: this.bookStatus.map(payload =>
-            payload.status === BookStatus.Public
+            this.isPublicStatus(payload.status)
               ? payload
               : { ...payload, author: user.user_id }
           )
@@ -114,5 +122,15 @@ export class BookController {
     }
 
     return this.bookService.paginate({ ...query, condition });
+  }
+
+  @Access('Author')
+  @Post(routes.book.finish_book)
+  finish(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+    // TODO: check chapter length ?
+    return this.bookService.update(
+      { _id: id, author: user?.user_id, status: BookStatus.Public },
+      { status: BookStatus.Finished }
+    );
   }
 }

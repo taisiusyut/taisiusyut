@@ -33,6 +33,6 @@ export class CreatePaymentDto
 
   @IsObject()
   @ValidateNested()
-  @Type(() => PaymentDetailsDto)
+  @Type(() => PaymentDetailsDto) // TODO: check discriminator?
   details: Schema$PaymentDetails;
 }
