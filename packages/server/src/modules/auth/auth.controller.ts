@@ -22,7 +22,7 @@ import { throwMongoError } from '@/utils/mongoose';
 import { IsObjectId } from '@/decorators';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
-import { User } from '@/modules/user/user.schema';
+import { User } from '@/modules/user/schemas/user.schema';
 import { Access } from '@/guard/access.guard';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';

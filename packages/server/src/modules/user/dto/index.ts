@@ -1,5 +1,4 @@
 import { applyDecorators } from '@nestjs/common';
-import { Transform } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { UserRole } from '@/typings';
 
@@ -12,10 +11,7 @@ export function IsDescription(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsUserRole(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(
-    IsEnum(UserRole),
-    Transform(value => value && Number(value)) as MethodDecorator
-  );
+  return applyDecorators(IsEnum(UserRole));
 }
 
 export * from './create-user.dto';

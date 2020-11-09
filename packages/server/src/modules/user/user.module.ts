@@ -3,10 +3,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { Schema, MongooseFuzzySearchingField } from 'mongoose';
 import { fuzzySearch } from '@/utils/mongoose';
-import { Schema$User } from '@/typings';
+import { Schema$User, UserRole } from '@/typings';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { User, UserSchema } from './user.schema';
+import { User, UserSchema } from './schemas/user.schema';
+import { ClientSchema } from './schemas/client.schema';
+import { AuthorSchema } from './schemas/author.schema';
 import paginate from 'mongoose-paginate-v2';
 
 @Module({
@@ -15,6 +17,16 @@ import paginate from 'mongoose-paginate-v2';
     MongooseModule.forFeatureAsync([
       {
         name: User.name,
+        discriminators: [
+          {
+            name: UserRole.Client,
+            schema: ClientSchema
+          },
+          {
+            name: UserRole.Author,
+            schema: AuthorSchema
+          }
+        ],
         useFactory: async () => {
           const schema = UserSchema as Schema<User>;
 

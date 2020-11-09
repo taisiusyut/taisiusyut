@@ -3,11 +3,12 @@ import { Schema$Author, Param$CreateAuthor } from './author';
 import { Schema$Client, Param$CreateClient } from './client';
 
 export enum UserRole {
-  Root = 1,
-  Admin,
-  Author,
-  Client
+  Root = 'Root',
+  Admin = 'Admin',
+  Author = 'Author',
+  Client = 'Client'
 }
+
 export interface BaseUser extends Timestamp {
   id: string;
   email: string;

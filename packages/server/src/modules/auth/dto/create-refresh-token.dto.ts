@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
-import { Transform, Exclude } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import {
   UserRole,
   Schema$RefreshToken,
@@ -33,7 +33,6 @@ export class CreateRefreshTokenDto
   nickname: string;
 
   @IsEnum(UserRole)
-  @Transform(value => value && Number(value))
   role: UserRole;
 
   @IsString()

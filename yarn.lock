@@ -1462,9 +1462,14 @@
     "@types/jsonwebtoken" "8.5.0"
     jsonwebtoken "8.5.1"
 
-"@nestjs/mongoose@https://github.com/Pong420/mongoose.git#cd255a9c62aa7ef4337efd89092038a93ee37764":
+"@nestjs/mapped-types@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-0.1.1.tgz#2fa9ff0f1ddbe66d5d1c80ae59df21c0ed0d1361"
+  integrity sha512-FROYmmZ2F+tLJP/aHasPMX40iUHQPtEAzOAcfAp21baebN5iLUrdyTuphoXjIqubfPFSwtnAGpVm9kLJjQ//ig==
+
+"@nestjs/mongoose@https://github.com/Pong420/mongoose.git#92f164c56984ff24086cb77fab1e40809f19ba9f":
   version "0.0.0"
-  resolved "https://github.com/Pong420/mongoose.git#cd255a9c62aa7ef4337efd89092038a93ee37764"
+  resolved "https://github.com/Pong420/mongoose.git#92f164c56984ff24086cb77fab1e40809f19ba9f"
 
 "@nestjs/passport@^7.1.0":
   version "7.1.0"
@@ -4332,7 +4337,7 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0, end-of-stream@^1.4.1:
 
 enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.0:
   version "4.3.0"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-4.3.0.tgz#3b806f3bfafc1ec7de69551ef93cca46c1704126"
+  resolved "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-4.3.0.tgz#3b806f3bfafc1ec7de69551ef93cca46c1704126"
   integrity sha512-3e87LvavsdxyoCfGusJnrZ5G8SLPOFeHSNpZI/ATL9a5leXo2k0w6MKnbqhdBad9qTobSfB20Ld7UmgoNbAZkQ==
   dependencies:
     graceful-fs "^4.1.2"
@@ -11149,7 +11154,7 @@ watchpack-chokidar2@^2.0.0:
 
 watchpack@^1.6.1:
   version "1.7.4"
-  resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.4.tgz#6e9da53b3c80bb2d6508188f5b200410866cd30b"
+  resolved "https://registry.npmjs.org/watchpack/-/watchpack-1.7.4.tgz#6e9da53b3c80bb2d6508188f5b200410866cd30b"
   integrity sha512-aWAgTW4MoSJzZPAicljkO1hsi1oKj/RRq/OJQh2PKI2UKL04c2Bs+MBOB+BBABHTXJpf9mCwHN7ANCvYsvY2sg==
   dependencies:
     graceful-fs "^4.1.2"
@@ -11195,7 +11200,7 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1:
 
 webpack@4.44.1, webpack@~4.43.0:
   version "4.43.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.43.0.tgz#c48547b11d563224c561dad1172c8aa0b8a678e6"
+  resolved "https://registry.npmjs.org/webpack/-/webpack-4.43.0.tgz#c48547b11d563224c561dad1172c8aa0b8a678e6"
   integrity sha512-GW1LjnPipFW2Y78OOab8NJlCflB7EFskMih2AHdvjbpKMeDJqEgSx24cXXXiPS65+WSwVyxtDsJH6jGX2czy+g==
   dependencies:
     "@webassemblyjs/ast" "1.9.0"

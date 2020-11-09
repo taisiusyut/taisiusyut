@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { User } from '@/modules/user/user.schema';
+import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$Book, BookStatus, Category } from '@/typings';
 import { Group } from '@/decorators';
 import { Author } from './author';

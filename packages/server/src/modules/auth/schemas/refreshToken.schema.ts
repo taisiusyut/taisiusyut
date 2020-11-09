@@ -19,7 +19,7 @@ export class RefreshToken implements Schema$RefreshToken {
   @Prop({ type: String, required: true })
   nickname: string;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: String, required: true, enum: Object.values(UserRole) })
   role: UserRole;
 
   @Prop({ type: String, required: true, unique: true })

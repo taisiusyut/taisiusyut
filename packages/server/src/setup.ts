@@ -19,9 +19,7 @@ export const fastifyAdapter = () =>
     querystringParser: qs.parse as FastifyServerOptions['querystringParser']
   });
 
-const groups = Object.values(UserRole).filter(
-  (k): k is string => typeof k === 'string'
-);
+const groups = Object.values(UserRole);
 
 export function setupApp(app: NestFastifyApplication): void {
   app.useGlobalPipes(

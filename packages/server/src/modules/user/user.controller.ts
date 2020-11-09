@@ -30,9 +30,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly configService: ConfigService
   ) {
-    const _roles = Object.values(UserRole).filter(
-      (v): v is UserRole => typeof v === 'number' && v !== UserRole.Root
-    );
+    const _roles = Object.values(UserRole);
     this.roles = {
       [UserRole.Root]: _roles.map(role => ({ role })),
       [UserRole.Admin]: _roles

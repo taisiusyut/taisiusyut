@@ -8,6 +8,7 @@ function hashPassword(password: string) {
 }
 
 @Schema({
+  discriminatorKey: 'role',
   timestamps: true,
   toJSON: {
     transform: (_model, raw) => new User(raw)
@@ -31,7 +32,10 @@ export class User implements InsertedUserSchema {
   @Prop({ type: String, required: true, unique: true })
   email: string;
 
-  @Prop({ type: Number, default: UserRole.Client })
+  @Prop({
+    default: UserRole.Client,
+    enum: Object.values(UserRole)
+  })
   role: UserRole;
 
   createdAt: string;
@@ -46,7 +50,6 @@ export class User implements InsertedUserSchema {
   })
   nickname?: string;
 
-  @Prop({ type: String })
   description?: string;
 
   constructor(payload: Partial<User>) {
