@@ -24,7 +24,11 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Prop({ type: String })
   cover?: string | null;
 
-  @Prop({ type: Number, required: true })
+  @Prop({
+    type: Number,
+    required: true,
+    enum: Object.values(Category).filter(v => typeof v === 'number')
+  })
   category: Category;
 
   @Prop({ type: [String], lowercase: true, default: [] })
@@ -40,7 +44,11 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   author: Author | string;
 
   @Group(['Root', 'Admin', 'Author'])
-  @Prop({ type: Number, default: BookStatus.Pending })
+  @Prop({
+    type: Number,
+    default: BookStatus.Pending,
+    enum: Object.values(BookStatus).filter(v => typeof v === 'number')
+  })
   status: BookStatus;
 
   createdAt: string;

@@ -33,6 +33,7 @@ export class User implements InsertedUserSchema {
   email: string;
 
   @Prop({
+    type: String,
     default: UserRole.Client,
     enum: Object.values(UserRole)
   })

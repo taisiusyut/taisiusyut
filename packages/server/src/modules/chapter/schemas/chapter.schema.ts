@@ -43,14 +43,22 @@ export class Chapter implements Record<keyof Schema$Chapter, unknown> {
   book: string;
 
   @Group(['Root', 'Admin', 'Author'])
-  @Prop({ type: Number, default: ChapterStatus.Private })
+  @Prop({
+    type: Number,
+    default: ChapterStatus.Private,
+    enum: Object.values(ChapterStatus).filter(v => typeof v === 'number')
+  })
   status: ChapterStatus;
 
-  @Prop({ type: Number, required: true })
+  @Prop({
+    type: Number,
+    required: true,
+    enum: Object.values(ChapterType).filter(v => typeof v === 'number')
+  })
   type: ChapterType;
 
   @Prop({ type: Number, required: true })
-  price: ChapterType;
+  price: number;
 
   createdAt: string;
 
