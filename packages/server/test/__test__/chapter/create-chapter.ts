@@ -3,7 +3,11 @@ import { HttpStatus } from '@nestjs/common';
 import { BookStatus, ChapterStatus, Schema$Book } from '@/typings';
 import { createBook } from '../../service/book';
 import { getUser, setupUsers } from '../../service/auth';
-import { createChapter, createChapterDto } from '../../service/chapter';
+import {
+  createChapter,
+  createChapterDto,
+  getChapter
+} from '../../service/chapter';
 
 export function testCreateChapter() {
   let book: Schema$Book;
@@ -61,15 +65,15 @@ export function testCreateChapter() {
   `(
     '$property will not exist after the chapter created',
     async ({ property, value }: Record<string, string>) => {
-      const response = await createChapter(
-        author.token,
-        book.id,
-        createChapterDto({
-          [property]: value
-        })
-      );
-      expect(response.error).toBeFalse();
+      const dto = createChapterDto({
+        [property]: value
+      });
+      let response = await createChapter(author.token, book.id, dto);
+      expect(dto).toHaveProperty(property, value);
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const chapter = response.body;
+      response = await getChapter(root.token, book.id, chapter.id);
       expect(response.body).not.toHaveProperty(property, value);
     }
   );

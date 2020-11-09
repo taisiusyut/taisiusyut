@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BookStatus, Category } from '@/typings';
 import { rid } from '@/utils/rid';
 import { getUser, setupUsers } from '../../service/auth';
-import { createBook, createBookDto } from '../../service/book';
+import { createBook, createBookDto, getBook } from '../../service/book';
 
 const tags = () => [rid(5), rid(5)].map(s => s.toLowerCase());
 
@@ -53,16 +53,18 @@ export function testCreateBook() {
     ${'status'} | ${BookStatus.Public}
     ${'author'} | ${new ObjectId().toHexString()}
   `(
-    '$property will not be update',
+    '$property will not exist after the book created',
     async ({ property, value }: Record<string, string>) => {
-      const response = await createBook(
-        author.token,
-        createBookDto({
-          [property]: value
-        })
-      );
-      expect(response.error).toBeFalse();
+      const dto = createBookDto({
+        [property]: value
+      });
+      let response = await createBook(author.token, dto);
+
+      expect(dto).toHaveProperty(property, value);
       expect(response.status).toBe(HttpStatus.CREATED);
+
+      const book = response.body;
+      response = await getBook(root.token, book.id);
       expect(response.body).not.toHaveProperty(property, value);
     }
   );
