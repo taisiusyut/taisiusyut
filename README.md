@@ -4,9 +4,9 @@ A project for learning full-stack development
 
 ## Goal
 
-- **Backend:** NestJS + Fastify + MongoDB **[WIP]**
+- **Server:** NestJS + Fastify + MongoDB **[WIP]**
 - **Admin Panel**: NextJS
-- **Frontend**: NextJS
+- **Web**: NextJS
 - **Apps**: React Native
 
 ## Development
