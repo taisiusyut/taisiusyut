@@ -97,8 +97,8 @@ export function testGetChapters() {
       let response = await createUserAndLogin(root.token, {
         role: UserRole.Author
       });
-      const auth: Schema$Authenticated = response.body;
       let book: Schema$Book;
+      const auth: Schema$Authenticated = response.body;
       const chapters: Schema$Chapter[] = [];
 
       response = await createBook(auth.token);
@@ -169,9 +169,12 @@ export function testGetChapters() {
 
         expect(response.body.total).toBe(expetedLength);
         expect(response.body.data).toHaveLength(expetedLength);
-        expect(response.body.data).toContainObject({
-          status: expect.anything()
-        });
+
+        if (response.body.data.length) {
+          expect(response.body.data).toContainObject({
+            status: expect.anything()
+          });
+        }
       }
     }
   );
