@@ -1,4 +1,4 @@
-import { Insertion } from './';
+import { Insertion, Pagination } from './';
 
 export enum PaymentType {
   Book = 1,
@@ -45,7 +45,10 @@ export interface Param$UpdatePayment {
   status?: PaymentStatus;
 }
 
-export interface Param$GetPayments {
+export interface Param$GetPayments extends Pagination {
+  user?: string;
   type?: PaymentType;
+  book?: string;
+  chapter?: string;
   status?: PaymentStatus;
 }

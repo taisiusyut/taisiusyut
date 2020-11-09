@@ -22,7 +22,8 @@ class Excluded implements Partial<Schema$Payment> {
   updatedAt?: undefined;
 }
 
-export class UpdatePaymentDto
+export class UpdatePayment
+  extends Excluded
   implements
     Partial<Omit<Schema$Payment, keyof Excluded>>,
     Partial<Omit<Param$UpdatePayment, keyof Excluded>> {
@@ -31,3 +32,8 @@ export class UpdatePaymentDto
   @Transform(value => value && Number(value))
   status?: PaymentStatus;
 }
+
+export class UpdatePaymentDto
+  implements
+    Required<Omit<Schema$Payment, keyof UpdatePayment>>,
+    Required<Omit<Param$UpdatePayment, keyof UpdatePayment>> {}

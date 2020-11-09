@@ -3,7 +3,11 @@ import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { PaymentType, InsertedPaymentDetails } from '@/typings';
 import { ChapterPaymentOnly } from './';
 
-class PaymentDetails implements Partial<InsertedPaymentDetails> {
+class Excluded implements Partial<InsertedPaymentDetails> {}
+
+class PaymentDetails
+  extends Excluded
+  implements Partial<Omit<InsertedPaymentDetails, keyof Excluded>> {
   @IsString()
   @IsNotEmpty()
   @ChapterPaymentOnly()
