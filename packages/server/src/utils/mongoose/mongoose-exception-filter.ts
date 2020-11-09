@@ -29,7 +29,7 @@ export function handleMongoError(
           'BAD_REQUEST',
           'keyValue' in error
             ? `${Object.keys((error as any).keyValue).join(',')} already used`
-            : 'DuplicateKey'
+            : error.message
         ];
     }
   }

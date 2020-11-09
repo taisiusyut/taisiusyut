@@ -6,7 +6,8 @@ import {
   Body,
   Req,
   Query,
-  BadRequestException
+  BadRequestException,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
@@ -32,36 +33,63 @@ export class PaymentController {
     @Req() { user }: FastifyRequest,
     @Body() createPaymentDto: CreatePaymentDto
   ) {
-    if (user && [UserRole.Root, UserRole.Admin].includes(user.role)) {
+    if (!user) {
+      throw new InternalServerErrorException(`user is not defined`);
+    }
+
+    if ([UserRole.Root, UserRole.Admin].includes(user.role)) {
       throw new BadRequestException(`${user.role} should not call this api`);
     }
     const { details } = createPaymentDto;
+    let valid = true;
 
     if (details.type === PaymentType.Book) {
-      const exists = await this.bookService.exists({
+      valid = await this.bookService.exists({
         _id: details.book,
-        author: { $ne: user?.user_id }
+        author: { $ne: user.user_id }
       });
-      if (!exists) {
-        throw new BadRequestException(`Book not found`);
-      }
     }
 
     if (details.type === PaymentType.Chapter) {
-      const exists = await this.chapterService.exists({
+      valid = await this.chapterService.exists({
         _id: details.chapter,
         book: details.book,
         type: ChapterType.Pay,
-        author: { $ne: user?.user_id }
+        author: { $ne: user.user_id }
       });
-      if (!exists) {
-        throw new BadRequestException(`Chapter not found`);
+    }
+
+    if (!valid) {
+      throw new BadRequestException(`Not match data found`);
+    }
+
+    // mongoose unique index cannot cover all the situation, so need to handle here
+    const bookHaPaid = await this.paymentService.exists({
+      user: user.user_id,
+      'details.type': PaymentType.Book,
+      'details.book': details.book
+    });
+
+    if (bookHaPaid) {
+      throw new BadRequestException(`The book have been paid`);
+    }
+
+    if (details.type === PaymentType.Chapter) {
+      const chapterHasPaid = await this.paymentService.exists({
+        user: user.user_id,
+        'details.type': PaymentType.Chapter,
+        'details.book': details.book,
+        'details.chapter': details.chapter
+      });
+
+      if (chapterHasPaid) {
+        throw new BadRequestException(`The chapter have been paid`);
       }
     }
 
     return this.paymentService.create({
       ...createPaymentDto,
-      user: user?.user_id
+      user: user.user_id
     });
   }
 

@@ -71,7 +71,7 @@ export function testCreatePayment() {
   test.each(['author', 'client'])(
     `global %s can create payment`,
     async user => {
-      const payload = getDefaultPayload();
+      const payload = getDefaultPayload().slice().reverse();
       for (const params of payload) {
         const response = await createPayment(getUser(user).token, params);
         expect(response.status).toBe(HttpStatus.CREATED);
@@ -140,5 +140,91 @@ export function testCreatePayment() {
       const response = await createPayment(client.token, params);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
+  });
+
+  test(`book payment cannot be duplicate`, async () => {
+    const response = await createBook(localAuthor.token);
+    const book = response.body;
+
+    for (const [user, status] of [
+      [client, HttpStatus.CREATED],
+      [client, HttpStatus.BAD_REQUEST],
+      [author, HttpStatus.CREATED]
+    ] as const) {
+      const response = await createPayment(
+        user.token,
+        createPaymentDto({
+          details: {
+            type: PaymentType.Book,
+            book: book.id
+          }
+        })
+      );
+
+      expect(response.status).toBe(status);
+    }
+  });
+
+  test(`chapter payment cannot be duplicate`, async () => {
+    let response = await createBook(localAuthor.token);
+    const book = response.body;
+    response = await createChapter(localAuthor.token, book.id, {
+      type: ChapterType.Pay
+    });
+    const chapter = response.body;
+
+    for (const [user, status] of [
+      [client, HttpStatus.CREATED],
+      [client, HttpStatus.BAD_REQUEST],
+      [author, HttpStatus.CREATED]
+    ] as const) {
+      const response = await createPayment(
+        user.token,
+        createPaymentDto({
+          details: {
+            type: PaymentType.Chapter,
+            book: book.id,
+            chapter: chapter.id
+          }
+        })
+      );
+
+      expect(response.status).toBe(status);
+    }
+  });
+
+  test(`chapter payment cannot be created if book payment exists`, async () => {
+    let response = await createBook(localAuthor.token);
+    const book = response.body;
+
+    response = await createChapter(localAuthor.token, book.id, {
+      type: ChapterType.Pay
+    });
+    const chapter = response.body;
+
+    response = await createPayment(
+      client.token,
+      createPaymentDto({
+        details: {
+          type: PaymentType.Book,
+          book: book.id
+        }
+      })
+    );
+
+    expect(response.status).toBe(HttpStatus.CREATED);
+
+    response = await createPayment(
+      client.token,
+      createPaymentDto({
+        details: {
+          type: PaymentType.Chapter,
+          book: book.id,
+          chapter: chapter.id
+        }
+      })
+    );
+
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
   });
 }
