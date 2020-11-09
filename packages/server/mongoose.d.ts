@@ -39,6 +39,10 @@ declare module 'mongoose' {
     fuzzySearch(query: string | MongooseFuzzySearchingParams): Promise<T[]>;
     toJSON(): Record<string, unknown>;
   }
+
+  class SchemaType {
+    discriminator<U extends Document>(name: string, schema: Schema): Model<U>;
+  }
 }
 
 declare module 'mongoose-fuzzy-searching';

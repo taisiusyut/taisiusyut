@@ -1,4 +1,4 @@
-import { Timestamp, Pagination, Search, DateRange } from '..';
+import { Timestamp, Pagination, Search, DateRange, Insertion } from '..';
 import { Schema$Author, Param$CreateAuthor } from './author';
 import { Schema$Client, Param$CreateClient } from './client';
 
@@ -53,9 +53,6 @@ export type Param$UpdateUser =
   | SharedCreateUser
   | Param$CreateClient
   | Param$CreateAuthor;
-
-type UnionKeys<T> = T extends any ? keyof T : never;
-type Insertion<T> = { [K in UnionKeys<T>]?: T[K] };
 
 export type InsertedUserSchema = Insertion<Schema$User>;
 export type InsertedCreateuser = Insertion<Param$CreateUser>;

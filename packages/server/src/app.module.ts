@@ -10,6 +10,7 @@ import { UserModule } from '@/modules/user/user.module';
 import { BookModule } from '@/modules/book/book.module';
 import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
+import { PaymentModule } from '@/modules/payment/payment.module';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
@@ -44,7 +45,8 @@ const configure = (load: ConfigFactory[] = []) =>
     UserModule,
     BookModule,
     ChapterModule,
-    CloudinaryModule
+    CloudinaryModule,
+    PaymentModule
   ],
   providers: [
     {

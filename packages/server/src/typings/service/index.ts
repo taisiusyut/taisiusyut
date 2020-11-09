@@ -5,6 +5,7 @@ export * from './book';
 export * from './chapter';
 export * from './cloudinary';
 export * from './user';
+export * from './payment';
 
 export interface ApiResponse<T> {
   statusCode: number;
@@ -61,3 +62,6 @@ interface ApiErrorValue {
 export interface ApiError extends Omit<AxiosError, 'response'> {
   response?: AxiosResponse<ApiErrorValue | string>;
 }
+
+export type UnionKeys<T> = T extends any ? keyof T : never;
+export type Insertion<T> = { [K in UnionKeys<T>]?: T[K] };

@@ -32,5 +32,11 @@ export const Routes = {
     get_chapter: '/:chapterID',
     update_chapter: '/:chapterID',
     delete_chapter: '/:chapterID'
+  },
+  payment: {
+    prefix: '/payment',
+    get_payments: '',
+    create_payment: '',
+    update_payment: '/:id'
   }
 };

@@ -1,5 +1,4 @@
 import { Pagination, Timestamp, Search, DateRange } from './';
-import { Schema$Book } from './book';
 
 export enum ChapterStatus {
   Pending = 1,
@@ -12,8 +11,6 @@ export enum ChapterType {
   Free = 1,
   Pay
 }
-
-export interface Schema$ChapterBook extends Partial<Schema$Book> {}
 
 export interface Schema$Chapter extends Timestamp {
   id: string;
