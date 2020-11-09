@@ -1,15 +1,8 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsObject,
-  IsString,
-  ValidateNested
-} from 'class-validator';
+import { IsInt, IsObject, ValidateNested } from 'class-validator';
 import { Exclude, Type } from 'class-transformer';
 import {
   Schema$Payment,
   Param$CreatePayment,
-  PaymentStatus,
   Schema$PaymentDetails
 } from '@/typings';
 import { PaymentDetailsDto } from './payment-details.dto';
@@ -19,7 +12,10 @@ class Excluded implements Partial<Schema$Payment> {
   id?: undefined;
 
   @Exclude()
-  status?: PaymentStatus;
+  status?: undefined;
+
+  @Exclude()
+  user?: undefined;
 
   @Exclude()
   createdAt?: undefined;
@@ -34,10 +30,6 @@ export class CreatePaymentDto
     Required<Omit<Param$CreatePayment, keyof Excluded>> {
   @IsInt()
   price: number;
-
-  @IsString()
-  @IsNotEmpty()
-  user: string;
 
   @IsObject()
   @ValidateNested()

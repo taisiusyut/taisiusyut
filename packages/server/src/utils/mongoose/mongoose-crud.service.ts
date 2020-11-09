@@ -158,6 +158,10 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     return (result as unknown) as PaginateResult<T>;
   }
 
+  exists(query: FilterQuery<D>): Promise<boolean> {
+    return this.model.exists(query);
+  }
+
   async clear(): Promise<void> {
     await this.model.deleteMany({});
   }

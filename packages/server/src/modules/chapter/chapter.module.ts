@@ -33,6 +33,7 @@ import paginate from 'mongoose-paginate-v2';
     ])
   ],
   controllers: [ChapterController],
-  providers: [ChapterService]
+  providers: [ChapterService],
+  exports: [ChapterService]
 })
 export class ChapterModule {}

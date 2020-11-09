@@ -9,6 +9,7 @@ import {
 } from '@/typings';
 import { BookPaymentSchema } from './payment-book.schema';
 import { ChapterPaymentSchema } from './payment-chapter.schema';
+import { Exclude } from 'class-transformer';
 
 @Schema({ discriminatorKey: 'type' })
 export class PaymentDetails {
@@ -41,9 +42,10 @@ export class Payment implements Schema$Payment {
     ref: User.name,
     required: true
   })
+  @Exclude()
   user: string;
 
-  @Prop(PaymentDetailsSchema)
+  @Prop({ type: PaymentDetailsSchema, required: true })
   details: Schema$PaymentDetails;
 
   @Prop({ type: Number, default: PaymentStatus.Success })
