@@ -22,7 +22,7 @@ class Excluded implements Partial<Schema$Payment> {
   updatedAt?: undefined;
 }
 
-export class UpdatePayment
+export class UpdatePaymentDto
   implements
     Partial<Omit<Schema$Payment, keyof Excluded>>,
     Partial<Omit<Param$UpdatePayment, keyof Excluded>> {
