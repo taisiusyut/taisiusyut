@@ -4,12 +4,7 @@ import {
   Schema$Book,
   UserRole
 } from '@/typings';
-import {
-  createBook,
-  finishBook,
-  updateBook,
-  publicBook
-} from '../../service/book';
+import { createBook, finishBook, publicBook } from '../../service/book';
 import { createUserAndLogin, setupUsers } from '../../service/auth';
 import { HttpStatus } from '@nestjs/common';
 

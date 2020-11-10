@@ -46,6 +46,28 @@ export function updateChapter(
     .send(payload);
 }
 
+export function publicChapter(
+  token: string,
+  bookID: string,
+  chapterID: string
+) {
+  return request
+    .post(routes.public_chapter.generatePath({ bookID, chapterID }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
+export function privateChapter(
+  token: string,
+  bookID: string,
+  chapterID: string
+) {
+  return request
+    .post(routes.private_chapter.generatePath({ bookID, chapterID }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
 export function deleteChapter(
   token: string,
   bookID: string,

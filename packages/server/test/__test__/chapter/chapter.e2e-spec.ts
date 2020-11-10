@@ -3,6 +3,7 @@ import { testUpdateChapter } from './update-chapter';
 import { testDeleteChapter } from './delete-chapter';
 import { testGetChapters } from './get-chapters';
 import { testGetChapter } from './get-chapter';
+import { testPublicPrivateChapter } from './public-private-chapter';
 
 describe('ChapterController (e2e)', () => {
   describe('(POST) Create Chapter', testCreateChapter);
@@ -10,4 +11,5 @@ describe('ChapterController (e2e)', () => {
   describe('(DEL)  Delete Chapter', testDeleteChapter);
   describe('(GET)  Get Chapters', testGetChapters);
   describe('(GET)  Get Chapter', testGetChapter);
+  describe('Public and Private Chapter', testPublicPrivateChapter);
 });

@@ -91,7 +91,11 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     options?: QueryFindOneAndUpdateOptions
   ): Promise<T> {
     return this.model
-      .findOneAndUpdate(query, changes, { new: true, ...options })
+      .findOneAndUpdate(query, changes, {
+        new: true,
+        upsert: false,
+        ...options
+      })
       .then(model => {
         if (model) {
           return model.toJSON();
@@ -108,7 +112,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   }
 
   async findAll(query?: FilterQuery<D>): Promise<T[]> {
-    return this.model.find(query || {}).exec();
+    return this.model.find(query || {});
   }
 
   async paginate(

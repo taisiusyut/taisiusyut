@@ -95,9 +95,7 @@ export class ChapterController {
       query.author = user_id;
     }
 
-    return this.chapterService.update(query, updateChapterDto, {
-      upsert: false
-    });
+    return this.chapterService.update(query, updateChapterDto);
   }
 
   @Access('Root', 'Admin')
@@ -184,5 +182,41 @@ export class ChapterController {
     }
 
     return chapter;
+  }
+
+  @Access('Author')
+  @Post(routes.chapter.public_chapter)
+  async public(
+    @Req() { user }: FastifyRequest,
+    @ObjectId('bookID') bookID: string,
+    @ObjectId('chapterID') chapterID: string
+  ) {
+    return this.chapterService.update(
+      {
+        _id: chapterID,
+        book: bookID,
+        author: user?.user_id,
+        status: ChapterStatus.Private
+      },
+      { status: ChapterStatus.Public }
+    );
+  }
+
+  @Access('Author')
+  @Post(routes.chapter.private_chapter)
+  async private(
+    @Req() { user }: FastifyRequest,
+    @ObjectId('bookID') bookID: string,
+    @ObjectId('chapterID') chapterID: string
+  ) {
+    return this.chapterService.update(
+      {
+        _id: chapterID,
+        book: bookID,
+        author: user?.user_id,
+        status: ChapterStatus.Public
+      },
+      { status: ChapterStatus.Private }
+    );
   }
 }
