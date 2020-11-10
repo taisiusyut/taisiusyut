@@ -5,7 +5,10 @@ import {
   IsInt,
   IsNotEmpty,
   IsString,
-  MaxLength
+  MaxLength,
+  Max,
+  Min,
+  ValidateIf
 } from 'class-validator';
 import { ChapterType, ChapterStatus } from '@/typings';
 
@@ -32,7 +35,13 @@ export function IsChapterStatus(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsPrice(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsInt(), Transform(value => value && Number(value)) as MethodDecorator);
+  return applyDecorators(
+    ValidateIf(o => o.type === ChapterType.Pay),
+    IsInt(),
+    Min(0),
+    Max(10),
+    Transform(value => value && Number(value)) as MethodDecorator
+  );
 }
 
 export * from './create-chapter.dto';

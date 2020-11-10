@@ -51,7 +51,6 @@ export class ChapterController {
     @Body() createChapterDto: CreateChapterDto
   ) {
     const author = req.user?.user_id;
-    const book = await this.bookService.findOne({ _id: bookID, author });
 
     if (!author) {
       throw new InternalServerErrorException(
@@ -59,7 +58,8 @@ export class ChapterController {
       );
     }
 
-    if (book) {
+    const bookExists = await this.bookService.exists({ _id: bookID, author });
+    if (bookExists) {
       return this.chapterService.create({
         ...createChapterDto,
         book: bookID,

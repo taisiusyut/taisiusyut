@@ -1,3 +1,4 @@
+import { UpdateChapterDto } from '@/modules/chapter/dto';
 import {
   Schema$Authenticated,
   Schema$Chapter,
@@ -38,10 +39,21 @@ export function testGetChapter() {
     response = await createBook(localAuthor.token);
     book = response.body;
 
-    for (const params of [...chapterStatus, ...chapterType]) {
+    for (let params of [
+      ...chapterStatus,
+      ...chapterType
+    ] as UpdateChapterDto[]) {
       let response = await createChapter(localAuthor.token, book.id);
       let chapter = response.body;
+
+      if (params.type === ChapterType.Pay) {
+        params = { ...params, price: 1 };
+      }
+
       response = await updateChapter(root.token, book.id, chapter.id, params);
+
+      expect(response.status).toBe(HttpStatus.OK);
+
       chapter = response.body;
       chapters.push(chapter);
     }

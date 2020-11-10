@@ -30,6 +30,15 @@ class CreateChapter
   implements
     Partial<Omit<Param$CreateChapter, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
+  @IsPrice()
+  price?: number;
+}
+
+export class CreateChapterDto
+  extends CreateChapter
+  implements
+    Required<Omit<Param$CreateChapter, keyof CreateChapter>>,
+    Required<Omit<Schema$Chapter, keyof CreateChapter>> {
   @IsChapterName()
   name: string;
 
@@ -38,13 +47,4 @@ class CreateChapter
 
   @IsChapterType()
   type: ChapterType;
-
-  @IsPrice()
-  price: number;
 }
-
-export class CreateChapterDto
-  extends CreateChapter
-  implements
-    Required<Omit<Param$CreateChapter, keyof CreateChapter>>,
-    Required<Omit<Schema$Chapter, keyof CreateChapter>> {}

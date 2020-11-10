@@ -11,11 +11,14 @@ import qs from 'qs';
 export function createChapterDto(
   payload?: Partial<CreateChapterDto>
 ): CreateChapterDto {
+  if (payload?.type === ChapterType.Pay && !payload.price) {
+    payload.price = 1;
+  }
+
   return {
     name: rid(10),
     content: rid(10),
     type: ChapterType.Free,
-    price: 1,
     ...payload
   };
 }

@@ -60,7 +60,6 @@ class UpdateChapter
   @IsChapterType()
   type?: ChapterType;
 
-  @IsOptional()
   @IsPrice()
   price?: number;
 }

@@ -12,7 +12,7 @@ import { Group } from '@/decorators';
     transform: (_model, raw) => new Chapter(raw)
   }
 })
-export class Chapter implements Record<keyof Schema$Chapter, unknown> {
+export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Exclude()
   _id: string;
 
@@ -57,8 +57,8 @@ export class Chapter implements Record<keyof Schema$Chapter, unknown> {
   })
   type: ChapterType;
 
-  @Prop({ type: Number, required: true })
-  price: number;
+  @Prop({ type: Number })
+  price?: number;
 
   createdAt: string;
 

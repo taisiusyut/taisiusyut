@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
 import { ChapterService } from '@/modules/chapter/chapter.service';
 import {
@@ -70,7 +71,7 @@ export function testGetChapters() {
     stats: { ...stats }
   };
 
-  const stub: Partial<Pick<Schema$Chapter, 'status' | 'type'>>[][] = [
+  const stub: Partial<Pick<Schema$Chapter, 'status' | 'type' | 'price'>>[][] = [
     [
       { status: ChapterStatus.Public, type: ChapterType.Free },
       { status: ChapterStatus.Public, type: ChapterType.Pay },
@@ -111,7 +112,15 @@ export function testGetChapters() {
       for (const params of payload) {
         let response = await createChapter(auth.token, book.id);
         let chapter: Schema$Chapter = response.body;
+
+        if (params.type === ChapterType.Pay) {
+          params.price = 1;
+        }
+
         response = await updateChapter(root.token, book.id, chapter.id, params);
+
+        expect(response.status).toBe(HttpStatus.OK);
+
         chapter = response.body;
 
         _stats[ChapterStatus[chapter.status] as keyof Status]++;

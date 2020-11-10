@@ -36,33 +36,36 @@ export function testUpdateChapter() {
     chapter = response.body;
   });
 
-  test.each(['root', 'admin', 'author'])('%s can update book', async user => {
-    const params: Partial<UpdateChapterDto>[] = [
-      { name: rid(10) },
-      { content: rid(10) },
-      { type: ChapterType.Pay },
-      { price: 100 }
-    ];
+  test.each(['root', 'admin', 'author'])(
+    '%s can update chapter',
+    async user => {
+      const params: Partial<UpdateChapterDto>[] = [
+        { name: rid(10) },
+        { content: rid(10) },
+        { type: ChapterType.Pay, price: 10 },
+        { price: 6 }
+      ];
 
-    for (const payload of params) {
-      const response = await updateChapter(
-        getUser(user).token,
-        book.id,
-        chapter.id,
-        payload
-      );
+      for (const payload of params) {
+        const response = await updateChapter(
+          getUser(user).token,
+          book.id,
+          chapter.id,
+          payload
+        );
 
-      expect(response.error).toBeFalse();
-      expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).not.toHaveProperty('book');
-      expect(response.body).toMatchObject({
-        ...payload,
-        status: ChapterStatus.Private
-      });
+        expect(response.error).toBeFalse();
+        expect(response.status).toBe(HttpStatus.OK);
+        expect(response.body).not.toHaveProperty('book');
+        expect(response.body).toMatchObject({
+          ...payload,
+          status: ChapterStatus.Private
+        });
+      }
     }
-  });
+  );
 
-  test.each(['client'])('%s cannot update book', async user => {
+  test.each(['client'])('%s cannot update chapter', async user => {
     const response = await updateChapter(
       getUser(user).token,
       book.id,
@@ -112,7 +115,7 @@ export function testUpdateChapter() {
     }
   );
 
-  test("author cannot update other author's book chapter", async () => {
+  test("author cannot update other author's chapter", async () => {
     const token = await getToken(
       createUserAndLogin(root.token, {
         role: UserRole.Author
