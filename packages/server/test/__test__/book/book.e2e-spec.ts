@@ -4,7 +4,7 @@ import { testDeleteBook } from './delete-book';
 import { testGetBooks } from './get-books';
 import { testGetBook } from './get-book';
 import { testBookCover } from './book-cover';
-import { testFinishBook } from './finish-book';
+import { testPublicAndFinishBook } from './public-finish-book';
 
 describe('BookController (e2e)', () => {
   describe('(POST) Create Book', testCreateBook);
@@ -12,6 +12,6 @@ describe('BookController (e2e)', () => {
   describe('(DEL)  Delete Book', testDeleteBook);
   describe('(GET)  Get Books', testGetBooks);
   describe('(GET)  Get Book', testGetBook);
-  describe('Fnish Book', testFinishBook);
+  describe('Public and Fnish Book', testPublicAndFinishBook);
   describe('Book Cover', testBookCover);
 });

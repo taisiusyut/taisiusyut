@@ -28,6 +28,13 @@ export function updateBook(
     .send(payload);
 }
 
+export function publicBook(token: string, id: string) {
+  return request
+    .post(routes.public_book.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
 export function finishBook(token: string, id: string) {
   return request
     .post(routes.finish_book.generatePath({ id }))

@@ -10,6 +10,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { ObjectID } from 'mongodb';
+import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
 import { Access } from '@/guard/access.guard';
 import { routes } from '@/constants';
@@ -19,6 +20,7 @@ import { BookStatus, UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 import { AccessPipe } from '@/pipe';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
+import { Book } from './schemas/book.schema';
 
 const allBookStatus = Object.values(BookStatus).filter(
   (v): v is BookStatus => typeof v === 'number'
@@ -50,10 +52,19 @@ export class BookController {
   @Access('Root', 'Admin', 'Author')
   @Patch(routes.book.update_book)
   update(
+    @Req() { user }: FastifyRequest,
     @ObjectId('id') id: string,
     @Body(AccessPipe) updateBookDto: UpdateBookDto
   ) {
-    return this.bookService.update({ _id: id }, updateBookDto);
+    const query: FilterQuery<Book> = {
+      _id: id
+    };
+
+    if (user?.role === UserRole.Author) {
+      query.author = user.user_id;
+    }
+
+    return this.bookService.update(query, updateBookDto);
   }
 
   @Access('Root', 'Admin')
@@ -121,6 +132,16 @@ export class BookController {
     }
 
     return this.bookService.paginate({ ...query, condition });
+  }
+
+  @Access('Author')
+  @Post(routes.book.public_book)
+  public(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+    // TODO: check chapter length ?
+    return this.bookService.update(
+      { _id: id, author: user?.user_id, status: BookStatus.Private },
+      { status: BookStatus.Public }
+    );
   }
 
   @Access('Author')

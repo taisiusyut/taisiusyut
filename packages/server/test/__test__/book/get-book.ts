@@ -13,7 +13,7 @@ export function testGetBook() {
   const bookStatus = [
     BookStatus.Public,
     BookStatus.Public,
-    BookStatus.Pending,
+    BookStatus.Private,
     BookStatus.Finished
   ];
   let mockAuthor: Schema$Authenticated;
@@ -28,7 +28,7 @@ export function testGetBook() {
       bookStatus.map(async status => {
         let response = await createBook(mockAuthor.token);
         let book = response.body;
-        if (status !== BookStatus.Pending) {
+        if (status !== BookStatus.Private) {
           response = await updateBook(root.token, book.id, { status });
           book = response.body;
         }

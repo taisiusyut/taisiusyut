@@ -4,12 +4,12 @@ import { Category, Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
 import { IsDescription, IsTags, IsBookName, IsCategory } from './';
 import { Group } from '@/decorators';
 
-class Excluded implements Partial<Schema$Book> {
+class Excluded implements Partial<Record<keyof Schema$Book, unknown>> {
   @Exclude()
   id?: undefined;
 
   @Exclude()
-  author?: undefined;
+  author?: string;
 
   @Exclude()
   createdAt?: undefined;

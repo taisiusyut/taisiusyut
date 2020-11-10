@@ -31,7 +31,7 @@ export function testCreateBook() {
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toMatchObject({
         ...payload,
-        status: BookStatus.Pending
+        status: BookStatus.Private
       });
       expect(response.body.author).toEqual({
         nickname: author.user.nickname,

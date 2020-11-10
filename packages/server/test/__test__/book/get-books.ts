@@ -53,7 +53,7 @@ async function setupBooks(token: string, status: BookStatus) {
   let response = await createBook(token);
   let book: Schema$Book = response.body;
 
-  if (status !== BookStatus.Pending) {
+  if (status !== BookStatus.Private) {
     response = await updateBook(root.token, book.id, { status });
     book = response.body;
   }

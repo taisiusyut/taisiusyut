@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
-import { BookStatus, Category, Schema$Book } from '@/typings';
+import { BookStatus, Category, Schema$Book, UserRole } from '@/typings';
 import { UpdateBookDto } from '@/modules/book/dto';
 import { rid } from '@/utils/rid';
-import { getUser, setupUsers } from '../../service/auth';
+import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
 import {
   updateBook,
   createBookDto,
@@ -16,6 +16,18 @@ const tags = () => [rid(5), rid(5)].map(s => s.toLowerCase());
 export function testUpdateBook() {
   let book: Schema$Book;
 
+  const updatePayload: UpdateBookDto[] = [
+    { name: rid(10) },
+    { category: Category['玄幻'] },
+    { description: rid(5) },
+    { tags: tags() },
+    createBookDto({
+      description: rid(10),
+      category: Category['奇幻'],
+      tags: tags()
+    })
+  ];
+
   beforeAll(async () => {
     await setupUsers();
     const response = await createBook(author.token);
@@ -23,25 +35,13 @@ export function testUpdateBook() {
   });
 
   test.each(['root', 'admin', 'author'])('%s can update book', async user => {
-    const params: UpdateBookDto[] = [
-      { name: rid(10) },
-      { category: Category['玄幻'] },
-      { description: rid(5) },
-      { tags: tags() },
-      createBookDto({
-        description: rid(10),
-        category: Category['奇幻'],
-        tags: tags()
-      })
-    ];
-
-    for (const payload of params) {
-      const response = await updateBook(getUser(user).token, book.id, payload);
+    for (const params of updatePayload) {
+      const response = await updateBook(getUser(user).token, book.id, params);
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body).toMatchObject({
-        ...payload,
-        status: BookStatus.Pending
+        ...params,
+        status: BookStatus.Private
       });
 
       if (user === 'author') {
@@ -86,5 +86,20 @@ export function testUpdateBook() {
     expect(response.error).toBeFalse();
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toHaveProperty('status', status);
+  });
+
+  test('book cannot update by other author', async () => {
+    let response = await createUserAndLogin(root.token, {
+      role: UserRole.Author
+    });
+    const otherAuthor = response.body;
+
+    response = await createBook(otherAuthor.token);
+    const book = response.body;
+
+    for (const params of updatePayload) {
+      response = await updateBook(author.token, book.id, params);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    }
   });
 }
