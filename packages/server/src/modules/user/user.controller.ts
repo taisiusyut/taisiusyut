@@ -15,7 +15,6 @@ import { ConfigService } from '@nestjs/config';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
-import { AccessPipe } from '@/pipe';
 import { UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 import { UserService } from './user.service';
@@ -58,10 +57,7 @@ export class UserController {
   }
 
   @Post(routes.user.create_user)
-  create(
-    @Request() req: FastifyRequest,
-    @Body(AccessPipe) createUserDto: CreateUserDto
-  ) {
+  create(@Request() req: FastifyRequest, @Body() createUserDto: CreateUserDto) {
     if (
       createUserDto.role === UserRole.Root &&
       req.user?.username !== this.configService.get<string>('DEFAULT_USERNAME')
@@ -84,7 +80,7 @@ export class UserController {
   async update(
     @Request() req: FastifyRequest,
     @ObjectId('id') id: string,
-    @Body(AccessPipe) updateUserDto: UpdateUserDto
+    @Body() updateUserDto: UpdateUserDto
   ) {
     const self = id === req.user?.user_id;
     let error: string | undefined;
