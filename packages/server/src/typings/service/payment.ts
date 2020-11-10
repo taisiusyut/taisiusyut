@@ -6,7 +6,8 @@ export enum PaymentType {
 }
 
 export enum PaymentStatus {
-  Success = 1,
+  Pending = 1,
+  Success,
   Faulure,
   Refund
 }

@@ -76,7 +76,7 @@ export function testUpdatePayment() {
     async user => {
       const payment = payments[0];
       const response = await updatePayment(getUser(user).token, payment.id, {
-        status: PaymentStatus.Refund
+        status: PaymentStatus.Success
       });
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     }
@@ -85,7 +85,7 @@ export function testUpdatePayment() {
   test.each(['root', 'admin'])('%s can update payment status', async user => {
     const payment = payments[user === 'root' ? 0 : 1];
     const response = await updatePayment(getUser(user).token, payment.id, {
-      status: PaymentStatus.Refund
+      status: PaymentStatus.Success
     });
     expect(response.status).toBe(HttpStatus.OK);
   });

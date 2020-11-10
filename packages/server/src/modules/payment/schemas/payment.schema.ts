@@ -48,7 +48,11 @@ export class Payment implements Schema$Payment {
   @Prop({ type: PaymentDetailsSchema, required: true })
   details: Schema$PaymentDetails;
 
-  @Prop({ type: Number, default: PaymentStatus.Success })
+  @Prop({
+    type: Number,
+    default: PaymentStatus.Pending,
+    enum: Object.values(PaymentStatus).filter(s => typeof s === 'number')
+  })
   status: PaymentStatus;
 
   createdAt: string;

@@ -57,7 +57,7 @@ export function testGetPayments() {
 
         if (i === length - 1) {
           response = await updatePayment(root.token, response.body.id, {
-            status: PaymentStatus.Refund
+            status: PaymentStatus.Success
           });
         }
 
