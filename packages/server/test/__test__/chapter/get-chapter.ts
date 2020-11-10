@@ -38,15 +38,13 @@ export function testGetChapter() {
     response = await createBook(localAuthor.token);
     book = response.body;
 
-    await Promise.all(
-      [...chapterStatus, ...chapterType].map(async params => {
-        let response = await createChapter(localAuthor.token, book.id);
-        let chapter = response.body;
-        response = await updateChapter(root.token, book.id, chapter.id, params);
-        chapter = response.body;
-        chapters.push(chapter);
-      })
-    );
+    for (const params of [...chapterStatus, ...chapterType]) {
+      let response = await createChapter(localAuthor.token, book.id);
+      let chapter = response.body;
+      response = await updateChapter(root.token, book.id, chapter.id, params);
+      chapter = response.body;
+      chapters.push(chapter);
+    }
   });
 
   test.each(['root', 'admin'])(
