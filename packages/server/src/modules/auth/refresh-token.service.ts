@@ -1,15 +1,9 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import {
-  Document,
-  FilterQuery,
-  PaginateModel,
-  QueryFindOneAndUpdateOptions
-} from 'mongoose';
+import { Document, PaginateModel } from 'mongoose';
 import { CookieSerializeOptions } from 'fastify-cookie';
 import { MongooseCRUDService } from '@/utils/mongoose';
-import { CreateRefreshTokenDto } from './dto';
 import { RefreshToken } from './schemas/refreshToken.schema';
 
 @Injectable()
@@ -39,18 +33,6 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
     }
 
     init();
-  }
-
-  create(createRefreshTokenDto: CreateRefreshTokenDto): Promise<RefreshToken> {
-    return super.create(createRefreshTokenDto);
-  }
-
-  update(
-    query: FilterQuery<RefreshToken>,
-    changes: Partial<RefreshToken>,
-    options?: QueryFindOneAndUpdateOptions
-  ): Promise<RefreshToken> {
-    return super.update(query, changes, options);
   }
 
   getCookieOpts(): CookieSerializeOptions {

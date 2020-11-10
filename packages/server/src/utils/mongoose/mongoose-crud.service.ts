@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { FindAndModifyWriteOpResultObject } from 'mongodb';
 import {
   Document,
   PaginateModel,
@@ -76,7 +76,7 @@ export const TEXT_SCORE = 'TEXT_SCORE';
 export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   constructor(private model: PaginateModel<D>) {}
 
-  async create(createDto: unknown): Promise<T> {
+  async create(createDto: unknown): Promise<D> {
     const created = new this.model(createDto);
     return created.save();
   }
@@ -88,20 +88,39 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   async update(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
+    options: QueryFindOneAndUpdateOptions & { rawResult: true; new: false }
+  ): Promise<FindAndModifyWriteOpResultObject<D> | null>;
+  async update(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>,
+    options: QueryFindOneAndUpdateOptions & { rawResult: true }
+  ): Promise<FindAndModifyWriteOpResultObject<D>>;
+  async update(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>,
+    options: QueryFindOneAndUpdateOptions & { upsert: true }
+  ): Promise<D>;
+  async update(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>,
+    options: QueryFindOneAndUpdateOptions & { new: false }
+  ): Promise<D | null>;
+  async update(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>
+  ): Promise<D | null>;
+  async update(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>,
     options?: QueryFindOneAndUpdateOptions
-  ): Promise<T> {
-    return this.model
-      .findOneAndUpdate(query, changes, {
-        new: true,
-        upsert: false,
-        ...options
-      })
-      .then(model => {
-        if (model) {
-          return model.toJSON();
-        }
-        throw new BadRequestException('Data not found');
-      });
+  ): Promise<FindAndModifyWriteOpResultObject<D> | D | null> {
+    return this.model.findOneAndUpdate(query, changes, {
+      new: true,
+      runValidators: true,
+      setDefaultsOnInsert: true,
+      omitUndefined: true,
+      ...options
+    });
   }
 
   async findOne(
