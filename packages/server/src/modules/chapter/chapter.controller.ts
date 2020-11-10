@@ -13,7 +13,7 @@ import {
   InternalServerErrorException
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import { MongooseFilterQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
@@ -86,7 +86,7 @@ export class ChapterController {
       );
     }
 
-    const query: MongooseFilterQuery<Chapter> = {
+    const query: FilterQuery<Chapter> = {
       _id: chapterID,
       book: bookID
     };

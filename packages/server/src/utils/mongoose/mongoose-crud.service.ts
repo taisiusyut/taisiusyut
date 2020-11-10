@@ -5,8 +5,7 @@ import {
   PaginateOptions,
   FilterQuery,
   UpdateQuery,
-  QueryFindOneAndUpdateOptions,
-  MongooseFilterQuery
+  QueryFindOneAndUpdateOptions
 } from 'mongoose';
 import { nGrams } from 'mongoose-fuzzy-searching/helpers';
 import {
@@ -102,12 +101,10 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   }
 
   async findOne(
-    query: FilterQuery<T>,
+    query: FilterQuery<D>,
     projection: any = ''
   ): Promise<T | null> {
-    // remove undefined fields
-    const payload = JSON.parse(JSON.stringify(query));
-    return this.model.findOne(payload, projection);
+    return this.model.findOne(query, projection);
   }
 
   async findAll(query?: FilterQuery<D>): Promise<T[]> {
@@ -115,7 +112,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   }
 
   async paginate(
-    query: FilterQuery<T> & QueryDto = {},
+    query: FilterQuery<D> & QueryDto = {},
     { projection, ...options }: PaginateOptions = {}
   ) {
     const {
@@ -138,7 +135,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     const result = await this.model.paginate(
       {
         $and: [...condition, fullMatches, $text]
-      } as MongooseFilterQuery<unknown>,
+      } as FilterQuery<D>,
       {
         customLabels: { docs: 'data', totalDocs: 'total' },
         page,

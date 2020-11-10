@@ -2,7 +2,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json', './tsconfig.eslint.json'],
+    project: ['./tsconfig.json', './tsconfig.eslint.json']
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
@@ -10,12 +10,12 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'prettier/@typescript-eslint',
-    'react-app',
+    'react-app'
   ],
   root: true,
   env: {
     node: true,
-    jest: true,
+    jest: true
   },
   rules: {
     'no-redeclare': 'off',
@@ -28,7 +28,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn',
-      { ignoreRestSiblings: true, argsIgnorePattern: '_' },
-    ],
-  },
+      { ignoreRestSiblings: true, argsIgnorePattern: '_' }
+    ]
+  }
 };

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "fullstack",
-  "version": "7.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "Pong <samfunghp@gmail.com>",
   "scripts": {

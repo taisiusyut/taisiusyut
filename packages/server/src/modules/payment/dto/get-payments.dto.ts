@@ -1,11 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import {
-  Exclude,
-  Expose,
-  Transform,
-  plainToClass,
-  classToClass
-} from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import {
   Schema$Payment,
   Param$GetPayments,
