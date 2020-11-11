@@ -16,15 +16,14 @@ $help-line-height: 1em;
   &:not(.inline) {
     .rc-form-item-label:not(:empty) {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 0px;
+      line-height: 1.8em;
     }
   }
 }
 
 .rc-form-item {
-  + .rc-form-item {
-    margin-top: 7.5px;
-  }
+  margin-bottom: 10px;
 
   .rc-form-item-help {
     color: $error-color;

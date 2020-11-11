@@ -14,12 +14,21 @@ function App({ Component, pageProps }: ExtendAppProps) {
   const [{ loginStatus, isAdmin }, actions] = useAuth();
 
   useEffect(() => {
+    const { asPath } = router;
+
     if (loginStatus === 'unknown') {
       actions.authenticate();
     }
-    if (loginStatus === 'loggedIn' || loginStatus === 'required') {
-      if (router.asPath.startsWith('/admin') && !isAdmin) {
-        router.push('/');
+
+    if (asPath.startsWith('/admin') && !isAdmin) {
+      if (loginStatus === 'loggedIn') {
+        router.push('/', { query: { from: asPath } });
+      }
+
+      if (loginStatus === 'required') {
+        const pathname = '/admin/login';
+        if (asPath !== pathname)
+          router.push({ pathname, query: { from: asPath } }, pathname);
       }
     }
   }, [loginStatus, isAdmin, actions]);

@@ -1,9 +1,5 @@
 import { Reducer } from 'react';
-import {
-  JWTSignPayload,
-  Schema$User,
-  UserRole
-} from '@/typings';
+import { JWTSignPayload, Schema$User, UserRole } from '@/typings';
 
 export type LoginStatus = 'unknown' | 'loading' | 'loggedIn' | 'required';
 
