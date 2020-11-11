@@ -1,5 +1,5 @@
-import { from, of, Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { from, of, Observable, throwError } from 'rxjs';
+import { catchError, mergeMap } from 'rxjs/operators';
 import { FastifyRequest } from 'fastify';
 import {
   Inject,
@@ -47,7 +47,6 @@ export class AcessGuard extends AuthGuard('jwt') {
 
     return canActivate$.pipe(
       mergeMap<boolean, Promise<boolean>>(async activate => {
-        if (access.includes('Optional')) return true;
         if (activate) {
           if (access.includes('Auth')) return true;
 
@@ -58,7 +57,10 @@ export class AcessGuard extends AuthGuard('jwt') {
           );
         }
         return false;
-      })
+      }),
+      catchError(errror =>
+        access.includes('Optional') ? of(true) : throwError(errror)
+      )
     );
   }
 }
