@@ -14,10 +14,10 @@ export function clearJwtToken() {
   jwtToken$ = null;
 }
 
-export const authenticate$ = (payload?: Param$Login) =>
+const authenticate$ = (payload?: Param$Login) =>
   defer(() => (payload ? login(payload) : refreshToken())).pipe(shareReplay(1));
 
-export function getJwtToken(payload?: Param$Login) {
+export function getJwtToken$(payload?: Param$Login) {
   return (jwtToken$ || authenticate$(payload)).pipe(
     switchMap(payload => {
       const expired = +new Date(payload.expiry) - +new Date() <= 30 * 1000;
@@ -41,7 +41,7 @@ const isAuthUrl = (url?: string) => url && authUrlRegex.test(url);
 
 api.interceptors.request.use(async config => {
   if (!isAuthUrl(config.url) && jwtToken$) {
-    const { token } = await getJwtToken().toPromise();
+    const { token } = await getJwtToken$().toPromise();
     config.headers['Authorization'] = 'bearer ' + token;
   }
   return config;

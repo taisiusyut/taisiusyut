@@ -10,14 +10,14 @@ import {
   Toaster as BpToaster,
   IToaster
 } from '@blueprintjs/core';
-import { ApiError } from '../typings';
-import { getErrorMessage } from './getErrorMessage';
+import { ApiError, getErrorMessage } from '@/service/getErrorMessage';
 
 const props: IToasterProps = {
   position: Position.TOP_RIGHT
 };
 
 const defaultOptions: Omit<IToastOptions, 'message'> = {
+  key: 'toaster',
   timeout: 4000
 };
 
@@ -46,7 +46,7 @@ function renderMessage(titile = '', message: ReactNode = '') {
 }
 
 export const Toaster = {
-  success(options: IToastOptions) {
+  success(options: Partial<IToastOptions>) {
     toasterSubject.next({
       ...defaultOptions,
       ...options,
@@ -55,7 +55,7 @@ export const Toaster = {
       message: renderMessage('Success', options.message)
     });
   },
-  failure(options: IToastOptions) {
+  failure(options: Partial<IToastOptions>) {
     toasterSubject.next({
       ...defaultOptions,
       ...options,
@@ -76,7 +76,7 @@ export const Toaster = {
       )
     });
   },
-  info(options: IToastOptions) {
+  info(options: Partial<IToastOptions>) {
     toasterSubject.next({
       ...defaultOptions,
       ...options,
