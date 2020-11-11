@@ -6,6 +6,7 @@
   "author": "Pong <samfunghp@gmail.com>",
   "scripts": {
     "server": "yarn workspace @fullstack/server",
+    "admin": "yarn workspace @fullstack/admin",
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build --stream",
     "postinstall": "lerna run postinstall --stream --parallel",
