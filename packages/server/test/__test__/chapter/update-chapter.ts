@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
 import { UpdateChapterDto } from '@/modules/chapter/dto';
 import {
+  BookStatus,
   ChapterStatus,
   ChapterType,
   Schema$Book,
@@ -9,7 +10,7 @@ import {
   UserRole
 } from '@/typings';
 import { rid } from '@/utils/rid';
-import { createBook } from '../../service/book';
+import { createBook, updateBook } from '../../service/book';
 import {
   createUserAndLogin,
   getToken,
@@ -129,5 +130,23 @@ export function testUpdateChapter() {
     response = await getChapter(root.token, book.id, chapter.id);
     expect(response.error).toBeFalse();
     expect(response.body).not.toMatchObject(changes);
+  });
+
+  test('cannot chapter type to pay if book is finished', async () => {
+    let response = await createBook(author.token);
+    let book = response.body;
+    response = await updateBook(root.token, book.id, {
+      status: BookStatus.Finished
+    });
+    book = response.body;
+    expect(book.status).toBe(BookStatus.Finished);
+
+    response = await createChapter(author.token, book.id);
+    const chapter = response.body;
+
+    response = await updateChapter(author.token, book.id, chapter.id, {
+      type: ChapterType.Pay
+    });
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
   });
 }

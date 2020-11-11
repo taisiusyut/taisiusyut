@@ -40,7 +40,7 @@ declare module 'mongoose' {
     toJSON(): Record<string, unknown>;
   }
 
-  class SchemaType {
+  interface SchemaType {
     discriminator<U extends Document>(name: string, schema: Schema): Model<U>;
   }
 }

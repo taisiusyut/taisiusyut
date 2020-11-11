@@ -19,8 +19,9 @@ import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
 import { AccessPipe } from '@/pipe';
+import { Book } from '@/modules/book/schemas/book.schema';
 import { BookService } from '@/modules/book/book.service';
-import { ChapterStatus, ChapterType, UserRole } from '@/typings';
+import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
@@ -40,8 +41,8 @@ export class ChapterController {
   readonly chapterTypes = allChapterType.map(type => ({ type }));
 
   constructor(
-    private readonly chapterService: ChapterService,
-    private readonly bookService: BookService
+    private readonly bookService: BookService,
+    private readonly chapterService: ChapterService
   ) {}
 
   @Access('Author')
@@ -59,7 +60,18 @@ export class ChapterController {
       );
     }
 
-    const bookExists = await this.bookService.exists({ _id: bookID, author });
+    const bookQuery: FilterQuery<Book> = {
+      _id: bookID,
+      author
+    };
+
+    // finished book cannot create pay chapter
+    if (createChapterDto.type === ChapterType.Pay) {
+      bookQuery.status = { $ne: BookStatus.Finished };
+    }
+
+    const bookExists = await this.bookService.exists(bookQuery);
+
     if (bookExists) {
       return this.chapterService.create({
         ...createChapterDto,
@@ -68,7 +80,7 @@ export class ChapterController {
       });
     }
 
-    throw new BadRequestException('book not found');
+    throw new BadRequestException('book not found or status is not allow');
   }
 
   @Access('Root', 'Admin', 'Author')
@@ -94,6 +106,17 @@ export class ChapterController {
 
     if (role === UserRole.Author) {
       query.author = user_id;
+    }
+
+    if (updateChapterDto.type === ChapterType.Pay) {
+      const finished = await this.bookService.exists({
+        _id: bookID,
+        status: { $ne: BookStatus.Finished }
+      });
+      if (finished)
+        new BadRequestException(
+          `cannot set chapter type to pay as book is finished`
+        );
     }
 
     const chapter = await this.chapterService.update(query, updateChapterDto);

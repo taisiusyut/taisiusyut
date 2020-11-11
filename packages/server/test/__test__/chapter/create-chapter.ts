@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
-import { BookStatus, ChapterStatus, Schema$Book } from '@/typings';
-import { createBook } from '../../service/book';
+import { BookStatus, ChapterStatus, ChapterType, Schema$Book } from '@/typings';
+import { createBook, updateBook } from '../../service/book';
 import { getUser, setupUsers } from '../../service/auth';
 import {
   createChapter,
@@ -23,7 +23,6 @@ export function testCreateChapter() {
 
     for (const payload of params) {
       const response = await createChapter(author.token, book.id, payload);
-
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).not.toHaveProperty('book');
@@ -77,4 +76,19 @@ export function testCreateChapter() {
       expect(response.body).not.toHaveProperty(property, value);
     }
   );
+
+  test('finished book cannot create pay chapter', async () => {
+    let response = await createBook(author.token);
+    let book = response.body;
+    response = await updateBook(root.token, book.id, {
+      status: BookStatus.Finished
+    });
+    book = response.body;
+    expect(book.status).toBe(BookStatus.Finished);
+
+    response = await createChapter(author.token, book.id, {
+      type: ChapterType.Pay
+    });
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+  });
 }
