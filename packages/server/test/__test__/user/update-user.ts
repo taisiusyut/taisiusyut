@@ -35,7 +35,7 @@ export function testUpdateUser() {
     await setupMockUser();
   });
 
-  test('Return updated value', async () => {
+  test('return updated value', async () => {
     const email = `${rid(8)}@gmail.com`;
     const response = await updateUser(token, user.id, { email });
     expect(response.error).toBeFalse();
@@ -43,7 +43,7 @@ export function testUpdateUser() {
     expect(response.body).toHaveProperty('email', email);
   });
 
-  test('Author can update description', async () => {
+  test('author can update description', async () => {
     let response = await createUserAndLogin(root.token, {
       role: UserRole.Author
     });

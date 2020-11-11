@@ -4,7 +4,7 @@ import {
   Post,
   Patch,
   Body,
-  Request,
+  Req,
   ForbiddenException,
   Get,
   Query,
@@ -39,7 +39,7 @@ export class UserController {
   }
 
   @Get(routes.user.get_users)
-  getAll(@Query() query: GetUsersDto, @Request() req: FastifyRequest) {
+  getAll(@Query() query: GetUsersDto, @Req() req: FastifyRequest) {
     let condition: Condition[] = [];
 
     if (req.user) {
@@ -57,7 +57,7 @@ export class UserController {
   }
 
   @Post(routes.user.create_user)
-  create(@Request() req: FastifyRequest, @Body() createUserDto: CreateUserDto) {
+  create(@Req() req: FastifyRequest, @Body() createUserDto: CreateUserDto) {
     if (
       createUserDto.role === UserRole.Root &&
       req.user?.username !== this.configService.get<string>('DEFAULT_USERNAME')
@@ -78,11 +78,16 @@ export class UserController {
   @Access('Root', 'Admin', 'Self')
   @Patch(routes.user.update_user)
   async update(
-    @Request() req: FastifyRequest,
+    @Req() { user }: FastifyRequest,
     @ObjectId('id') id: string,
     @Body() updateUserDto: UpdateUserDto
   ) {
-    const self = id === req.user?.user_id;
+    const self = id === user?.user_id;
+    const query = {
+      _id: id,
+      role: user?.role // for mongoose discriminator
+    };
+
     let error: string | undefined;
 
     if (!self) {
@@ -91,22 +96,21 @@ export class UserController {
       // If the request user is the root user,
       // `self` should be true and will not enter this section
       if (targetUser?.role === UserRole.Root) error = '';
-      if (
-        targetUser?.role === UserRole.Admin &&
-        req.user?.role !== UserRole.Root
-      )
+      if (targetUser?.role === UserRole.Admin && user?.role !== UserRole.Root)
         error = 'Admin user cannot update by other admin';
+
+      delete query.role;
     }
 
     if (typeof error === 'string') {
       throw new ForbiddenException(error);
     }
 
-    return this.userService.update({ _id: id }, updateUserDto);
+    return this.userService.update(query, updateUserDto);
   }
 
   @Delete(routes.user.delete_user)
-  async delete(@Request() req: FastifyRequest, @ObjectId('id') id: string) {
+  async delete(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
     const self = id === req.user?.user_id;
 
     if (self) {
