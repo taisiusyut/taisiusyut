@@ -15,11 +15,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { isMongoId } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants/routes';
 import { Schema$Authenticated, UserRole } from '@/typings';
 import { throwMongoError } from '@/utils/mongoose';
-import { IsObjectId } from '@/decorators';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/schemas/user.schema';
@@ -77,7 +77,7 @@ export class AuthController {
     const response: Schema$Authenticated = {
       ...signPayload,
       user,
-      isDefaultAc: !IsObjectId(user.user_id)
+      isDefaultAc: !isMongoId(user.user_id)
     };
 
     return reply
@@ -117,7 +117,7 @@ export class AuthController {
         const response: Schema$Authenticated = {
           ...signResult,
           user,
-          isDefaultAc: !IsObjectId(user.user_id)
+          isDefaultAc: !isMongoId(user.user_id)
         };
 
         return reply
