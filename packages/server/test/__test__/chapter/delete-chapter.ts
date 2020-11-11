@@ -1,4 +1,4 @@
-import { Schema$Book, Schema$Chapter } from '@/main';
+import { Schema$Book, Schema$Chapter } from '@/typings';
 import { ChapterService } from '@/modules/chapter/chapter.service';
 import { HttpStatus } from '@nestjs/common';
 import {
