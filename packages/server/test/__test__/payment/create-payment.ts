@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import {
+  ChapterStatus,
   ChapterType,
   PaymentType,
   Schema$Authenticated,
@@ -10,7 +11,7 @@ import {
 } from '@/typings';
 import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
 import { createBook } from '../../service/book';
-import { createChapter } from '../../service/chapter';
+import { createChapter, publicChapter } from '../../service/chapter';
 import {
   createPayment,
   createPaymentDto,
@@ -20,21 +21,28 @@ import {
 export function testCreatePayment() {
   let localAuthor: Schema$Authenticated;
   let book: Schema$Book;
-  let chapter: Schema$Chapter;
   let freeChapter: Schema$Chapter;
+  const chapters: Schema$Chapter[] = [];
+  const numOfChapters = 3;
 
   const getDefaultPayload = () =>
     [
-      createPaymentDto({
-        details: { type: PaymentType.Book, book: book.id }
-      }),
-      createPaymentDto({
-        details: {
-          type: PaymentType.Chapter,
-          book: book.id,
-          chapter: chapter.id
-        }
-      })
+      [
+        createPaymentDto({
+          details: {
+            type: PaymentType.Chapter,
+            book: book.id,
+            chapter: chapters[0].id
+          }
+        }),
+        1
+      ],
+      [
+        createPaymentDto({
+          details: { type: PaymentType.Book, book: book.id }
+        }),
+        numOfChapters - 1
+      ]
     ] as const;
 
   beforeAll(async () => {
@@ -48,10 +56,20 @@ export function testCreatePayment() {
     response = await createBook(localAuthor.token);
     book = response.body;
 
-    response = await createChapter(localAuthor.token, book.id, {
-      type: ChapterType.Pay
-    });
-    chapter = response.body;
+    for (let i = 0; i < numOfChapters; i++) {
+      response = await createChapter(localAuthor.token, book.id, {
+        type: ChapterType.Pay
+      });
+      expect(response.status).toBe(HttpStatus.CREATED);
+      response = await publicChapter(
+        localAuthor.token,
+        book.id,
+        response.body.id
+      );
+      expect(response.body.type).toBe(ChapterType.Pay);
+      expect(response.body.status).toBe(ChapterStatus.Public);
+      chapters.push(response.body);
+    }
 
     response = await createChapter(localAuthor.token, book.id);
     freeChapter = response.body;
@@ -61,9 +79,9 @@ export function testCreatePayment() {
     `global %s cannot create payment`,
     async user => {
       const payload = getDefaultPayload();
-      for (const params of payload) {
+      for (const [params] of payload) {
         const response = await createPayment(getUser(user).token, params);
-        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+        expect(response.status).toBe(HttpStatus.FORBIDDEN);
       }
     }
   );
@@ -71,12 +89,13 @@ export function testCreatePayment() {
   test.each(['author', 'client'])(
     `global %s can create payment`,
     async user => {
-      const payload = getDefaultPayload().slice().reverse();
-      for (const params of payload) {
+      const payload = getDefaultPayload();
+      for (const [params, price] of payload) {
         const response = await createPayment(getUser(user).token, params);
         expect(response.status).toBe(HttpStatus.CREATED);
         expect(response.body).toEqual({
           ...params,
+          price: price,
           id: expect.any(String),
           status: expect.anything(),
           createdAt: expect.anything(),
@@ -93,7 +112,7 @@ export function testCreatePayment() {
         details: {
           type: PaymentType.Chapter,
           book: book.id,
-          chapter: chapter.id
+          chapter: chapters[0].id
         }
       })
     ];
@@ -120,7 +139,7 @@ export function testCreatePayment() {
       createPaymentDto({
         type: PaymentType.Chapter,
         book: new ObjectId().toHexString(),
-        chapter: chapter.id
+        chapter: chapters[0].id
       }),
       // unknown chapterID
       createPaymentDto({
@@ -142,9 +161,23 @@ export function testCreatePayment() {
     }
   });
 
-  test(`book payment cannot be duplicate`, async () => {
-    const response = await createBook(localAuthor.token);
+  async function setupBookAndChapter() {
+    let response = await createBook(localAuthor.token);
     const book = response.body;
+    response = await createChapter(localAuthor.token, book.id, {
+      type: ChapterType.Pay
+    });
+    response = await publicChapter(
+      localAuthor.token,
+      book.id,
+      response.body.id
+    );
+    const chapter = response.body;
+    return [book, chapter];
+  }
+
+  test(`book payment cannot be duplicate`, async () => {
+    const [book] = await setupBookAndChapter();
 
     for (const [user, status] of [
       [client, HttpStatus.CREATED],
@@ -166,12 +199,7 @@ export function testCreatePayment() {
   });
 
   test(`chapter payment cannot be duplicate`, async () => {
-    let response = await createBook(localAuthor.token);
-    const book = response.body;
-    response = await createChapter(localAuthor.token, book.id, {
-      type: ChapterType.Pay
-    });
-    const chapter = response.body;
+    const [book, chapter] = await setupBookAndChapter();
 
     for (const [user, status] of [
       [client, HttpStatus.CREATED],
@@ -194,15 +222,9 @@ export function testCreatePayment() {
   });
 
   test(`chapter payment cannot be created if book payment exists`, async () => {
-    let response = await createBook(localAuthor.token);
-    const book = response.body;
+    const [book, chapter] = await setupBookAndChapter();
 
-    response = await createChapter(localAuthor.token, book.id, {
-      type: ChapterType.Pay
-    });
-    const chapter = response.body;
-
-    response = await createPayment(
+    let response = await createPayment(
       client.token,
       createPaymentDto({
         details: {

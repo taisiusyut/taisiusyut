@@ -12,7 +12,7 @@ import {
 } from '@/typings';
 import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
 import { createBook } from '../../service/book';
-import { createChapter } from '../../service/chapter';
+import { createChapter, publicChapter } from '../../service/chapter';
 import {
   createPayment,
   createPaymentDto,
@@ -39,6 +39,11 @@ export function testUpdatePayment() {
     response = await createChapter(localAuthor.token, book.id, {
       type: ChapterType.Pay
     });
+    response = await publicChapter(
+      localAuthor.token,
+      book.id,
+      response.body.id
+    );
     chapter = response.body;
 
     payments = await Promise.all(

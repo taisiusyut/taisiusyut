@@ -1,4 +1,4 @@
-import { IsInt, IsObject, ValidateNested } from 'class-validator';
+import { IsObject, ValidateNested } from 'class-validator';
 import { Exclude, Type } from 'class-transformer';
 import {
   Schema$Payment,
@@ -18,6 +18,9 @@ class Excluded implements Partial<Schema$Payment> {
   user?: undefined;
 
   @Exclude()
+  price?: undefined;
+
+  @Exclude()
   createdAt?: undefined;
 
   @Exclude()
@@ -28,9 +31,6 @@ export class CreatePaymentDto
   implements
     Required<Omit<Schema$Payment, keyof Excluded>>,
     Required<Omit<Param$CreatePayment, keyof Excluded>> {
-  @IsInt()
-  price: number;
-
   @IsObject()
   @ValidateNested()
   @Type(() => PaymentDetailsDto) // TODO: check discriminator?

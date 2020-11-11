@@ -34,6 +34,7 @@ export class UpdatePayment
 }
 
 export class UpdatePaymentDto
+  extends UpdatePayment
   implements
     Required<Omit<Schema$Payment, keyof UpdatePayment>>,
     Required<Omit<Param$UpdatePayment, keyof UpdatePayment>> {}

@@ -34,7 +34,7 @@ export const PaymentDetailsSchema = SchemaFactory.createForClass(
 export class Payment implements Schema$Payment {
   id: string;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: Number, required: true, min: 1 })
   price: number;
 
   @Prop({

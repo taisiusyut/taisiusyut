@@ -10,88 +10,65 @@ import {
   InternalServerErrorException
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
+import { BookService } from '@/modules/book/book.service';
 import { routes } from '@/constants';
 import { Access } from '@/guard/access.guard';
-import { ChapterType, PaymentType, UserRole } from '@/typings';
+import { UserRole } from '@/typings';
 import { ObjectId } from '@/decorators';
-import { PaymentService } from './payment.service';
-import { CreatePaymentDto, UpdatePaymentDto, GetPaymentsDto } from './dto';
-import { BookService } from '../book/book.service';
-import { ChapterService } from '../chapter/chapter.service';
 import { AccessPipe } from '@/pipe';
+import { PaymentService } from './payment.service';
+import {
+  CreatePaymentDto,
+  UpdatePaymentDto,
+  GetPaymentsDto,
+  PaymentDetailsDto
+} from './dto';
 
 @Controller(routes.payment.prefix)
 export class PaymentController {
   constructor(
-    private readonly paymentService: PaymentService,
     private readonly bookService: BookService,
-    private readonly chapterService: ChapterService
+    private readonly paymentService: PaymentService
   ) {}
 
-  @Access('Jwt')
+  @Access('Author', 'Client')
   @Post(routes.payment.create_payment)
   async create(
     @Req() { user }: FastifyRequest,
     @Body() createPaymentDto: CreatePaymentDto
   ) {
     if (!user) {
-      throw new InternalServerErrorException(`user is not defined`);
+      throw new InternalServerErrorException(`user is ${user}`);
     }
 
-    if ([UserRole.Root, UserRole.Admin].includes(user.role)) {
-      throw new BadRequestException(`${user.role} should not call this api`);
-    }
-    const { details } = createPaymentDto;
-    let valid = true;
+    const details = createPaymentDto.details as PaymentDetailsDto;
 
-    if (details.type === PaymentType.Book) {
-      valid = await this.bookService.exists({
-        _id: details.book,
-        author: { $ne: user.user_id }
-      });
-    }
+    const { price } = await this.paymentService.getPrice(user.user_id, details);
 
-    if (details.type === PaymentType.Chapter) {
-      valid = await this.chapterService.exists({
-        _id: details.chapter,
-        book: details.book,
-        type: ChapterType.Pay,
-        author: { $ne: user.user_id }
-      });
-    }
+    const hasPaidQuery = this.paymentService.getHasPaidQuery(
+      user.user_id,
+      details
+    );
 
-    if (!valid) {
-      throw new BadRequestException(`Not match data found`);
-    }
-
-    // mongoose unique index cannot cover all the situation, so need to handle here
-    const bookHaPaid = await this.paymentService.exists({
-      user: user.user_id,
-      'details.type': PaymentType.Book,
-      'details.book': details.book
-    });
-
-    if (bookHaPaid) {
-      throw new BadRequestException(`The book have been paid`);
-    }
-
-    if (details.type === PaymentType.Chapter) {
-      const chapterHasPaid = await this.paymentService.exists({
-        user: user.user_id,
-        'details.type': PaymentType.Chapter,
-        'details.book': details.book,
-        'details.chapter': details.chapter
-      });
-
-      if (chapterHasPaid) {
-        throw new BadRequestException(`The chapter have been paid`);
+    const result = await this.paymentService.update(
+      hasPaidQuery,
+      {
+        ...createPaymentDto,
+        price,
+        user: user.user_id
+      },
+      {
+        upsert: true,
+        rawResult: true
       }
+    );
+
+    // TODO: handle updatedAt?
+    if (result.lastErrorObject.updatedExisting) {
+      throw new BadRequestException('Existing');
     }
 
-    return this.paymentService.create({
-      ...createPaymentDto,
-      user: user.user_id
-    });
+    return result.value;
   }
 
   @Access('Root', 'Admin')
