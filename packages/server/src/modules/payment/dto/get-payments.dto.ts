@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsMongoId } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import {
   Schema$Payment,
@@ -32,7 +32,7 @@ export class GetPayments
     Partial<Omit<Schema$Payment, keyof Excluded>>,
     Partial<Omit<Param$GetPayments, keyof Excluded>> {
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   @Group(['Root', 'Admin'])
   user?: string;
 
@@ -42,7 +42,7 @@ export class GetPayments
   type?: PaymentType;
 
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   book?: string;
 
   @Exclude()

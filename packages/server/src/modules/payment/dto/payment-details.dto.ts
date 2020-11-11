@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsMongoId, IsOptional } from 'class-validator';
 import { PaymentType, InsertedPaymentDetails } from '@/typings';
 import { ChapterPaymentOnly } from './';
 
@@ -8,8 +8,7 @@ class Excluded implements Partial<InsertedPaymentDetails> {}
 class PaymentDetails
   extends Excluded
   implements Partial<Omit<InsertedPaymentDetails, keyof Excluded>> {
-  @IsString()
-  @IsNotEmpty()
+  @IsMongoId()
   @ChapterPaymentOnly()
   chapter?: string;
 }
@@ -23,7 +22,6 @@ export class PaymentDetailsDto
   type: PaymentType;
 
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsMongoId()
   book: string;
 }

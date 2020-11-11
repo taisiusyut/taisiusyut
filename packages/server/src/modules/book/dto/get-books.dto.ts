@@ -1,5 +1,5 @@
 import { Exclude, Transform } from 'class-transformer';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsMongoId } from 'class-validator';
 import { Category, Schema$Book, Param$GetBooks, BookStatus } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
 import { IsCategory, IsTags, IsBookName } from './';
@@ -7,6 +7,9 @@ import { IsCategory, IsTags, IsBookName } from './';
 class Excluded
   extends QueryDto
   implements Partial<Record<keyof Schema$Book, unknown>> {
+  @Exclude()
+  id?: string;
+
   @Exclude()
   cover?: string;
 
@@ -19,10 +22,6 @@ class GetBooks
   implements
     Partial<Omit<Param$GetBooks, keyof Excluded>>,
     Partial<Omit<Record<keyof Schema$Book, unknown>, keyof Excluded>> {
-  @IsOptional()
-  @IsString()
-  id?: string;
-
   @IsOptional()
   @IsBookName()
   name?: string;
@@ -40,7 +39,7 @@ class GetBooks
   tags?: string[];
 
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   author?: string;
 
   @IsOptional()

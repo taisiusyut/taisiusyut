@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsMongoId } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -32,11 +32,11 @@ class GetChapters
     Partial<Omit<Param$GetChapters, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   author?: string;
 
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   book?: string;
 
   @IsOptional()

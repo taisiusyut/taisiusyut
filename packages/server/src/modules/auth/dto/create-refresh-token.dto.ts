@@ -1,4 +1,10 @@
-import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsNotEmpty,
+  IsMongoId,
+  IsUUID
+} from 'class-validator';
 import { Exclude } from 'class-transformer';
 import {
   UserRole,
@@ -21,7 +27,7 @@ export class CreateRefreshTokenDto
   implements
     Required<Omit<Param$CreateRefreshToken, keyof Excluded>>,
     Required<Omit<Schema$RefreshToken, keyof Excluded>> {
-  @IsString()
+  @IsMongoId()
   user_id: string;
 
   @IsString()
@@ -35,7 +41,6 @@ export class CreateRefreshTokenDto
   @IsEnum(UserRole)
   role: UserRole;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsUUID()
   refreshToken: string;
 }

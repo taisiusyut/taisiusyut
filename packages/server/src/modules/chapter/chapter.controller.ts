@@ -191,6 +191,7 @@ export class ChapterController {
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
   ) {
+    // TODO: chapter cannot public if book is not public ?
     return this.chapterService.update(
       {
         _id: chapterID,
