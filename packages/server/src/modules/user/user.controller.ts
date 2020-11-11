@@ -1,4 +1,5 @@
 import { FastifyRequest } from 'fastify';
+import { FilterQuery } from 'mongoose';
 import {
   Controller,
   Post,
@@ -19,6 +20,7 @@ import { UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
+import { User } from './schemas/user.schema';
 
 @Access('Root', 'Admin')
 @Controller(routes.user.prefix)
@@ -75,7 +77,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Access('Root', 'Admin', 'Self')
+  @Access('Auth')
   @Patch(routes.user.update_user)
   async update(
     @Req() { user }: FastifyRequest,
@@ -83,9 +85,8 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto
   ) {
     const self = id === user?.user_id;
-    const query = {
-      _id: id,
-      role: user?.role // for mongoose discriminator
+    const query: FilterQuery<User> = {
+      _id: id
     };
 
     let error: string | undefined;
@@ -97,9 +98,14 @@ export class UserController {
       // `self` should be true and will not enter this section
       if (targetUser?.role === UserRole.Root) error = '';
       if (targetUser?.role === UserRole.Admin && user?.role !== UserRole.Root)
-        error = 'Admin user cannot update by other admin';
+        error = 'admin user cannot update by other admin';
+    }
 
-      delete query.role;
+    if (user?.role === UserRole.Author || user?.role === UserRole.Client) {
+      if (!self) {
+        error = 'canoot update other user';
+      }
+      query.role = user?.role;
     }
 
     if (typeof error === 'string') {
@@ -120,15 +126,15 @@ export class UserController {
 
     if (self) {
       throw new BadRequestException(
-        `Should not delete account using this endpoint`
+        `should not use this endpoint to delete account`
       );
     }
 
     const targetUser = await this.userService.findOne({ _id: id });
     let error: string | undefined = undefined;
-    if (targetUser?.role === UserRole.Root) error = 'Cannot delete root user';
+    if (targetUser?.role === UserRole.Root) error = 'cannot delete root user';
     if (targetUser?.role === UserRole.Admin && req.user?.role !== UserRole.Root)
-      error = 'Admin user cannot delete by other admin';
+      error = 'admin user cannot delete by other admin';
 
     if (error) {
       throw new ForbiddenException(error);

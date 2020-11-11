@@ -163,7 +163,7 @@ export class AuthController {
     }
   }
 
-  @Access('Jwt')
+  @Access('Auth')
   @HttpCode(HttpStatus.OK)
   @Post(routes.auth.delete_account)
   async delete(
@@ -181,7 +181,7 @@ export class AuthController {
     await this.logout(req, res);
   }
 
-  @Access('Jwt')
+  @Access('Auth')
   @HttpCode(HttpStatus.OK)
   @Patch(routes.auth.modify_password)
   async modifyPassword(

@@ -84,7 +84,7 @@ export class PaymentController {
     return payment;
   }
 
-  @Access('Jwt')
+  @Access('Auth')
   @Get(routes.payment.get_payments)
   findAll(
     @Req() { user }: FastifyRequest,
