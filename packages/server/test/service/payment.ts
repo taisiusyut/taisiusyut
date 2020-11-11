@@ -11,7 +11,6 @@ export const createPaymentDto = (
   payload: CreatePayload | Record<string, unknown>
 ) => {
   return {
-    price: 1,
     ...payload
   } as CreatePaymentDto;
 };
