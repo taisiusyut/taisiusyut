@@ -7,6 +7,7 @@
   "scripts": {
     "server": "yarn workspace @fullstack/server",
     "dev": "lerna run dev --stream --parallel",
+    "build": "lerna run build --stream",
     "postinstall": "lerna run postinstall --stream --parallel",
     "heroku-postbuild": "yarn build"
   },
