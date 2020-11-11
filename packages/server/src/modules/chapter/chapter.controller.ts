@@ -8,9 +8,10 @@ import {
   Req,
   Query,
   BadRequestException,
-  NotFoundException,
   ForbiddenException,
-  InternalServerErrorException
+  InternalServerErrorException,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { FilterQuery } from 'mongoose';
@@ -95,7 +96,13 @@ export class ChapterController {
       query.author = user_id;
     }
 
-    return this.chapterService.update(query, updateChapterDto);
+    const chapter = await this.chapterService.update(query, updateChapterDto);
+
+    if (!chapter) {
+      throw new BadRequestException(`book or chapter not found`);
+    }
+
+    return chapter;
   }
 
   @Access('Root', 'Admin')
@@ -158,13 +165,14 @@ export class ChapterController {
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
   ) {
+    // TODO: make this better
     const chapter = await this.chapterService.findOne({
       _id: chapterID,
       book: bookID
     });
 
     if (!chapter) {
-      throw new NotFoundException(`Chapter not found`);
+      throw new BadRequestException(`chapter not found`);
     }
 
     if (
@@ -185,39 +193,40 @@ export class ChapterController {
   }
 
   @Access('Author')
-  @Post(routes.chapter.public_chapter)
-  async public(
-    @Req() { user }: FastifyRequest,
+  @HttpCode(HttpStatus.OK)
+  @Post(routes.chapter.public_private_chapter)
+  async togglePublicPrivate(
+    @Req() req: FastifyRequest<any>,
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
   ) {
     // TODO: chapter cannot public if book is not public ?
-    return this.chapterService.update(
-      {
-        _id: chapterID,
-        book: bookID,
-        author: user?.user_id,
-        status: ChapterStatus.Private
-      },
-      { status: ChapterStatus.Public }
-    );
-  }
+    const currStatus =
+      req.params.type === 'public'
+        ? ChapterStatus.Private
+        : ChapterStatus.Public;
 
-  @Access('Author')
-  @Post(routes.chapter.private_chapter)
-  async private(
-    @Req() { user }: FastifyRequest,
-    @ObjectId('bookID') bookID: string,
-    @ObjectId('chapterID') chapterID: string
-  ) {
-    return this.chapterService.update(
+    const result = await this.chapterService.update(
       {
         _id: chapterID,
         book: bookID,
-        author: user?.user_id,
-        status: ChapterStatus.Public
+        author: req.user?.user_id,
+        status: currStatus
       },
-      { status: ChapterStatus.Private }
+      {
+        status:
+          currStatus === ChapterStatus.Public
+            ? ChapterStatus.Private
+            : ChapterStatus.Public
+      }
     );
+
+    if (!result) {
+      throw new BadRequestException(
+        `book or chapter not found or current status is not allow`
+      );
+    }
+
+    return result;
   }
 }

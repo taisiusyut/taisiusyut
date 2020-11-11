@@ -65,7 +65,7 @@ export class PaymentController {
 
     // TODO: handle updatedAt?
     if (result.lastErrorObject.updatedExisting) {
-      throw new BadRequestException('Existing');
+      throw new BadRequestException('existing');
     }
 
     return result.value;
@@ -77,7 +77,11 @@ export class PaymentController {
     @ObjectId('id') id: string,
     @Body() updatePaymentDto: UpdatePaymentDto
   ) {
-    return this.paymentService.update({ _id: id }, updatePaymentDto);
+    const payment = this.paymentService.update({ _id: id }, updatePaymentDto);
+    if (!payment) {
+      throw new BadRequestException(`payment not found`);
+    }
+    return payment;
   }
 
   @Access('Jwt')

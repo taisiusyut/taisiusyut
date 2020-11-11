@@ -16,7 +16,7 @@ export function testPublicAndFinishBook() {
   test('author can update book status to public/finish', async () => {
     let response = await createBook(author.token);
     const book: Schema$Book = response.body;
-    expect(book).not.toHaveProperty('status', BookStatus.Finished);
+    expect(book).toHaveProperty('status', BookStatus.Private);
 
     // cannnot make non-public book finish
     response = await finishBook(author.token, book.id);

@@ -88,11 +88,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   async update(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
-    options: QueryFindOneAndUpdateOptions & {
-      rawResult: true;
-      upsert?: true;
-      new: false;
-    }
+    options: QueryFindOneAndUpdateOptions & { rawResult: true; new: false }
   ): Promise<FindAndModifyWriteOpResultObject<D> | null>;
   async update(
     query: FilterQuery<D>,
@@ -107,7 +103,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   async update(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
-    options: QueryFindOneAndUpdateOptions & { new: false }
+    options: QueryFindOneAndUpdateOptions & { new: false; rawResult?: false }
   ): Promise<D | null>;
   async update(
     query: FilterQuery<D>,

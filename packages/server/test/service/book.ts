@@ -30,14 +30,14 @@ export function updateBook(
 
 export function publicBook(token: string, id: string) {
   return request
-    .post(routes.public_book.generatePath({ id }))
+    .post(routes.public_finish_book.generatePath({ id, type: 'public' }))
     .set('Authorization', `bearer ${token}`)
     .send();
 }
 
 export function finishBook(token: string, id: string) {
   return request
-    .post(routes.finish_book.generatePath({ id }))
+    .post(routes.public_finish_book.generatePath({ id, type: 'finish' }))
     .set('Authorization', `bearer ${token}`)
     .send();
 }

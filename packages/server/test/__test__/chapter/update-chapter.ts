@@ -121,12 +121,13 @@ export function testUpdateChapter() {
         role: UserRole.Author
       })
     );
-    const response = await updateChapter(
-      token,
-      book.id,
-      chapter.id,
-      createChapterDto()
-    );
+    const changes = createChapterDto();
+
+    let response = await updateChapter(token, book.id, chapter.id, changes);
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+    response = await getChapter(root.token, book.id, chapter.id);
+    expect(response.error).toBeFalse();
+    expect(response.body).not.toMatchObject(changes);
   });
 }

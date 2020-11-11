@@ -106,7 +106,12 @@ export class UserController {
       throw new ForbiddenException(error);
     }
 
-    return this.userService.update(query, updateUserDto);
+    const result = await this.userService.update(query, updateUserDto);
+
+    if (!result) {
+      throw new BadRequestException(`user not found`);
+    }
+    return result;
   }
 
   @Delete(routes.user.delete_user)

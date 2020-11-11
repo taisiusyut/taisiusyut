@@ -52,7 +52,13 @@ export function publicChapter(
   chapterID: string
 ) {
   return request
-    .post(routes.public_chapter.generatePath({ bookID, chapterID }))
+    .post(
+      routes.public_private_chapter.generatePath({
+        bookID,
+        chapterID,
+        type: 'public'
+      })
+    )
     .set('Authorization', `bearer ${token}`)
     .send();
 }
@@ -63,7 +69,13 @@ export function privateChapter(
   chapterID: string
 ) {
   return request
-    .post(routes.private_chapter.generatePath({ bookID, chapterID }))
+    .post(
+      routes.public_private_chapter.generatePath({
+        bookID,
+        chapterID,
+        type: 'private'
+      })
+    )
     .set('Authorization', `bearer ${token}`)
     .send();
 }

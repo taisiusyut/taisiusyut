@@ -7,7 +7,10 @@ import {
   Delete,
   Get,
   Query,
-  NotFoundException
+  NotFoundException,
+  HttpCode,
+  HttpStatus,
+  BadRequestException
 } from '@nestjs/common';
 import { ObjectID } from 'mongodb';
 import { FilterQuery } from 'mongoose';
@@ -51,7 +54,7 @@ export class BookController {
 
   @Access('Root', 'Admin', 'Author')
   @Patch(routes.book.update_book)
-  update(
+  async update(
     @Req() { user }: FastifyRequest,
     @ObjectId('id') id: string,
     @Body(AccessPipe) updateBookDto: UpdateBookDto
@@ -64,7 +67,13 @@ export class BookController {
       query.author = user.user_id;
     }
 
-    return this.bookService.update(query, updateBookDto);
+    const book = await this.bookService.update(query, updateBookDto);
+
+    if (!book) {
+      throw new BadRequestException(`book not found`);
+    }
+
+    return book;
   }
 
   @Access('Root', 'Admin')
@@ -102,7 +111,7 @@ export class BookController {
       }
     }
 
-    throw new NotFoundException('Book not found');
+    throw new NotFoundException('book not found');
   }
 
   @Access('Optional')
@@ -135,22 +144,30 @@ export class BookController {
   }
 
   @Access('Author')
-  @Post(routes.book.public_book)
-  public(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+  @HttpCode(HttpStatus.OK)
+  @Post(routes.book.public_finish_book)
+  async public(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
     // TODO: check chapter length ?
-    return this.bookService.update(
-      { _id: id, author: user?.user_id, status: BookStatus.Private },
-      { status: BookStatus.Public }
-    );
-  }
 
-  @Access('Author')
-  @Post(routes.book.finish_book)
-  finish(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
-    // TODO: check chapter length ?
-    return this.bookService.update(
-      { _id: id, author: user?.user_id, status: BookStatus.Public },
-      { status: BookStatus.Finished }
+    const currStatus =
+      req.params.type === 'public' ? BookStatus.Private : BookStatus.Public;
+
+    const book = await this.bookService.update(
+      { _id: id, author: req.user?.user_id, status: currStatus },
+      {
+        status:
+          currStatus === BookStatus.Private
+            ? BookStatus.Public
+            : BookStatus.Finished
+      }
     );
+
+    if (!book) {
+      throw new BadRequestException(
+        `book not found or  or current status is not allow`
+      );
+    }
+
+    return book;
   }
 }

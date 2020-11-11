@@ -55,11 +55,10 @@ export class AuthController {
   @Post(routes.auth.login)
   @UseGuards(AuthGuard('local'))
   async login(
-    @Req() req: FastifyRequest,
+    @Req() { user }: FastifyRequest,
     @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
-    const user = req.user;
-    if (!user) throw new InternalServerErrorException(`User is not defined`);
+    if (!user) throw new InternalServerErrorException(`user is ${user}`);
 
     const signPayload = this.authService.signJwt(user);
     const refreshToken = uuidv4();
@@ -104,7 +103,8 @@ export class AuthController {
       try {
         refreshToken = await this.refreshTokenService.update(
           { refreshToken: tokenFromCookies },
-          { refreshToken: newRefreshToken }
+          { refreshToken: newRefreshToken },
+          { upsert: true }
         );
       } catch (error) {
         throwMongoError(error);
@@ -132,7 +132,7 @@ export class AuthController {
 
       return reply
         .status(HttpStatus.BAD_REQUEST)
-        .send(new BadRequestException('Invalid refresh token'));
+        .send(new BadRequestException('invalid refresh token'));
     }
 
     return reply
@@ -159,7 +159,7 @@ export class AuthController {
   async validateUser(username: string, password: string) {
     const payload = await this.authService.validateUser(username, password);
     if (!payload) {
-      throw new ForbiddenException('Invalid password');
+      throw new ForbiddenException('invalid password');
     }
   }
 
@@ -172,7 +172,7 @@ export class AuthController {
     @Body() { password }: DeleteAccountDto
   ) {
     if (!req.user)
-      throw new InternalServerErrorException(`User is not defined`);
+      throw new InternalServerErrorException(`user is ${req.user}`);
 
     await this.validateUser(req.user.username, password);
 
@@ -190,14 +190,18 @@ export class AuthController {
     @Body() { password, newPassword }: ModifyPasswordDto
   ) {
     if (!req.user)
-      throw new InternalServerErrorException(`User is not defined`);
+      throw new InternalServerErrorException(`user is ${req.user}`);
 
     await this.validateUser(req.user.username, password);
 
-    await this.userService.update(
+    const result = await this.userService.update(
       { _id: req.user.user_id },
       { password: newPassword }
     );
+
+    if (!result) {
+      throw new BadRequestException(`user not found`);
+    }
 
     await this.logout(req, res);
   }

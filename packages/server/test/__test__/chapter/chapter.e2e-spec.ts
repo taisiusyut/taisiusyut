@@ -11,5 +11,5 @@ describe('ChapterController (e2e)', () => {
   describe('(DEL)  Delete Chapter', testDeleteChapter);
   describe('(GET)  Get Chapters', testGetChapters);
   describe('(GET)  Get Chapter', testGetChapter);
-  describe('Public and Private Chapter', testPublicPrivateChapter);
+  describe('(POST) Public and Private Chapter', testPublicPrivateChapter);
 });
