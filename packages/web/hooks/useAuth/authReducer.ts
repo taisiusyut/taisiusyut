@@ -3,7 +3,7 @@ import {
   JWTSignPayload,
   Schema$User,
   UserRole
-} from '@fullstack/server/dist/typings';
+} from '@/typings';
 
 export type LoginStatus = 'unknown' | 'loading' | 'loggedIn' | 'required';
 

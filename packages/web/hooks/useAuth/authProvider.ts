@@ -1,13 +1,8 @@
 import React, { ReactNode } from 'react';
 import { defer, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import {
-  Param$Login,
-  Param$CreateUser,
-  Schema$User
-} from '@fullstack/server/dist/typings';
-import { clearJwtToken } from '@/service';
-import { logout, registration, getJwtToken$ } from '@/service';
+import { Param$Login, Param$CreateUser, Schema$User } from '@/typings';
+import { clearJwtToken, logout, registration, getJwtToken$ } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { State, LogoutOptions, authReducer, initialState } from './authReducer';
 

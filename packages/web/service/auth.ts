@@ -5,8 +5,8 @@ import type {
   Param$ModifyPassword,
   Schema$Authenticated,
   Schema$User
-} from '@fullstack/server/dist/typings';
-import { routes } from '@fullstack/server/dist/constants';
+} from '@/typings';
+import { routes } from '@/constants';
 import { api } from './api';
 
 export const login = (params: Param$Login) =>

@@ -1,8 +1,5 @@
-import type {
-  Param$Login,
-  Schema$Authenticated
-} from '@fullstack/server/dist/typings';
-import { routes } from '@fullstack/server/dist/constants';
+import type { Param$Login, Schema$Authenticated } from '@/typings';
+import { routes } from '@/constants';
 import { defer, Observable, of } from 'rxjs';
 import { shareReplay, switchMap } from 'rxjs/operators';
 import { api } from './api';
