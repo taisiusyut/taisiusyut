@@ -62,14 +62,14 @@ export class UserController {
       createUserDto.role === UserRole.Root &&
       req.user?.username !== this.configService.get<string>('DEFAULT_USERNAME')
     ) {
-      throw new ForbiddenException('Root user can only create by default root');
+      throw new ForbiddenException('root user can only create by default root');
     }
 
     if (
       createUserDto.role === UserRole.Admin &&
       req.user?.role !== UserRole.Root
     ) {
-      throw new ForbiddenException('Admin user cannot create by other admin');
+      throw new ForbiddenException('admin user cannot create by other admin');
     }
 
     return this.userService.create(createUserDto);

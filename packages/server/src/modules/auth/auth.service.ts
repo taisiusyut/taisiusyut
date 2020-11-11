@@ -44,7 +44,7 @@ export class AuthService {
         });
       }
 
-      throw new BadRequestException('Incorrect Password');
+      throw new BadRequestException('incorrect Password');
     } else {
       const root = await this.userService.findOne({ role: UserRole.Root });
 
@@ -65,7 +65,7 @@ export class AuthService {
       }
     }
 
-    throw new BadRequestException('User Not Found');
+    throw new BadRequestException('user not found');
   }
 
   signJwt(payload: JWTSignPayload): JWTSignResult {
@@ -76,7 +76,7 @@ export class AuthService {
     );
 
     if (!minutes)
-      throw new InternalServerErrorException('Jwt expires not configured');
+      throw new InternalServerErrorException('jwt expires not configured');
 
     return {
       token: this.jwtService.sign(signPayload),

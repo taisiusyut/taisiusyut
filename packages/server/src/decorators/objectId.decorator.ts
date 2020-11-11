@@ -16,6 +16,6 @@ export const ObjectId = createParamDecorator(
     if (typeof value === 'string' && isMongoId(value)) {
       return value;
     }
-    throw new BadRequestException('Incorrect object id format');
+    throw new BadRequestException('incorrect object id format');
   }
 );

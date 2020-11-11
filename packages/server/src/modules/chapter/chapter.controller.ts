@@ -68,7 +68,7 @@ export class ChapterController {
       });
     }
 
-    throw new BadRequestException('Book not found');
+    throw new BadRequestException('book not found');
   }
 
   @Access('Root', 'Admin', 'Author')
