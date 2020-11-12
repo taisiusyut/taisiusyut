@@ -103,8 +103,7 @@ export class AuthController {
       try {
         refreshToken = await this.refreshTokenService.update(
           { refreshToken: tokenFromCookies },
-          { refreshToken: newRefreshToken },
-          { upsert: true }
+          { refreshToken: newRefreshToken }
         );
       } catch (error) {
         throwMongoError(error);
