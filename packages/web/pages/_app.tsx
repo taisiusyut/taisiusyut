@@ -3,52 +3,54 @@ import Head from 'next/head';
 import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { UserRole } from '@/typings';
 import '@/styles/globals.scss';
 import 'typeface-muli';
 
 interface ExtendAppProps extends AppProps {
-  Component: AppProps['Component'] & { isPublic?: boolean };
+  Component: AppProps['Component'] & {
+    access?: UserRole[];
+    redirect?: string;
+  };
 }
 
-function App({ Component, pageProps }: ExtendAppProps) {
-  const [{ loginStatus, isAdmin }, actions] = useAuth();
+function Redirect({ redirect }: { redirect?: string }) {
+  useEffect(() => {
+    const pathname =
+      redirect || (router.asPath.startsWith(`/admin`) ? '/admin/login' : '/');
+    const url = { pathname, query: { from: router.asPath } };
+    router.push(url, pathname);
+  }, [redirect]);
+  return <div hidden />;
+}
+
+function AppContent({ Component, pageProps }: ExtendAppProps) {
+  const [{ loginStatus, user }, actions] = useAuth();
 
   useEffect(() => {
-    const { asPath } = router;
+    actions.authenticate();
+  }, [actions]);
 
-    if (loginStatus === 'unknown') {
-      actions.authenticate();
-    }
-
-    if (asPath.startsWith('/admin') && !isAdmin) {
-      if (loginStatus === 'loggedIn') {
-        router.push('/', { query: { from: asPath } });
-      }
-
-      if (loginStatus === 'required') {
-        const pathname = '/admin/login';
-        if (asPath !== pathname)
-          router.push({ pathname, query: { from: asPath } }, pathname);
-      }
-    }
-  }, [loginStatus, isAdmin, actions]);
-
-  if (Component.isPublic || loginStatus === 'loggedIn') {
+  if (!Component.access || (user && Component.access.includes(user.role))) {
     return <Component {...pageProps} />;
   }
 
-  return null;
+  if (loginStatus === 'unknown' || loginStatus === 'loading') {
+    return null;
+  }
+
+  return <Redirect redirect={Component.redirect} />;
 }
 
-function Root(props: ExtendAppProps) {
+function App(props: ExtendAppProps) {
   return (
     <AuthProvider>
       <Head>
         <title>睇小說</title>
       </Head>
-      <App {...props} />
+      <AppContent {...props} />
     </AuthProvider>
   );
 }
 
-export default Root;
+export default App;

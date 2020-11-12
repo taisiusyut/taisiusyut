@@ -13,7 +13,7 @@ export function CardWithLogo({
     <div className="card">
       <Card {...props} elevation={elevation}>
         <div className="header">
-          <div className="image">
+          <div className="logo">
             <Image src="/logo.png" width={imageSize} height={imageSize} />
           </div>
           <H5 children={title} />
@@ -36,13 +36,12 @@ export function CardWithLogo({
             text-align: center;
             margin-bottom: 30px;
 
-            h5 {
-              margin-top: 10px;
-              text-transform: capitalize;
+            :global(h5) {
+              white-space: break-spaces;
             }
           }
 
-          .image {
+          .logo {
             @include margin-y(-10px -25px);
             filter: drop-shadow(2px 4px 6px #ccc);
           }

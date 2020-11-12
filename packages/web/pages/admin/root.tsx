@@ -1,12 +1,13 @@
 import React from 'react';
 import { CardWithLogo } from '@/components/CardWithLogo';
-import { AdminLoginForm } from '@/components/admin/AdminLoginForm';
+import { RootRegisterForm } from '@/components/admin/RootRegisterForm';
+import { UserRole } from '@fullstack/server/dist/typings';
 
-export default function AdminAuth() {
+export default function RootRegistration() {
   return (
     <div className="container">
-      <CardWithLogo title="睇小說">
-        <AdminLoginForm />
+      <CardWithLogo title={`Root\nRegistration`}>
+        <RootRegisterForm />
       </CardWithLogo>
       <style jsx>
         {`
@@ -20,3 +21,6 @@ export default function AdminAuth() {
     </div>
   );
 }
+
+RootRegistration.access = [UserRole.Root];
+RootRegistration.redirect = '/';
