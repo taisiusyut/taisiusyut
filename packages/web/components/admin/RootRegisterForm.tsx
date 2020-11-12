@@ -4,7 +4,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
 import { createUserForm, userValidators } from '@/components/UserForm';
 import { UserRole, Param$CreateUser } from '@/typings';
-import { createUser, logout } from '@/service';
+import { clearJwtToken, createUser, logout } from '@/service';
 import { Toaster } from '@/utils/toaster';
 
 const {
@@ -19,6 +19,7 @@ const {
 const registration = async (payload: Param$CreateUser) => {
   await createUser({ ...payload, role: UserRole.Root });
   await logout();
+  clearJwtToken();
 };
 
 const onSuccess = async () => {
