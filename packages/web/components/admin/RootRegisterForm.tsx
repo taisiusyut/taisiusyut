@@ -35,10 +35,6 @@ const onSuccess = async () => {
 
 const onFailure = Toaster.apiError.bind(Toaster, 'root registration failure');
 
-Toaster.success({
-  message: <div>Root registration success</div>
-});
-
 export function RootRegisterForm() {
   const [form] = useForm();
   const [{ loading }, { fetch }] = useRxAsync(registration, {

@@ -17,7 +17,7 @@ const props: IToasterProps = {
 
 const defaultOptions: Omit<IToastOptions, 'message'> = {
   key: 'toaster',
-  timeout: 40000000
+  timeout: 4000
 };
 
 const toaster =
