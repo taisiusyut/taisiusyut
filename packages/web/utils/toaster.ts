@@ -7,8 +7,7 @@ import {
   IToastProps,
   IToasterProps,
   IToastOptions,
-  Toaster as BpToaster,
-  IToaster
+  Toaster as BpToaster
 } from '@blueprintjs/core';
 import { ApiError, getErrorMessage } from '@/service/getErrorMessage';
 
@@ -18,7 +17,7 @@ const props: IToasterProps = {
 
 const defaultOptions: Omit<IToastOptions, 'message'> = {
   key: 'toaster',
-  timeout: 4000
+  timeout: 40000000
 };
 
 const toaster =
@@ -30,7 +29,7 @@ const toasterSubject = new Subject<IToastProps>();
 toasterSubject
   .pipe(
     concatMap(props => {
-      (toaster as IToaster).show(props);
+      toaster?.show(props);
       return timer(500);
     })
   )
@@ -40,7 +39,7 @@ function renderMessage(titile = '', message: ReactNode = '') {
   return createElement(
     Fragment,
     null,
-    createElement('div', null, titile),
+    createElement('div', { className: `toast-message-title` }, titile),
     createElement('div', null, message)
   );
 }

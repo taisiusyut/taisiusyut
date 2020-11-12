@@ -65,9 +65,9 @@ a:hover,
 }
 
 .#{$ns}-toast-message {
-  margin-bottom: 5px;
-  div:nth-child(1) {
+  .toast-message-title {
     font-weight: bold;
+    font-size: 1.2em;
     margin-bottom: 5px;
   }
 }
