@@ -23,6 +23,7 @@ import {
   Timestamp
 } from '@/typings';
 import { DateRange } from '@/decorators';
+import { InternalServerErrorException } from '@nestjs/common';
 
 export type Condition = Record<string, unknown>;
 
@@ -183,6 +184,11 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   }
 
   async clear(): Promise<void> {
+    if (process.env.NODE_ENV === 'production') {
+      throw new InternalServerErrorException(
+        `You are trying to clear production database`
+      );
+    }
     await this.model.deleteMany({});
   }
 }
