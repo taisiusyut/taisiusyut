@@ -27,8 +27,8 @@ const onSuccess = async () => {
   Toaster.success({
     message: (
       <>
-        <div>Root registration success</div>
-        <div>Please login again</div>
+        <div>root registration success</div>
+        <div>please login again</div>
       </>
     )
   });
