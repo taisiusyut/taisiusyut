@@ -47,7 +47,6 @@ describe('AuthController (e2e)', () => {
       const response = await loginAsDefaultRoot();
       expect(response.error).toBeFalse();
       expect(response.body).toMatchObject({ isDefaultAc: true });
-
       root = response.body;
     });
 
@@ -94,11 +93,15 @@ describe('AuthController (e2e)', () => {
 
   describe('(POST) Refresh Token', () => {
     test('Refresh', async () => {
-      if (refreshTokenVal) {
-        const response = await refreshToken(refreshTokenVal);
-        expect(response.error).toBeFalse();
+      if (!refreshTokenVal) {
+        const response = await createUserAndLogin(root.token);
         validateCookies(response);
       }
+      expect(refreshTokenVal).toEqual(expect.any(String));
+
+      const response = await refreshToken(refreshTokenVal);
+      expect(response.status).toBe(HttpStatus.OK);
+      validateCookies(response);
     });
 
     test.skip(

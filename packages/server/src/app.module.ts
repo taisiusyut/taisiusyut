@@ -35,7 +35,7 @@ const configure = (load: ConfigFactory[] = []) =>
         .default(7 * 24 * 60),
       REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(15),
       DEFAULT_USERNAME: Joi.string().default('admin'),
-      DEFAULT_PASSWORD: Joi.string().default('admin')
+      DEFAULT_PASSWORD: Joi.string().default('12345678')
     })
   });
 
