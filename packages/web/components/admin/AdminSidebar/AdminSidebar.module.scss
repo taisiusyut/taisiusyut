@@ -61,20 +61,16 @@ $radius: 5px;
 
 .item {
   @include relative();
+  color: var(--text-light-color);
   display: block;
   font-weight: 600;
   font-size: 16px;
   padding-left: $sidebar-padding-x;
 
-  &:hover {
-    text-decoration: none;
-  }
-
   &:before {
     @include absolute(0, 0, 0);
     @include margin-y(auto);
     @include sq-dimen(100%);
-
     border-radius: $radius;
     content: '';
   }
@@ -83,54 +79,39 @@ $radius: 5px;
     margin-top: 10px;
   }
 
-  $colors: ($gray3, $blue3, $green3, $orange3, $red3);
-  @each $color in $colors {
-    $i: index($colors, $color);
-    &:nth-child(#{$i}) {
-      .item-icon {
-        color: #fff;
-        background-color: $color;
-      }
+  .item-icon {
+    color: #fff;
+    background-color: var(--text-light-color);
+  }
 
-      [data-theme^='light'] & {
-        &:hover {
-          color: $color;
+  &:hover {
+    text-decoration: none;
+    color: get-color(blue);
 
-          &:before {
-            background-color: rgba($color, 0.1);
-          }
-        }
-      }
+    .item-icon {
+      background-color: get-color(blue);
+    }
 
-      [data-theme^='dark'] & {
-        &:hover {
-          color: lighten($color, 30%);
+    &:before {
+      background-color: rgba(get-color(blue), 0.2);
+    }
+  }
 
-          &:before {
-            background-color: rgba($color, 0.3);
-          }
-        }
-      }
+  &.active {
+    color: #fff;
 
-      &.active {
-        & {
-          color: #fff;
-        }
+    .item-icon {
+      background-color: #fff;
+      color: get-color(blue);
+    }
 
-        .item-icon {
-          background-color: #fff;
-          color: $color;
-        }
-
-        &:before {
-          background-color: $color;
-          // prettier-ignore
-          box-shadow: 
-            0 0 0 1px rgba($color, 0.1), 
-            0 2px 4px rgba($color, 0.2),
-            0 8px 24px rgba($color, 0.2);
-        }
-      }
+    &:before {
+      background-color: get-color(blue);
+      // prettier-ignore
+      box-shadow:
+        0 0 0 1px rgba(get-color(blue), 0.1),
+        0 2px 4px rgba(get-color(blue), 0.2),
+        0 8px 24px rgba(get-color(blue), 0.2);
     }
   }
 }
