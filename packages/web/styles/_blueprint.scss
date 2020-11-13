@@ -1,5 +1,9 @@
 @import './scss/index';
 
+.#{$ns}-button {
+  @include padding-y(7.5px);
+}
+
 .#{$ns}-button:not([class*='bp3-intent-']) {
   .#{$ns}-icon.#{$ns}-icon {
     color: var(--icon-color);

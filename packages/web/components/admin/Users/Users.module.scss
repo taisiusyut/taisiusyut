@@ -1,0 +1,21 @@
+@import '~styles/scss';
+
+.users {
+  padding: 15px;
+}
+
+.header {
+  @include flex(center, space-between);
+
+  h5 {
+    margin-bottom: 0;
+  }
+
+  .button-group {
+    button {
+      + button {
+        margin-left: 10px;
+      }
+    }
+  }
+}

@@ -24,7 +24,7 @@ const itemsOptions: ItemOptions[] = [
     access: [UserRole.Root, UserRole.Admin, UserRole.Author]
   },
   {
-    href: '/admin/user',
+    href: '/admin/users',
     icon: 'user',
     text: 'Users',
     access: [UserRole.Root, UserRole.Admin]

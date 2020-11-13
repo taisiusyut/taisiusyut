@@ -8,23 +8,28 @@ interface Props {
 export function AdminLayout({ children }: Props) {
   return (
     <div className="layout">
-      <div className="layout-content">
+      <div className="layout-body">
         <AdminSidebar />
-        {children}
+        <div className="layout-content">{children}</div>
       </div>
       <style jsx>
         {`
           .layout {
             @include sq-dimen(100%);
             background-color: var(--main-diff1-color);
+            min-height: 100%;
           }
 
-          .layout-content {
+          .layout-body {
             @include dimen(100%);
             @include margin-x(auto);
             @include flex();
             max-width: 1440px;
             min-height: 100%;
+          }
+
+          .layout-content {
+            @include dimen(100%);
           }
         `}
       </style>
