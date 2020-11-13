@@ -1,5 +1,5 @@
 import { Reducer } from 'react';
-import { JWTSignPayload, Schema$User, UserRole } from '@/typings';
+import { JWTSignPayload, Schema$User } from '@/typings';
 
 export type LoginStatus = 'unknown' | 'loading' | 'loggedIn' | 'required';
 
@@ -13,9 +13,7 @@ export interface NotLoggedIn {
   user: null;
 }
 
-export type State = (LoggedIn | NotLoggedIn) & {
-  isAdmin: boolean;
-};
+export type State = LoggedIn | NotLoggedIn;
 
 export type Actions =
   | { type: 'AUTHENTICATE' }
@@ -30,8 +28,7 @@ export interface LogoutOptions {
 
 export const initialState: State = {
   loginStatus: 'unknown',
-  user: null,
-  isAdmin: false
+  user: null
 };
 
 export const authReducer: Reducer<State, Actions> = (prevState, action) => {
@@ -45,7 +42,6 @@ export const authReducer: Reducer<State, Actions> = (prevState, action) => {
     case 'AUTHENTICATE_SUCCESS':
       return {
         ...prevState,
-        isAdmin: [UserRole.Root, UserRole.Admin].includes(action.payload.role),
         user: action.payload,
         loginStatus: 'loggedIn'
       };
