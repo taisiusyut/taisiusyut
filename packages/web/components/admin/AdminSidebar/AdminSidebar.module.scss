@@ -1,38 +1,72 @@
 @import '~styles/scss';
 
 .sidebar {
-  @include dimen($sidebar-width, 100%);
   @include relative();
   flex: 0 0 auto;
   z-index: $pt-z-index-overlay - 1;
+
+  @media (min-width: $break-point + 1) {
+    @include dimen($sidebar-width, 100%);
+  }
+
+  @media (max-width: $break-point) {
+    @include dimen(70px);
+    min-height: 100%;
+  }
 }
 
 .inner {
-  @include dimen(1000px + $sidebar-width);
-  @include fixed();
-  @include padding-y(20px 30px);
-  box-shadow: 1px 0 0 rgba(16, 22, 26, 0.15);
+  @include flex($flex-direction: column);
   background-color: var(--main-color);
-  overflow-y: auto;
+  box-shadow: 1px 0 0 rgba(16, 22, 26, 0.15);
   min-height: 100%;
-  margin-left: -1000px;
-  padding-left: 1000px + $sidebar-padding-x;
-  padding-right: $sidebar-padding-x;
+
+  @media (min-width: $break-point + 1) {
+    @include dimen(1000px + $sidebar-width);
+    @include fixed();
+    overflow-y: auto;
+    margin-left: -1000px;
+    padding-left: 1000px + $sidebar-padding-x;
+    padding-right: $sidebar-padding-x;
+  }
+
+  @media (max-width: $break-point) {
+    @include sq-dimen(100%);
+    @include padding-x(10px);
+  }
 }
 
 .header {
   @include flex(center);
-  margin-left: -5px;
-  margin-top: -10px;
 }
 
 .logo {
+  @include relative();
   flex: 0 0 auto;
+
+  &:before {
+    content: '';
+    display: block;
+    height: 0;
+    padding-bottom: 100%;
+  }
+
+  @media (min-width: $break-point + 1) {
+    @include dimen(75px);
+  }
+
+  @media (max-width: $break-point) {
+    @include dimen(100%);
+  }
 }
 
 .header-content {
   flex: 1 1 auto;
   padding-left: 5px;
+
+  @media (max-width: $break-point) {
+    display: none;
+  }
 }
 
 .nick-name {
@@ -53,6 +87,7 @@
 }
 
 .content {
+  flex: 1 1 auto;
   padding-top: 15px;
 }
 
@@ -61,18 +96,15 @@ $radius: 5px;
 
 .item {
   @include relative();
+  @include dimen(100%);
+  border-radius: $radius;
   color: var(--text-light-color);
-  display: block;
-  font-weight: 600;
+  cursor: pointer;
   font-size: 16px;
-  padding-left: $sidebar-padding-x;
+  font-weight: 600;
 
-  &:before {
-    @include absolute(0, 0, 0);
-    @include margin-y(auto);
-    @include sq-dimen(100%);
-    border-radius: $radius;
-    content: '';
+  @media (min-width: $break-point + 1) {
+    padding-left: $sidebar-padding-x;
   }
 
   + .item {
@@ -85,33 +117,27 @@ $radius: 5px;
   }
 
   &:hover {
-    text-decoration: none;
+    background-color: rgba(get-color(blue), 0.2);
     color: get-color(blue);
+    text-decoration: none;
 
     .item-icon {
       background-color: get-color(blue);
-    }
-
-    &:before {
-      background-color: rgba(get-color(blue), 0.2);
     }
   }
 
   &.active {
     color: #fff;
+    background-color: get-color(blue);
+    // prettier-ignore
+    box-shadow:
+      0 0 0 1px rgba(get-color(blue), 0.1),
+      0 2px 4px rgba(get-color(blue), 0.2),
+      0 8px 24px rgba(get-color(blue), 0.2);
 
     .item-icon {
       background-color: #fff;
       color: get-color(blue);
-    }
-
-    &:before {
-      background-color: get-color(blue);
-      // prettier-ignore
-      box-shadow:
-        0 0 0 1px rgba(get-color(blue), 0.1),
-        0 2px 4px rgba(get-color(blue), 0.2),
-        0 8px 24px rgba(get-color(blue), 0.2);
     }
   }
 }
@@ -125,6 +151,19 @@ $radius: 5px;
 .item-icon {
   @include sq-dimen($icon-size);
   @include flex(center, center);
-  margin-right: 10px;
   border-radius: 9px;
+
+  @media (max-width: $break-point) {
+    margin: auto;
+  }
+}
+
+.item-label {
+  @media (min-width: $break-point + 1) {
+    margin-left: 10px;
+  }
+
+  @media (max-width: $break-point) {
+    display: none;
+  }
 }

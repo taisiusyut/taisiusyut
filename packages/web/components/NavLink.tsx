@@ -21,8 +21,6 @@ export function NavLink({
       ? `${childClassName} ${activeClassName}`.trim()
       : childClassName;
 
-  console.log('childClassName', className);
-
   return (
     <Link {...props}>
       {React.cloneElement(child, {

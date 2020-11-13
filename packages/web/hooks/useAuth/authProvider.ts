@@ -63,7 +63,6 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
         authenticate$(payload)
           .pipe(
             switchMap(async auth => {
-              console.log(router.asPath, router.query);
               if (auth.isDefaultAc) {
                 await router.push('/admin/root');
               } else if (

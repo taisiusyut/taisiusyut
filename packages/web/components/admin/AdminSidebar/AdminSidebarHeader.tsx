@@ -1,10 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button, Popover, Menu, MenuItem } from '@blueprintjs/core';
-import { useAuthState } from '@/hooks/useAuth';
+import { JWTSignPayload } from '@/typings';
 import classNames from './AdminSidebar.module.scss';
 
-const imageSize = 75;
+interface Props {
+  user: JWTSignPayload;
+}
 
 function UserMenu() {
   return (
@@ -14,17 +16,11 @@ function UserMenu() {
   );
 }
 
-export function AdminSidebarHeader() {
-  const { user } = useAuthState();
-
-  if (!user) {
-    return null;
-  }
-
+export function AdminSidebarHeader({ user }: Props) {
   return (
     <div className={classNames.header}>
       <div className={classNames.logo}>
-        <Image src="/logo.png" width={imageSize} height={imageSize} />
+        <Image src="/logo.png" layout="fill" priority unoptimized />
       </div>
       <div className={classNames['header-content']}>
         <Popover content={<UserMenu />}>

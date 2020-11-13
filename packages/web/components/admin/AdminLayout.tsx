@@ -22,6 +22,7 @@ export function AdminLayout({ children }: Props) {
           .layout-content {
             @include dimen(100%);
             @include margin-x(auto);
+            @include flex();
             max-width: 1440px;
             min-height: 100%;
           }

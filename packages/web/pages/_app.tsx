@@ -37,7 +37,7 @@ function AppContent({ Component, pageProps }: ExtendAppProps) {
     const Layout = Component.layout || React.Fragment;
     return (
       <Layout>
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </Layout>
     );
   }

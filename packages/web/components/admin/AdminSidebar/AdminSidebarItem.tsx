@@ -3,17 +3,17 @@ import { Icon, IconName } from '@blueprintjs/core';
 import { NavLink } from '@/components/NavLink';
 import classNames from './AdminSidebar.module.scss';
 
-interface SidebarItemProps {
+export interface SidebarItemProps {
   href: string;
   icon: IconName;
   iconSize?: number;
-  children?: ReactNode;
+  text?: ReactNode;
 }
 
 export function AdminSidebarItem({
   href,
   icon,
-  children,
+  text,
   iconSize = 16
 }: SidebarItemProps) {
   return (
@@ -23,7 +23,7 @@ export function AdminSidebarItem({
           <div className={classNames['item-icon']}>
             <Icon icon={icon} iconSize={iconSize} />
           </div>
-          <span className={classNames['item-label']}>{children}</span>
+          <span className={classNames['item-label']}>{text}</span>
         </div>
       </div>
     </NavLink>

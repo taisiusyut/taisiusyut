@@ -1,9 +1,10 @@
 import React from 'react';
-import Link from 'next/link';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { UserRole } from '@/typings';
 
 export default function BookIndexPage() {
-  return <Link href="/admin">Admin Home</Link>;
+  return <div>Book</div>;
 }
 
 BookIndexPage.layout = AdminLayout;
+BookIndexPage.access = [UserRole.Root, UserRole.Admin, UserRole.Author];
