@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Head from 'next/head';
 import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
+// import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { UserRole } from '@/typings';
 import '@/styles/globals.scss';
@@ -11,6 +12,7 @@ interface ExtendAppProps extends AppProps {
   Component: AppProps['Component'] & {
     access?: UserRole[];
     redirect?: string;
+    layout?: React.ComponentType<{ children?: ReactNode }>;
   };
 }
 
@@ -32,7 +34,12 @@ function AppContent({ Component, pageProps }: ExtendAppProps) {
   }, [actions]);
 
   if (!Component.access || (user && Component.access.includes(user.role))) {
-    return <Component {...pageProps} />;
+    const Layout = Component.layout || React.Fragment;
+    return (
+      <Layout>
+        <Component {...pageProps} />;
+      </Layout>
+    );
   }
 
   if (loginStatus === 'unknown' || loginStatus === 'loading') {

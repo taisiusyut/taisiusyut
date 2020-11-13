@@ -1,0 +1,149 @@
+@import '~styles/scss';
+
+.sidebar {
+  @include dimen($sidebar-width, 100%);
+  @include relative();
+  flex: 0 0 auto;
+  z-index: $pt-z-index-overlay - 1;
+}
+
+.inner {
+  @include dimen(1000px + $sidebar-width);
+  @include fixed();
+  @include padding-y(20px 30px);
+  box-shadow: 1px 0 0 rgba(16, 22, 26, 0.15);
+  background-color: var(--main-color);
+  overflow-y: auto;
+  min-height: 100%;
+  margin-left: -1000px;
+  padding-left: 1000px + $sidebar-padding-x;
+  padding-right: $sidebar-padding-x;
+}
+
+.header {
+  @include flex(center);
+  margin-left: -5px;
+  margin-top: -10px;
+}
+
+.logo {
+  flex: 0 0 auto;
+}
+
+.header-content {
+  flex: 1 1 auto;
+  padding-left: 5px;
+}
+
+.nick-name {
+  font-size: 16px;
+  margin-left: -0.4em;
+  :global {
+    .bp3-button-text {
+      @include text-overflow-ellipsis();
+      max-width: 120px;
+    }
+  }
+}
+
+.role {
+  color: var(--text-light-color);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.content {
+  padding-top: 15px;
+}
+
+$icon-size: 28px;
+$radius: 5px;
+
+.item {
+  @include relative();
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+  padding-left: $sidebar-padding-x;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:before {
+    @include absolute(0, 0, 0);
+    @include margin-y(auto);
+    @include sq-dimen(100%);
+
+    border-radius: $radius;
+    content: '';
+  }
+
+  + .item {
+    margin-top: 10px;
+  }
+
+  $colors: ($gray3, $blue3, $green3, $orange3, $red3);
+  @each $color in $colors {
+    $i: index($colors, $color);
+    &:nth-child(#{$i}) {
+      .item-icon {
+        color: #fff;
+        background-color: $color;
+      }
+
+      [data-theme^='light'] & {
+        &:hover {
+          color: $color;
+
+          &:before {
+            background-color: rgba($color, 0.1);
+          }
+        }
+      }
+
+      [data-theme^='dark'] & {
+        &:hover {
+          color: lighten($color, 30%);
+
+          &:before {
+            background-color: rgba($color, 0.3);
+          }
+        }
+      }
+
+      &.active {
+        & {
+          color: #fff;
+        }
+
+        .item-icon {
+          background-color: #fff;
+          color: $color;
+        }
+
+        &:before {
+          background-color: $color;
+          // prettier-ignore
+          box-shadow: 
+            0 0 0 1px rgba($color, 0.1), 
+            0 2px 4px rgba($color, 0.2),
+            0 8px 24px rgba($color, 0.2);
+        }
+      }
+    }
+  }
+}
+
+.item-content {
+  @include dimen(100%, 50px);
+  @include flex(center);
+  @include relative();
+}
+
+.item-icon {
+  @include sq-dimen($icon-size);
+  @include flex(center, center);
+  margin-right: 10px;
+  border-radius: 9px;
+}

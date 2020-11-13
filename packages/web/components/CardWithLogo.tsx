@@ -43,7 +43,7 @@ export function CardWithLogo({
 
           .logo {
             @include margin-y(-10px -25px);
-            filter: drop-shadow(2px 4px 6px #ccc);
+            filter: drop-shadow(var(--logo-shadow));
           }
         `}
       </style>

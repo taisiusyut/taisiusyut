@@ -19,6 +19,7 @@
   --active-color: rgba(0, 0, 0, 0.08);
   --shadow-color: #ccc;
   --placeholder-color: #e0e0e0;
+  --logo-shadow: 2px 4px 6px #ccc;
 }
 
 [data-theme^='dark'] {
@@ -35,6 +36,7 @@
   --active-color: #393939;
   --shadow-color: #191919;
   --placeholder-color: #888;
+  --logo-shadow: 2px 4px 6px #333;
 }
 
 *,
@@ -74,25 +76,4 @@ a,
 a:hover {
   text-decoration: none;
   color: inherit;
-}
-
-.layout {
-  @include sq-dimen(100%);
-  @include flex();
-  margin: auto;
-  border-left: $divider;
-  border-right: $divider;
-}
-
-[data-screen-width^='limited'] {
-  .layout {
-    max-width: 1280px;
-  }
-}
-
-[data-platform^='win'],
-[data-platform^='linux'] {
-  body {
-    @include scrollbar();
-  }
 }
