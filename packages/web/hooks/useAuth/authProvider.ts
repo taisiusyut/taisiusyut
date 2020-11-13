@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import router from 'next/router';
 import { defer, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Param$Login, Param$CreateUser, Schema$User } from '@/typings';
@@ -60,30 +59,12 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
       },
       authenticate: payload => {
         dispatch({ type: 'AUTHENTICATE' });
-        authenticate$(payload)
-          .pipe(
-            switchMap(async auth => {
-              if (auth.isDefaultAc) {
-                await router.push('/admin/root');
-              } else if (
-                typeof router.query.from === 'string' &&
-                router.query.from !== router.asPath
-              ) {
-                await router.push(router.query.from);
-              } else if (router.asPath.startsWith('/admin')) {
-                await router.push('/admin');
-              } else {
-                await router.push('/');
-              }
-              return auth;
-            })
-          )
-          .subscribe(
-            ({ user }) => {
-              dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: user });
-            },
-            () => dispatch({ type: 'AUTHENTICATE_FAILURE' })
-          );
+        authenticate$(payload).subscribe(
+          ({ user }) => {
+            dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: user });
+          },
+          () => dispatch({ type: 'AUTHENTICATE_FAILURE' })
+        );
       }
     };
   }, []);

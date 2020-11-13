@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import router from 'next/router';
+import { defer } from 'rxjs';
 import { Button } from '@blueprintjs/core';
 import { createUserForm, userValidators } from '@/components/UserForm';
 import { useAuth } from '@/hooks/useAuth';
@@ -6,7 +8,18 @@ import { useAuth } from '@/hooks/useAuth';
 const { Form, Username, Password } = createUserForm();
 
 export function AdminLoginForm() {
-  const [{ loginStatus }, { authenticate }] = useAuth();
+  const [{ loginStatus, user }, { authenticate }] = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      const subscription = defer(() =>
+        router.push(
+          typeof router.query.from === 'string' ? router.query.from : '/admin'
+        )
+      ).subscribe();
+      return () => subscription.unsubscribe();
+    }
+  }, [user]);
 
   return (
     <Form onFinish={authenticate}>
