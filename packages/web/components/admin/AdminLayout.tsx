@@ -24,12 +24,14 @@ export function AdminLayout({ children }: Props) {
             @include dimen(100%);
             @include margin-x(auto);
             @include flex();
-            max-width: 1440px;
+            max-width: $max-width;
             min-height: 100%;
           }
 
           .layout-content {
             @include dimen(100%);
+            flex: 1 1 auto;
+            overflow: hidden;
           }
         `}
       </style>

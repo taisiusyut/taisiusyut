@@ -1,9 +1,13 @@
 $sidebar-width: 250px;
+$sidebar-width-small: 70px;
 $sidebar-padding-x: 15px;
 
 $break-point: 768px;
+$max-width: 1440px;
 
 $divider: 1px solid var(--divider-color);
+
+$min-date-range-input-width: 220px;
 
 @function get-color($color, $tone: primary) {
   @return map-get(map-get($accent-colors, $color), $tone);

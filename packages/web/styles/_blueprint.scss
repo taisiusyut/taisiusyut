@@ -1,7 +1,14 @@
 @import './scss/index';
 
-.#{$ns}-button {
-  @include padding-y(7.5px);
+$btn-min-size: 34px;
+
+.#{$ns}-input {
+  height: $btn-min-size;
+}
+
+.#{$ns}-button.#{$ns}-button {
+  min-width: $btn-min-size;
+  min-height: $btn-min-size;
 }
 
 .#{$ns}-button:not([class*='bp3-intent-']) {

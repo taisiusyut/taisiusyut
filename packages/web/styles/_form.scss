@@ -13,11 +13,16 @@ $help-line-height: 1em;
     }
   }
 
-  &:not(.inline) {
-    .rc-form-item-label:not(:empty) {
-      display: block;
-      margin-bottom: 0px;
-      line-height: 1.8em;
+  &.grid {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax($min-date-range-input-width, 1fr)
+    );
+    gap: 0px 10px;
+
+    .rc-form-item {
+      margin-bottom: 0;
     }
   }
 }

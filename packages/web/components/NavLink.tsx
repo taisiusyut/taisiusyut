@@ -15,9 +15,10 @@ export function NavLink({
   const { asPath } = useRouter();
   const child = Children.only(children);
   const childClassName = child.props.className || '';
+  const pathname = asPath.replace(/\?.*/, '');
 
   const className =
-    asPath === props.href || asPath === props.as
+    pathname === props.href || pathname === props.as
       ? `${childClassName} ${activeClassName}`.trim()
       : childClassName;
 

@@ -6,10 +6,6 @@ interface Options {
   stringifyOptions?: IStringifyOptions;
 }
 
-export function hasQuery(localtion: Location) {
-  return !/(^$|^pageNo=\d+$)/.test(localtion.search.slice(1));
-}
-
 function createSetSearchParam({
   parseOptions,
   stringifyOptions
@@ -19,7 +15,11 @@ function createSetSearchParam({
   ) {
     const newState =
       typeof payload === 'function'
-        ? payload(qs.parse(router.pathname.slice(1), { ...parseOptions }) as T)
+        ? payload(
+            qs.parse(router.asPath.split('?')[1] || '', {
+              ...parseOptions
+            }) as T
+          )
         : payload;
 
     // remove value equals to undefined and ''

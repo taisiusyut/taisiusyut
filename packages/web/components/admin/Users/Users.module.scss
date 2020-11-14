@@ -6,7 +6,6 @@
 
 .header {
   @include flex(center, space-between);
-  margin-bottom: 20px;
 
   h5 {
     margin-bottom: 0;
@@ -19,4 +18,8 @@
       }
     }
   }
+}
+
+.fitler {
+  @include margin-y(20px);
 }

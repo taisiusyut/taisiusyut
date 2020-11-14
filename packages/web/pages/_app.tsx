@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect } from 'react';
 import Head from 'next/head';
 import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
-// import { AdminLayout } from '@/components/admin/AdminLayout';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { UserRole } from '@/typings';
 import '@/styles/globals.scss';

@@ -2,6 +2,7 @@
 
 import React, { ReactElement, ReactNode } from 'react';
 import RcForm, { Field as RcField, useForm as RcUseForm } from 'rc-field-form';
+import { FormGroup, IFormGroupProps } from '@blueprintjs/core';
 import { FormProps as RcFormProps } from 'rc-field-form/es/Form';
 import { FieldProps as RcFieldProps } from 'rc-field-form/es/Field';
 import { Meta, FieldError, Store } from 'rc-field-form/lib/interface';
@@ -11,11 +12,6 @@ import { NamePath, Paths, PathType, DeepPartial, Control } from './typings';
 type HTMLDivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
->;
-
-type HTMLLabelProps = React.DetailedHTMLProps<
-  React.LabelHTMLAttributes<HTMLLabelElement>,
-  HTMLLabelElement
 >;
 
 export interface FieldData<S extends {} = Store, Name = NamePath<S>>
@@ -58,6 +54,7 @@ export interface FormProps<S extends {} = Store, V = S>
   ref?: React.Ref<FormInstance<S>>;
   transoformInitialValues?: (payload: DeepPartial<V>) => DeepPartial<S>;
   beforeSubmit?: (payload: S) => V;
+  layout?: 'vertical' | 'hrozional' | 'inline' | 'grid';
 }
 
 type OmititedRcFieldProps = Omit<
@@ -98,11 +95,11 @@ type FormItemPropsDeps<S extends {} = Store> =
     };
 
 export type FormItemProps<S extends {} = Store> = BasicFormItemProps<S> &
-  FormItemPropsDeps<S>;
+  FormItemPropsDeps<S> &
+  Pick<IFormGroupProps, 'label' | 'inline'>;
 
 export interface FormItemClassName {
   item?: string;
-  label?: string;
   error?: string;
   touched?: string;
   validating?: string;
@@ -130,7 +127,6 @@ export function createShouldUpdate(
 
 const defaultFormItemClassName: Required<FormItemClassName> = {
   item: 'rc-form-item',
-  label: 'rc-form-item-label',
   error: 'rc-form-item-error',
   touched: 'rc-form-item-touched',
   validating: 'rc-form-item-validating',
@@ -143,26 +139,6 @@ export function createForm<S extends {} = Store, V = S>({
 }: Partial<FormItemProps<S>> & { itemClassName?: FormItemClassName } = {}) {
   const ClassNames = { ...defaultFormItemClassName, ...itemClassName };
 
-  const FormItemLabel: React.FC<FormItemLabelProps> = ({
-    className = defaultProps.className,
-    children,
-    label,
-    ...props
-  }) =>
-    React.createElement<HTMLDivProps>(
-      'div',
-      {
-        ...props,
-        className: [className, ClassNames.item].filter(Boolean).join(' ').trim()
-      },
-      React.createElement<HTMLLabelProps>(
-        'label',
-        { className: ClassNames.label },
-        label
-      ),
-      children
-    );
-
   const FormItem = (itemProps: FormItemProps<S>) => {
     const {
       name,
@@ -171,6 +147,7 @@ export function createForm<S extends {} = Store, V = S>({
       deps = [],
       noStyle,
       label,
+      inline,
       className = '',
       ...props
     } = {
@@ -206,6 +183,8 @@ export function createForm<S extends {} = Store, V = S>({
       ) => {
         const { getFieldsValue } = form;
 
+        const error = errors && errors[0];
+
         const childNode =
           typeof children === 'function'
             ? children(getFieldsValue(deps))
@@ -219,14 +198,14 @@ export function createForm<S extends {} = Store, V = S>({
           return childNode;
         }
 
-        const error = errors && errors[0];
-
-        return React.createElement<FormItemLabelProps>(
-          FormItemLabel,
+        return React.createElement<IFormGroupProps>(
+          FormGroup,
           {
             label,
+            inline,
             className: [
               className,
+              ClassNames.item,
               error && ClassNames.error,
               touched && ClassNames.touched,
               validating && ClassNames.validating
@@ -249,12 +228,13 @@ export function createForm<S extends {} = Store, V = S>({
   const Form = React.forwardRef<FormInstance<S>, FormProps<S, V>>(
     (
       {
+        layout = 'vertical',
+        className = '',
         children,
         onFinish,
         beforeSubmit,
         initialValues,
         transoformInitialValues,
-        className,
         ...props
       },
       ref
@@ -264,7 +244,7 @@ export function createForm<S extends {} = Store, V = S>({
         {
           ...props,
           ref,
-          className: ['rc-form', className].filter(Boolean).join(' '),
+          className: `rc-form ${layout} ${className}`.trim(),
           initialValues:
             initialValues && transoformInitialValues
               ? transoformInitialValues(initialValues)
@@ -286,16 +266,6 @@ export function createForm<S extends {} = Store, V = S>({
     FormItem,
     FormList: RcForm.List,
     FormProvider: RcForm.FormProvider,
-    FormItemLabel,
     useForm
   };
 }
-
-export const {
-  Form,
-  FormItem,
-  FormItemLabel,
-  FormList,
-  useForm,
-  FormProvider
-} = createForm();

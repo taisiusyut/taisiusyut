@@ -1,0 +1,67 @@
+@import '~styles/scss';
+
+.filter {
+  :global {
+    button {
+      margin-left: 5px;
+    }
+  }
+}
+
+.search-input {
+  flex: 1 0 auto;
+}
+
+.filter-popover {
+  $padding: 15px;
+  $popover-max-width: calc(100vw - #{$sidebar-width} - #{$padding * 2});
+  $space: $padding * 2 + 30px + 40px;
+
+  :global {
+    .#{$ns}-popover-content {
+      padding: $padding;
+    }
+
+    .rc-form.grid {
+      // @include dimen($popover-max-width);
+      max-width: 100%;
+
+      @media (max-width: $break-point) {
+        width: calc(100vw - #{$sidebar-width-small} - #{$space});
+      }
+
+      @media (min-width: $break-point + 1) {
+        max-width: $max-width - $sidebar-width - $space;
+        width: calc(100vw - #{$sidebar-width} - #{$padding * 2});
+      }
+    }
+  }
+
+  .numeric-range-input {
+    input:focus {
+      z-index: 10;
+    }
+  }
+
+  // .numeric-range-input,
+  // .date-range-input {
+  //   min-width: $min-date-range-input-width;
+  //   .#{$ns}-input-group {
+  //     flex: 1 0 50%;
+  //     input {
+  //       text-align: center;
+  //     }
+  //   }
+  // }
+}
+
+.filter-footer {
+  text-align: right;
+  :global {
+    .#{$ns}-button {
+      + .#{$ns}-button {
+        margin-left: 10px;
+      }
+    }
+  }
+}

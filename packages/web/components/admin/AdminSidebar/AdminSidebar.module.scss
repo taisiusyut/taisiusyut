@@ -10,7 +10,7 @@
   }
 
   @media (max-width: $break-point) {
-    @include dimen(70px);
+    @include dimen($sidebar-width-small);
     min-height: 100%;
   }
 }

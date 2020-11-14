@@ -56,7 +56,11 @@ export function parsePaginatePayload<I>(payload: PaginatePayload<I>) {
     : payload;
 }
 
-function equals(a: Record<string, any>, b: Record<string, any>): boolean {
+function equals(a: any, b: any): boolean {
+  if (a === b) return true;
+  if (!a || !b || (typeof a !== 'object' && typeof b !== 'object'))
+    return a === b;
+  if (a.prototype !== b.prototype) return false;
   const keys = Object.keys(a);
   if (keys.length !== Object.keys(b).length) return false;
   return keys.every(k => equals(a[k], b[k]));
@@ -209,20 +213,14 @@ export const createCRUDReducer: CreateCRUDReducer = <
 
       const newPageNo = toNum(pageNo, state.pageNo);
       const newPageSize = toNum(pageSize, state.pageSize);
+      const hasChanged = !equals(state.params, params);
 
-      const hasChanged =
-        state.pageNo !== newPageNo ||
-        state.pageSize !== newPageSize ||
-        !equals(state.params, params);
-
-      return hasChanged
-        ? {
-            ...state,
-            pageNo: newPageNo,
-            pageSize: newPageSize,
-            params
-          }
-        : state;
+      return {
+        ...(hasChanged ? defaultState : state),
+        pageNo: newPageNo,
+        pageSize: newPageSize,
+        params
+      };
     }
 
     if (isAction(actionTypes, action, 'RESET')) {

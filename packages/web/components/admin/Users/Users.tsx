@@ -1,11 +1,15 @@
 import React from 'react';
 import { Button, Card, H5 } from '@blueprintjs/core';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
-import { Schema$User } from '@/typings';
+import { createFilter } from '@/components/Filter';
+import { UserRoleSelect } from '@/components/UserRoleSelect';
+import { Schema$User, Param$GetUsers } from '@/typings';
 import { getUsers } from '@/service';
 import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
-import classNames from './Users.module.scss';
+import classes from './Users.module.scss';
+
+const { Filter, FilterInput, FormItem } = createFilter<Param$GetUsers>();
 
 const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
   'id',
@@ -13,25 +17,33 @@ const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
 );
 
 export function Users() {
-  const { list, loading, pagination, actions } = useUserPagination();
+  const { list, loading, pagination, params, actions } = useUserPagination();
 
   return (
-    <div className={classNames.users}>
+    <div className={classes.users}>
       <Card>
-        <div className={classNames.header}>
+        <div className={classes.header}>
           <H5>Users</H5>
-          <div className={classNames['button-group']}>
+          <div className={classes['button-group']}>
             <Button>Export</Button>
             <CreateUser onCreate={actions.create} />
           </div>
         </div>
-        <div className={classNames.content}>
-          <UserTable
-            data={list as any}
-            loading={loading}
-            pagination={pagination}
-          />
-        </div>
+
+        <Filter initialValues={params} className={classes.fitler}>
+          <FilterInput name="username" label="Username" />
+          <FilterInput name="email" label="Email" />
+          <FilterInput name="nickname" label="Nickname" />
+          <FormItem name="role" label="Role">
+            <UserRoleSelect />
+          </FormItem>
+        </Filter>
+
+        <UserTable
+          data={list as any}
+          loading={loading}
+          pagination={pagination}
+        />
       </Card>
     </div>
   );
