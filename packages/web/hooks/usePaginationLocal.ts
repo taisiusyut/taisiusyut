@@ -36,7 +36,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       actions.params(qs.parse(asPath.split('?')[1] || ''));
     }, [actions, asPath]);
 
-    const payload = paginateSelector(state);
+    const payload = paginateSelector(state, { prefill: {} });
 
     const { loading, pagination, fetch } = usePagination(request, {
       ...options,

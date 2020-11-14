@@ -57,7 +57,7 @@ export function parsePaginatePayload<I>(payload: PaginatePayload<I>) {
     : payload;
 }
 
-function equals(a: any, b: any): boolean {
+export function equals(a: any, b: any): boolean {
   if (a === b) return true;
   if (!a || !b || (typeof a !== 'object' && typeof b !== 'object'))
     return a === b;

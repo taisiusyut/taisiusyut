@@ -1,4 +1,4 @@
-import { CRUDState } from './crudReducer';
+import { CRUDState, equals } from './crudReducer';
 
 export interface PaginateState<S extends CRUDState<unknown, any>> {
   ids: S['ids'];
@@ -10,29 +10,28 @@ export interface PaginateState<S extends CRUDState<unknown, any>> {
   hasData: boolean;
 }
 
-export function paginateSelector<S extends CRUDState<any, any>>({
-  list,
-  ids,
-  pageNo,
-  pageSize,
-  params,
-  total
-}: S): PaginateState<S> {
+export interface PaginateSelectorOptions {
+  prefill?: unknown;
+}
+
+export function paginateSelector<S extends CRUDState<any, any>>(
+  { list, ids, pageNo, pageSize, params, total }: S,
+  { prefill = null }: PaginateSelectorOptions = {}
+): PaginateState<S> {
   const start = (pageNo - 1) * pageSize;
   const _list = list.slice(start, start + pageSize);
-  const _ids = ids.slice(start, start + pageSize);
 
   let hasData = !!_list.length;
   for (const item of _list) {
-    if (item === null) {
+    if (equals(item, prefill)) {
       hasData = false;
       break;
     }
   }
 
   return {
-    list: _list,
-    ids: _ids,
+    list,
+    ids,
     pageNo,
     pageSize,
     total,

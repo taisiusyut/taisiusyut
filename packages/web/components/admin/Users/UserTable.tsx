@@ -13,7 +13,10 @@ const userColumns: Columns = [
   {
     id: 'index',
     accessor: (_, index) => index + 1,
-    Header: () => 'Index'
+    Header: () => <div style={{ textAlign: 'center' }}>Index</div>,
+    Cell: ({ value }: { value: number }) => (
+      <div style={{ textAlign: 'center' }}>{value}</div>
+    )
   },
   {
     id: 'username',

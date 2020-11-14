@@ -1,7 +1,11 @@
-import React, { ReactNode } from 'react';
-import { useTable, TableOptions } from 'react-table';
+import React, { ReactNode, Ref, useImperativeHandle } from 'react';
+import {
+  useTable,
+  usePagination,
+  TableOptions,
+  TableInstance
+} from 'react-table';
 import { HTMLTable } from '@blueprintjs/core';
-import { Order } from '@/typings';
 import classes from './Table.module.scss';
 
 export * from 'react-table';
@@ -9,21 +13,22 @@ export * from 'react-table';
 export interface TableProps<T extends {}> extends TableOptions<T> {
   className?: string;
   children?: ReactNode;
-  sort?: Partial<Record<string, Order>>;
 }
 
-export function Table<T extends {}>({
-  className = '',
-  children,
-  ...props
-}: TableProps<T>) {
+function TableComponent<T extends {}>(
+  { className = '', children, ...props }: TableProps<T>,
+  ref?: Ref<TableInstance<T>>
+) {
+  const state = useTable(props, usePagination);
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow
-  } = useTable(props);
+  } = state;
+
+  useImperativeHandle(ref, () => state);
 
   return (
     <div className={`${classes.table} ${className}`.trim()}>
@@ -42,7 +47,7 @@ export function Table<T extends {}>({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
+          {page.map(row => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
@@ -60,3 +65,5 @@ export function Table<T extends {}>({
     </div>
   );
 }
+
+export const Table = React.forwardRef(TableComponent);
