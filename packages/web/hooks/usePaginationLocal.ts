@@ -15,14 +15,17 @@ import {
 interface Props<I>
   extends Omit<Partial<UsePaginationOptions<I>>, 'onSuccess'> {}
 
-interface Options extends CreateCRUDReducerOptions {}
+interface Options<T> extends CreateCRUDReducerOptions<Partial<T>> {}
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: PaginateAsyncRequst<I>,
-  curdOptions?: Options
+  curdOptions?: Options<I>
 ) {
-  const useCRUDReducer = createUseCRUDReducer<I, K>(key, curdOptions);
+  const useCRUDReducer = createUseCRUDReducer<I, K>(key, {
+    ...curdOptions,
+    prefill: {}
+  });
 
   return function usePaginationLocal(options?: Props<I>) {
     const [state, actions] = useCRUDReducer();

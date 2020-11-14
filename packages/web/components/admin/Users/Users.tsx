@@ -39,11 +39,7 @@ export function Users() {
           </FormItem>
         </Filter>
 
-        <UserTable
-          data={list as any}
-          loading={loading}
-          pagination={pagination}
-        />
+        <UserTable data={list} loading={loading} pagination={pagination} />
       </Card>
     </div>
   );

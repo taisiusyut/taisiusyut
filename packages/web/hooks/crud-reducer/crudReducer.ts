@@ -10,10 +10,10 @@ import {
   List
 } from './crudAction';
 
-export interface CRUDState<I, Prefill extends boolean = true> {
+export interface CRUDState<I, Prefill extends any = null> {
   ids: string[];
   byIds: Record<string, I>;
-  list: Prefill extends true ? Array<I | null> : I[];
+  list: Prefill extends false ? I[] : (I | Prefill)[];
   pageNo: number;
   pageSize: number;
   total: number;
@@ -23,7 +23,7 @@ export interface CRUDState<I, Prefill extends boolean = true> {
 export type CRUDReducer<
   I,
   K extends Key<I>,
-  Prefill extends boolean = true,
+  Prefill extends any = null,
   M extends CRUDActionTypes = CRUDActionTypes
 > = (
   state: CRUDState<I, Prefill>,
@@ -31,9 +31,10 @@ export type CRUDReducer<
 ) => CRUDState<I, Prefill>;
 
 export interface CreateCRUDReducerOptions<
+  Prefill extends any = null,
   M extends CRUDActionTypes = CRUDActionTypes
 > {
-  prefill?: boolean;
+  prefill?: Prefill;
   actionTypes?: M;
   keyGenerator?: (index: number) => string;
 }
@@ -68,20 +69,21 @@ function equals(a: any, b: any): boolean {
 
 // prettier-ignore
 export interface CreateCRUDReducer  {
-  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options: CreateCRUDReducerOptions<M> & { prefill: false }): [CRUDState<I, false>, CRUDReducer<I, K, false>];
-  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<M>): [CRUDState<I, true>, CRUDReducer<I, K, true>];
-  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<M>): [CRUDState<I, boolean>, CRUDReducer<I, K, boolean, M>];
+  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options: CreateCRUDReducerOptions<false, M> & { prefill: false }): [CRUDState<I, false>, CRUDReducer<I, K, false, M>];
+  <I, K extends Key<I>, Prefill = any, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options: CreateCRUDReducerOptions<Prefill, M> & { prefill: Prefill }): [CRUDState<I, Prefill>, CRUDReducer<I, K, Prefill, M>];
+  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<null, M>): [CRUDState<I, null>, CRUDReducer<I, K, null, M>];
 }
 
 export const createCRUDReducer: CreateCRUDReducer = <
   I,
   K extends Key<I>,
+  Prefill extends any = any,
   M extends CRUDActionTypes = CRUDActionTypes
 >(
   key: K,
-  options?: CreateCRUDReducerOptions<M>
-): [CRUDState<I, boolean>, CRUDReducer<I, K, boolean, M>] => {
-  const defaultState: CRUDState<I, boolean> = {
+  options?: CreateCRUDReducerOptions<Prefill, M>
+): [CRUDState<I, Prefill>, CRUDReducer<I, K, Prefill, M>] => {
+  const defaultState: CRUDState<I, any> = {
     byIds: {},
     ids: [],
     list: [],
@@ -92,12 +94,12 @@ export const createCRUDReducer: CreateCRUDReducer = <
   };
 
   const {
-    prefill = true,
+    prefill = null,
     keyGenerator = defaultKeyGenerator,
     actionTypes = DefaultCRUDActionTypes as M
   } = options || {};
 
-  const reducer: CRUDReducer<I, K, boolean, M> = (
+  const reducer: CRUDReducer<I, K, Prefill, M> = (
     state = defaultState,
     action
   ) => {
@@ -148,7 +150,7 @@ export const createCRUDReducer: CreateCRUDReducer = <
             ids
           ),
           list: insert(
-            [...state.list, ...Array.from({ length }, () => null)],
+            [...state.list, ...Array.from({ length }, () => prefill)],
             list
           )
         };
