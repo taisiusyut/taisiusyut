@@ -39,8 +39,8 @@ export interface Timestamp {
 export type DateRange = [string, string];
 
 export enum Order {
-  ASC,
-  DESC
+  ASC = 1,
+  DESC = -1
 }
 
 export interface Pagination<T = any> {

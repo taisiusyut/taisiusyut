@@ -48,7 +48,8 @@ class Base implements QuerySchema {
   size?: number;
 
   @IsOptional()
-  sort?: Pagination['sort'];
+  @Transform(value => value && JSON.parse(value))
+  sort?: Order;
 
   @Exclude()
   condition?: Condition[];
