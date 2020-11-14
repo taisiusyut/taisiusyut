@@ -3,7 +3,7 @@ import { Button, Card, H4 } from '@blueprintjs/core';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { createFilter } from '@/components/Filter';
 import { UserRoleSelect } from '@/components/UserRoleSelect';
-import { Schema$User, Param$GetUsers } from '@/typings';
+import { Schema$User, Param$GetUsers, Order } from '@/typings';
 import { getUsers } from '@/service';
 import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
@@ -22,7 +22,13 @@ const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
 );
 
 export function Users() {
-  const { list, loading, pagination, params, actions } = useUserPagination();
+  const {
+    list,
+    loading,
+    pagination,
+    params: { sort = { createdAt: Order.DESC }, ...params },
+    actions
+  } = useUserPagination();
 
   return (
     <div className={classes.users}>
@@ -31,7 +37,14 @@ export function Users() {
           <H4>Users</H4>
           <div className={classes['button-group']}>
             <Button>Export</Button>
-            <CreateUser onCreate={actions.create} />
+            <CreateUser
+              onCreate={user =>
+                actions.insert(
+                  user,
+                  Number(sort['createdAt']) === Order.ASC ? list.length : 0
+                )
+              }
+            />
           </div>
         </div>
 

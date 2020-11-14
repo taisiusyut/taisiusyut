@@ -30,6 +30,7 @@ export type CRUDActionType =
   | 'CREATE'
   | 'UPDATE'
   | 'DELETE'
+  | 'INSERT'
   | 'PAGINATE'
   | 'PARAMS'
   | 'RESET';
@@ -64,6 +65,12 @@ export type Create<Type extends string, I> = {
   payload: I;
 };
 
+export type Insert<Type extends string, I> = {
+  type: Type;
+  payload: I;
+  index?: number;
+};
+
 export interface Update<Type extends string, I, K extends Key<I>> {
   type: Type;
   payload: UpdatePayload<I, K>;
@@ -95,6 +102,7 @@ export type CRUDActionCreators<
 > = {
   list: (payload: I[]) => List<M['LIST'], I>;
   create: (payload: I) => Create<M['CREATE'], I>;
+  insert: (payload: I, index?: number) => Insert<M['INSERT'], I>;
   update: (
     payload: Update<string, I, K>['payload']
   ) => Update<M['UPDATE'], I, K>;
@@ -131,6 +139,7 @@ export function isAction<
 export const DefaultCRUDActionTypes = {
   LIST: 'LIST',
   CREATE: 'CREATE',
+  INSERT: 'INSERT',
   UPDATE: 'UPDATE',
   DELETE: 'DELETE',
   PAGINATE: 'PAGINATE',
@@ -153,7 +162,8 @@ export function getCRUDActionsCreator<I, K extends Key<I>>() {
       delete: payload => ({ type: actionTypes['DELETE'], payload }),
       paginate: payload => ({ type: actionTypes['PAGINATE'], payload }),
       params: payload => ({ type: actionTypes['PARAMS'], payload }),
-      reset: () => ({ type: actionTypes['RESET'] })
+      reset: () => ({ type: actionTypes['RESET'] }),
+      insert: (payload, index?: number) => ({ type: actionTypes['INSERT'], payload, index }),
     };
     return [creators, actionTypes] as const;
   }

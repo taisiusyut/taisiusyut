@@ -74,6 +74,13 @@ export interface CreateCRUDReducer  {
   <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<null, M>): [CRUDState<I, null>, CRUDReducer<I, K, null, M>];
 }
 
+const insertHanlder = (from: number, to: number) => <T1, T2>(
+  arr: T1[],
+  ids: T2[]
+) => {
+  return [...arr.slice(0, from), ...ids, ...arr.slice(to)];
+};
+
 export const createCRUDReducer: CreateCRUDReducer = <
   I,
   K extends Key<I>,
@@ -118,13 +125,7 @@ export const createCRUDReducer: CreateCRUDReducer = <
 
         const start = (pageNo - 1) * pageSize;
 
-        const insert = <T1, T2>(arr: T1[], ids: T2[]) => {
-          return [
-            ...arr.slice(0, start),
-            ...ids,
-            ...arr.slice(start + pageSize)
-          ];
-        };
+        const insert = insertHanlder(start, start + pageSize);
 
         const { list, ids, byIds } = reducer(defaultState, {
           type: actionTypes['LIST'],
@@ -166,7 +167,7 @@ export const createCRUDReducer: CreateCRUDReducer = <
     }
 
     if (isAction(actionTypes, action, 'CREATE')) {
-      const id: string = action.payload[key] as any;
+      const id = (action.payload[key] as unknown) as string;
       return {
         ...state,
         byIds: { ...state.byIds, [id]: action.payload },
@@ -227,6 +228,19 @@ export const createCRUDReducer: CreateCRUDReducer = <
 
     if (isAction(actionTypes, action, 'RESET')) {
       return defaultState;
+    }
+
+    if (isAction(actionTypes, action, 'INSERT')) {
+      const { payload, index = 0 } = action;
+      const insert = insertHanlder(index, index);
+      const id = (action.payload[key] as unknown) as string;
+
+      return {
+        ...state,
+        ids: insert(state.ids, [id]),
+        list: insert(state.list, [payload]),
+        byIds: { ...state.byIds, [id]: payload }
+      };
     }
 
     return state;
