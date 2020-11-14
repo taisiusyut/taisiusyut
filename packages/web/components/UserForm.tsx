@@ -24,7 +24,7 @@ export const userValidators = {
 };
 
 export function createUserForm({
-  large = true,
+  large = false,
   ...itemProps
 }: FormItemProps<Schema> & { large?: boolean } = {}) {
   const components = createForm<Schema>(itemProps);

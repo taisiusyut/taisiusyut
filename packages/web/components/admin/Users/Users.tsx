@@ -9,7 +9,12 @@ import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
 import classes from './Users.module.scss';
 
-const { Filter, FilterInput, FormItem } = createFilter<Param$GetUsers>();
+const {
+  FormItem,
+  Filter,
+  FilterInput,
+  FilterDateRange //
+} = createFilter<Param$GetUsers>();
 
 const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
   'id',
@@ -37,6 +42,7 @@ export function Users() {
           <FormItem name="role" label="Role">
             <UserRoleSelect />
           </FormItem>
+          <FilterDateRange name="createdAt" label="Created At" />
         </Filter>
 
         <UserTable data={list} loading={loading} pagination={pagination} />

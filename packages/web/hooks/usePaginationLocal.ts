@@ -11,6 +11,7 @@ import {
   PaginateAsyncRequst,
   UsePaginationOptions
 } from './usePagination';
+import qs from 'qs';
 
 interface Props<I>
   extends Omit<Partial<UsePaginationOptions<I>>, 'onSuccess'> {}
@@ -29,11 +30,11 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
 
   return function usePaginationLocal(options?: Props<I>) {
     const [state, actions] = useCRUDReducer();
-    const { query } = useRouter();
+    const { asPath } = useRouter();
 
     useEffect(() => {
-      actions.params(query);
-    }, [actions, query]);
+      actions.params(qs.parse(asPath.split('?')[1] || ''));
+    }, [actions, asPath]);
 
     const payload = paginateSelector(state);
 

@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import router from 'next/router';
+import dynamic from 'next/dynamic';
 import { fromEvent } from 'rxjs';
 import { Button, Popover, H5, IPopoverProps } from '@blueprintjs/core';
+import type { IDateRangeInputProps } from '@blueprintjs/datetime';
 import { useBoolean } from '@/hooks/useBoolean';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { Input, SearchInput } from '@/components/Input';
@@ -13,6 +15,7 @@ import {
 } from '@/utils/form';
 import { setSearchParam } from '@/utils/setSearchParam';
 import classes from './Filter.module.scss';
+import dayjs from 'dayjs';
 
 interface FilterInputProps {
   deps?: undefined;
@@ -23,6 +26,16 @@ interface FilterDateRangeProps {
   deps?: undefined;
 }
 
+const DateRangeInput = dynamic<IDateRangeInputProps>(() =>
+  import(
+    /* webpackChunkName: "@blueprintjs/datetime" */ '@blueprintjs/datetime'
+  ).then(({ DateRangeInput }) => DateRangeInput)
+);
+
+function toDateRange(payload?: string[]) {
+  return payload?.map(s => new Date(s));
+}
+
 export function createFilter<T extends Record<string, any>>(
   itemProps?: FormItemProps<T>
 ) {
@@ -30,6 +43,18 @@ export function createFilter<T extends Record<string, any>>(
   const { Form, FormItem, useForm } = components;
   const setQuery = (params: Record<string, unknown>) =>
     setSearchParam({ ...router.query, ...params });
+
+  function transoformInitialValues({
+    createdAt,
+    updatedAt,
+    ...rest
+  }: Record<string, any> = {}) {
+    return ({
+      ...rest,
+      createdAt: toDateRange(createdAt),
+      updatedAt: toDateRange(updatedAt)
+    } as unknown) as DeepPartial<T>;
+  }
 
   function FilterContent({
     children,
@@ -39,6 +64,13 @@ export function createFilter<T extends Record<string, any>>(
     ...props
   }: FormProps<T> = {}) {
     const [form] = useForm();
+    const [values] = useState(transoformInitialValues(initialValues));
+
+    // cannot pass `initialValues` props to `Form`
+    // otherwise `form.resetFields()` will not works
+    useEffect(() => {
+      values && form.setFieldsValue(values);
+    }, [values, form]);
 
     return (
       <div>
@@ -65,7 +97,11 @@ export function createFilter<T extends Record<string, any>>(
     );
   }
 
-  function Filter({ className = '', ...props }: FormProps<T> = {}) {
+  function Filter({
+    className = '',
+    initialValues,
+    ...props
+  }: FormProps<T> = {}) {
     const [isOpen, open, close] = useBoolean();
     const [modifiers, setModifiers] = useState<IPopoverProps['modifiers']>();
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -102,7 +138,7 @@ export function createFilter<T extends Record<string, any>>(
       <Form
         layout="inline"
         className={`${classes['filter']} ${className}`.trim()}
-        initialValues={({ search: query.search } as unknown) as DeepPartial<T>}
+        initialValues={initialValues}
         onFinish={({ search }) => search && setQuery({ search })}
       >
         <FormItem name="search" className={classes['search-input']}>
@@ -112,13 +148,20 @@ export function createFilter<T extends Record<string, any>>(
         </FormItem>
 
         <Button type="submit" icon="search" />
+
         <Popover
           position="bottom"
           isOpen={isOpen}
           onClose={close}
           modifiers={modifiers}
           popoverClassName={classes['filter-popover']}
-          content={<FilterContent {...props} onFinish={close} />}
+          content={
+            <FilterContent
+              {...props}
+              initialValues={initialValues}
+              onFinish={close}
+            />
+          }
         >
           <ButtonPopover
             onClick={open}
@@ -148,13 +191,13 @@ export function createFilter<T extends Record<string, any>>(
   ) {
     return (
       <FormItem {...props}>
-        {/* <DateRangeInput
-          className="date-range-input"
+        <DateRangeInput
+          className={classes['date-range-input']}
           shortcuts={false}
           allowSingleDayRange
           formatDate={date => dayjs(date).format('YYYY-MM-DD')}
           parseDate={str => new Date(str)}
-        /> */}
+        />
       </FormItem>
     );
   }

@@ -23,7 +23,6 @@
     }
 
     .rc-form.grid {
-      // @include dimen($popover-max-width);
       max-width: 100%;
 
       @media (max-width: $break-point) {
@@ -32,27 +31,22 @@
 
       @media (min-width: $break-point + 1) {
         max-width: $max-width - $sidebar-width - $space;
-        width: calc(100vw - #{$sidebar-width} - #{$padding * 2});
+        width: calc(100vw - #{$sidebar-width} - #{$space});
       }
     }
   }
+}
 
-  .numeric-range-input {
-    input:focus {
-      z-index: 10;
+.date-range-input {
+  min-width: $min-date-range-input-width;
+  :global {
+    .#{$ns}-input-group {
+      flex: 1 0 50%;
+      input {
+        text-align: center;
+      }
     }
   }
-
-  // .numeric-range-input,
-  // .date-range-input {
-  //   min-width: $min-date-range-input-width;
-  //   .#{$ns}-input-group {
-  //     flex: 1 0 50%;
-  //     input {
-  //       text-align: center;
-  //     }
-  //   }
-  // }
 }
 
 .filter-footer {
