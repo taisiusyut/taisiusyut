@@ -40,9 +40,12 @@ export function createUserForm({
     </FormItem>
   );
 
-  const Password = (props: FormItemProps<Schema> = {}) => (
+  const Password = ({
+    visible,
+    ...props
+  }: FormItemProps<Schema> & { visible?: boolean } = {}) => (
     <FormItem {...(props as unknown)} name="password" label="Password">
-      <PasswordInput large={large} />
+      <PasswordInput large={large} visible={visible} />
     </FormItem>
   );
 
@@ -83,7 +86,7 @@ export function createUserForm({
   );
 
   const UserRole = () => (
-    <FormItem name="role" label="User role" normalize={Number}>
+    <FormItem name="role" label="Role" normalize={Number}>
       <UserRoleSelect large={large} />
     </FormItem>
   );
