@@ -1,0 +1,28 @@
+@import '~styles/scss';
+
+.pagiation {
+  @include dimen(100%);
+  text-align: right;
+
+  :global {
+    .#{$ns}-divider {
+      @include margin-y(25px);
+    }
+
+    .#{$ns}-button {
+      $size: 35px;
+      min-width: $size;
+      min-height: $size;
+
+      &.page-no {
+        font-size: 12px;
+      }
+    }
+
+    .#{$ns}-button:not([class*=#{'' + $ns + '-intent-'}]):disabled,
+    .#{$ns}-button:not([class*=#{'' + $ns + '-intent-'}]).#{$ns}-disabled {
+      box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2),
+        inset 0 -1px 0 rgba(16, 22, 26, 0.1);
+    }
+  }
+}
