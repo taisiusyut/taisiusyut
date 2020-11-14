@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import router from 'next/router';
 import dynamic from 'next/dynamic';
-import { fromEvent } from 'rxjs';
 import { Button, Popover, H5, IPopoverProps } from '@blueprintjs/core';
 import type { IDateRangeInputProps } from '@blueprintjs/datetime';
-import { useBoolean } from '@/hooks/useBoolean';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { Input, SearchInput } from '@/components/Input';
 import {
@@ -102,7 +100,7 @@ export function createFilter<T extends Record<string, any>>(
     initialValues,
     ...props
   }: FormProps<T> = {}) {
-    const [isOpen, open, close] = useBoolean();
+    const [isOpen, setIsOpen] = useState(false);
     const [modifiers, setModifiers] = useState<IPopoverProps['modifiers']>();
     const buttonRef = useRef<HTMLButtonElement>(null);
     const { query } = router;
@@ -129,10 +127,11 @@ export function createFilter<T extends Record<string, any>>(
 
       if (isOpen) {
         handler();
-        const subscription = fromEvent(window, 'resize').subscribe(close);
-        return () => subscription.unsubscribe();
+        const handleClose = () => setIsOpen(false);
+        window.addEventListener('resize', handleClose);
+        return () => window.removeEventListener('resize', handleClose);
       }
-    }, [isOpen, close]);
+    }, [isOpen]);
 
     return (
       <Form
@@ -152,19 +151,19 @@ export function createFilter<T extends Record<string, any>>(
         <Popover
           position="bottom"
           isOpen={isOpen}
-          onClose={close}
           modifiers={modifiers}
+          onClose={() => setIsOpen(false)}
           popoverClassName={classes['filter-popover']}
           content={
             <FilterContent
               {...props}
               initialValues={initialValues}
-              onFinish={close}
+              onFinish={() => setIsOpen(false)}
             />
           }
         >
           <ButtonPopover
-            onClick={open}
+            onClick={() => setIsOpen(true)}
             content="Filter"
             intent={filtered ? 'primary' : 'none'}
             icon={filtered ? 'filter-keep' : 'filter'}
