@@ -36,3 +36,15 @@
     }
   }
 }
+
+.th {
+  @include flex(center);
+  cursor: pointer;
+  user-select: none;
+
+  :global {
+    span {
+      margin-left: 10px;
+    }
+  }
+}

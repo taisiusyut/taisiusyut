@@ -1,17 +1,18 @@
 import React, { ReactNode } from 'react';
-import { HTMLTable } from '@blueprintjs/core';
 import { useTable, TableOptions } from 'react-table';
+import { HTMLTable } from '@blueprintjs/core';
+import { Order } from '@/typings';
 import classes from './Table.module.scss';
 
 export * from 'react-table';
 
-export interface TableProps<T extends Record<string, unknown>>
-  extends TableOptions<T> {
+export interface TableProps<T extends {}> extends TableOptions<T> {
   className?: string;
   children?: ReactNode;
+  sort?: Partial<Record<string, Order>>;
 }
 
-export function Table<T extends Record<string, unknown>>({
+export function Table<T extends {}>({
   className = '',
   children,
   ...props
@@ -30,9 +31,13 @@ export function Table<T extends Record<string, unknown>>({
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
+              {headerGroup.headers.map(column => {
+                return (
+                  <th {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>

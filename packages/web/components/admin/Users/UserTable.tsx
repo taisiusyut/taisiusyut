@@ -1,22 +1,28 @@
 import React, { useMemo } from 'react';
 import { Button } from '@blueprintjs/core';
-import { InsertedUserSchema, UserRole } from '@/typings';
+import { Schema$User, UserRole } from '@/typings';
 import { PaginationTable, PaginationTableProps } from '@/components/Table';
+import { SortableHeader } from '@/components/Table/SortableHeader';
+import dayjs from 'dayjs';
+import { Order } from '@fullstack/server/dist/typings';
 
-export type UserData = Partial<InsertedUserSchema> & {
-  id: string;
-};
-
-type Props = PaginationTableProps<UserData>;
+type Props = PaginationTableProps<Schema$User>;
 type Columns = Props['columns'];
 
 const userColumns: Columns = [
   {
-    Header: 'Username',
-    accessor: 'username'
+    id: 'index',
+    accessor: (_, index) => index + 1,
+    Header: () => 'Index'
+  },
+  {
+    id: 'username',
+    accessor: 'username',
+    Header: 'Username'
   },
   {
     Header: 'Role',
+    id: 'role',
     accessor: ({ role }) => {
       if (typeof role !== 'undefined') {
         const str = UserRole[role];
@@ -25,13 +31,20 @@ const userColumns: Columns = [
     }
   },
   {
-    Header: 'Nickname',
-    accessor: 'nickname'
+    id: 'nickname',
+    accessor: 'nickname',
+    Header: 'Nickname'
   },
-  { Header: 'Email', accessor: 'email' },
+  { Header: 'Email', id: 'email', accessor: 'email' },
   {
-    Header: 'Created At',
-    accessor: ({ createdAt }) => createdAt
+    id: 'createdAt',
+    accessor: ({ createdAt }) =>
+      createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
+    Header: () => (
+      <SortableHeader field="createdAt" defaultOrder={Order.DESC}>
+        Created At
+      </SortableHeader>
+    )
   }
 ];
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, H5 } from '@blueprintjs/core';
+import { Button, Card, H4 } from '@blueprintjs/core';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { createFilter } from '@/components/Filter';
 import { UserRoleSelect } from '@/components/UserRoleSelect';
@@ -28,7 +28,7 @@ export function Users() {
     <div className={classes.users}>
       <Card>
         <div className={classes.header}>
-          <H5>Users</H5>
+          <H4>Users</H4>
           <div className={classes['button-group']}>
             <Button>Export</Button>
             <CreateUser onCreate={actions.create} />

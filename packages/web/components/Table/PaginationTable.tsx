@@ -4,13 +4,12 @@ import { Table, TableProps } from './Table';
 import { Pagination, PaginationProps } from '../Pagination';
 import classes from './Table.module.scss';
 
-export interface PaginationTableProps<T extends Record<string, unknown>>
-  extends TableProps<T> {
+export interface PaginationTableProps<T extends {}> extends TableProps<T> {
   pagination?: PaginationProps;
   loading?: boolean;
 }
 
-export function PaginationTable<T extends Record<string, unknown>>({
+export function PaginationTable<T extends {}>({
   pagination,
   loading,
   data,
