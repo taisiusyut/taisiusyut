@@ -2,13 +2,20 @@
 
 $btn-min-size: 34px;
 
-.#{$ns}-input {
+.#{$ns}-input,
+.#{$ns}-html-select select,
+.#{$ns}-select select {
   height: $btn-min-size;
 }
 
-.#{$ns}-button.#{$ns}-button {
+.#{$ns}-button {
   min-width: $btn-min-size;
   min-height: $btn-min-size;
+}
+
+.#{$ns}-input-group .#{$ns}-button {
+  min-width: $btn-min-size - 6px;
+  min-height: $btn-min-size - 6px;
 }
 
 .#{$ns}-button:not([class*='bp3-intent-']) {
@@ -53,7 +60,7 @@ $btn-min-size: 34px;
     background-color: var(--main-color);
     min-height: 50px;
 
-    .bp3-heading {
+    .#{$ns}-heading {
       font-size: 16px;
     }
   }

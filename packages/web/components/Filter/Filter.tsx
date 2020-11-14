@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 import { fromEvent } from 'rxjs';
 import { Button, Popover, H5, IPopoverProps } from '@blueprintjs/core';
-import { Timestamp } from '@/typings';
 import { useBoolean } from '@/hooks/useBoolean';
 import { ButtonPopover } from '@/components/ButtonPopover';
-import { Input } from '@/components/Input';
+import { Input, SearchInput } from '@/components/Input';
 import {
   createForm,
   FormProps,
@@ -24,15 +23,13 @@ interface FilterDateRangeProps {
   deps?: undefined;
 }
 
-export { Input };
-
-const dateKeys: (keyof Timestamp)[] = ['createdAt', 'updatedAt'];
-
 export function createFilter<T extends Record<string, any>>(
   itemProps?: FormItemProps<T>
 ) {
   const components = createForm<T, T>(itemProps);
   const { Form, FormItem, useForm } = components;
+  const setQuery = (params: Record<string, unknown>) =>
+    setSearchParam({ ...router.query, ...params });
 
   function FilterContent({
     children,
@@ -42,45 +39,29 @@ export function createFilter<T extends Record<string, any>>(
     ...props
   }: FormProps<T> = {}) {
     const [form] = useForm();
-    const { setFieldsValue } = form;
-    const params = useRef<any>();
-    params.current = initialValues;
-
-    useEffect(() => {
-      const clone = { ...params.current };
-      for (const key of dateKeys) {
-        const date = clone[key];
-        clone[key] = Array.isArray(date)
-          ? date.map(s => new Date(s))
-          : undefined;
-      }
-      setFieldsValue(clone);
-    }, [setFieldsValue]);
 
     return (
-      <>
-        <div>
-          <H5>Filter</H5>
-          <Form
-            {...props}
-            form={form}
-            layout={layout}
-            onFinish={payload => {
-              setSearchParam(payload as Record<string, unknown>);
-              onFinish && onFinish(payload);
-            }}
-          >
-            {children}
-            <button hidden type="submit" />
-          </Form>
-          <div className={classes['filter-footer']}>
-            <Button onClick={() => form.resetFields()}>Reset</Button>
-            <Button intent="primary" onClick={form.submit}>
-              Apply
-            </Button>
-          </div>
+      <div>
+        <H5>Filter</H5>
+        <Form
+          {...props}
+          form={form}
+          layout={layout}
+          onFinish={payload => {
+            setSearchParam(payload as Record<string, unknown>);
+            onFinish && onFinish(payload);
+          }}
+        >
+          {children}
+          <button hidden type="submit" />
+        </Form>
+        <div className={classes['filter-footer']}>
+          <Button onClick={() => form.resetFields()}>Reset</Button>
+          <Button intent="primary" onClick={form.submit}>
+            Apply
+          </Button>
         </div>
-      </>
+      </div>
     );
   }
 
@@ -88,7 +69,7 @@ export function createFilter<T extends Record<string, any>>(
     const [isOpen, open, close] = useBoolean();
     const [modifiers, setModifiers] = useState<IPopoverProps['modifiers']>();
     const buttonRef = useRef<HTMLButtonElement>(null);
-    const { query } = useRouter();
+    const { query } = router;
     const filtered =
       !!Object.keys(query).length &&
       !(query.search || query.pageNo || query.pageSize);
@@ -121,15 +102,17 @@ export function createFilter<T extends Record<string, any>>(
       <Form
         layout="inline"
         className={`${classes['filter']} ${className}`.trim()}
-        onFinish={values => setSearchParam({ ...query, ...values })}
         initialValues={({ search: query.search } as unknown) as DeepPartial<T>}
+        onFinish={({ search }) => search && setQuery({ search })}
       >
         <FormItem name="search" className={classes['search-input']}>
-          <Input placeholder="Search ..." />
+          <SearchInput
+            onClear={() => query.search && setQuery({ search: '' })}
+          />
         </FormItem>
+
         <Button type="submit" icon="search" />
         <Popover
-          boundary="viewport"
           position="bottom"
           isOpen={isOpen}
           onClose={close}
