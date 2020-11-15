@@ -4,15 +4,6 @@
   @include flex($flex-direction: column);
   @include relative();
   overflow: auto;
-
-  // .loading {
-  //   @include absolute(0, null, 0);
-  //   @include flex(center, center);
-  //   @include sq-dimen(100%);
-  //   background-color: #fff;
-  //   opacity: 0.75;
-  //   pointer-events: auto;
-  // }
 }
 
 .th {
@@ -22,19 +13,7 @@
 
   :global {
     span {
-      margin-left: 10px;
-    }
-  }
-}
-
-.td[role='cell'] {
-  vertical-align: middle;
-  min-height: 1.4em;
-  &:empty {
-    &:after {
-      @include dimen(80%);
-      content: '';
-      display: block;
+      margin-left: 5px;
     }
   }
 }

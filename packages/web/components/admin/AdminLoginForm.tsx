@@ -36,13 +36,8 @@ export function AdminLoginForm() {
         Login
       </Button>
 
-      <Button
-        fill
-        minimal
-        className="goto-guest-registration"
-        // onClick={() => history.push(PATHS.GUEST_REGISTRATION)}
-      >
-        Register as Guest
+      <Button fill minimal onClick={() => router.push('/')}>
+        Go Back
       </Button>
     </Form>
   );

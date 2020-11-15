@@ -37,7 +37,12 @@ export function SortableHeader({
     >
       <div className={classes.th}>
         {children}
-        {<Icon icon={order === Order.DESC ? 'arrow-down' : 'arrow-up'} />}
+        {
+          <Icon
+            iconSize={12}
+            icon={order === Order.DESC ? 'arrow-down' : 'arrow-up'}
+          />
+        }
       </div>
     </div>
   );

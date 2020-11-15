@@ -1,19 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
-import { Button, Popover, Menu, MenuItem } from '@blueprintjs/core';
+import { Button, Popover } from '@blueprintjs/core';
 import { JWTSignPayload } from '@/typings';
+import { AdminSideBarHeaderMenu } from './AdminSideBarHeaderMenu';
 import classNames from './AdminSidebar.module.scss';
 
 interface Props {
   user: JWTSignPayload;
-}
-
-function UserMenu() {
-  return (
-    <Menu>
-      <MenuItem icon="log-out" text="Logout" />
-    </Menu>
-  );
 }
 
 export function AdminSidebarHeader({ user }: Props) {
@@ -23,7 +16,7 @@ export function AdminSidebarHeader({ user }: Props) {
         <Image src="/logo.png" layout="fill" priority unoptimized />
       </div>
       <div className={classNames['header-content']}>
-        <Popover content={<UserMenu />}>
+        <Popover content={<AdminSideBarHeaderMenu />}>
           <Button
             small
             minimal

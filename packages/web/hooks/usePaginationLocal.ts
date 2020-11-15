@@ -31,12 +31,16 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   return function usePaginationLocal(options?: Props) {
     const [state, actions] = useCRUDReducer();
     const { asPath } = router;
-    const { pageNo } = state;
+    const { pageNo, pageSize, params } = state;
 
     const [{ loading }, { fetch }] = useRxAsync(request, {
       ...options,
       defer: true,
       onSuccess: actions.paginate
+    });
+
+    const { hasData } = paginateSelector(state, {
+      prefill: {}
     });
 
     useEffect(() => {
@@ -51,13 +55,10 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     }, [pageNo]);
 
     useLayoutEffect(() => {
-      const { hasData, pageNo, pageSize, params } = paginateSelector(state, {
-        prefill: {}
-      });
       if (!hasData) {
         fetch({ pageNo, pageSize, ...params });
       }
-    }, [state, fetch]);
+    }, [hasData, pageNo, pageSize, params, fetch]);
 
     const pagination: PaginationProps = {
       pageNo: state.pageNo,

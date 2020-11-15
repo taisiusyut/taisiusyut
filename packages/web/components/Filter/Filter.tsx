@@ -137,7 +137,8 @@ export function createFilter<T extends Record<string, any>>(
         className={`${classes['filter']} ${className}`.trim()}
         initialValues={initialValues}
         onFinish={({ search }) =>
-          search && setSearchParam(params => ({ ...params, search }))
+          (query.search || search) &&
+          setSearchParam(params => ({ ...params, search }))
         }
       >
         <FormItem name="search" className={classes['search-input']}>
