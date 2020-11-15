@@ -31,8 +31,7 @@ export function Table<T extends {}>({
   rowSelectedClassName,
   ...props
 }: TableProps<T>) {
-  const { onPageChange = () => void 0, pageSize, ...paginationProps } =
-    pagination || {};
+  const { onPageChange = () => void 0, pageNo, pageSize } = pagination || {};
 
   const {
     getTableProps,
@@ -40,14 +39,16 @@ export function Table<T extends {}>({
     headerGroups,
     prepareRow,
     page,
+    data,
+    state,
     gotoPage,
     setPageSize
   } = useTable(
     {
       ...props,
       initialState: {
-        pageIndex: (pagination?.pageNo || 1) - 1,
-        pageSize: pagination?.pageSize
+        pageIndex: (pageNo || 1) - 1,
+        pageSize: pageSize || 10
       }
     },
     usePagination,
@@ -55,9 +56,11 @@ export function Table<T extends {}>({
   );
 
   useEffect(() => {
-    if (typeof pageSize === 'number') {
-      setPageSize(pageSize);
-    }
+    gotoPage((pageNo || 1) - 1);
+  }, [gotoPage, pageNo]);
+
+  useEffect(() => {
+    setPageSize(pageSize || 10);
   }, [setPageSize, pageSize]);
 
   return (
@@ -102,12 +105,10 @@ export function Table<T extends {}>({
       {!loading && page.length === 0 && <NotFound />}
 
       <Pagination
-        {...paginationProps}
-        pageSize={pageSize}
-        onPageChange={page => {
-          gotoPage(page - 1);
-          onPageChange(page);
-        }}
+        total={data.length}
+        pageNo={state.pageIndex + 1}
+        pageSize={state.pageSize}
+        onPageChange={onPageChange}
       />
     </div>
   );

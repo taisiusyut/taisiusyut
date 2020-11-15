@@ -168,8 +168,12 @@ export const createCRUDReducer: CreateCRUDReducer = <
 
     if (isAction(actionTypes, action, 'CREATE')) {
       const id = (action.payload[key] as unknown) as string;
+      const pageNo = Math.ceil((state.total + 1) / state.pageSize);
+
       return {
         ...state,
+        pageNo,
+        total: state.total + 1,
         byIds: { ...state.byIds, [id]: action.payload },
         list: [...state.list, action.payload],
         ids: [...state.ids, id]
@@ -199,9 +203,13 @@ export const createCRUDReducer: CreateCRUDReducer = <
       const byIds = { ...state.byIds };
       delete byIds[id];
 
+      const pageNo = Math.ceil((state.total - 1) / state.pageSize);
+
       return {
         ...state,
         byIds,
+        pageNo,
+        total: state.total - 1,
         ids: removeFromArray(state.ids, index),
         list: removeFromArray(state.list, index)
       };
@@ -214,16 +222,18 @@ export const createCRUDReducer: CreateCRUDReducer = <
           ? num
           : Number(value);
 
-      const newPageNo = toNum(pageNo, state.pageNo);
-      const newPageSize = toNum(pageSize, state.pageSize);
+      const newPageNo = toNum(pageNo, defaultState.pageNo);
+      const newPageSize = toNum(pageSize, defaultState.pageSize);
       const hasChanged = !equals(state.params, params);
 
-      return {
-        ...(hasChanged ? defaultState : state),
-        pageNo: newPageNo,
-        pageSize: newPageSize,
-        params
-      };
+      return hasChanged
+        ? {
+            ...defaultState,
+            pageNo: newPageNo,
+            pageSize: newPageSize,
+            params
+          }
+        : { ...state, pageNo: newPageNo, pageSize: newPageSize };
     }
 
     if (isAction(actionTypes, action, 'RESET')) {
@@ -234,9 +244,12 @@ export const createCRUDReducer: CreateCRUDReducer = <
       const { payload, index = 0 } = action;
       const insert = insertHanlder(index, index);
       const id = (action.payload[key] as unknown) as string;
+      const pageNo = Math.ceil((index + 1) / state.pageSize);
 
       return {
         ...state,
+        pageNo,
+        total: state.total + 1,
         ids: insert(state.ids, [id]),
         list: insert(state.list, [payload]),
         byIds: { ...state.byIds, [id]: payload }
