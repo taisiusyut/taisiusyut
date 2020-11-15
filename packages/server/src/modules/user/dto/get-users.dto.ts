@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { IsEmail, IsOptional } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsMongoId } from 'class-validator';
 import { UserRole, InsertedUserSchema, Param$GetUsers } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
 import { IsNickname, IsUserRole } from './';
@@ -8,13 +8,7 @@ class Excluded
   extends QueryDto
   implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   @Exclude()
-  id?: undefined;
-
-  @Exclude()
-  username: string;
-
-  @Exclude()
-  password: string;
+  password?: string;
 
   @Exclude()
   description?: string;
@@ -26,8 +20,16 @@ class GetUsers
     Partial<Omit<Param$GetUsers, keyof Excluded>>,
     Partial<Omit<InsertedUserSchema, keyof Excluded>> {
   @IsOptional()
+  @IsMongoId()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  username?: string;
+
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @IsOptional()
   @IsNickname()

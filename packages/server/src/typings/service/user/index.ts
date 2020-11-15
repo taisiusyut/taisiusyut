@@ -69,6 +69,8 @@ export interface Param$GetUsers extends Pagination, Search {
   email?: string;
   role?: UserRole;
   createdAt?: DateRange;
+  updatedAt?: DateRange;
+
   nickname?: string;
 }
 

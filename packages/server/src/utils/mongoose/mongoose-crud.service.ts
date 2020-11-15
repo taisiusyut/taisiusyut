@@ -8,70 +8,9 @@ import {
   QueryFindOneAndUpdateOptions
 } from 'mongoose';
 import { nGrams } from 'mongoose-fuzzy-searching/helpers';
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested
-} from 'class-validator';
-import { Transform, Exclude } from 'class-transformer';
-import {
-  PaginateResult,
-  Pagination,
-  Search,
-  Order,
-  Timestamp
-} from '@/typings';
-import { DateRange } from '@/decorators';
+import { PaginateResult, Order } from '@/typings';
 import { InternalServerErrorException } from '@nestjs/common';
-
-export type Condition = Record<string, unknown>;
-
-type QuerySchema = {
-  [K in keyof (Pagination & Search & Timestamp)]?: unknown;
-};
-
-interface MongoDateRange {
-  $gte: string;
-  $lte: string;
-}
-
-class Base implements QuerySchema {
-  @IsNumber()
-  @IsOptional()
-  @Transform(value => value && Number(value))
-  pageNo?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Transform(value => value && Number(value))
-  pageSize?: number;
-
-  @IsOptional()
-  @Transform(value => value && JSON.parse(value))
-  sort?: Order;
-
-  @Exclude()
-  condition?: Condition[];
-
-  @IsOptional()
-  @IsString()
-  search?: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @DateRange()
-  createdAt?: MongoDateRange;
-
-  @IsOptional()
-  @ValidateNested()
-  @DateRange()
-  updatedAt?: MongoDateRange;
-}
-
-export class QueryDto
-  extends Base
-  implements Required<Omit<QuerySchema, keyof Base>> {}
+import { QueryDto } from './mongoose-query.dto';
 
 export const TEXT_SCORE = 'TEXT_SCORE';
 
