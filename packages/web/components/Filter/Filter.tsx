@@ -39,8 +39,6 @@ export function createFilter<T extends Record<string, any>>(
 ) {
   const components = createForm<T, T>(itemProps);
   const { Form, FormItem, useForm } = components;
-  const setQuery = (params: Record<string, unknown>) =>
-    setSearchParam({ ...router.query, ...params });
 
   function transoformInitialValues({
     createdAt,
@@ -138,11 +136,16 @@ export function createFilter<T extends Record<string, any>>(
         layout="inline"
         className={`${classes['filter']} ${className}`.trim()}
         initialValues={initialValues}
-        onFinish={({ search }) => search && setQuery({ search })}
+        onFinish={({ search }) =>
+          search && setSearchParam(params => ({ ...params, search }))
+        }
       >
         <FormItem name="search" className={classes['search-input']}>
           <SearchInput
-            onClear={() => query.search && setQuery({ search: '' })}
+            onClear={() =>
+              query.search &&
+              setSearchParam(params => ({ ...params, search: '' }))
+            }
           />
         </FormItem>
 

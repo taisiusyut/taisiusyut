@@ -20,7 +20,7 @@ interface CrudOptions<T> extends CreateCRUDReducerOptions<Partial<T>> {}
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
-  request: (params?: unknown) => Promise<PaginateResult<I>>,
+  request: <P>(params?: P) => Promise<PaginateResult<I>>,
   curdOptions?: CrudOptions<I>
 ) {
   const useCRUDReducer = createUseCRUDReducer<I, K>(key, {

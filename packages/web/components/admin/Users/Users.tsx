@@ -50,6 +50,7 @@ export function Users() {
         </div>
 
         <Filter initialValues={params} className={classes.fitler}>
+          <FilterInput name="id" label="User ID" />
           <FilterInput name="username" label="Username" />
           <FilterInput name="email" label="Email" />
           <FilterInput name="nickname" label="Nickname" />
@@ -57,6 +58,7 @@ export function Users() {
             <UserRoleSelect />
           </FormItem>
           <FilterDateRange name="createdAt" label="Created At" />
+          <FilterDateRange name="updatedAt" label="Updated At" />
         </Filter>
 
         <UserTable
