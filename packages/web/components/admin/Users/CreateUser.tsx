@@ -25,6 +25,13 @@ const {
 const icon: IconName = 'new-person';
 const title = 'Create User';
 
+const rid = (N = 5): string => {
+  const s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return Array.from({ length: N }, () =>
+    s.charAt(Math.floor(Math.random() * s.length))
+  ).join('');
+};
+
 export function CreateUser({ onCreate }: CreateUserProps) {
   const [form] = useForm();
 
@@ -69,7 +76,16 @@ export function CreateUser({ onCreate }: CreateUserProps) {
       title,
       children,
       onConfirm,
-      onClosed: () => form.resetFields()
+      onClosed: () => form.resetFields(),
+      onOpening: () => {
+        // TODO: remove
+        process.env.NODE_ENV === 'development' &&
+          form.setFieldsValue({
+            username: rid(10),
+            password: rid(8) + '_e2e',
+            email: `${rid(8)}@gmail.com`
+          });
+      }
     });
   }
 
