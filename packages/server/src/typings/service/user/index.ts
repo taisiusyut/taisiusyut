@@ -1,6 +1,14 @@
 import { Timestamp, Pagination, Search, DateRange, Insertion } from '..';
-import { Schema$Author, Param$CreateAuthor } from './author';
-import { Schema$Client, Param$CreateClient } from './client';
+import {
+  Schema$Author,
+  Param$CreateAuthor,
+  Param$UpdateAuthor
+} from './author';
+import {
+  Schema$Client,
+  Param$CreateClient,
+  Param$UpdateClient
+} from './client';
 
 export enum UserRole {
   Root = 'Root',
@@ -39,8 +47,9 @@ export interface SharedCreateUser {
   role: UserRole;
 }
 
-export type Param$CreateUser = SharedCreateUser &
-  (Param$CreateClient | Param$CreateAuthor);
+export type Param$CreateUser =
+  | SharedCreateUser
+  | (Param$CreateClient | Param$CreateAuthor);
 
 export interface SharedUpdateUser {
   id: string;
@@ -48,12 +57,7 @@ export interface SharedUpdateUser {
 }
 
 export type Param$UpdateUser = SharedCreateUser &
-  (
-    | Param$CreateClient
-    | Param$CreateAuthor
-    | { role: UserRole.Root }
-    | { role: UserRole.Admin }
-  );
+  (Param$UpdateClient | Param$UpdateAuthor);
 
 export type InsertedUserSchema = Insertion<Schema$User>;
 export type InsertedCreateuser = Insertion<Param$CreateUser>;
