@@ -20,8 +20,8 @@ export interface PaginateApiResponse<T> {
 export interface PaginateResult<T> {
   data: T[];
   total: number;
-  limit: number;
-  page: number;
+  pageSize: number;
+  pageNo: number;
   totalPages: number;
   nextPage?: number | null;
   prevPage?: number | null;
@@ -44,8 +44,8 @@ export enum Order {
 }
 
 export interface Pagination<T = any> {
-  page?: number;
-  size?: number;
+  pageNo?: number;
+  pageSize?: number;
   sort?: string | Record<keyof T, Order>;
 }
 

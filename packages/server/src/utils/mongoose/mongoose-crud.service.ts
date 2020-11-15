@@ -40,12 +40,12 @@ class Base implements QuerySchema {
   @IsNumber()
   @IsOptional()
   @Transform(value => value && Number(value))
-  page?: number;
+  pageNo?: number;
 
   @IsNumber()
   @IsOptional()
   @Transform(value => value && Number(value))
-  size?: number;
+  pageSize?: number;
 
   @IsOptional()
   @Transform(value => value && JSON.parse(value))
@@ -141,8 +141,8 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     { projection, ...options }: PaginateOptions = {}
   ) {
     const {
-      page = 1,
-      size = 10,
+      pageNo = 1,
+      pageSize = 10,
       search,
       condition = [],
       sort = { createdAt: Order.DESC },
@@ -162,9 +162,14 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
         $and: [...condition, fullMatches, $text]
       } as FilterQuery<D>,
       {
-        customLabels: { docs: 'data', totalDocs: 'total' },
-        page,
-        limit: size,
+        customLabels: {
+          docs: 'data',
+          page: 'pageNo',
+          limit: 'pageSize',
+          totalDocs: 'total'
+        },
+        page: pageNo,
+        limit: pageSize,
         sort: {
           ...$meta,
           ...(typeof sort === 'object' ? sort : {})
