@@ -1,6 +1,5 @@
 import React from 'react';
 import { Schema$User } from '@/typings';
-import { RxFileToImageState } from 'use-rx-hooks';
 import {
   createForm,
   validators,
@@ -10,13 +9,12 @@ import {
 import { Input, Password as PasswordInput } from './Input';
 import { UserRoleSelect } from './UserRoleSelect';
 
-interface Schema extends Required<Omit<Schema$User, 'id' | 'avatar'>> {
+interface UserFormSchema extends Required<Omit<Schema$User, 'id'>> {
   confirmPassword: string;
-  avatar: RxFileToImageState | string | null;
 }
 
-export type UserFormProps = FormProps<Schema>;
-export type UserFormInstance = NonNullable<FormProps<Schema>['form']>;
+export type UserFormProps = FormProps<UserFormSchema>;
+export type UserFormInstance = NonNullable<FormProps<UserFormSchema>['form']>;
 
 export const userValidators = {
   username: validators.username,
@@ -26,15 +24,15 @@ export const userValidators = {
 export function createUserForm({
   large = false,
   ...itemProps
-}: FormItemProps<Schema> & { large?: boolean } = {}) {
-  const components = createForm<Schema>(itemProps);
+}: FormItemProps<UserFormSchema> & { large?: boolean } = {}) {
+  const components = createForm<UserFormSchema>(itemProps);
   const { Form, FormItem } = components;
 
   function UserForm(props: UserFormProps) {
     return <Form {...props} />;
   }
 
-  const Username = (props: FormItemProps<Schema> = {}) => (
+  const Username = (props: FormItemProps<UserFormSchema> = {}) => (
     <FormItem {...(props as unknown)} name="username" label="Username">
       <Input large={large} />
     </FormItem>
@@ -43,7 +41,7 @@ export function createUserForm({
   const Password = ({
     visible,
     ...props
-  }: FormItemProps<Schema> & { visible?: boolean } = {}) => (
+  }: FormItemProps<UserFormSchema> & { visible?: boolean } = {}) => (
     <FormItem {...(props as unknown)} name="password" label="Password">
       <PasswordInput large={large} visible={visible} />
     </FormItem>
