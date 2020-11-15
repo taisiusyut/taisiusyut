@@ -1,5 +1,11 @@
-import React, { ReactNode, useEffect } from 'react';
-import { useTable, usePagination, TableOptions } from 'react-table';
+import React, { ReactNode, MouseEvent, useEffect } from 'react';
+import {
+  useTable,
+  usePagination,
+  TableOptions,
+  useRowSelect,
+  Row
+} from 'react-table';
 import { HTMLTable } from '@blueprintjs/core';
 import { Pagination, PaginationProps } from '@/components/Pagination';
 import { NotFound } from '@/components/NotFound';
@@ -12,7 +18,8 @@ export interface TableProps<T extends {}> extends TableOptions<T> {
   children?: ReactNode;
   pagination?: PaginationProps;
   loading?: boolean;
-  onRowClick?: (data: T) => void;
+  rowSelectedClassName?: string;
+  onRowClick?: (row: Row<T>, event: MouseEvent<HTMLTableRowElement>) => void;
 }
 
 export function Table<T extends {}>({
@@ -21,6 +28,7 @@ export function Table<T extends {}>({
   pagination,
   loading,
   onRowClick,
+  rowSelectedClassName,
   ...props
 }: TableProps<T>) {
   const { onPageChange = () => void 0, pageSize, ...paginationProps } =
@@ -32,7 +40,6 @@ export function Table<T extends {}>({
     headerGroups,
     prepareRow,
     page,
-    data,
     gotoPage,
     setPageSize
   } = useTable(
@@ -43,7 +50,8 @@ export function Table<T extends {}>({
         pageSize: pagination?.pageSize
       }
     },
-    usePagination
+    usePagination,
+    useRowSelect
   );
 
   useEffect(() => {
@@ -56,7 +64,6 @@ export function Table<T extends {}>({
     <div className={`${classes.table} ${className}`.trim()}>
       <HTMLTable
         {...getTableProps()}
-        striped
         interactive={typeof onRowClick === 'function'}
       >
         <thead>
@@ -78,7 +85,8 @@ export function Table<T extends {}>({
             return (
               <tr
                 {...row.getRowProps()}
-                onClick={() => onRowClick && onRowClick(row.original)}
+                className={row.isSelected ? rowSelectedClassName : undefined}
+                onClick={event => onRowClick && onRowClick(row, event)}
               >
                 {row.cells.map(cell => (
                   <td {...cell.getCellProps()} className={classes.td}>
@@ -91,7 +99,7 @@ export function Table<T extends {}>({
         </tbody>
       </HTMLTable>
 
-      {!loading && data.length === 0 && <NotFound />}
+      {!loading && page.length === 0 && <NotFound />}
 
       <Pagination
         {...paginationProps}

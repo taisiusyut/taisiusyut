@@ -8,6 +8,7 @@ import { getUsers } from '@/service';
 import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
 import classes from './Users.module.scss';
+import { openUsersMenu } from './UsersMenu';
 
 const {
   FormItem,
@@ -58,7 +59,24 @@ export function Users() {
           <FilterDateRange name="createdAt" label="Created At" />
         </Filter>
 
-        <UserTable data={list} loading={loading} pagination={pagination} />
+        <UserTable
+          data={list}
+          loading={loading}
+          pagination={pagination}
+          rowSelectedClassName={classes['row-selected']}
+          onRowClick={(row, event) => {
+            row.toggleRowSelected();
+            openUsersMenu({
+              title: row.original.username,
+              offset: { top: event.pageY, left: event.pageX },
+              onClosed: () => row.toggleRowSelected(),
+
+              user: row.original,
+              onUpdate: actions.update,
+              onDelete: actions.delete
+            });
+          }}
+        />
       </Card>
     </div>
   );

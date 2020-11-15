@@ -23,3 +23,12 @@
 .fitler {
   @include margin-y(20px);
 }
+
+.row-selected {
+  background-color: rgba($pt-intent-primary, 0.2);
+  :global {
+    td {
+      color: $pt-intent-primary !important;
+    }
+  }
+}

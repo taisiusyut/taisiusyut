@@ -6,7 +6,7 @@ interface OverlayProps extends IOverlayProps {
   children?: ReactNode;
 }
 
-export function createOpenOverlay<T extends OverlayProps>(
+export function createOpenOverlay<T extends Partial<OverlayProps>>(
   OverlayComponent: ComponentType<T>
 ) {
   return function openOverlay(config: Partial<T>) {

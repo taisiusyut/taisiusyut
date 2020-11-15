@@ -44,10 +44,6 @@ $btn-min-size: 34px;
   }
 }
 
-.#{$ns}-menu.#{$ns}-menu {
-  background-color: var(--main-diff1-color);
-}
-
 .#{$ns}-dialog.#{$ns}-dialog {
   @include dimen(auto);
   border-radius: 4px;
@@ -95,9 +91,7 @@ a:hover,
     background-color: var(--main-diff1-color);
   }
 
-  // .#{$ns}-popover.#{$ns}-popover {
-  //   .#{$ns}-popover-content {
-  //     background-color: var(--main-diff1-color);
-  //   }
-  // }
+  .#{$ns}-menu.#{$ns}-menu {
+    background-color: var(--main-diff1-color);
+  }
 }
