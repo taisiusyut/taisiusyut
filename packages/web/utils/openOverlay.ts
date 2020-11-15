@@ -1,15 +1,15 @@
 import React, { ComponentType, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
-import { IDialogProps } from '@blueprintjs/core';
+import { IOverlayProps } from '@blueprintjs/core';
 
-interface DialogProps extends IDialogProps {
+interface OverlayProps extends IOverlayProps {
   children?: ReactNode;
 }
 
-export function createOpenDialog<T extends DialogProps>(
-  DialogComponent: ComponentType<T>
+export function createOpenOverlay<T extends OverlayProps>(
+  OverlayComponent: ComponentType<T>
 ) {
-  return function openDialog(config: Partial<T>) {
+  return function openOverlay(config: Partial<T>) {
     const div = document.createElement('div');
     document.body.appendChild(div);
     // eslint-disable-next-line no-use-before-define
@@ -32,7 +32,7 @@ export function createOpenDialog<T extends DialogProps>(
 
     function render({ children, ...props }: any) {
       ReactDOM.render(
-        React.createElement(DialogComponent, { ...props }, children),
+        React.createElement(OverlayComponent, { ...props }, children),
         div
       );
     }

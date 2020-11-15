@@ -15,7 +15,7 @@ import {
   Intent
 } from '@blueprintjs/core';
 import { useBoolean } from '@/hooks/useBoolean';
-import { createOpenDialog } from '@/utils/openDialog';
+import { createOpenOverlay } from '@/utils/openOverlay';
 
 export interface ConfirmDialogProps extends IDialogProps {
   children?: ReactNode;
@@ -41,7 +41,7 @@ export function useConfirmDialog() {
   return context;
 }
 
-export const openConfirmDialog = createOpenDialog<ConfirmDialogProps>(
+export const openConfirmDialog = createOpenOverlay<ConfirmDialogProps>(
   ConfirmDialog
 );
 
