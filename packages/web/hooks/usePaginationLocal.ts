@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import {
@@ -54,7 +54,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       }
     }, [pageNo]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       if (!hasData) {
         fetch({ pageNo, pageSize, ...params });
       }

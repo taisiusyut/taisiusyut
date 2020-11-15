@@ -17,3 +17,9 @@
     }
   }
 }
+
+.td[role='cell'] {
+  height: 60px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
