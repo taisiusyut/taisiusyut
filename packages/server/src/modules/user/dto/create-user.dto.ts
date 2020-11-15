@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsOptional } from 'class-validator';
-import { UserRole, InsertedUserSchema, InsertedCreateuser } from '@/typings';
+import { InsertedUserSchema, InsertedCreateuser } from '@/typings';
 import { IsUsername, IsPassword, AuthorOnly } from '@/decorators';
 import { IsNickname, IsDescription, IsUserRole } from './';
 
@@ -31,7 +31,7 @@ class CreateUser
 
   @IsOptional()
   @IsUserRole()
-  role?: UserRole;
+  role?: any;
 }
 
 export class CreateUserDto

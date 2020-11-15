@@ -39,20 +39,21 @@ export interface SharedCreateUser {
   role: UserRole;
 }
 
-export type Param$CreateUser =
-  | SharedCreateUser
-  | Param$CreateClient
-  | Param$CreateAuthor;
+export type Param$CreateUser = SharedCreateUser &
+  (Param$CreateClient | Param$CreateAuthor);
 
 export interface SharedUpdateUser {
   id: string;
   email?: string;
 }
 
-export type Param$UpdateUser =
-  | SharedCreateUser
-  | Param$CreateClient
-  | Param$CreateAuthor;
+export type Param$UpdateUser = SharedCreateUser &
+  (
+    | Param$CreateClient
+    | Param$CreateAuthor
+    | { role: UserRole.Root }
+    | { role: UserRole.Admin }
+  );
 
 export type InsertedUserSchema = Insertion<Schema$User>;
 export type InsertedCreateuser = Insertion<Param$CreateUser>;
