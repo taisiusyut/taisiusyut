@@ -1,5 +1,5 @@
 import React from 'react';
-import { Colors, MenuItem } from '@blueprintjs/core';
+import { Colors, MenuItem, IMenuItemProps } from '@blueprintjs/core';
 import { deleteUser } from '@/service';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { Toaster } from '@/utils/toaster';
@@ -8,12 +8,18 @@ export interface OnDelete {
   onDelete: ({ id }: { id: string }) => void;
 }
 
-interface DeleteUserProps extends OnDelete {
+interface DeleteUserProps extends OnDelete, Partial<IMenuItemProps> {
   id: string;
   nickname?: string;
 }
 
-export function DeleteUser({ nickname, id, onDelete }: DeleteUserProps) {
+export function DeleteUser({
+  nickname,
+  id,
+  onDelete,
+  onClick,
+  ...props
+}: DeleteUserProps) {
   async function onConfirm() {
     try {
       await deleteUser({ id });
@@ -25,7 +31,7 @@ export function DeleteUser({ nickname, id, onDelete }: DeleteUserProps) {
     }
   }
 
-  function handleClick() {
+  function handleClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
     openConfirmDialog({
       intent: 'danger',
       icon: 'trash',
@@ -39,7 +45,10 @@ export function DeleteUser({ nickname, id, onDelete }: DeleteUserProps) {
         </div>
       )
     });
+    onClick && onClick(event);
   }
 
-  return <MenuItem icon="trash" text="Delete" onClick={handleClick} />;
+  return (
+    <MenuItem {...props} icon="trash" text="Delete" onClick={handleClick} />
+  );
 }

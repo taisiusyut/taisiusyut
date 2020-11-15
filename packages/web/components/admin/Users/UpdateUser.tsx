@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItem } from '@blueprintjs/core';
+import { MenuItem, IMenuItemProps } from '@blueprintjs/core';
 import { Schema$User } from '@/typings';
 import { updateUser } from '@/service';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
@@ -10,7 +10,7 @@ export interface OnUpdate {
   onUpdate: (payload: Schema$User) => void;
 }
 
-interface UpdateUserProps extends OnUpdate {
+interface UpdateUserProps extends Partial<IMenuItemProps>, OnUpdate {
   user?: Schema$User;
 }
 
@@ -18,7 +18,12 @@ const { Form, Nickname, Email, useForm } = createUserForm();
 
 const title = 'Update User';
 
-export function UpdateUser({ onUpdate, user }: UpdateUserProps) {
+export function UpdateUser({
+  onUpdate,
+  user,
+  onClick,
+  ...props
+}: UpdateUserProps) {
   const [form] = useForm();
 
   async function onConfirm() {
@@ -40,7 +45,7 @@ export function UpdateUser({ onUpdate, user }: UpdateUserProps) {
     </Form>
   );
 
-  function handleClick() {
+  function handleClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
     openConfirmDialog({
       icon: 'person',
       title,
@@ -48,7 +53,10 @@ export function UpdateUser({ onUpdate, user }: UpdateUserProps) {
       onConfirm,
       onClosed: () => form.resetFields()
     });
+    onClick && onClick(event);
   }
 
-  return <MenuItem icon="edit" text="Update" onClick={handleClick} />;
+  return (
+    <MenuItem {...props} icon="edit" text="Update" onClick={handleClick} />
+  );
 }

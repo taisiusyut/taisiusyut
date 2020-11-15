@@ -35,11 +35,12 @@ export function UsersMenu({
         <Menu>
           <MenuDivider title={title} />
           <MenuDivider />
-          <UpdateUser onUpdate={onUpdate} user={user} />
+          <UpdateUser onUpdate={onUpdate} user={user} onClick={onClose} />
           <DeleteUser
             id={user.id}
             nickname={user.nickname}
             onDelete={onDelete}
+            onClick={onClose}
           />
           <MenuDivider />
           <MenuItem icon="cross" text="Close" onClick={onClose} />
