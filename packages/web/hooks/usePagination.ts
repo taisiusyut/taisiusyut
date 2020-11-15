@@ -50,7 +50,7 @@ export function usePagination<I>(
   const pagination: PaginationProps | undefined = {
     total,
     pageNo,
-    size: pageSize,
+    pageSize,
     onPageChange: pageNo => setSearchParam(params => ({ ...params, pageNo }))
   };
 

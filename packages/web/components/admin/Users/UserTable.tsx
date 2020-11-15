@@ -1,12 +1,9 @@
-import React, { useMemo } from 'react';
-import { Button } from '@blueprintjs/core';
-import { Schema$User, UserRole } from '@/typings';
-import { PaginationTable, PaginationTableProps } from '@/components/Table';
-import { SortableHeader } from '@/components/Table/SortableHeader';
+import React from 'react';
+import { Schema$User, UserRole, Order } from '@/typings';
+import { Table, TableProps, SortableHeader } from '@/components/Table';
 import dayjs from 'dayjs';
-import { Order } from '@fullstack/server/dist/typings';
 
-type Props = PaginationTableProps<Schema$User>;
+type Props = TableProps<Schema$User>;
 type Columns = Props['columns'];
 
 const userColumns: Columns = [
@@ -48,20 +45,19 @@ const userColumns: Columns = [
         Created At
       </SortableHeader>
     )
+  },
+  {
+    id: 'updatedAt',
+    accessor: ({ updatedAt }) =>
+      updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
+    Header: () => (
+      <SortableHeader field="updatedAt" defaultOrder={Order.DESC}>
+        Updated At
+      </SortableHeader>
+    )
   }
 ];
 
 export function UserTable(props: Omit<Props, 'columns'>) {
-  const columns = useMemo(
-    () => [
-      ...userColumns,
-      {
-        Header: 'Actions',
-        accessor: () => <Button text="Action" />
-      }
-    ],
-    []
-  );
-
-  return <PaginationTable {...props} columns={columns} />;
+  return <Table {...props} columns={userColumns} />;
 }

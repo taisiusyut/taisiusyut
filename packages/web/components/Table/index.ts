@@ -1,2 +1,2 @@
 export * from './Table';
-export * from './PaginationTable';
+export * from './SortableHeader';

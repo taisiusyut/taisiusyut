@@ -8,13 +8,13 @@ import classNames from './Pagination.module.scss';
 export interface PaginationProps {
   pageNo?: number;
   total?: number;
-  size?: number;
+  pageSize?: number;
   onPageChange: (page: number) => void;
 }
 
 interface InitialState {
   currentPage: number;
-  size: number;
+  pageSize: number;
   total: number;
 }
 
@@ -27,8 +27,8 @@ type Actions =
   | { type: 'PAGE_CHANGE'; payload: number }
   | { type: 'INIT'; payload: Partial<InitialState> };
 
-const getState = ({ currentPage, size, total }: InitialState): State => {
-  const totalPages = Math.ceil(total / size);
+const getState = ({ currentPage, pageSize, total }: InitialState): State => {
+  const totalPages = Math.ceil(total / pageSize);
 
   // create an array of pages to ng-repeat in the pager control
   let startPage = 0,
@@ -63,7 +63,7 @@ const getState = ({ currentPage, size, total }: InitialState): State => {
 
   return {
     currentPage: correctCurrentpage,
-    size,
+    pageSize,
     total,
     pages,
     totalPages
@@ -90,16 +90,19 @@ const reducer: Reducer<State, Actions> = (state, action) => {
 };
 
 export const Pagination = React.memo<PaginationProps>(
-  ({ pageNo = 1, total = 0, size = 10, onPageChange }) => {
+  ({ pageNo = 1, pageSize = 10, total = 0, onPageChange }) => {
     const [state, dispatch] = useReducer(
       reducer,
-      { currentPage: pageNo, total, size },
+      { currentPage: pageNo, total, pageSize },
       getState
     );
 
     useEffect(() => {
-      dispatch({ type: 'INIT', payload: { currentPage: pageNo, total, size } });
-    }, [dispatch, pageNo, total, size]);
+      dispatch({
+        type: 'INIT',
+        payload: { currentPage: pageNo, total, pageSize }
+      });
+    }, [dispatch, pageNo, total, pageSize]);
 
     const changePage = (page: number) => {
       dispatch({ type: 'PAGE_CHANGE', payload: page });
