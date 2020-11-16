@@ -9,7 +9,8 @@ import {
   createForm,
   FormProps,
   FormItemProps,
-  DeepPartial
+  DeepPartial,
+  FormInstance
 } from '@/utils/form';
 import { setSearchParam } from '@/utils/setSearchParam';
 import classes from './Filter.module.scss';
@@ -38,7 +39,7 @@ export function createFilter<T extends Record<string, any>>(
   itemProps?: FormItemProps<T>
 ) {
   const components = createForm<T, T>(itemProps);
-  const { Form, FormItem, useForm } = components;
+  const { Form, FormItem } = components;
 
   function transoformInitialValues({
     createdAt,
@@ -52,59 +53,61 @@ export function createFilter<T extends Record<string, any>>(
     } as unknown) as DeepPartial<T>;
   }
 
-  function FilterContent({
-    children,
-    layout = 'grid',
-    initialValues,
-    onFinish,
-    ...props
-  }: FormProps<T> = {}) {
-    const [form] = useForm();
-    const [values] = useState(transoformInitialValues(initialValues));
+  const FilterContent = React.forwardRef<FormInstance<T>, FormProps<T>>(
+    ({ children, layout = 'grid', initialValues, onFinish, ...props }, ref) => {
+      const formRef = useRef<FormInstance<T> | null>();
+      const [values] = useState(transoformInitialValues(initialValues));
 
-    // cannot pass `initialValues` props to `Form`
-    // otherwise `form.resetFields()` will not works
-    useEffect(() => {
-      values && form.setFieldsValue(values);
-    }, [values, form]);
+      // cannot pass `initialValues` props to `Form`
+      // otherwise `form.resetFields()` will not works
+      useEffect(() => {
+        values && formRef.current?.setFieldsValue(values);
+      }, [values]);
 
-    return (
-      <div>
-        <H5>Filter</H5>
-        <Form
-          {...props}
-          form={form}
-          layout={layout}
-          onFinish={payload => {
-            setSearchParam(payload as Record<string, unknown>);
-            onFinish && onFinish(payload);
-          }}
-        >
-          {children}
-          <button hidden type="submit" />
-        </Form>
-        <div className={classes['filter-footer']}>
-          <Button onClick={() => form.resetFields()}>Reset</Button>
-          <Button intent="primary" onClick={form.submit}>
-            Apply
-          </Button>
+      return (
+        <div>
+          <H5>Filter</H5>
+          <Form
+            {...props}
+            layout={layout}
+            ref={form => {
+              formRef.current = form;
+              if (typeof ref === 'function') ref(form);
+              else if (ref) ref.current = form;
+            }}
+            onFinish={payload => {
+              setSearchParam(payload as Record<string, unknown>);
+              onFinish && onFinish(payload);
+            }}
+          >
+            {children}
+            <button hidden type="submit" />
+          </Form>
+          <div className={classes['filter-footer']}>
+            <Button onClick={() => formRef.current?.resetFields()}>
+              Reset
+            </Button>
+            <Button intent="primary" onClick={formRef.current?.submit}>
+              Apply
+            </Button>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
+  );
 
   function Filter({
     className = '',
     initialValues,
     ...props
   }: FormProps<T> = {}) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [modifiers, setModifiers] = useState<IPopoverProps['modifiers']>();
     const buttonRef = useRef<HTMLButtonElement>(null);
-    const { query } = router;
-    const filtered =
-      !!Object.keys(query).length &&
-      !(query.search || query.pageNo || query.pageSize);
+    const formRef = useRef<FormInstance<T>>(null);
+    const [modifiers, setModifiers] = useState<IPopoverProps['modifiers']>();
+    const [hasFilter, setHasFilter] = useState(false);
+
+    // make sure render filter content immediately
+    const [isOpen, setIsOpen] = useState(true);
 
     useEffect(() => {
       function handler() {
@@ -125,11 +128,23 @@ export function createFilter<T extends Record<string, any>>(
 
       if (isOpen) {
         handler();
+
+        // wait for filter content mount
+        setTimeout(() => {
+          const values = formRef.current?.getFieldsValue();
+          setHasFilter(
+            !!values &&
+              Object.values(values).some(value => typeof value !== 'undefined')
+          );
+        }, 0);
+
         const handleClose = () => setIsOpen(false);
         window.addEventListener('resize', handleClose);
         return () => window.removeEventListener('resize', handleClose);
       }
     }, [isOpen]);
+
+    useEffect(() => setIsOpen(false), []);
 
     return (
       <Form
@@ -137,14 +152,14 @@ export function createFilter<T extends Record<string, any>>(
         className={`${classes['filter']} ${className}`.trim()}
         initialValues={initialValues}
         onFinish={({ search }) =>
-          (query.search || search) &&
+          (router.query.search || search) &&
           setSearchParam(params => ({ ...params, search }))
         }
       >
         <FormItem name="search" className={classes['search-input']}>
           <SearchInput
             onClear={() =>
-              query.search &&
+              router.query.search &&
               setSearchParam(params => ({ ...params, search: '' }))
             }
           />
@@ -161,17 +176,18 @@ export function createFilter<T extends Record<string, any>>(
           content={
             <FilterContent
               {...props}
+              ref={formRef}
               initialValues={initialValues}
               onFinish={() => setIsOpen(false)}
             />
           }
         >
           <ButtonPopover
-            onClick={() => setIsOpen(true)}
             content="Filter"
-            intent={filtered ? 'primary' : 'none'}
-            icon={filtered ? 'filter-keep' : 'filter'}
             elementRef={buttonRef}
+            intent={hasFilter ? 'primary' : 'none'}
+            icon={hasFilter ? 'filter-keep' : 'filter'}
+            onClick={() => setIsOpen(true)}
           />
         </Popover>
       </Form>
