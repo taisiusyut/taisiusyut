@@ -23,13 +23,8 @@ const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
 );
 
 export function Users() {
-  const {
-    list,
-    loading,
-    pagination,
-    params: { sort = { createdAt: Order.DESC }, ...params },
-    actions
-  } = useUserPagination();
+  const { state, loading, pagination, actions } = useUserPagination();
+  const { sort = { createdAt: Order.DESC } } = state.params;
 
   return (
     <div className={classes.users}>
@@ -42,14 +37,16 @@ export function Users() {
               onCreate={user =>
                 actions.insert(
                   user,
-                  Number(sort['createdAt']) === Order.ASC ? list.length : 0
+                  Number(sort['createdAt']) === Order.ASC
+                    ? state.list.length
+                    : 0
                 )
               }
             />
           </div>
         </div>
 
-        <Filter initialValues={params} className={classes.fitler}>
+        <Filter initialValues={state.params} className={classes.fitler}>
           <FilterInput name="id" label="User ID" />
           <FilterInput name="username" label="Username" />
           <FilterInput name="email" label="Email" />
@@ -62,7 +59,7 @@ export function Users() {
         </Filter>
 
         <UserTable
-          data={list}
+          data={state.list}
           loading={loading}
           pagination={pagination}
           rowSelectedClassName={classes['row-selected']}

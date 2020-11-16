@@ -69,7 +69,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     };
 
     return {
-      ...state,
+      state,
       fetch,
       actions,
       loading,
