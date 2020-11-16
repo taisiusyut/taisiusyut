@@ -1,4 +1,5 @@
 import React from 'react';
+import router from 'next/router';
 import {
   Classes,
   Menu,
@@ -21,7 +22,6 @@ interface UsersMenuProps extends Partial<IOverlayProps>, OnUpdate, OnDelete {
 export const openUsersMenu = createOpenOverlay<UsersMenuProps>(UsersMenu);
 
 export function UsersMenu({
-  title = '',
   offset,
   user,
   onClose,
@@ -32,18 +32,23 @@ export function UsersMenu({
   return (
     <Overlay {...props} onClose={onClose} hasBackdrop={false}>
       <div className={Classes.POPOVER} style={offset}>
-        <Menu>
-          <MenuDivider title={title} />
+        <Menu onClick={event => onClose && onClose(event)}>
+          <MenuItem
+            icon="user"
+            text={user.nickname}
+            onClick={() => {
+              router.push({ search: `id=${user.id}` });
+            }}
+          />
           <MenuDivider />
-          <UpdateUser onUpdate={onUpdate} user={user} onClick={onClose} />
+          <UpdateUser onUpdate={onUpdate} user={user} />
           <DeleteUser
             id={user.id}
             nickname={user.nickname}
             onDelete={onDelete}
-            onClick={onClose}
           />
           <MenuDivider />
-          <MenuItem icon="cross" text="Close" onClick={onClose} />
+          <MenuItem icon="cross" text="Close" />
         </Menu>
       </div>
     </Overlay>

@@ -84,7 +84,12 @@ export function createFilter<T extends Record<string, any>>(
             <button hidden type="submit" />
           </Form>
           <div className={classes['filter-footer']}>
-            <Button onClick={() => formRef.current?.resetFields()}>
+            <Button
+              onClick={() => {
+                formRef.current?.resetFields();
+                formRef.current?.submit();
+              }}
+            >
               Reset
             </Button>
             <Button intent="primary" onClick={formRef.current?.submit}>
@@ -96,6 +101,13 @@ export function createFilter<T extends Record<string, any>>(
     }
   );
 
+  function hasFilter(values?: DeepPartial<T> | T) {
+    return (
+      !!values &&
+      Object.values(values).some(value => typeof value !== 'undefined')
+    );
+  }
+
   function Filter({
     className = '',
     initialValues,
@@ -104,7 +116,7 @@ export function createFilter<T extends Record<string, any>>(
     const buttonRef = useRef<HTMLButtonElement>(null);
     const formRef = useRef<FormInstance<T>>(null);
     const [modifiers, setModifiers] = useState<IPopoverProps['modifiers']>();
-    const [hasFilter, setHasFilter] = useState(false);
+    const [filtered, setFiltered] = useState(false);
 
     // make sure render filter content immediately
     const [isOpen, setIsOpen] = useState(true);
@@ -132,10 +144,7 @@ export function createFilter<T extends Record<string, any>>(
         // wait for filter content mount
         setTimeout(() => {
           const values = formRef.current?.getFieldsValue();
-          setHasFilter(
-            !!values &&
-              Object.values(values).some(value => typeof value !== 'undefined')
-          );
+          setFiltered(hasFilter(values));
         }, 0);
 
         const handleClose = () => setIsOpen(false);
@@ -178,15 +187,18 @@ export function createFilter<T extends Record<string, any>>(
               {...props}
               ref={formRef}
               initialValues={initialValues}
-              onFinish={() => setIsOpen(false)}
+              onFinish={values => {
+                setIsOpen(false);
+                setFiltered(hasFilter(values));
+              }}
             />
           }
         >
           <ButtonPopover
             content="Filter"
             elementRef={buttonRef}
-            intent={hasFilter ? 'primary' : 'none'}
-            icon={hasFilter ? 'filter-keep' : 'filter'}
+            intent={filtered ? 'primary' : 'none'}
+            icon={filtered ? 'filter-keep' : 'filter'}
             onClick={() => setIsOpen(true)}
           />
         </Popover>
