@@ -113,7 +113,7 @@ export function testGetBooks() {
   `(
     `global $user access books correctly`,
     async ({ user, length }: Record<string, any>) => {
-      const response = await getBooks(getUser(user).token, { size: 100 });
+      const response = await getBooks(getUser(user).token, { pageSize: 100 });
       expect(response.body.data).toHaveLength(length);
       expect(response.body.total).toBe(length);
 
@@ -143,7 +143,7 @@ export function testGetBooks() {
   test.each(mocks.authors.map((author, index) => [index, author] as const))(
     `author-%s can access all public books and his/her books`,
     async (_index, { auth, books }) => {
-      const response = await getBooks(auth.token, { size: 100 });
+      const response = await getBooks(auth.token, { pageSize: 100 });
       // prettier-ignore
       const length =
         (mocks.stats.Public + mocks.stats.Finished) -
@@ -162,7 +162,7 @@ export function testGetBooks() {
     async (_index, { auth, books }) => {
       for (const status of bookStatus) {
         const key = BookStatus[status] as keyof BooksStats;
-        const response = await getBooks(auth.token, { size: 100, status });
+        const response = await getBooks(auth.token, { pageSize: 100, status });
         const length = books.stats[key];
         expect(response.body.total).toBe(length);
         expect(response.body.data).toHaveLength(length);
@@ -176,7 +176,7 @@ export function testGetBooks() {
   );
   test(`client access books by status`, async () => {
     for (const status of bookStatus) {
-      const response = await getBooks(client.token, { size: 100, status });
+      const response = await getBooks(client.token, { pageSize: 100, status });
 
       if (status === BookStatus.Public || status === BookStatus.Finished) {
         const length = mocks.stats[BookStatus[status] as keyof BooksStats];

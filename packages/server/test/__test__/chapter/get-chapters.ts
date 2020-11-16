@@ -141,7 +141,7 @@ export function testGetChapters() {
     async user => {
       for (const { book, chapters, stats } of mocks.authors) {
         const response = await getChapters(getUser(user).token, book.id, {
-          size: 100
+          pageSize: 100
         });
 
         const hasPermission = ['root', 'admin'].includes(user);
@@ -171,7 +171,9 @@ export function testGetChapters() {
       const { auth } = mocks.authors[index];
       for (let i = 0; i < mocks.authors.length; i++) {
         const { book, chapters, stats } = mocks.authors[i];
-        const response = await getChapters(auth.token, book.id, { size: 100 });
+        const response = await getChapters(auth.token, book.id, {
+          pageSize: 100
+        });
         const self = i === index;
 
         const expetedLength = self ? chapters.length : stats.Public;
@@ -195,7 +197,7 @@ export function testGetChapters() {
       for (const k in chapterStatus) {
         const key = k as keyof Status;
         const response = await getChapters(auth.token, book.id, {
-          size: 100,
+          pageSize: 100,
           status: ChapterStatus[key]
         });
         const length = stats[key];
