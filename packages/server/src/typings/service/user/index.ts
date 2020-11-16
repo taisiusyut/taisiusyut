@@ -54,10 +54,13 @@ export type Param$CreateUser =
 export interface SharedUpdateUser {
   id: string;
   email?: string;
+  nickname?: string;
 }
 
-export type Param$UpdateUser = SharedCreateUser &
-  (Param$UpdateClient | Param$UpdateAuthor);
+export type Param$UpdateUser =
+  | SharedUpdateUser
+  | Param$UpdateClient
+  | Param$UpdateAuthor;
 
 export type InsertedUserSchema = Insertion<Schema$User>;
 export type InsertedCreateuser = Insertion<Param$CreateUser>;
@@ -70,7 +73,6 @@ export interface Param$GetUsers extends Pagination, Search {
   role?: UserRole;
   createdAt?: DateRange;
   updatedAt?: DateRange;
-
   nickname?: string;
 }
 

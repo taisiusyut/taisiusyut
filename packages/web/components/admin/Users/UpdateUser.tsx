@@ -11,7 +11,7 @@ export interface OnUpdate {
 }
 
 interface UpdateUserProps extends Partial<IMenuItemProps>, OnUpdate {
-  user?: Schema$User;
+  user: Schema$User;
 }
 
 const { Form, Nickname, Email, useForm } = createUserForm();
@@ -29,8 +29,8 @@ export function UpdateUser({
   async function onConfirm() {
     const payload = await form.validateFields();
     try {
-      const user = await updateUser(payload);
-      onUpdate(user);
+      const updated = await updateUser({ id: user.id, ...payload });
+      onUpdate(updated);
       Toaster.success({ message: 'Update user success' });
     } catch (error) {
       Toaster.apiError('Update user failure', error);
