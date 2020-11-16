@@ -1,22 +1,4 @@
-@import './scss/index';
-
-$btn-min-size: 34px;
-
-.#{$ns}-input,
-.#{$ns}-html-select select,
-.#{$ns}-select select {
-  height: $btn-min-size;
-}
-
-.#{$ns}-button {
-  min-width: $btn-min-size;
-  min-height: $btn-min-size;
-}
-
-.#{$ns}-input-group .#{$ns}-button {
-  min-width: $btn-min-size - 6px;
-  min-height: $btn-min-size - 6px;
-}
+@import '~styles/utils';
 
 .#{$ns}-button:not([class*='bp3-intent-']) {
   .#{$ns}-icon.#{$ns}-icon {

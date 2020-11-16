@@ -11,6 +11,7 @@
     "@blueprintjs/core": "^3.35.0",
     "@blueprintjs/datetime": "^3.19.3",
     "@fullstack/server": "1.0.0",
+    "@fullstack/style": "1.0.0",
     "axios": "^0.21.0",
     "dayjs": "^1.9.6",
     "next": "10.0.1",

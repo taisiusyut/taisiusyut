@@ -1,4 +1,4 @@
-@import '~styles/scss';
+@import '~styles/utils';
 
 .table {
   @include flex($flex-direction: column);
