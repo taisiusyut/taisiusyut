@@ -5,10 +5,11 @@ import { createFilter } from '@/components/Filter';
 import { UserRoleSelect } from '@/components/UserRoleSelect';
 import { Schema$User, Param$GetUsers, Order } from '@/typings';
 import { getUsers } from '@/service';
+import { Toaster } from '@/utils/toaster';
 import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
-import classes from './Users.module.scss';
 import { openUsersMenu } from './UsersMenu';
+import classes from './Users.module.scss';
 
 const {
   FormItem,
@@ -17,13 +18,17 @@ const {
   FilterDateRange //
 } = createFilter<Param$GetUsers>();
 
+const onFailure = Toaster.apiError.bind(Toaster, 'Get Users Failure');
+
 const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
   'id',
   getUsers
 );
 
 export function Users() {
-  const { state, loading, pagination, actions } = useUserPagination();
+  const { state, loading, pagination, actions } = useUserPagination({
+    onFailure
+  });
   const { sort = { createdAt: Order.DESC } } = state.params;
 
   return (
