@@ -1,3 +1,4 @@
+import { ObjectID } from 'mongodb';
 import {
   IsNumber,
   IsOptional,
@@ -20,6 +21,9 @@ interface MongoDateRange {
 }
 
 class Base implements QuerySchema {
+  // for typings
+  _id?: string | ObjectID;
+
   @IsNumber()
   @IsOptional()
   @Transform(value => value && Number(value))

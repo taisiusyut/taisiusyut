@@ -88,6 +88,11 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
       ...fullMatches
     } = query;
 
+    if (fullMatches.id) {
+      (fullMatches as FilterQuery<D>)._id = fullMatches.id;
+      delete fullMatches.id;
+    }
+
     const [$text, $meta] = search
       ? [
           //https://github.com/VassilisPallas/mongoose-fuzzy-searching/blob/fb98625735a431e00bfd192a13be86d6ed0d2eaa/index.js#L180-L182
