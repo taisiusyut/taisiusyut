@@ -14,6 +14,7 @@ export const Routes = {
     prefix: '/user',
     create_user: '',
     get_users: '',
+    get_user: '/:id',
     update_user: '/:id',
     delete_user: '/:id'
   },

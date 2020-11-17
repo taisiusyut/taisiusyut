@@ -6,10 +6,11 @@ import {
   Patch,
   Body,
   Req,
-  ForbiddenException,
   Get,
   Query,
   Delete,
+  NotFoundException,
+  ForbiddenException,
   BadRequestException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -22,7 +23,6 @@ import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
 import { User } from './schemas/user.schema';
 
-@Access('Root', 'Admin')
 @Controller(routes.user.prefix)
 export class UserController {
   private roles: Partial<Record<UserRole, { role: UserRole }[]>>;
@@ -40,8 +40,9 @@ export class UserController {
     };
   }
 
+  @Access('Root', 'Admin')
   @Get(routes.user.get_users)
-  getAll(@Query() query: GetUsersDto, @Req() req: FastifyRequest) {
+  getUsers(@Query() query: GetUsersDto, @Req() req: FastifyRequest) {
     let condition: Condition[] = [];
 
     if (req.user) {
@@ -58,6 +59,18 @@ export class UserController {
     });
   }
 
+  @Access('Auth')
+  @Get(routes.user.get_user)
+  async getUser(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+    const query = this.userService.getRoleBasedQuery(id, user);
+    const result = await this.userService.findOne(query);
+    if (!result) {
+      throw new NotFoundException();
+    }
+    return result;
+  }
+
+  @Access('Root', 'Admin')
   @Post(routes.user.create_user)
   create(@Req() req: FastifyRequest, @Body() createUserDto: CreateUserDto) {
     if (
@@ -77,6 +90,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  // TODO: make this better
   @Access('Auth')
   @Patch(routes.user.update_user)
   async update(
@@ -120,6 +134,7 @@ export class UserController {
     return result;
   }
 
+  @Access('Root', 'Admin')
   @Delete(routes.user.delete_user)
   async delete(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
     const self = id === req.user?.user_id;

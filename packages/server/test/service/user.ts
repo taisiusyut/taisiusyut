@@ -33,6 +33,13 @@ export function getUsers(token: string, query: Record<string, any> = {}) {
     .query(qs.stringify(query));
 }
 
+export function getUserProfile(token: string, id: string) {
+  return request
+    .get(routes.get_user.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
 export function updateUser(
   token: string,
   id: string,

@@ -34,7 +34,7 @@ export function testGetUsers() {
   });
 
   test.each(['author', 'client'])(
-    '%s cannot aceess other users',
+    '%s cannot access other users',
     async type => {
       const response = await getUsers(getUser(type).token);
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
