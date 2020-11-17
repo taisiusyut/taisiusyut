@@ -1,0 +1,36 @@
+@import '~styles/utils';
+
+.section {
+  + .section {
+    margin-top: 100px;
+  }
+
+  .section-content {
+    margin-top: 20px;
+  }
+
+  :global {
+    .#{$ns}-divider {
+      @include margin-x(0);
+    }
+    .rc-form-item-label {
+      font-weight: bold;
+    }
+  }
+}
+
+.profile {
+  .description {
+    resize: none;
+  }
+
+  .footer {
+    text-align: right;
+
+    :global {
+      button + button {
+        margin-left: 10px;
+      }
+    }
+  }
+}

@@ -1,9 +1,5 @@
 @import '~styles/utils';
 
-.users {
-  padding: 15px;
-}
-
 .header {
   @include flex(center, space-between);
 

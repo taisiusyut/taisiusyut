@@ -14,7 +14,7 @@ module.exports = function (api) {
               path.resolve(__dirname, './styled-jsx-plugin-sass.js'),
               {
                 sassOptions: {
-                  data: `@import './styles/scss/index';`,
+                  data: `@import './styles/utils';`,
                   includePaths: [path.resolve(__dirname, './styles')],
                   importer: packageImporter()
                 }

@@ -30,6 +30,7 @@ export function AdminLayout({ children }: Props) {
 
           .layout-content {
             @include dimen(100%);
+            @include padding-x(15px 1px);
             flex: 1 1 auto;
             overflow: hidden;
           }

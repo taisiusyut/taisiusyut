@@ -128,12 +128,11 @@ export function createFilter<T extends Record<string, any>>(
           '.layout .layout-content'
         );
         if (button && layout) {
-          const rect = button.getBoundingClientRect();
           const left =
-            rect.left -
+            button.getBoundingClientRect().left -
             layout.getBoundingClientRect().left -
             layout.offsetWidth / 2 +
-            14;
+            5;
           setModifiers({ offset: { offset: `${left * -1}, 0` } });
         }
       }

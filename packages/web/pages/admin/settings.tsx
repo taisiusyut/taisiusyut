@@ -1,9 +1,10 @@
 import React from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { Settings } from '@/components/admin/Settings';
 import { UserRole } from '@/typings';
 
 export default function AdminSettingsPage() {
-  return <div>Settings</div>;
+  return <Settings />;
 }
 
 AdminSettingsPage.layout = AdminLayout;

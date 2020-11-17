@@ -19,3 +19,6 @@ export const deleteUser = ({ id }: { id: string }) =>
 
 export const getUsers = (params?: Param$GetUsers) =>
   api.get<PaginateResult<Schema$User>>(routes.create_user, { params });
+
+export const getUser = ({ id }: { id: string }) =>
+  api.get<Schema$User>(routes.get_user.generatePath({ id }));

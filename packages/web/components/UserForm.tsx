@@ -1,5 +1,10 @@
 import React from 'react';
-import { Schema$User } from '@/typings';
+import {
+  Schema$User,
+  Param$CreateUser,
+  Param$UpdateUser,
+  Param$UpdateAuthor
+} from '@/typings';
 import {
   createForm,
   validators,
@@ -9,8 +14,12 @@ import {
 import { Input, Password as PasswordInput } from './Input';
 import { UserRoleSelect } from './UserRoleSelect';
 
-interface UserFormSchema extends Required<Omit<Schema$User, 'id'>> {
-  confirmPassword: string;
+interface UserFormSchema
+  extends Partial<Omit<Schema$User, 'id'>>,
+    Partial<Omit<Param$CreateUser, 'id'>>,
+    Partial<Omit<Param$UpdateUser, 'id'>>,
+    Partial<Omit<Param$UpdateAuthor, 'id'>> {
+  confirmPassword?: string;
 }
 
 export type UserFormProps = FormProps<UserFormSchema>;
