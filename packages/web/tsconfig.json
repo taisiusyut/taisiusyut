@@ -18,6 +18,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["/*.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["/*.d.ts", "**/*.ts", "**/*.tsx", "**/public/preload.js"],
   "exclude": ["node_modules"]
 }

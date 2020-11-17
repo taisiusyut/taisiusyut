@@ -3,6 +3,7 @@
 .pagiation {
   @include dimen(100%);
   text-align: right;
+  margin-bottom: 5px;
 
   :global {
     .#{$ns}-divider {

@@ -68,13 +68,3 @@ a:hover,
     margin-bottom: 5px;
   }
 }
-
-[data-theme^='dark'] {
-  .#{$ns}-card {
-    background-color: var(--main-diff1-color);
-  }
-
-  .#{$ns}-menu.#{$ns}-menu {
-    background-color: var(--main-diff1-color);
-  }
-}

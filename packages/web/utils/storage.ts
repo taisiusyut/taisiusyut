@@ -1,6 +1,6 @@
 import { JSONParse } from './JSONParse';
 
-export interface Storage<T> {
+export interface IStorage<T> {
   key: string;
   get(): T;
   save(value: T): void;
@@ -8,40 +8,30 @@ export interface Storage<T> {
 
 type WebStorage = Pick<globalThis.Storage, 'getItem' | 'setItem'>;
 
+function createStorage<T>(storage: WebStorage) {
+  return (key: string, defaultValue: T) => {
+    let value = defaultValue;
+
+    return {
+      key,
+      get: () => {
+        value = JSONParse<T>(storage.getItem(key) || '', value);
+        return value;
+      },
+      save: (newValue: T) => {
+        value = newValue;
+        storage.setItem(key, JSON.stringify(newValue));
+      }
+    };
+  };
+}
+
 export function mixStorage(key: string, storage: WebStorage): WebStorage {
   const baseStorage = createStorage<Record<string, unknown>>(storage)(key, {});
   return {
     getItem: key => JSON.stringify(baseStorage.get()[key]),
     setItem: (key, value) =>
       baseStorage.save({ ...baseStorage.get(), [key]: JSONParse(value, null) })
-  };
-}
-
-function createStorage<T>(storage?: WebStorage) {
-  const _storage = storage as WebStorage;
-
-  return (key: string, defaultValue: T) => {
-    class _Storage<T> implements Storage<T> {
-      key = key;
-
-      constructor(private value: T) {}
-
-      get() {
-        if (typeof _storage !== 'undefined') {
-          this.value = JSONParse<T>(_storage.getItem(key) || '', this.value);
-        }
-        return this.value;
-      }
-
-      save(newValue: T) {
-        if (typeof _storage !== 'undefined') {
-          _storage.setItem(key, JSON.stringify(newValue));
-        }
-        this.value = newValue;
-      }
-    }
-
-    return new _Storage(defaultValue);
   };
 }
 
@@ -58,20 +48,36 @@ export function storageSupport() {
   return false;
 }
 
+const memoryStorage = ((): WebStorage => {
+  const store: Record<string, string | null> = {};
+  return {
+    getItem: key => store[key] || null,
+    setItem: (key, value) => {
+      store[key] = value;
+    }
+  };
+})();
+
 export const createLocalStorage: <T>(
   key: string,
   defaultValue: T
-) => Storage<T> = createStorage(
-  !storageSupport() || typeof localStorage === 'undefined'
-    ? undefined
-    : localStorage
+) => IStorage<T> = createStorage(
+  storageSupport() ? localStorage : memoryStorage
 );
 
 export const createSessionStorage: <T>(
   key: string,
   defaultValue: T
-) => Storage<T> = createStorage(
-  !storageSupport() || typeof sessionStorage === 'undefined'
-    ? undefined
-    : sessionStorage
+) => IStorage<T> = createStorage(
+  storageSupport() ? sessionStorage : memoryStorage
 );
+
+export const storage = storageSupport()
+  ? mixStorage('taisiusyut', localStorage)
+  : memoryStorage;
+const _adminStorage = mixStorage('taisiusyut/admin', storage);
+
+export const createAdminStorage: <T>(
+  key: string,
+  defaultValue: T
+) => IStorage<T> = createStorage(_adminStorage);
