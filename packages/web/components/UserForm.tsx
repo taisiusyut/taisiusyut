@@ -35,11 +35,7 @@ export function createUserForm({
   ...itemProps
 }: FormItemProps<UserFormSchema> & { large?: boolean } = {}) {
   const components = createForm<UserFormSchema>(itemProps);
-  const { Form, FormItem } = components;
-
-  function UserForm(props: UserFormProps) {
-    return <Form {...props} />;
-  }
+  const { FormItem } = components;
 
   const Username = (props: FormItemProps<UserFormSchema> = {}) => (
     <FormItem {...(props as unknown)} name="username" label="Username">
@@ -100,7 +96,6 @@ export function createUserForm({
 
   return {
     ...components,
-    UserForm,
     Username,
     Password,
     ConfirmPassword,

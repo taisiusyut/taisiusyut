@@ -10,7 +10,7 @@ import { SettingsSection } from './SettingsSection';
 import { Toaster } from '@/utils/toaster';
 import classes from './Settings.module.scss';
 
-const { UserForm, Email, Nickname, FormItem, useForm } = createUserForm();
+const { Form, FormItem, Email, Nickname, useForm } = createUserForm();
 
 const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
 const updateProfileFailure = Toaster.apiError.bind(
@@ -56,7 +56,7 @@ export function SettingsProfile() {
 
   return (
     <SettingsSection title="Profile" className={classes['profile']}>
-      <UserForm
+      <Form
         form={form}
         key={JSON.stringify(user)}
         initialValues={user ? user : undefined}
@@ -91,7 +91,7 @@ export function SettingsProfile() {
             Apply
           </Button>
         </div>
-      </UserForm>
+      </Form>
     </SettingsSection>
   );
 }
