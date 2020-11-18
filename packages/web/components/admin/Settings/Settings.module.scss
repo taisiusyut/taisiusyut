@@ -2,7 +2,7 @@
 
 .section {
   + .section {
-    margin-top: 40px;
+    margin-top: 60px;
   }
 
   .section-content {
@@ -22,7 +22,7 @@
 
 .profile {
   .description {
-    resize: none;
+    resize: vertical;
   }
 
   .footer {
@@ -41,6 +41,39 @@
     .#{$ns}-label {
       line-height: 20px !important;
       min-width: 100px;
+    }
+  }
+}
+
+.danger-zone {
+  .danger-zone-content {
+    border: 1px solid $red3;
+    border-radius: 3px;
+    padding: 20px;
+
+    > div {
+      @include flex(flex-start, space-between);
+
+      > div:nth-child(1) {
+        max-width: 600px;
+        margin-right: 15px;
+      }
+
+      b {
+        display: block;
+        margin-bottom: 2px;
+      }
+    }
+
+    :global {
+      .#{$ns}-button.#{$ns}-button:not([class*='-intent-']) {
+        white-space: nowrap;
+        color: $red3;
+      }
+
+      .#{$ns}-divider {
+        @include margin-y(20px);
+      }
     }
   }
 }
