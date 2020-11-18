@@ -86,7 +86,7 @@ export function createUserForm({
   );
 
   const UserRole = () => (
-    <FormItem name="role" label="Role" normalize={Number}>
+    <FormItem name="role" label="Role">
       <UserRoleSelect large={large} />
     </FormItem>
   );

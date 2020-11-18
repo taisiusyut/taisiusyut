@@ -6,7 +6,7 @@ const options = Object.values(UserRole)
   .filter(role => role !== UserRole.Root)
   .map(value => (
     <option key={value} value={value}>
-      {value[0] + value.slice(1).toLowerCase()}
+      {value}
     </option>
   ));
 
