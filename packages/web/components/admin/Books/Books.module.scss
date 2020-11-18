@@ -1,0 +1,13 @@
+@import '~styles/utils';
+
+.header {
+  @include flex(center, space-between);
+
+  .button-group {
+    button {
+      + button {
+        margin-left: 10px;
+      }
+    }
+  }
+}

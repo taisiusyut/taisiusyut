@@ -9,6 +9,7 @@ import {
   MaxLength
 } from 'class-validator';
 import { Category } from '@/typings';
+import { MAXIMUM_TAGS } from '@/constants';
 
 export function IsBookName(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), IsNotEmpty(), MaxLength(15));
@@ -29,7 +30,7 @@ export function IsTags(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
     IsArray(),
     IsString({ each: true }),
-    ArrayMaxSize(10),
+    ArrayMaxSize(MAXIMUM_TAGS),
     Transform(arr =>
       (Array.isArray(arr) ? arr : [arr]).map((s: unknown) =>
         typeof s === 'string' ? s.toLowerCase() : s

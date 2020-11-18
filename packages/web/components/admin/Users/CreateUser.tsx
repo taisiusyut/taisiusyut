@@ -5,6 +5,7 @@ import { createUser } from '@/service';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { createUserForm, userValidators } from '@/components/UserForm';
 import { Toaster } from '@/utils/toaster';
+import { rid } from '@/utils/rid';
 
 export interface OnCreate {
   onCreate: (payload: Schema$User) => void;
@@ -24,13 +25,6 @@ const {
 
 const icon: IconName = 'new-person';
 const title = 'Create User';
-
-const rid = (N = 5): string => {
-  const s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return Array.from({ length: N }, () =>
-    s.charAt(Math.floor(Math.random() * s.length))
-  ).join('');
-};
 
 export function CreateUser({ onCreate }: CreateUserProps) {
   const [form] = useForm();

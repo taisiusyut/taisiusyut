@@ -3,10 +3,6 @@
 .header {
   @include flex(center, space-between);
 
-  h5 {
-    margin-bottom: 0;
-  }
-
   .button-group {
     button {
       + button {
