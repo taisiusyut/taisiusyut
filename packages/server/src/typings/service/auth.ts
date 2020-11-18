@@ -9,6 +9,7 @@ export interface JWTSignPayload {
 }
 
 export interface JWTSignResult {
+  user: JWTSignPayload;
   token: string;
   expiry: Date | string;
 }

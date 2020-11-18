@@ -40,7 +40,7 @@ export class AuthService {
         return formatJWTSignPayload({
           ...rest,
           user_id,
-          nickname: rest.username
+          nickname: rest.nickname || rest.username
         });
       }
 
@@ -70,7 +70,7 @@ export class AuthService {
 
   signJwt(payload: JWTSignPayload): JWTSignResult {
     const now = +new Date();
-    const signPayload = formatJWTSignPayload(payload);
+    const user = formatJWTSignPayload(payload);
     const minutes = this.configService.get<number>(
       'JWT_TOKEN_EXPIRES_IN_MINUTES'
     );
@@ -79,7 +79,8 @@ export class AuthService {
       throw new InternalServerErrorException('jwt expires not configured');
 
     return {
-      token: this.jwtService.sign(signPayload),
+      user,
+      token: this.jwtService.sign(user),
       expiry: new Date(now + minutes * 60 * 1000)
     };
   }

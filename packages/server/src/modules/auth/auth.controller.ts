@@ -27,11 +27,7 @@ import { Access } from '@/guard/access.guard';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshToken } from './schemas/refreshToken.schema';
-import {
-  DeleteAccountDto,
-  formatJWTSignPayload,
-  ModifyPasswordDto
-} from './dto';
+import { DeleteAccountDto, ModifyPasswordDto } from './dto';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
@@ -60,13 +56,13 @@ export class AuthController {
   ): Promise<FastifyReply> {
     if (!user) throw new InternalServerErrorException(`user is ${user}`);
 
-    const signPayload = this.authService.signJwt(user);
+    const signResult = this.authService.signJwt(user);
     const refreshToken = uuidv4();
 
     try {
       await this.refreshTokenService.update(
         { user_id: user.user_id },
-        { ...user, refreshToken },
+        { ...signResult.user, refreshToken },
         { upsert: true }
       );
     } catch (error) {
@@ -74,8 +70,7 @@ export class AuthController {
     }
 
     const response: Schema$Authenticated = {
-      ...signPayload,
-      user,
+      ...signResult,
       isDefaultAc: !isMongoId(user.user_id)
     };
 
@@ -112,11 +107,9 @@ export class AuthController {
       if (refreshToken) {
         const refreshTokenJson = refreshToken.toJSON();
         const signResult = this.authService.signJwt(refreshTokenJson);
-        const user = formatJWTSignPayload(refreshTokenJson);
         const response: Schema$Authenticated = {
           ...signResult,
-          user,
-          isDefaultAc: !isMongoId(user.user_id)
+          isDefaultAc: !isMongoId(signResult.user.user_id)
         };
 
         return reply
