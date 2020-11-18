@@ -2,7 +2,7 @@
 
 .#{$ns}-button:not([class*='bp3-intent-']) {
   .#{$ns}-icon.#{$ns}-icon {
-    color: var(--icon-color);
+    color: var(--text-color);
   }
 }
 
@@ -17,11 +17,11 @@
 
   [data-theme^='dark'] & {
     .#{$ns}-popover-arrow-fill {
-      fill: var(--main-diff1-color);
+      fill: var(--primary-color);
     }
 
     .#{$ns}-popover-content {
-      background-color: var(--main-diff1-color);
+      background-color: var(--primary-color);
     }
   }
 }
@@ -29,13 +29,13 @@
 .#{$ns}-dialog.#{$ns}-dialog {
   @include dimen(auto);
   border-radius: 4px;
-  background-color: var(--main-diff1-color);
+  background-color: var(--secondary-color);
   min-width: 300px;
   overflow: hidden;
   padding-bottom: 10px;
 
   .#{$ns}-dialog-header {
-    background-color: var(--main-color);
+    background-color: var(--primary-color);
     min-height: 50px;
 
     .#{$ns}-heading {

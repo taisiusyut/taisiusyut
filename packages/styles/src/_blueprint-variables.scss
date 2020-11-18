@@ -8,13 +8,13 @@ $pt-button-height-small: 26px;
 $pt-input-height: $pt-button-height;
 
 // card
-$dark-card-background-color: var(--main-color);
+$dark-card-background-color: var(--primary-color);
 
 // divider
-$pt-dark-divider-black: #343434;
+$pt-dark-divider-black: rgba(255, 255, 255, 0.15);
 
 // menu
-$dark-menu-background-color: var(--main-diff1-color);
+$dark-menu-background-color: var(--primary-color);
 
 @import '~@blueprintjs/core/src/common/variables';
 @import '~@blueprintjs/core/src/common/colors';

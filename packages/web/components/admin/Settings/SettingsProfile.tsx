@@ -83,6 +83,7 @@ export function SettingsProfile() {
             Reset
           </Button>
           <Button
+            type="submit"
             intent="primary"
             onClick={form.submit}
             loading={updateUser.loading}

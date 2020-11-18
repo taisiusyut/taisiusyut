@@ -17,8 +17,8 @@
 
 .inner {
   @include flex($flex-direction: column);
-  background-color: var(--main-color);
-  box-shadow: 1px 0 0 rgba(16, 22, 26, 0.15);
+  background-color: var(--primary-color);
+  box-shadow: 1px 0 0 var(--divider-color);
   min-height: 100%;
 
   @media (min-width: $break-point + 1) {

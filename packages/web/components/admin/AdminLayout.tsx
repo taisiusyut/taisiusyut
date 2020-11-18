@@ -18,7 +18,7 @@ export function AdminLayout({ children }: Props) {
           {`
             .layout {
               @include sq-dimen(100%);
-              background-color: var(--main-diff1-color);
+              background-color: var(--secondary-color);
               min-height: 100%;
             }
 
@@ -32,9 +32,9 @@ export function AdminLayout({ children }: Props) {
 
             .layout-content {
               @include dimen(100%);
-              @include padding-x(15px 1px);
               flex: 1 1 auto;
               overflow: hidden;
+              padding: 15px;
             }
           `}
         </style>
