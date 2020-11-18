@@ -18,7 +18,7 @@ const {
   FilterDateRange //
 } = createFilter<Param$GetUsers>();
 
-const onFailure = Toaster.apiError.bind(Toaster, 'Get Users Failure');
+const onFailure = Toaster.apiError.bind(Toaster, 'Get users failure');
 
 const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
   'id',
