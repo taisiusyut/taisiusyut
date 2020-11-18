@@ -8,3 +8,4 @@ export default function BookIndexPage() {
 
 BookIndexPage.layout = AdminLayout;
 BookIndexPage.access = [UserRole.Root, UserRole.Admin, UserRole.Author];
+BookIndexPage.redirect = '/';

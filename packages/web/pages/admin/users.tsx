@@ -8,4 +8,5 @@ export default function AdminUsersPage() {
 }
 
 AdminUsersPage.layout = AdminLayout;
-AdminUsersPage.access = [UserRole.Root, UserRole.Admin, UserRole.Author];
+AdminUsersPage.access = [UserRole.Root, UserRole.Admin];
+AdminUsersPage.redirect = '/';

@@ -9,3 +9,4 @@ export default function AdminSettingsPage() {
 
 AdminSettingsPage.layout = AdminLayout;
 AdminSettingsPage.access = [UserRole.Root, UserRole.Admin, UserRole.Author];
+AdminSettingsPage.redirect = '/';
