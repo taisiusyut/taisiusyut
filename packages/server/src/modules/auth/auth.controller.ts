@@ -4,13 +4,14 @@ import {
   Body,
   Req,
   Res,
+  Delete,
+  Patch,
+  HttpCode,
   UseGuards,
   HttpStatus,
   BadRequestException,
   UnauthorizedException,
   ForbiddenException,
-  HttpCode,
-  Patch,
   InternalServerErrorException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -157,7 +158,7 @@ export class AuthController {
 
   @Access('Auth')
   @HttpCode(HttpStatus.OK)
-  @Post(routes.auth.delete_account)
+  @Delete(routes.auth.delete_account)
   async delete(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
