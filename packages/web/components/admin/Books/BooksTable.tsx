@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Tag } from '@blueprintjs/core';
 import { Schema$Book, BookStatus, Order, Category } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
@@ -10,6 +11,20 @@ type BookTableProps = Omit<TableProps<Schema$Book>, 'columns'> & {
 };
 
 const bookColumns: Column<Schema$Book>[] = [
+  {
+    id: 'cover',
+    Header: 'Cover',
+    accessor: book =>
+      book.cover && (
+        <Image
+          src={book.cover}
+          layout="fixed"
+          width={60}
+          height={80}
+          unoptimized
+        />
+      )
+  },
   {
     id: 'name',
     accessor: 'name',
@@ -35,7 +50,7 @@ const bookColumns: Column<Schema$Book>[] = [
     Header: 'Tags',
     accessor: book => (
       <div style={{ width: 300, whiteSpace: 'break-spaces' }}>
-        {book.tags.map((tag, i) => (
+        {book.tags?.map((tag, i) => (
           <Tag key={`${tag}-${i}`} className={classes.tag}>
             {tag}
           </Tag>

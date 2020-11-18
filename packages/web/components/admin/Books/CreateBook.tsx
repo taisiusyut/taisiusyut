@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, IconName } from '@blueprintjs/core';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
-import { Schema$Book } from '@/typings';
+import { Schema$Book, Category } from '@/typings';
 import { createBook } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { rid } from '@/utils/rid';
@@ -11,9 +11,9 @@ import {
   BookName,
   BookDescription,
   BookCategory,
-  BookTags
+  BookTags,
+  BookCover
 } from './BookForm';
-import { Category } from '@fullstack/server/dist/typings';
 
 export interface OnCreate {
   onCreate: (payload: Schema$Book) => void;
@@ -41,9 +41,16 @@ export function CreateBook({ onCreate }: CreateBookProps) {
 
   const children = (
     <Form form={form} style={{ width: 400 }}>
-      <BookName />
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: '1 1 auto' }}>
+          <BookName />
+          <BookCategory />
+        </div>
+        <div style={{ marginLeft: 15 }}>
+          <BookCover />
+        </div>
+      </div>
       <BookDescription />
-      <BookCategory />
       <BookTags />
     </Form>
   );

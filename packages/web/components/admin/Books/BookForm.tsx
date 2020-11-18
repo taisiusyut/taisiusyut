@@ -1,11 +1,17 @@
 import React from 'react';
 import { Input, TextArea, TagInput } from '@/components/Input';
-import { CategorySelect } from '@/components/Select/CategorySelect';
+import { CategorySelect } from '@/components/Select';
 import { Param$CreateBook } from '@/typings';
 import { createForm, validators } from '@/utils/form';
 import { MAXIMUM_TAGS } from '@/constants';
+import { BookCoverUpload } from './BookCoverUpload';
+import { RxFileToImageState } from 'use-rx-hooks';
 
-export const { Form, FormItem, useForm } = createForm<Param$CreateBook>();
+type CreateBook = Param$CreateBook & {
+  cover?: RxFileToImageState;
+};
+
+export const { Form, FormItem, useForm } = createForm<CreateBook>();
 
 export const BookName = () => (
   <FormItem
@@ -50,5 +56,11 @@ export const BookTags = () => (
     ]}
   >
     <TagInput />
+  </FormItem>
+);
+
+export const BookCover = () => (
+  <FormItem name="cover" label="Cover" noStyle>
+    <BookCoverUpload />
   </FormItem>
 );

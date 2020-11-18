@@ -20,3 +20,29 @@
   margin-top: 5px;
   margin-left: 5px;
 }
+
+.cover {
+  @include dimen(120px);
+  @include relative();
+  background-color: var(--secondary-color);
+  box-shadow: $pt-input-box-shadow;
+  cursor: pointer;
+
+  &.uploaded {
+    box-shadow: 0px 0px 3px 1px var(--shadow-color);
+  }
+
+  &:before {
+    content: '';
+    display: block;
+    height: 0;
+    padding-bottom: 4/3 * 100%;
+  }
+
+  &:after {
+    @include absolute(0, 0, 0, 0);
+    @include flex(center, center);
+    content: '+';
+    font-size: 30px;
+  }
+}
