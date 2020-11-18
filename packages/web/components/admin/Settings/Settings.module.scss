@@ -61,14 +61,17 @@
 
       b {
         display: block;
-        margin-bottom: 2px;
+        margin-bottom: 5px;
       }
     }
 
     :global {
-      .#{$ns}-button.#{$ns}-button:not([class*='-intent-']) {
+      .#{$ns}-button {
         white-space: nowrap;
-        color: $red3;
+
+        &.#{$ns}-button:not([class*='-intent-']) {
+          color: $red3;
+        }
       }
 
       .#{$ns}-divider {
