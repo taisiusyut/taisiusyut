@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, TextArea, TagInput } from '@/components/Input';
-import { CategorySelect } from '@/components/CategorySelect';
+import { CategorySelect } from '@/components/Select/CategorySelect';
 import { Param$CreateBook } from '@/typings';
 import { createForm, validators } from '@/utils/form';
 import { MAXIMUM_TAGS } from '@/constants';

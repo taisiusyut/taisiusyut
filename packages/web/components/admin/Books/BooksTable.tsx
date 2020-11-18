@@ -1,14 +1,15 @@
 import React from 'react';
 import { Tag } from '@blueprintjs/core';
 import { Schema$Book, BookStatus, Order, Category } from '@/typings';
-import { Table, TableProps, SortableHeader } from '@/components/Table';
+import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import classes from './Books.module.scss';
 import dayjs from 'dayjs';
 
-type Props = TableProps<Schema$Book>;
-type Columns = Props['columns'];
+type BookTableProps = Omit<TableProps<Schema$Book>, 'columns'> & {
+  isAuthor: boolean;
+};
 
-const bookColumns: Columns = [
+const bookColumns: Column<Schema$Book>[] = [
   {
     id: 'name',
     accessor: 'name',
@@ -18,6 +19,11 @@ const bookColumns: Columns = [
     id: 'status',
     Header: 'Status',
     accessor: book => book.status && BookStatus[book.status]
+  },
+  {
+    id: 'author',
+    Header: 'Author',
+    accessor: book => book.author.nickname
   },
   {
     id: 'category',
@@ -59,6 +65,10 @@ const bookColumns: Columns = [
   }
 ];
 
-export function BooksTable(props: Omit<Props, 'columns'>) {
-  return <Table {...props} columns={bookColumns} />;
+const bookColumnsForAuthor = bookColumns.filter(col => col.id !== 'author');
+
+export function BooksTable({ isAuthor, ...props }: BookTableProps) {
+  return (
+    <Table {...props} columns={isAuthor ? bookColumnsForAuthor : bookColumns} />
+  );
 }

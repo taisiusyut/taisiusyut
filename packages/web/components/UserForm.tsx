@@ -4,14 +4,9 @@ import {
   Param$UpdateUser,
   Param$UpdateAuthor
 } from '@/typings';
-import {
-  createForm,
-  validators,
-  FormProps,
-  FormItemProps
-} from '../utils/form';
+import { createForm, validators, FormProps, FormItemProps } from '@/utils/form';
 import { Input, Password as PasswordInput } from './Input';
-import { UserRoleSelect } from './UserRoleSelect';
+import { UserRoleSelect } from './Select';
 
 type UserFormSchema = Param$CreateUser &
   Partial<Omit<Param$UpdateUser, 'id'>> &

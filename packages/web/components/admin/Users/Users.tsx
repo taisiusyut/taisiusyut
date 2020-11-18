@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, H4 } from '@blueprintjs/core';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { createFilter } from '@/components/Filter';
-import { UserRoleSelect } from '@/components/UserRoleSelect';
+import { UserRoleSelect } from '@/components/Select';
 import { Schema$User, Param$GetUsers, Order } from '@/typings';
 import { getUsers } from '@/service';
 import { Toaster } from '@/utils/toaster';
