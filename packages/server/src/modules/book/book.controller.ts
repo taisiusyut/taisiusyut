@@ -116,9 +116,16 @@ export class BookController {
 
   @Access('Optional')
   @Get(routes.book.get_books)
-  getBooks(@Req() req: FastifyRequest, @Query() query: GetBooksDto) {
+  getBooks(
+    @Req() req: FastifyRequest,
+    @Query() { tag, ...query }: GetBooksDto
+  ) {
     const user = req.user;
     const condition: Condition[] = [];
+
+    if (tag) {
+      condition.push({ tags: { $in: [tag] } });
+    }
 
     if (!user?.role || user.role === UserRole.Client) {
       if (!query.status || !this.isPublicStatus(query.status)) {

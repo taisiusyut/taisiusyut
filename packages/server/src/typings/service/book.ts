@@ -58,9 +58,12 @@ export interface Param$UpdateBook {
 }
 
 export interface Param$GetBooks extends Pagination, Search {
+  id?: string;
+  name?: string;
   category?: Category;
-  tags?: string[];
+  status?: BookStatus;
   author?: string; //ObjectId
+  tag?: string;
   createdAt?: DateRange;
   updatedAt?: DateRange;
 }
