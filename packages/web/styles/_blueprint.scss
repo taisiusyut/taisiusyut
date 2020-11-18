@@ -6,26 +6,6 @@
   }
 }
 
-.#{$ns}-popover.#{$ns}-popover {
-  [data-theme^='light'] & {
-    box-shadow: $pt-elevation-shadow-2;
-  }
-
-  .#{$ns}-popover-content {
-    color: var(--text-color);
-  }
-
-  [data-theme^='dark'] & {
-    .#{$ns}-popover-arrow-fill {
-      fill: var(--primary-color);
-    }
-
-    .#{$ns}-popover-content {
-      background-color: var(--primary-color);
-    }
-  }
-}
-
 .#{$ns}-dialog.#{$ns}-dialog {
   @include dimen(auto);
   background-color: var(--primary-color);
@@ -64,5 +44,17 @@ a:hover,
     font-size: 14px;
     height: 16px;
     margin-bottom: 5px;
+  }
+}
+
+[data-theme^='dark'] {
+  .#{$ns}-popover.#{$ns}-popover {
+    .#{$ns}-popover-arrow-fill {
+      fill: var(--primary-color);
+    }
+
+    .#{$ns}-popover-content {
+      background-color: var(--primary-color);
+    }
   }
 }
