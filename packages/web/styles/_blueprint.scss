@@ -28,16 +28,13 @@
 
 .#{$ns}-dialog.#{$ns}-dialog {
   @include dimen(auto);
-  border-radius: 4px;
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   min-width: 300px;
   overflow: hidden;
-  padding-bottom: 10px;
 
   .#{$ns}-dialog-header {
-    background-color: var(--primary-color);
-    min-height: 50px;
-
+    background-color: var(--secondary-color);
+    height: 50px;
     .#{$ns}-heading {
       font-size: 16px;
     }

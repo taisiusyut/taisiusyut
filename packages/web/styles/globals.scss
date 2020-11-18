@@ -60,14 +60,12 @@ body,
 }
 
 body {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   color: var(--text-color);
   margin: 0;
   padding: 0;
   font-size: $pt-font-size;
   font-family: 'Muli', #{$pt-font-family};
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 img {
