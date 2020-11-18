@@ -1,5 +1,6 @@
 @import '~@fullstack/style/src/blueprint-variables';
 @import '~@fullstack/style/src/utils/index';
+@import './colors';
 
 $sidebar-width: 250px;
 $sidebar-width-small: 70px;
@@ -9,31 +10,3 @@ $break-point: 768px;
 $max-width: 1440px;
 
 $min-date-range-input-width: 220px;
-
-@function get-color($color, $tone: primary) {
-  @return map-get(map-get($accent-colors, $color), $tone);
-}
-
-$base-colors: (
-  red: #ef5350,
-  blue: #4285f4,
-  amber: #fb0,
-  green: #66bb6a,
-  purple: #ab47bc,
-  grey: #bdbdbd
-);
-
-$accent-colors: ();
-
-@each $name, $color in $base-colors {
-  $accent-colors: map-merge(
-    $accent-colors,
-    (
-      $name: (
-        primary: $color,
-        light: lighten($color, 30%),
-        dark: darken($color, 5%)
-      )
-    )
-  );
-}

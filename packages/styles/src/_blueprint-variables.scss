@@ -13,8 +13,31 @@ $dark-card-background-color: var(--main-color);
 // divider
 $pt-dark-divider-black: #343434;
 
-// divider
+// menu
 $dark-menu-background-color: var(--main-diff1-color);
 
 @import '~@blueprintjs/core/src/common/variables';
 @import '~@blueprintjs/core/src/common/colors';
+
+$button-intents: (
+  'primary': (
+    $pt-intent-primary,
+    darken($pt-intent-primary, 15%),
+    darken($pt-intent-primary, 25%)
+  ),
+  'success': (
+    $pt-intent-success,
+    $green2,
+    $green1
+  ),
+  'warning': (
+    $pt-intent-warning,
+    $orange2,
+    $orange1
+  ),
+  'danger': (
+    $pt-intent-danger,
+    $red2,
+    $red1
+  )
+);

@@ -1,12 +1,13 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState, useContext } from 'react';
 import { createAdminStorage } from '@/utils/storage';
 
 interface Props {
   children: ReactNode;
 }
 
-interface Preferences {
-  theme: 'light' | 'dark';
+export interface Preferences {
+  theme: Theme;
+  accentColor: AccentColor;
 }
 
 interface PreferencesActions {
@@ -15,13 +16,37 @@ interface PreferencesActions {
 
 export const preferencesStorage = createAdminStorage<Preferences>(
   'preferences',
-  { theme: 'light' }
+  { theme: 'light', accentColor: 'blue' }
 );
 
 const StateContext = React.createContext<Preferences | undefined>(undefined);
-const ActionsContext = React.createContext<PreferencesActions | undefined>(
+const ActionContext = React.createContext<PreferencesActions | undefined>(
   undefined
 );
+
+export function usePreferencesState() {
+  const context = useContext(StateContext);
+  if (context === undefined) {
+    throw new Error(
+      'usePreferencesState must be used within a AdminPreferencesProvider'
+    );
+  }
+  return context;
+}
+
+export function usePreferencesActions() {
+  const context = useContext(ActionContext);
+  if (context === undefined) {
+    throw new Error(
+      'usePreferencesActions must be used within a AdminPreferencesProvider'
+    );
+  }
+  return context;
+}
+
+export function usePreferences() {
+  return [usePreferencesState(), usePreferencesActions()] as const;
+}
 
 export function AdminPreferencesProvider({ children }: Props) {
   const [preferences, udpatePreferences] = useState(preferencesStorage.get());
@@ -32,7 +57,11 @@ export function AdminPreferencesProvider({ children }: Props) {
           const preferences = { ...curr, ...changes };
 
           if (changes.theme) {
-            //
+            window.__setTheme(changes.theme);
+          }
+
+          if (changes.accentColor) {
+            window.__setAccentColor(changes.accentColor);
           }
 
           return preferences;
@@ -42,10 +71,10 @@ export function AdminPreferencesProvider({ children }: Props) {
   );
 
   return (
-    <ActionsContext.Provider value={actions}>
+    <ActionContext.Provider value={actions}>
       <StateContext.Provider value={preferences}>
         {children}
       </StateContext.Provider>
-    </ActionsContext.Provider>
+    </ActionContext.Provider>
   );
 }

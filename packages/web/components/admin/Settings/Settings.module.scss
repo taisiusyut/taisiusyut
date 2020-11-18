@@ -2,7 +2,7 @@
 
 .section {
   + .section {
-    margin-top: 100px;
+    margin-top: 40px;
   }
 
   .section-content {
@@ -13,6 +13,7 @@
     .#{$ns}-divider {
       @include margin-x(0);
     }
+
     .rc-form-item-label {
       font-weight: bold;
     }
@@ -31,6 +32,15 @@
       button + button {
         margin-left: 10px;
       }
+    }
+  }
+}
+
+.preferences {
+  :global {
+    .#{$ns}-label {
+      line-height: 20px !important;
+      min-width: 100px;
     }
   }
 }

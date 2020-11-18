@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @typedef {{ theme: Theme }} Preferences
+ * @typedef {{ theme: Theme, accentColor: AccentColor }} Preferences
  */
 
 (function () {
@@ -21,8 +21,20 @@
     /** @type {{ preferences?: Preferences }} */
     var storage = rootStorage[storageKey] || {};
 
-    /** @type {{ theme: Theme }}} */
-    var preferences = storage['preferences'] || { theme: 'light' };
+    /** @type {Preferences}} */
+    var preferences = storage['preferences'] || {
+      theme: 'light',
+      accentColor: 'blue'
+    };
+
+    /**
+     * @param {Preferences} preferences
+     */
+    var save = function (preferences) {
+      storage['preferences'] = preferences;
+      rootStorage[storageKey] = storage;
+      localStorage.setItem(keys.root, JSON.stringify(rootStorage));
+    };
 
     window.__setTheme = function (theme) {
       document.documentElement.setAttribute('data-theme', theme);
@@ -30,12 +42,16 @@
         'bp3-dark'
       );
       preferences['theme'] = theme;
-      storage['preferences'] = preferences;
-      rootStorage[storageKey] = storage;
-      localStorage.setItem(keys.root, JSON.stringify(rootStorage));
+      save(preferences);
     };
-
     window.__setTheme(preferences.theme);
+
+    window.__setAccentColor = function (color) {
+      document.documentElement.setAttribute('data-accent-color', color);
+      preferences['accentColor'] = color;
+      save(preferences);
+    };
+    window.__setAccentColor(preferences.accentColor);
   } catch (error) {
     console.log(error);
   }

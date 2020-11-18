@@ -17,10 +17,6 @@
   --shadow-color: #ccc;
   --placeholder-color: #e0e0e0;
   --logo-shadow: 2px 4px 6px #ccc;
-
-  --accent-color: #{get-color(blue)};
-  --accent-light-color: #{get-color(blue, light)};
-  --accent-dark-color: #{get-color(blue, dark)};
 }
 
 [data-theme^='dark'] {
@@ -35,10 +31,14 @@
   --shadow-color: #191919;
   --placeholder-color: #888;
   --logo-shadow: 2px 4px 6px #333;
+}
 
-  // --accent-color: #{get-color(amber)};
-  // --accent-light-color: #{get-color(amber, light)};
-  // --accent-dark-color: #{get-color(amber, dark)};
+@each $name, $color in $base-colors {
+  [data-accent-color^='#{"" + $name}'] {
+    --accent-color: #{get-color($name)};
+    --accent-color-hover: #{get-color($name, hover)};
+    --accent-color-active: #{get-color($name, active)};
+  }
 }
 
 *,
