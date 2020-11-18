@@ -11,6 +11,7 @@ import {
   Button,
   Classes,
   Dialog,
+  Divider,
   IDialogProps,
   Intent
 } from '@blueprintjs/core';
@@ -97,7 +98,10 @@ export function ConfirmDialog({
       canOutsideClickClose={!loading}
       className={className}
     >
-      <div className={Classes.DIALOG_BODY}>{children}</div>
+      <div className={Classes.DIALOG_BODY}>
+        {children}
+        <Divider style={{ marginTop: 20 }} />
+      </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button onClick={onClose} disabled={loading}>
