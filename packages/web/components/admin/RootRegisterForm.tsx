@@ -19,11 +19,11 @@ const {
 const registration = async (payload: Param$CreateUser) => {
   await createUser({ ...payload, role: UserRole.Root });
   await logout();
+  await router.push('/admin/login');
   clearJwtToken();
 };
 
 const onSuccess = async () => {
-  await router.push('/admin/login');
   Toaster.success({
     message: (
       <>

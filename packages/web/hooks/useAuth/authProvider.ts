@@ -1,7 +1,12 @@
 import React, { ReactNode } from 'react';
-import { defer, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { Param$Login, Param$CreateUser, Schema$User } from '@/typings';
+import { defer, Observable, throwError } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import {
+  Param$Login,
+  Param$CreateUser,
+  Schema$User,
+  Schema$Authenticated
+} from '@/typings';
 import { clearJwtToken, logout, registration, getJwtToken$ } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { State, LogoutOptions, authReducer, initialState } from './authReducer';
@@ -10,7 +15,9 @@ type AuthenticatePayload = Param$Login | Param$CreateUser;
 
 export type AuthActions = {
   logout: (options?: LogoutOptions) => void;
-  authenticate: (payload?: AuthenticatePayload) => void;
+  authenticate: (
+    payload?: AuthenticatePayload
+  ) => Observable<Schema$Authenticated>;
   updateProfile: (payload: Partial<Schema$User>) => void;
 };
 
@@ -59,11 +66,14 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
       },
       authenticate: payload => {
         dispatch({ type: 'AUTHENTICATE' });
-        authenticate$(payload).subscribe(
-          ({ user }) => {
-            dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: user });
-          },
-          () => dispatch({ type: 'AUTHENTICATE_FAILURE' })
+        return authenticate$(payload).pipe(
+          tap(auth => {
+            dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: auth.user });
+          }),
+          catchError(error => {
+            dispatch({ type: 'AUTHENTICATE_FAILURE' });
+            return throwError(error);
+          })
         );
       }
     };

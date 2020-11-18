@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect } from 'react';
 import Head from 'next/head';
 import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
+import { useRxAsync } from 'use-rx-hooks';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { UserRole } from '@/typings';
 import '@/styles/globals.scss';
@@ -28,9 +29,7 @@ function Redirect({ redirect }: { redirect?: string }) {
 function AppContent({ Component, pageProps }: ExtendAppProps) {
   const [{ loginStatus, user }, actions] = useAuth();
 
-  useEffect(() => {
-    actions.authenticate();
-  }, [actions]);
+  useRxAsync(actions.authenticate);
 
   if (!Component.access || (user && Component.access.includes(user.role))) {
     const Layout = Component.layout || React.Fragment;
