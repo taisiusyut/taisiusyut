@@ -132,7 +132,7 @@ export function createFilter<T extends Record<string, any>>(
             button.getBoundingClientRect().left -
             layout.getBoundingClientRect().left -
             layout.offsetWidth / 2 +
-            5;
+            13;
           setModifiers({ offset: { offset: `${left * -1}, 0` } });
         }
       }
@@ -222,11 +222,12 @@ export function createFilter<T extends Record<string, any>>(
     return (
       <FormItem {...props}>
         <DateRangeInput
-          className={classes['date-range-input']}
-          shortcuts={false}
           allowSingleDayRange
+          shortcuts={false}
+          className={classes['date-range-input']}
           formatDate={date => dayjs(date).format('YYYY-MM-DD')}
           parseDate={str => new Date(str)}
+          popoverProps={{ fill: true }}
         />
       </FormItem>
     );

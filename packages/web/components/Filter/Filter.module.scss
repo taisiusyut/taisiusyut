@@ -15,7 +15,7 @@
 .filter-popover {
   $padding: 15px;
   $popover-max-width: calc(100vw - #{$sidebar-width} - #{$padding * 2});
-  $space: $padding * 2 + 15px + 40px;
+  $space: $padding * 2 + 30px + 40px;
 
   :global {
     .#{$ns}-popover-content {
