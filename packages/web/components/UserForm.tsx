@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Schema$User,
   Param$CreateUser,
   Param$UpdateUser,
   Param$UpdateAuthor
@@ -14,13 +13,11 @@ import {
 import { Input, Password as PasswordInput } from './Input';
 import { UserRoleSelect } from './UserRoleSelect';
 
-interface UserFormSchema
-  extends Partial<Omit<Schema$User, 'id'>>,
-    Partial<Omit<Param$CreateUser, 'id'>>,
-    Partial<Omit<Param$UpdateUser, 'id'>>,
-    Partial<Omit<Param$UpdateAuthor, 'id'>> {
-  confirmPassword?: string;
-}
+type UserFormSchema = Param$CreateUser &
+  Partial<Omit<Param$UpdateUser, 'id'>> &
+  Partial<Omit<Param$UpdateAuthor, 'id'>> & {
+    confirmPassword?: string;
+  };
 
 export type UserFormProps = FormProps<UserFormSchema>;
 export type UserFormInstance = NonNullable<FormProps<UserFormSchema>['form']>;
