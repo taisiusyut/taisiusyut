@@ -49,12 +49,23 @@ a:hover,
 
 [data-theme^='dark'] {
   .#{$ns}-popover.#{$ns}-popover {
+    .bp3-popover-arrow {
+      &:before {
+        box-shadow: $pt-dark-elevation-shadow-0;
+      }
+    }
+    svg {
+      position: relative;
+      z-index: 1;
+    }
+
     .#{$ns}-popover-arrow-fill {
       fill: var(--primary-color);
     }
 
     .#{$ns}-popover-content {
       background-color: var(--primary-color);
+      box-shadow: $pt-dark-elevation-shadow-0;
     }
   }
 }
