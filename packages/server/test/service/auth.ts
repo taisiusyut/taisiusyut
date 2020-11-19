@@ -55,7 +55,7 @@ export function logout() {
 
 export function deleteAccount(token: string, dto: DeleteAccountDto) {
   return request
-    .post(routes.delete_account)
+    .delete(routes.delete_account)
     .set('Authorization', `bearer ${token}`)
     .send(dto);
 }
