@@ -18,10 +18,11 @@ export function BookModel({ cover, className = '', width = 60 }: Props) {
       <div className={`book-model ${className}`}>
         <div className="front">
           <Image
+            layout="fixed"
             src={cover || cover_1x1}
-            layout="fill"
+            width={width}
+            height={(width * 4) / 3}
             draggable={false}
-            unoptimized
           />
         </div>
         <div className="back" />
@@ -40,7 +41,7 @@ export function BookModel({ cover, className = '', width = 60 }: Props) {
 
             width: ${width}px;
             min-width: ${width}px;
-            height: ${(width * 150) / 120}px;
+            height: ${(width * 4) / 3}px;
 
             user-select: none;
           }

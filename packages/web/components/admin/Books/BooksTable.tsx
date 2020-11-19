@@ -23,11 +23,14 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
   {
     id: 'cover',
     Header: 'Cover',
-    accessor: book => (
-      <div style={{ width: 60, margin: `5px 5px 5px 10px` }}>
-        <BookModel cover={book.cover} width={60} />
-      </div>
-    )
+    accessor: book => {
+      const width = 60;
+      return (
+        <div style={{ width, margin: `5px 5px 5px 10px` }}>
+          <BookModel cover={book.cover} width={width} key={book.cover} />
+        </div>
+      );
+    }
   },
   {
     id: 'name',
