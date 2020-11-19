@@ -14,8 +14,8 @@ export function BookModel({ cover, className = '', width = 60 }: Props) {
   const thickness = 10 * ratio;
 
   return (
-    <div className="book-model-outer">
-      <div className={`book-model ${className}`}>
+    <div className={`book-model-outer ${className}`}>
+      <div className="book-model">
         <div className="front">
           <Image
             layout="fixed"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CardWithLogo } from '@/components/CardWithLogo';
 import { RootRegisterForm } from '@/components/admin/RootRegisterForm';
-import { UserRole } from '@fullstack/server/dist/typings';
+import { UserRole } from '@/typings';
 
 export default function RootRegistration() {
   return (

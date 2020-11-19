@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, IconName } from '@blueprintjs/core';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
-import { Schema$Book, Category } from '@/typings';
+import { Schema$Book, Param$CreateBook, Category } from '@/typings';
 import { createBook } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { rid } from '@/utils/rid';
@@ -37,7 +37,7 @@ export function CreateBook({ onCreate }: CreateBookProps) {
   async function onConfirm() {
     const payload = await form.validateFields();
     try {
-      const book = await createBook(payload);
+      const book = await createBook(payload as Param$CreateBook);
       onCreate(book);
       Toaster.success({ message: 'Create book success' });
     } catch (error) {

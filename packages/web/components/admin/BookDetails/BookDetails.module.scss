@@ -1,0 +1,40 @@
+@import '~styles/utils';
+
+.header {
+  @include flex(flex-start);
+
+  .header-content {
+    flex: 1 1 auto;
+    padding-top: 5px;
+  }
+
+  .description {
+    @include margin-y(10px 7.5);
+    font-size: 15px;
+    line-height: 1.5em;
+  }
+}
+
+.book-model {
+  @include margin-x(15px);
+}
+
+.tags {
+  margin-left: -5px;
+  margin-top: -5px;
+}
+
+.tag {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.dialog {
+  width: 300px;
+  font-size: 15px;
+  line-height: 1.5em;
+}
+
+.chapters {
+  margin-top: 20px;
+}

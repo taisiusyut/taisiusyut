@@ -1,17 +1,14 @@
 import React from 'react';
 import { Input, TextArea, TagInput } from '@/components/Input';
 import { CategorySelect } from '@/components/Select';
-import { Param$CreateBook } from '@/typings';
+import { Param$CreateBook, Param$UpdateBook } from '@/typings';
 import { createForm, validators } from '@/utils/form';
 import { MAXIMUM_TAGS } from '@/constants';
 import { BookCoverUpload } from './BookCoverUpload';
-import { RxFileToImageState } from 'use-rx-hooks';
 
-type CreateBook = Param$CreateBook & {
-  cover?: RxFileToImageState;
-};
+type BookFormSchema = Param$CreateBook | Param$UpdateBook;
 
-export const { Form, FormItem, useForm } = createForm<CreateBook>();
+export const { Form, FormItem, useForm } = createForm<BookFormSchema>();
 
 export const BookName = () => (
   <FormItem

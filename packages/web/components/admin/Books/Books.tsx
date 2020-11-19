@@ -1,4 +1,5 @@
 import React from 'react';
+import router from 'next/router';
 import { Card, H4 } from '@blueprintjs/core';
 import { useAuthState } from '@/hooks/useAuth';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
@@ -69,7 +70,7 @@ export function Books() {
         loading={loading}
         pagination={pagination}
         isAuthor={user?.role === UserRole.Author}
-        onRowClick={() => void 0}
+        onRowClick={row => router.push(`/admin/book/${row.original.id}`)}
       />
     </Card>
   );
