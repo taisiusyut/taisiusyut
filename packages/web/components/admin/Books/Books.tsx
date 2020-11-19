@@ -69,6 +69,7 @@ export function Books() {
         loading={loading}
         pagination={pagination}
         isAuthor={user?.role === UserRole.Author}
+        onRowClick={() => void 0}
       />
     </Card>
   );

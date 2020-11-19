@@ -17,6 +17,10 @@
   --shadow-color: #ccc;
   --placeholder-color: #e0e0e0;
   --logo-shadow: 2px 4px 6px #ccc;
+
+  --book-model-left-color: #eee;
+  --book-model-front-bottom-color: #ccc;
+  --book-model-shadow-color: #666;
 }
 
 [data-theme^='dark'] {
@@ -31,6 +35,10 @@
   --shadow-color: #191919;
   --placeholder-color: #888;
   --logo-shadow: 2px 4px 6px #333;
+
+  --book-model-left-color: #fff;
+  --book-model-front-bottom-color: #999;
+  --book-model-shadow-color: #111;
 }
 
 @each $name, $color in $base-colors {

@@ -60,7 +60,7 @@ export const BookTags = () => (
 );
 
 export const BookCover = () => (
-  <FormItem name="cover" label="Cover" noStyle>
+  <FormItem name="cover" label="Cover ( 3 : 4 )">
     <BookCoverUpload />
   </FormItem>
 );

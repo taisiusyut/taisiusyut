@@ -24,6 +24,13 @@ interface CreateBookProps extends OnCreate {}
 const icon: IconName = 'book';
 const title = 'Create Book';
 
+//The maximum is inclusive and the minimum is inclusive
+const getRandomIntInclusive = (min: number, max: number) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 export function CreateBook({ onCreate }: CreateBookProps) {
   const [form] = useForm();
 
@@ -40,7 +47,7 @@ export function CreateBook({ onCreate }: CreateBookProps) {
   }
 
   const children = (
-    <Form form={form} style={{ width: 400 }}>
+    <Form form={form} style={{ width: 500 }}>
       <div style={{ display: 'flex' }}>
         <div style={{ flex: '1 1 auto' }}>
           <BookName />
@@ -68,7 +75,9 @@ export function CreateBook({ onCreate }: CreateBookProps) {
             name: rid(8),
             description: `${rid(10)}\n${rid(20)}\n${rid(30)}`,
             category: Category['玄幻'],
-            tags: ['testing']
+            tags: Array.from({ length: getRandomIntInclusive(0, 5) }, () =>
+              rid(getRandomIntInclusive(4, 8))
+            )
           });
       }
     });
