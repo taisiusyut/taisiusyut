@@ -1,13 +1,17 @@
 import React from 'react';
 import router from 'next/router';
-import { Button, Card, Classes, H4 } from '@blueprintjs/core';
-import { Schema$Chapter } from '@/typings';
+import { Button, Card } from '@blueprintjs/core';
+import { PageHeader } from '@/components/admin/PageHeader';
+import { Schema$Chapter, UserRole } from '@/typings';
 import classes from './BookDetails.module.scss';
 
 interface Props {
   bookID: string;
   chapters: Schema$Chapter[];
+  role?: UserRole;
 }
+
+// TODO: FIlter, chapter no, chapter line-height
 
 const gotooChapter = (bookID: string, chapterID?: string) => () => {
   let pathname = `/admin/book/${bookID}/chapters`;
@@ -17,27 +21,25 @@ const gotooChapter = (bookID: string, chapterID?: string) => () => {
   return router.push(pathname);
 };
 
-export function BookDetailsChapters({ bookID, chapters }: Props) {
+export function BookDetailsChapters({ bookID, chapters, role }: Props) {
+  const isAuthor = role === UserRole.Author;
+
   return (
     <Card className={classes.chapters}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
-      >
-        <H4 style={{ marginBottom: 0, marginLeft: 10 }}>Chapters</H4>
-        <Button minimal icon="plus" onClick={gotooChapter(bookID)} />
-      </div>
-      <div className={`${Classes.MENU} ${classes['chapters-content']}`}>
+      <PageHeader title="Chapters">
+        {isAuthor && (
+          <Button minimal icon="plus" onClick={gotooChapter(bookID)} />
+        )}
+      </PageHeader>
+
+      <div className={classes['chapters-content']}>
         {chapters.map(chapter => (
           <Button
             fill
             minimal
             alignText="left"
             key={chapter.id}
-            onClick={gotooChapter(bookID, chapter.id)}
+            onClick={isAuthor ? gotooChapter(bookID, chapter.id) : undefined}
           >
             {chapter.name}
           </Button>

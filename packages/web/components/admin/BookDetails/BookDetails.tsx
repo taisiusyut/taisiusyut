@@ -20,6 +20,7 @@ export function BookDetails({ book, onUpdate }: Props) {
       <BookDetailsHeader book={book} role={user?.role} onUpdate={onUpdate} />
       <BookDetailsChapters
         bookID={book.id}
+        role={user?.role}
         chapters={chapters.data?.data || []}
       />
     </div>

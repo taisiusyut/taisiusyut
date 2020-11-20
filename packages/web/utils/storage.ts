@@ -4,15 +4,19 @@ export interface IStorage<T> {
   key: string;
   get(): T;
   save(value: T): void;
+  removeItem: () => void;
 }
 
-type WebStorage = Pick<globalThis.Storage, 'getItem' | 'setItem'>;
+type WebStorage = Pick<
+  globalThis.Storage,
+  'getItem' | 'setItem' | 'removeItem'
+>;
 
 function createStorage<T>(storage: WebStorage) {
   return (key: string, defaultValue: T) => {
     let value = defaultValue;
-
     return {
+      storage,
       key,
       get: () => {
         value = JSONParse<T>(storage.getItem(key) || '', value);
@@ -21,17 +25,25 @@ function createStorage<T>(storage: WebStorage) {
       save: (newValue: T) => {
         value = newValue;
         storage.setItem(key, JSON.stringify(newValue));
+      },
+      removeItem: () => {
+        storage.removeItem(key);
       }
     };
   };
 }
 
-export function mixStorage(key: string, storage: WebStorage): WebStorage {
+export function mockStorage(key: string, storage: WebStorage): WebStorage {
   const baseStorage = createStorage<Record<string, unknown>>(storage)(key, {});
   return {
     getItem: key => JSON.stringify(baseStorage.get()[key]),
     setItem: (key, value) =>
-      baseStorage.save({ ...baseStorage.get(), [key]: JSONParse(value, null) })
+      baseStorage.save({ ...baseStorage.get(), [key]: JSONParse(value, null) }),
+    removeItem: key => {
+      const state = baseStorage.get();
+      delete state[key];
+      baseStorage.save(state);
+    }
   };
 }
 
@@ -54,6 +66,9 @@ const memoryStorage = ((): WebStorage => {
     getItem: key => store[key] || null,
     setItem: (key, value) => {
       store[key] = value;
+    },
+    removeItem: key => {
+      delete store[key];
     }
   };
 })();
@@ -73,11 +88,17 @@ export const createSessionStorage: <T>(
 );
 
 export const storage = storageSupport()
-  ? mixStorage('taisiusyut', localStorage)
+  ? mockStorage('taisiusyut', localStorage)
   : memoryStorage;
-const _adminStorage = mixStorage('taisiusyut/admin', storage);
 
+const _adminStorage = mockStorage('taisiusyut/admin', storage);
 export const createAdminStorage: <T>(
   key: string,
   defaultValue: T
 ) => IStorage<T> = createStorage(_adminStorage);
+
+const _chapterStorage = mockStorage('chapters', _adminStorage);
+export const createChapterSotrage: <T>(
+  key: string,
+  defaultValue: T
+) => IStorage<T> = createStorage(_chapterStorage);

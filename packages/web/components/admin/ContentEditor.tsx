@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import {
   Editor,
   EditorState,
+  EditorProps,
   Modifier,
   ContentState,
   getDefaultKeyBinding
@@ -12,14 +13,29 @@ import 'draft-js/dist/Draft.css';
 
 const tabCharacter = '	';
 
-export interface ContentEditorProps extends Control<string> {
+export interface ContentEditorProps
+  extends Control<string>,
+    Partial<Omit<EditorProps, 'onChange'>> {
   className?: string;
 }
+
+const relativeStyle: CSSProperties = {
+  position: 'relative'
+};
+
+const absoluteStyle: CSSProperties = {
+  width: '100%',
+  height: '100%',
+  position: 'absolute',
+  top: 0,
+  left: 0
+};
 
 export function ContentEditor({
   className = '',
   value,
-  onChange
+  onChange,
+  ...props
 }: ContentEditorProps) {
   const [editorState, setEditorState] = React.useState(() =>
     EditorState.createWithContent(ContentState.createFromText(value || ''))
@@ -29,16 +45,25 @@ export function ContentEditor({
 
   function focusEditor() {
     editor.current?.focus();
+    setEditorState(EditorState.moveFocusToEnd(editorState));
   }
 
+  const handleChange = onChange || (() => void 0);
+
   return (
-    <div className={[Classes.INPUT, className].join(' ')} onClick={focusEditor}>
+    <div className={[Classes.INPUT, className].join(' ')} style={relativeStyle}>
+      <div style={absoluteStyle} onClick={focusEditor}></div>
       <Editor
+        {...props}
         ref={editor}
         editorState={editorState}
         onChange={state => {
           setEditorState(state);
-          onChange && onChange(state.getCurrentContent().getPlainText());
+          const isEqual =
+            state.getCurrentContent() === editorState.getCurrentContent();
+          if (!isEqual) {
+            handleChange(state.getCurrentContent().getPlainText());
+          }
         }}
         keyBindingFn={event => {
           if (event.key === 'Tab') {
@@ -70,7 +95,11 @@ export function ContentEditor({
             newState,
             'insert-fragment'
           );
+
           setEditorState(newEditorState);
+
+          handleChange(text);
+
           return 'handled';
         }}
       />

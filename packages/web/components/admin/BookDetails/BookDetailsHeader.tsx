@@ -23,7 +23,7 @@ const PublishBook = withPublishBook(MenuItem);
 const FinishBook = withFinishBook(MenuItem);
 const UpdateBook = withUpdateBook(MenuItem);
 
-// TODO:  createdAt, go back
+// TODO:  createdAt
 
 export function BookDetailsHeader({ book, role, onUpdate }: Props) {
   const actions = role === UserRole.Author && (

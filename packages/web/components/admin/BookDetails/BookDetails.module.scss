@@ -14,9 +14,10 @@
   }
 
   .description {
-    @include margin-y(10px 7.5);
+    @include margin-y(10px 7.5px);
     font-size: 15px;
     line-height: 1.5em;
+    word-break: break-all;
   }
 }
 
@@ -38,6 +39,9 @@
   display: grid;
   grid-gap: 10px;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  margin-top: 20px;
   padding: 0;
+
+  &:not(:empty) {
+    margin-top: 15px;
+  }
 }
