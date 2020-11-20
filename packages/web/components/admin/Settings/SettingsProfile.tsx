@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
-import { TextArea } from '@/components/Input';
 import { createUserForm } from '@/components/UserForm';
+import type { ContentEditorProps } from '@/components/admin/ContentEditor';
 import { useAuth } from '@/hooks/useAuth';
 import { getUser, updateUser } from '@/service';
 import { UserRole, Schema$User } from '@/typings';
@@ -16,6 +17,12 @@ const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
 const updateProfileFailure = Toaster.apiError.bind(
   Toaster,
   `Update profile failure`
+);
+
+const ContentEditor = dynamic<ContentEditorProps>(() =>
+  import(`@/components/admin/ContentEditor`).then(
+    ({ ContentEditor }) => ContentEditor
+  )
 );
 
 const useProfile = () => {
@@ -70,7 +77,7 @@ export function SettingsProfile() {
         {user?.role === UserRole.Author && (
           <>
             <FormItem label="Description" name="description">
-              <TextArea rows={4} className={classes.description} />
+              <ContentEditor className={classes.description} />
             </FormItem>
           </>
         )}

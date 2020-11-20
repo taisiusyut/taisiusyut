@@ -8,12 +8,19 @@ import {
 } from 'draft-js';
 import { Classes } from '@blueprintjs/core';
 import { Control } from '@/utils/form';
-import classes from './Chapter.module.scss';
 import 'draft-js/dist/Draft.css';
 
 const tabCharacter = '	';
 
-export function ChapterContentEditor({ value, onChange }: Control<string>) {
+export interface ContentEditorProps extends Control<string> {
+  className?: string;
+}
+
+export function ContentEditor({
+  className = '',
+  value,
+  onChange
+}: ContentEditorProps) {
   const [editorState, setEditorState] = React.useState(() =>
     EditorState.createWithContent(ContentState.createFromText(value || ''))
   );
@@ -25,10 +32,7 @@ export function ChapterContentEditor({ value, onChange }: Control<string>) {
   }
 
   return (
-    <div
-      className={[Classes.INPUT, classes['editor-container']].join(' ')}
-      onClick={focusEditor}
-    >
+    <div className={[Classes.INPUT, className].join(' ')} onClick={focusEditor}>
       <Editor
         ref={editor}
         editorState={editorState}

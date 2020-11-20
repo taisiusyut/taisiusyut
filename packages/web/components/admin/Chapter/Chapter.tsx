@@ -2,11 +2,11 @@ import React from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button, Card } from '@blueprintjs/core';
 import { PageHeader } from '@/components/admin/PageHeader';
+import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Input } from '@/components/Input';
 import { Schema$Chapter, ChapterType } from '@/typings';
 import { createChapter } from '@/service';
 import { createForm, validators } from '@/utils/form';
-import { ChapterContentEditor } from './ChapterContentEditor';
 import classes from './Chapter.module.scss';
 
 interface Props {
@@ -49,11 +49,11 @@ export function Chapter({ bookID, chapter }: Props) {
           label="Content"
           validators={[validators.required('Please enter chapter content')]}
         >
-          <ChapterContentEditor />
+          <ContentEditor className={classes['editor-container']} />
         </FormItem>
 
-        <FormItem name="type" label="Type">
-          <div />
+        <FormItem name="type" noStyle>
+          <div hidden />
         </FormItem>
 
         <div className={classes.footer}>

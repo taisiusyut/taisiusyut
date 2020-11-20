@@ -22,7 +22,11 @@
 
 .profile {
   .description {
-    resize: vertical;
+    $line-height: 1.8em;
+    height: auto;
+    line-height: $line-height;
+    min-height: $line-height * 4;
+    padding: 0.3em 0.7em;
   }
 
   .footer {
