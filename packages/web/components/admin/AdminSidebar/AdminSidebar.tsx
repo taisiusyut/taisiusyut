@@ -21,7 +21,10 @@ const itemsOptions: ItemOptions[] = [
     href: '/admin/book',
     icon: 'book',
     text: 'Books',
-    access: [UserRole.Root, UserRole.Admin, UserRole.Author]
+    access: [UserRole.Root, UserRole.Admin, UserRole.Author],
+    isActive: (_, router) => {
+      return router.pathname.startsWith('/admin/book');
+    }
   },
   {
     href: '/admin/users',
