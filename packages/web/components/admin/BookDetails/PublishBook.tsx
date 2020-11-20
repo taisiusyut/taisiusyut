@@ -33,8 +33,10 @@ export function withPublishBook<P extends OnClick>(
         title: 'Publish Book',
         children: (
           <div className={classes.dialog}>
-            Only published book can visible by client. Are you sure to publish
-            the book?
+            <p>
+              Published book cannot set to private again. Are you sure to
+              publish the book?
+            </p>
           </div>
         ),
         onConfirm

@@ -16,11 +16,6 @@
   @include margin-y(20px);
 }
 
-.tag {
-  margin-top: 5px;
-  margin-left: 5px;
-}
-
 .cover {
   @include dimen(120px);
   @include relative();

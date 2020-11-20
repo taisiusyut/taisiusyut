@@ -27,7 +27,7 @@ export const updateBook = ({ id, ...payload }: Param$UpdateBook) =>
 
 export const publishBook = ({ id }: { id: string }) =>
   api.post<Schema$Book>(
-    routes.public_finish_book.generatePath({ id, type: 'publish' })
+    routes.public_finish_book.generatePath({ id, type: 'public' })
   );
 
 export const finishBook = ({ id }: { id: string }) =>

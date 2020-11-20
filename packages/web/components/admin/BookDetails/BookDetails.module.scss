@@ -3,6 +3,11 @@
 .header {
   @include flex(flex-start);
 
+  .header-title {
+    @include flex();
+    margin-bottom: 10px;
+  }
+
   .header-content {
     flex: 1 1 auto;
     padding-top: 5px;
@@ -17,16 +22,6 @@
 
 .book-model {
   @include margin-x(15px);
-}
-
-.tags {
-  margin-left: -5px;
-  margin-top: -5px;
-}
-
-.tag {
-  margin-top: 5px;
-  margin-left: 5px;
 }
 
 .dialog {

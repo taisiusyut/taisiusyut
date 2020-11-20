@@ -1,23 +1,14 @@
 import React from 'react';
-import { ITagProps, Tag } from '@blueprintjs/core';
-import { Schema$Book, BookStatus, Order, Category } from '@/typings';
+import { Schema$Book, Order, Category } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { BookModel } from '@/components/BookModel';
-import classes from './Books.module.scss';
+import { Tags } from '@/components/Tags';
+import { BookStatusTag } from './BookStatusTag';
 import dayjs from 'dayjs';
 
 type BookTableProps = Omit<TableProps<Partial<Schema$Book>>, 'columns'> & {
   isAuthor: boolean;
 };
-
-function getTagPropsByStatus(status: BookStatus): ITagProps {
-  switch (status) {
-    case BookStatus.Public:
-      return { intent: 'success' };
-    default:
-      return { minimal: true };
-  }
-}
 
 const bookColumns: Column<Partial<Schema$Book>>[] = [
   {
@@ -40,8 +31,7 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
   {
     id: 'status',
     Header: 'Status',
-    accessor: ({ status }) =>
-      status && <Tag {...getTagPropsByStatus(status)}>{BookStatus[status]}</Tag>
+    accessor: ({ status }) => <BookStatusTag status={status} />
   },
   {
     id: 'author',
@@ -60,13 +50,7 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
     Header: 'Tags',
     accessor: book => (
       <div style={{ maxWidth: 200, whiteSpace: 'break-spaces' }}>
-        {book.tags && book.tags.length
-          ? book.tags.map((tag, i) => (
-              <Tag key={`${tag}-${i}`} className={classes.tag}>
-                {tag}
-              </Tag>
-            ))
-          : ' - '}
+        <Tags tags={book.tags || []} />
       </div>
     )
   },
