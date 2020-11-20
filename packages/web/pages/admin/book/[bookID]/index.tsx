@@ -3,9 +3,8 @@ import { GetServerSideProps } from 'next';
 import { useRxAsync } from 'use-rx-hooks';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { BookDetails } from '@/components/admin/BookDetails';
-import { UserRole } from '@/typings';
+import { UserRole, Schema$Book } from '@/typings';
 import { getBook } from '@/service';
-import { Schema$Book } from '@fullstack/server/dist/typings';
 
 interface Props {
   bookID: string;

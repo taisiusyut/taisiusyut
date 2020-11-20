@@ -33,3 +33,11 @@
 .chapters {
   margin-top: 20px;
 }
+
+.chapters-content {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  margin-top: 20px;
+  padding: 0;
+}

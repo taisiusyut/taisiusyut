@@ -1,0 +1,25 @@
+@import '~styles/utils';
+
+.chapter-content {
+  margin-top: 20px;
+}
+
+.editor-container {
+  $line-height: 1.8em;
+
+  height: auto;
+  font-size: 16px;
+  line-height: $line-height;
+  min-height: $line-height * 10;
+  padding: 15px;
+}
+
+.footer {
+  @include flex(center, flex-end);
+  button {
+    min-width: 70px;
+    + button {
+      margin-left: 10px;
+    }
+  }
+}
