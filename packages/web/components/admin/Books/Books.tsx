@@ -1,8 +1,9 @@
 import React from 'react';
 import router from 'next/router';
-import { Card, H4 } from '@blueprintjs/core';
+import { Card } from '@blueprintjs/core';
 import { useAuthState } from '@/hooks/useAuth';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+import { PageHeader } from '@/components/admin/PageHeader';
 import { createFilter } from '@/components/Filter';
 import { BookStatusSelect, CategorySelect } from '@/components/Select';
 import { Order, UserRole, Schema$Book, Param$GetBooks } from '@/typings';
@@ -30,8 +31,7 @@ export function Books() {
 
   return (
     <Card>
-      <div className={classes.header}>
-        <H4>Books</H4>
+      <PageHeader title="Books">
         <div className={classes['button-group']}>
           {user?.role === UserRole.Author && (
             <CreateBook
@@ -46,7 +46,7 @@ export function Books() {
             />
           )}
         </div>
-      </div>
+      </PageHeader>
 
       <Filter initialValues={state.params} className={classes.fitler}>
         <FilterInput name="id" label="Book ID" />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { Button, Card, H4 } from '@blueprintjs/core';
+import { Button, Card } from '@blueprintjs/core';
+import { PageHeader } from '@/components/admin/PageHeader';
 import { Input } from '@/components/Input';
 import { Schema$Chapter, ChapterType } from '@/typings';
 import { createChapter } from '@/service';
@@ -15,6 +16,8 @@ interface Props {
 
 const { Form, FormItem, useForm } = createForm<Schema$Chapter>();
 
+// TODO: beforeunload, save local
+
 export function Chapter({ bookID, chapter }: Props) {
   const [form] = useForm();
   const [{ loading }, { fetch }] = useRxAsync(createChapter, {
@@ -23,10 +26,11 @@ export function Chapter({ bookID, chapter }: Props) {
 
   return (
     <Card>
-      <H4>Chapter</H4>
+      <PageHeader title="Chapter" goback={`/admin/book/${bookID}`}></PageHeader>
 
       <Form
         form={form}
+        validateTrigger="onSubmit"
         className={classes['chapter-content']}
         key={JSON.stringify(chapter)}
         initialValues={{ type: ChapterType.Free, ...chapter }}
