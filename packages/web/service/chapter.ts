@@ -8,11 +8,12 @@ import {
 } from '@/typings';
 import { api } from './api';
 
-export const getChapters = ({ bookID, ...params }: Param$GetChapters) =>
+export const getChapters = ({ bookID, ...params }: Param$GetChapters = {}) =>
   api.get<PaginateResult<Schema$Chapter>>(
     routes.get_chapters.generatePath({ bookID }),
     { params }
   );
+
 export const getChapter = ({
   bookID,
   chapterID

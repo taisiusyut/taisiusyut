@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import router from 'next/router';
 import { Button, Card } from '@blueprintjs/core';
 import { PageHeader } from '@/components/admin/PageHeader';
@@ -9,9 +9,10 @@ interface Props {
   bookID: string;
   chapters: Schema$Chapter[];
   role?: UserRole;
+  filter?: ReactNode;
 }
 
-// TODO: FIlter, chapter no, chapter line-height
+// TODO: chapter line-height
 
 const gotooChapter = (bookID: string, chapterID?: string) => () => {
   let pathname = `/admin/book/${bookID}/chapters`;
@@ -21,7 +22,7 @@ const gotooChapter = (bookID: string, chapterID?: string) => () => {
   return router.push(pathname);
 };
 
-export function BookDetailsChapters({ bookID, chapters, role }: Props) {
+export function BookDetailsChapters({ bookID, chapters, role, filter }: Props) {
   const isAuthor = role === UserRole.Author;
 
   return (
@@ -31,6 +32,8 @@ export function BookDetailsChapters({ bookID, chapters, role }: Props) {
           <Button minimal icon="plus" onClick={gotooChapter(bookID)} />
         )}
       </PageHeader>
+
+      {filter}
 
       <div className={classes['chapters-content']}>
         {chapters.map(chapter => (
