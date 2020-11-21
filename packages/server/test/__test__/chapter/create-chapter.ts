@@ -94,4 +94,20 @@ export function testCreateChapter() {
     });
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
   });
+
+  test('chapter name cannot be duplicate per book', async () => {
+    const name = '123';
+
+    let response = await createChapter(author.token, book.id, { name });
+    expect(response.status).toBe(HttpStatus.CREATED);
+
+    response = await createChapter(author.token, book.id, { name });
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+    response = await createBook(author.token);
+    const book2 = response.body;
+
+    response = await createChapter(author.token, book2.id, { name });
+    expect(response.status).toBe(HttpStatus.CREATED);
+  });
 }

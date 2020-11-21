@@ -21,7 +21,7 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Prop({ type: Number, required: true })
   number: string;
 
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ type: String, required: true })
   name: string;
 
   @Prop({ type: String, default: '' })
@@ -78,3 +78,5 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
 }
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);
+
+ChapterSchema.index({ name: 1, book: 1 }, { unique: true });

@@ -134,7 +134,9 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
           setWordCount(null);
           change$.next(state);
         }}
-        onFinish={payload => fetch({ bookID, chapterID, ...payload })}
+        onFinish={payload =>
+          fetch({ bookID, ...payload, ...(chapterID && { chapterID }) })
+        }
       />
     </Card>
   );
