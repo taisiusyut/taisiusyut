@@ -41,7 +41,10 @@ export interface Param$UpdateChapter {
 }
 
 export interface Param$GetChapters extends Pagination, Search {
-  bookID: string;
+  id?: string;
+  bookID?: string;
+  name?: string;
+  price?: number;
   status?: ChapterStatus;
   type?: ChapterType;
   createdAt?: DateRange;

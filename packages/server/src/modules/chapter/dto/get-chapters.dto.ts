@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { IsOptional, IsMongoId } from 'class-validator';
+import { IsOptional, IsMongoId, IsString } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -14,16 +14,13 @@ class Excluded
   extends QueryDto
   implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Exclude()
-  id?: undefined;
-
-  @Exclude()
-  bookID?: undefined;
-
-  @Exclude()
-  name?: undefined;
-
-  @Exclude()
   content?: undefined;
+
+  @Exclude()
+  author?: string;
+
+  @Exclude()
+  book?: undefined;
 }
 
 class GetChapters
@@ -33,11 +30,15 @@ class GetChapters
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
   @IsOptional()
   @IsMongoId()
-  author?: string;
+  id?: string;
 
   @IsOptional()
   @IsMongoId()
-  book?: string;
+  bookID?: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
 
   @IsOptional()
   @IsChapterStatus()
