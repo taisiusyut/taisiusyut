@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import router from 'next/router';
 import dynamic from 'next/dynamic';
-import { Button, Popover, H5, IPopoverProps } from '@blueprintjs/core';
+import { Button, Popover, IPopoverProps, H4 } from '@blueprintjs/core';
 import type { IDateRangeInputProps } from '@blueprintjs/datetime';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { Input, SearchInput } from '@/components/Input';
@@ -66,7 +66,8 @@ export function createFilter<T extends Record<string, any>>(
 
       return (
         <div>
-          <H5>Filter</H5>
+          <H4 style={{ marginBottom: 20 }}>Filter</H4>
+
           <Form
             {...props}
             layout={layout}

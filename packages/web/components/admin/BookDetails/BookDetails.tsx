@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createFilter } from '@/components/Filter';
+import { ChapterStatusSelect, ChapterTypeSelect } from '@/components/Select';
 import { useAuthState } from '@/hooks/useAuth';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { Schema$Book, Schema$Chapter, Param$GetChapters } from '@/typings';
@@ -15,7 +16,8 @@ interface Props extends OnUpdate {
 const {
   Filter,
   FilterInput,
-  FilterDateRange //
+  FilterDateRange,
+  FormItem //
 } = createFilter<Param$GetChapters>();
 
 export function BookDetails({ book, onUpdate }: Props) {
@@ -35,8 +37,12 @@ export function BookDetails({ book, onUpdate }: Props) {
     <Filter initialValues={state.params} className={classes.filter}>
       <FilterInput name="id" label="Chapter ID" />
       <FilterInput name="name" label="Name" />
-      <FilterInput name="status" label="Status" />
-      <FilterInput name="type" label="Type" />
+      <FormItem name="status" label="Status">
+        <ChapterStatusSelect />
+      </FormItem>
+      <FormItem name="type" label="Type">
+        <ChapterTypeSelect />
+      </FormItem>
       <FilterDateRange name="createdAt" label="Created At" />
       <FilterDateRange name="updatedAt" label="Updated At" />
     </Filter>
