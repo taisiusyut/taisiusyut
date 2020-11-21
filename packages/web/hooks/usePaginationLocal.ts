@@ -55,7 +55,11 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
 ): UsePaginationLocal<I, K, Partial<I> | false> {
   const useCRUDReducer = createUseCRUDReducer<I, K, Partial<I> | false>(key, {
     prefill: {},
-    state: { params: getParams(router.asPath) },
+    state: {
+      params: getParams(
+        typeof window !== 'undefined' ? window.location.href : ''
+      )
+    },
     ...curdOptions
   });
 
