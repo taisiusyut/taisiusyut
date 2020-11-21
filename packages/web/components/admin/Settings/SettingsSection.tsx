@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Divider, H4 } from '@blueprintjs/core';
+import { Card, Divider, H4 } from '@blueprintjs/core';
 import classes from './Settings.module.scss';
 
 interface SectionProps {
@@ -14,10 +14,10 @@ export function SettingsSection({
   children
 }: SectionProps) {
   return (
-    <div className={`${classes.section} ${className}`.trim()}>
+    <Card className={`${classes.section} ${className}`.trim()}>
       <H4>{title}</H4>
       <Divider />
       <div className={classes['section-content']}>{children}</div>
-    </div>
+    </Card>
   );
 }

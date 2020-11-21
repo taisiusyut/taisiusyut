@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@blueprintjs/core';
 import { SettingsPreferences } from './SettingsPreferences';
 import { SettingsProfile } from './SettingsProfile';
 import { SettingsDangerZone } from './SettingsDangerZone';
@@ -10,11 +9,9 @@ export interface Props {}
 export function Settings() {
   return (
     <div className={classes.settings}>
-      <Card>
-        <SettingsPreferences />
-        <SettingsProfile />
-        <SettingsDangerZone />
-      </Card>
+      <SettingsProfile />
+      <SettingsPreferences />
+      <SettingsDangerZone />
     </div>
   );
 }
