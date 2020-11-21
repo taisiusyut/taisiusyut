@@ -21,10 +21,10 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Prop({ type: Number, required: true })
   number: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, trim: true })
   name: string;
 
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: '', trim: true })
   content: string;
 
   @Exclude()

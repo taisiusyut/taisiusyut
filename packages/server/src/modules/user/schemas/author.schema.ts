@@ -7,7 +7,7 @@ import { Client } from './client.schema';
 export class Author extends OmitType(Client, ['role']) {
   role: UserRole;
 
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: '', trim: true })
   description: string;
 }
 

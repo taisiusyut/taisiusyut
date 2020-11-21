@@ -15,10 +15,10 @@ import { Author } from './author';
 export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   id: string;
 
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ type: String, required: true, unique: true, trim: true })
   name: string;
 
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: '', trim: true })
   description: string;
 
   @Prop({ type: String })
@@ -31,7 +31,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   })
   category: Category;
 
-  @Prop({ type: [String], lowercase: true, default: [] })
+  @Prop({ type: [String], lowercase: true, trim: true, default: [] })
   tags: string[];
 
   @Prop({

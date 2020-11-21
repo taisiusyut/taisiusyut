@@ -22,6 +22,7 @@ export class User implements InsertedUserSchema {
 
   @Prop({
     select: false,
+    trim: true,
     type: String,
     set: hashPassword,
     get: (pwd: string) => pwd
@@ -29,7 +30,7 @@ export class User implements InsertedUserSchema {
   @Exclude()
   password: string;
 
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ type: String, required: true, unique: true, trim: true })
   email: string;
 
   @Prop({
