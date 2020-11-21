@@ -37,7 +37,7 @@ import paginate from 'mongoose-paginate-v2';
           schema.plugin(autopopulate);
           schema.plugin(paginate);
 
-          async function removeImageFromCloudinary(this: Query<any>) {
+          async function removeImageFromCloudinary(this: Query<Book>) {
             const model: Model<Book & Document> = (this as any).model;
             const book = await model.findOne(this.getFilter());
             if (book && book.cover) {
@@ -46,7 +46,7 @@ import paginate from 'mongoose-paginate-v2';
           }
 
           schema.pre('deleteOne', removeImageFromCloudinary);
-          schema.pre('findOneAndUpdate', async function () {
+          schema.pre('findOneAndUpdate', async function (this: Query<Book>) {
             const changes: Partial<Book> = this.getUpdate();
             if (typeof changes !== 'undefined') {
               await removeImageFromCloudinary.call(this);

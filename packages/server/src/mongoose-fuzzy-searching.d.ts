@@ -1,8 +1,4 @@
 declare module 'mongoose' {
-  interface PaginateOptions {
-    projection?: Record<string, any>;
-  }
-
   type MongooseFuzzySearchingField<T = any> =
     | keyof T
     | {
@@ -35,13 +31,9 @@ declare module 'mongoose' {
     exact?: boolean;
   }
 
+  // eslint-disable-next-line
   interface Model<T extends Document> {
     fuzzySearch(query: string | MongooseFuzzySearchingParams): Promise<T[]>;
-    toJSON(): Record<string, unknown>;
-  }
-
-  interface SchemaType {
-    discriminator<U extends Document>(name: string, schema: Schema): Model<U>;
   }
 }
 
