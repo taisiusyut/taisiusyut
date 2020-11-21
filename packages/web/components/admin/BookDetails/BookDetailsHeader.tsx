@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, H3, Button, Popover, Menu, MenuItem } from '@blueprintjs/core';
 import { Schema$Book, BookStatus, UserRole } from '@/typings';
 import { PageHeader } from '@/components/admin/PageHeader';
-import { BookStatusTag } from '@/components/admin/Books/BookStatusTag';
+import { BookStatusTag } from '@/components/Tags/BookStatusTag';
 import { BookModel } from '@/components/BookModel';
 import { Tags } from '@/components/Tags';
 import { withPublishBook } from './PublishBook';
