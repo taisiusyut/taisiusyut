@@ -24,7 +24,7 @@ export default function UpdateChapterPage({ bookID, chapterID }: Props) {
     fetch({ bookID, chapterID });
   }, [fetch, bookID, chapterID]);
 
-  return <Chapter bookID={bookID} chapter={data} />;
+  return <Chapter bookID={bookID} chapterID={chapterID} chapter={data} />;
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async context => {

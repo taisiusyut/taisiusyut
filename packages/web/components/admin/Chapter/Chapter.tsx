@@ -5,14 +5,21 @@ import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Card, Icon } from '@blueprintjs/core';
 import { PageHeader } from '@/components/admin/PageHeader';
-import { Schema$Chapter, ChapterType } from '@/typings';
-import { ApiError, createChapter } from '@/service';
+import {
+  Schema$Chapter,
+  ChapterType,
+  Param$CreateChapter,
+  Param$UpdateChapter
+} from '@/typings';
+import { ApiError, createChapter, updateChapter } from '@/service';
 import { createChapterSotrage } from '@/utils/storage';
 import { Toaster } from '@/utils/toaster';
 import { ChapterForm, ChapterState } from './ChapterForm';
 
+// TODO: upload
 interface Props {
   bookID: string;
+  chapterID?: string;
   chapter?: Schema$Chapter;
 }
 
@@ -24,14 +31,17 @@ function getWordCount(plainText: string) {
   return cleanString.length;
 }
 
-// TODO: upload
+function request(payload: Param$CreateChapter | Param$UpdateChapter) {
+  return 'chapterID' in payload
+    ? updateChapter(payload)
+    : createChapter(payload);
+}
 
-export function Chapter({ bookID, chapter }: Props) {
+export function Chapter({ bookID, chapterID, chapter }: Props) {
+  const prefix = chapterID ? 'Update' : 'Create';
+
   const storageRef = useRef(
-    createChapterSotrage<ChapterState | null>(
-      chapter ? chapter.id : bookID,
-      null
-    )
+    createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
   );
 
   const [saved, setSaved] = useState<Partial<ChapterState> | null>();
@@ -41,16 +51,16 @@ export function Chapter({ bookID, chapter }: Props) {
     return {
       onSuccess: () => {
         storageRef.current.removeItem();
-        Toaster.success({ message: `Create chapter success` });
+        Toaster.success({ message: `${prefix} chapter success` });
         router.push(`/admin/book/${bookID}`);
       },
       onFailure: (error: ApiError) => {
-        Toaster.apiError(`Create chapter failure`, error);
+        Toaster.apiError(`${prefix} chapter failure`, error);
       }
     };
   });
 
-  const [{ loading }, { fetch }] = useRxAsync(createChapter, {
+  const [{ loading }, { fetch }] = useRxAsync(request, {
     defer: true,
     onSuccess,
     onFailure
@@ -97,7 +107,7 @@ export function Chapter({ bookID, chapter }: Props) {
 
   return (
     <Card>
-      <PageHeader title="Chapter" goback={`/admin/book/${bookID}`}>
+      <PageHeader title={`${prefix} Chapter`} goback={`/admin/book/${bookID}`}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {saved ? (
             <Icon icon="saved" iconSize={14}></Icon>
@@ -110,6 +120,8 @@ export function Chapter({ bookID, chapter }: Props) {
       </PageHeader>
 
       <ChapterForm
+        // for update chapter, this reset the initialValues
+        key={JSON.stringify(chapter)}
         loading={loading}
         wordCount={wordCount}
         initialValues={{
@@ -122,7 +134,7 @@ export function Chapter({ bookID, chapter }: Props) {
           setWordCount(null);
           change$.next(state);
         }}
-        onFinish={payload => fetch({ bookID, ...payload })}
+        onFinish={payload => fetch({ bookID, chapterID, ...payload })}
       />
     </Card>
   );
