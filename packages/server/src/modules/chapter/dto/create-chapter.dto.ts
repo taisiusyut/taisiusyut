@@ -7,6 +7,9 @@ class Excluded implements Partial<Schema$Chapter> {
   id?: undefined;
 
   @Exclude()
+  number?: undefined;
+
+  @Exclude()
   status?: undefined;
 
   @Exclude()

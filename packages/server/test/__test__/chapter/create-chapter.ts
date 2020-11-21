@@ -21,15 +21,18 @@ export function testCreateChapter() {
   test('author can create chapter', async () => {
     const params = [createChapterDto({})];
 
-    for (const payload of params) {
+    for (const [idx, payload] of Object.entries(params)) {
       const response = await createChapter(author.token, book.id, payload);
       expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body).not.toHaveProperty('book');
-      expect(response.body).not.toHaveProperty('bookID');
-      expect(response.body).not.toHaveProperty('author');
+      expect(response.body).not.toMatchObject({
+        book: expect.anything(),
+        bookID: expect.anything(),
+        author: expect.anything()
+      });
       expect(response.body).toMatchObject({
         ...payload,
+        number: Number(idx) + 1,
         status: ChapterStatus.Private
       });
     }

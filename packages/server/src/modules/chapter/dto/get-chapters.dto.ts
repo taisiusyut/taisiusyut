@@ -14,6 +14,9 @@ class Excluded
   extends QueryDto
   implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Exclude()
+  number?: undefined;
+
+  @Exclude()
   content?: undefined;
 
   @Exclude()

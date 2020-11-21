@@ -73,10 +73,16 @@ export class ChapterController {
     const bookExists = await this.bookService.exists(bookQuery);
 
     if (bookExists) {
-      return this.chapterService.create({
-        ...createChapterDto,
+      const query = {
         book: bookID,
         author
+      };
+      const count = await this.chapterService.countDocuments(query);
+
+      return this.chapterService.create({
+        number: count + 1,
+        ...createChapterDto,
+        ...query
       });
     }
 

@@ -141,4 +141,8 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     }
     await this.model.deleteMany({});
   }
+
+  async countDocuments(query: FilterQuery<D> = {}): Promise<number> {
+    return this.model.countDocuments(query);
+  }
 }
