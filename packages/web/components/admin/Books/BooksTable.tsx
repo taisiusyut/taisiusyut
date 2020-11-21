@@ -2,8 +2,7 @@ import React from 'react';
 import { Schema$Book, Order, Category } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { BookModel } from '@/components/BookModel';
-import { Tags } from '@/components/Tags';
-import { BookStatusTag } from './BookStatusTag';
+import { Tags, BookStatusTag } from '@/components/Tags';
 import dayjs from 'dayjs';
 
 type BookTableProps = Omit<TableProps<Partial<Schema$Book>>, 'columns'> & {
