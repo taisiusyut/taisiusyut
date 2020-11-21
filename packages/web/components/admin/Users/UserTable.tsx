@@ -3,7 +3,7 @@ import { Schema$User, UserRole, Order } from '@/typings';
 import { Table, TableProps, SortableHeader } from '@/components/Table';
 import dayjs from 'dayjs';
 
-type Props = TableProps<Schema$User>;
+type Props = TableProps<Partial<Schema$User>>;
 type Columns = Props['columns'];
 
 const userColumns: Columns = [

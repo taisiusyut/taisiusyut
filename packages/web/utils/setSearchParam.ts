@@ -30,6 +30,7 @@ function createSetSearchParam({
     }
 
     router.push({
+      pathname: router.asPath.split('?')[0], // seems required for dynamic route
       search: qs.stringify(newState, {
         encodeValuesOnly: true,
         ...stringifyOptions

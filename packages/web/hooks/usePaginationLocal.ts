@@ -5,30 +5,61 @@ import {
   AllowedNames,
   paginateSelector,
   createUseCRUDReducer,
-  CreateCRUDReducerOptions
+  CreateCRUDReducerOptions,
+  CRUDState,
+  Dispatched,
+  CRUDActionCreators
 } from '@/hooks/crud-reducer';
 import { PaginateResult } from '@/typings';
 import { PaginationProps } from '@/components/Pagination';
 import { setSearchParam } from '@/utils/setSearchParam';
 import qs from 'qs';
 
-interface Props {
+interface Options {
   onFailure?: (error: any) => void;
 }
 
-interface CrudOptions<T> extends CreateCRUDReducerOptions<Partial<T>> {}
+type UsePaginationLocal<
+  I,
+  K extends AllowedNames<I, string>,
+  Prefill = Partial<I>
+> = (
+  options?: Options | undefined
+) => {
+  state: CRUDState<I, Prefill>;
+  fetch: any;
+  actions: Dispatched<CRUDActionCreators<I, K>>;
+  loading: boolean;
+  pagination: PaginationProps;
+};
+
+interface CrudOptions<Prefill> extends CreateCRUDReducerOptions<Prefill> {}
+
+const getParams = (path: string) => qs.parse(path.split('?')[1] || '');
+
+export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
+  key: K,
+  request: <P>(params?: P) => Promise<PaginateResult<I>>
+): UsePaginationLocal<I, K, Partial<I>>;
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions?: CrudOptions<I>
-) {
-  const useCRUDReducer = createUseCRUDReducer<I, K>(key, {
-    ...curdOptions,
-    prefill: {}
+  curdOptions: CrudOptions<false> & { prefill: false }
+): UsePaginationLocal<I, K, false>;
+
+export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
+  key: K,
+  request: <P>(params?: P) => Promise<PaginateResult<I>>,
+  curdOptions?: CrudOptions<Partial<I> | false>
+): UsePaginationLocal<I, K, Partial<I> | false> {
+  const useCRUDReducer = createUseCRUDReducer<I, K, Partial<I> | false>(key, {
+    prefill: {},
+    state: { params: getParams(router.asPath) },
+    ...curdOptions
   });
 
-  return function usePaginationLocal(options?: Props) {
+  return function usePaginationLocal(options?: Options) {
     const [state, actions] = useCRUDReducer();
     const { asPath } = router;
     const { pageNo, pageSize, params } = state;
@@ -44,7 +75,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     });
 
     useEffect(() => {
-      actions.params(qs.parse(asPath.split('?')[1] || ''));
+      actions.params(getParams(asPath));
     }, [actions, asPath]);
 
     useEffect(() => {

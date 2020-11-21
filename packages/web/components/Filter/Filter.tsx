@@ -154,11 +154,14 @@ export function createFilter<T extends Record<string, any>>(
 
     useEffect(() => setIsOpen(false), []);
 
+    useEffect(() => {
+      initialValues && formRef.current?.setFieldsValue(initialValues);
+    }, [initialValues]);
+
     return (
       <Form
         layout="inline"
         className={`${classes['filter']} ${className}`.trim()}
-        initialValues={initialValues}
         onFinish={({ search }) =>
           (router.query.search || search) &&
           setSearchParam(params => ({ ...params, search }))

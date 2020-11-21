@@ -70,15 +70,17 @@ export function Users() {
           rowSelectedClassName={classes['row-selected']}
           onRowClick={(row, event) => {
             row.toggleRowSelected();
-            openUsersMenu({
-              title: row.original.username,
-              offset: { top: event.pageY, left: event.pageX },
-              onClosed: () => row.toggleRowSelected(),
 
-              user: row.original,
-              onUpdate: actions.update,
-              onDelete: actions.delete
-            });
+            if (Object.keys(row.original).length > 0) {
+              openUsersMenu({
+                title: row.original.username,
+                offset: { top: event.pageY, left: event.pageX },
+                onClosed: () => row.toggleRowSelected(),
+                user: row.original as Schema$User,
+                onUpdate: actions.update,
+                onDelete: actions.delete
+              });
+            }
           }}
         />
       </Card>

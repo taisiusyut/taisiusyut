@@ -15,20 +15,28 @@ export type UseCRUDReducer<
   Prefill extends any = any
 > = () => [CRUDState<I, Prefill>, Dispatched<CRUDActionCreators<I, K>>];
 
+interface CreateUseCRUDReducerOps<I, Prefill>
+  extends CreateCRUDReducerOptions<Prefill> {
+  state?: Partial<CRUDState<I, Prefill>>;
+}
+
 // prettier-ignore
 export interface CreateUseCRUDReducer  {
-  <I, K extends Key<I>>(key: K, options: CreateCRUDReducerOptions<false> & { prefill: false }): UseCRUDReducer<I, K, false>;
-  <I, K extends Key<I>, Prefill = any>(key: K, options: CreateCRUDReducerOptions<Prefill> & { prefill: Prefill }): UseCRUDReducer<I, K, Prefill>;
-  <I, K extends Key<I>>(key: K, options?: CreateCRUDReducerOptions): UseCRUDReducer<I, K, null>
+  <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<I, false> & { prefill: false }): UseCRUDReducer<I, K, false>;
+  <I, K extends Key<I>, Prefill = any>(key: K, options: CreateUseCRUDReducerOps<I, Prefill> & { prefill: Prefill }): UseCRUDReducer<I, K, Prefill>;
+  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<I, unknown>): UseCRUDReducer<I, K, null>
 }
 
 export const createUseCRUDReducer: CreateUseCRUDReducer = <I, K extends Key<I>>(
   key: K,
-  options?: CreateCRUDReducerOptions<any, any>
+  { state: initialState, ...options }: CreateUseCRUDReducerOps<any, any> = {}
 ): UseCRUDReducer<I, K, any> => {
-  const [intialState, reducer] = createCRUDReducer<I, K, any>(key, options);
+  const [defaultState, reducer] = createCRUDReducer<I, K, any>(key, options);
   return function useCRUDReducer() {
-    const [state, dispatch] = useReducer(reducer, intialState);
+    const [state, dispatch] = useReducer(reducer, {
+      ...defaultState,
+      ...initialState
+    });
     const [actions] = useState(() => {
       const [actions] = getCRUDActionsCreator<I, K>()();
       return { dispatch, ...bindDispatch(actions, dispatch) };

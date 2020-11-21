@@ -17,7 +17,7 @@ export interface CRUDState<I, Prefill extends any = null> {
   pageNo: number;
   pageSize: number;
   total: number;
-  params: any;
+  params: Record<string, any>;
 }
 
 export type CRUDReducer<
@@ -162,7 +162,7 @@ export const createCRUDReducer: CreateCRUDReducer = <
       return (action as List<'', I>).payload.reduce(
         (state, payload) =>
           reducer(state, { type: actionTypes['CREATE'], payload }),
-        defaultState
+        { ...state, list: [], ids: [], byIds: {} } as CRUDState<I, any>
       );
     }
 
