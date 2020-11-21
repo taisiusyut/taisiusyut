@@ -148,7 +148,7 @@ export class ChapterController {
   getChapters(
     @Req() req: FastifyRequest,
     @ObjectId('bookID') bookID: string,
-    @Query(AccessPipe) query: GetChaptersDto
+    @Query(AccessPipe) { timestamp, ...query }: GetChaptersDto
   ) {
     const user = req.user;
     const condition: Condition[] = [];
@@ -171,11 +171,17 @@ export class ChapterController {
     }
 
     // do not select these properties
-    const projection: { [K in keyof Chapter]?: number } = {
-      content: 0,
-      createdAt: 0,
-      updatedAt: 0
+    let projection: { [K in keyof Chapter]?: number } = {
+      content: 0
     };
+
+    if (!timestamp) {
+      projection = {
+        ...projection,
+        createdAt: 0,
+        updatedAt: 0
+      };
+    }
 
     return this.chapterService.paginate(
       {

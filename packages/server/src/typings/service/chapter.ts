@@ -50,4 +50,5 @@ export interface Param$GetChapters extends Pagination, Search {
   type?: ChapterType;
   createdAt?: DateRange;
   updatedAt?: DateRange;
+  timestamp?: boolean;
 }

@@ -1,5 +1,5 @@
-import { Exclude } from 'class-transformer';
-import { IsOptional, IsMongoId, IsString } from 'class-validator';
+import { Exclude, Transform } from 'class-transformer';
+import { IsOptional, IsMongoId, IsString, IsBoolean } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -55,6 +55,11 @@ class GetChapters
   @IsOptional()
   @IsPrice()
   price?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(value => value && JSON.parse(value))
+  timestamp?: boolean;
 }
 
 export class GetChaptersDto
