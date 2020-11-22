@@ -33,6 +33,18 @@ const itemsOptions: ItemOptions[] = [
     access: [UserRole.Root, UserRole.Admin]
   },
   {
+    href: '/admin/payment',
+    icon: 'dollar',
+    text: 'Payment',
+    access: [UserRole.Root, UserRole.Admin]
+  },
+  {
+    href: '/admin/chat',
+    icon: 'chat',
+    text: 'Chat',
+    access: [UserRole.Root, UserRole.Admin]
+  },
+  {
     href: '/admin/settings',
     icon: 'cog',
     text: 'Settings',
