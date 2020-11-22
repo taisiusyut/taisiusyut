@@ -1,12 +1,18 @@
+export interface Param$CloudinarySign {
+  eager?: string;
+  public_id?: string;
+}
+
 export interface Schema$CloudinarySign {
   signature: string;
   timestamp: number; // unix time
 }
 
-export interface Param$CloudinaryUpload extends Schema$CloudinarySign {
+export interface Param$CloudinaryUpload
+  extends Schema$CloudinarySign,
+    Param$CloudinarySign {
   file: File | Buffer | string;
   api_key?: string;
-  eager?: string;
 }
 
 export interface Response$CloudinaryUpload {

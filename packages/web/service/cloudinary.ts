@@ -1,9 +1,17 @@
 import { from, defer, of, pipe, Observable } from 'rxjs';
-import { filter, map, zipAll, mergeMap, retry } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  zipAll,
+  mergeMap,
+  retry,
+  concatMap
+} from 'rxjs/operators';
 import { RxFileToImageState } from 'use-rx-hooks';
 import { routes } from '@/constants';
 import {
   Param$CloudinaryUpload,
+  Param$CloudinarySign,
   Schema$CloudinarySign,
   Response$CloudinaryUpload
 } from '@/typings';
@@ -13,8 +21,8 @@ import axios from 'axios';
 
 // https://cloudinary.com/documentation/upload_images#uploading_with_a_direct_call_to_the_rest_api
 
-export const cloudinarySign = () =>
-  api.post<Schema$CloudinarySign>(routes.cloudinary_sign);
+export const cloudinarySign = (payload?: Param$CloudinarySign) =>
+  api.post<Schema$CloudinarySign>(routes.cloudinary_sign, payload);
 
 export const cloudinaryUpload = ({
   api_key = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
@@ -37,22 +45,30 @@ export const cloudinaryUpload = ({
 };
 
 type State = RxFileToImageState | string | null;
-export function handleCloudinaryUpload(payload: State): Observable<string>;
-export function handleCloudinaryUpload(payload: State[]): Observable<string[]>;
+
 export function handleCloudinaryUpload(
-  payload: State | State[]
+  payload: State,
+  options?: Param$CloudinarySign
+): Observable<string>;
+export function handleCloudinaryUpload(
+  payload: State[],
+  options?: Param$CloudinarySign
+): Observable<string[]>;
+export function handleCloudinaryUpload(
+  payload: State | State[],
+  options?: Param$CloudinarySign
 ): Observable<string | string[]> {
-  return defer(() => cloudinarySign()).pipe(
+  return defer(() => cloudinarySign(options)).pipe(
     retry(2),
     mergeMap(signPayload => {
       const handler = pipe(
         filter((i: State): i is RxFileToImageState =>
           i && typeof i === 'object' ? true : false
         ),
-        mergeMap(({ file }) => {
-          return defer(() => cloudinaryUpload({ file, ...signPayload })).pipe(
-            map(res => res.data.secure_url)
-          );
+        concatMap(({ file }) => {
+          return defer(() =>
+            cloudinaryUpload({ file, ...options, ...signPayload })
+          ).pipe(map(res => res.data.secure_url));
         })
       );
 

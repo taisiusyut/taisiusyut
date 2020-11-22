@@ -26,5 +26,6 @@ export function createFormData<T extends Record<string, unknown>>(params: T) {
   Object.entries(params).forEach(([key, data]) => {
     append(form, key, data);
   });
+
   return form;
 }

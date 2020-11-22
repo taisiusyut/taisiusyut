@@ -1,7 +1,7 @@
 import { EMPTY } from 'rxjs';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Schema$CloudinarySign } from '@/typings';
+import { Param$CloudinarySign, Schema$CloudinarySign } from '@/typings';
 import cloudinary from 'cloudinary';
 
 type RemovePayload = string | { public_id: string };
@@ -25,7 +25,7 @@ export class CloudinaryService {
       .split(/:|@/);
   }
 
-  sign(): Schema$CloudinarySign {
+  sign(params?: Param$CloudinarySign): Schema$CloudinarySign {
     const timestamp = Math.round(+new Date() / 1000);
 
     if (!this.api_secret) {
@@ -37,7 +37,7 @@ export class CloudinaryService {
     return {
       timestamp,
       signature: cloudinary.v2.utils.api_sign_request(
-        { timestamp },
+        { timestamp, ...params },
         this.api_secret
       )
     };

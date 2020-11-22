@@ -1,6 +1,7 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { routes } from '@/constants/routes';
 import { Access } from '@/guard/access.guard';
+import { CloudinarySignDto } from './dto';
 import { CloudinaryService } from './cloudinary.service';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
@@ -11,7 +12,7 @@ export class CloudinaryController {
 
   @Post(routes.cloudinary_sign)
   @Access('Root', 'Admin', 'Author')
-  cloudinarySign() {
-    return this.cloudinaryService.sign();
+  cloudinarySign(@Body() dto: CloudinarySignDto) {
+    return this.cloudinaryService.sign(dto);
   }
 }
