@@ -43,7 +43,7 @@ export class BookController {
     return [BookStatus.Public, BookStatus.Finished].includes(status);
   }
 
-  @Access('Author')
+  @Access('book_create')
   @Post(routes.book.create_book)
   create(@Req() req: FastifyRequest, @Body() createBookDto: CreateBookDto) {
     return this.bookService.create({
@@ -52,7 +52,7 @@ export class BookController {
     });
   }
 
-  @Access('Root', 'Admin', 'Author')
+  @Access('book_update')
   @Patch(routes.book.update_book)
   async update(
     @Req() { user }: FastifyRequest,
@@ -76,7 +76,7 @@ export class BookController {
     return book;
   }
 
-  @Access('Root', 'Admin')
+  @Access('book_delete')
   @Delete(routes.book.delete_book)
   delete(@ObjectId('id') id: string) {
     return this.bookService.delete({ _id: id });
@@ -150,7 +150,7 @@ export class BookController {
     return this.bookService.paginate({ ...query, condition });
   }
 
-  @Access('Author')
+  @Access('book_public', 'book_finish')
   @HttpCode(HttpStatus.OK)
   @Post(routes.book.public_finish_book)
   async public(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {

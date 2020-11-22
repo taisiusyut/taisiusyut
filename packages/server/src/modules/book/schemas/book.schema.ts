@@ -43,7 +43,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Type(() => Author)
   author: Author | string;
 
-  @Group(['Root', 'Admin', 'Author'])
+  @Group(['book_status_get'])
   @Prop({
     type: Number,
     default: BookStatus.Private,

@@ -45,7 +45,7 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Type(() => Book)
   book: string;
 
-  @Group(['Root', 'Admin', 'Author'])
+  @Group(['chapter_status_get'])
   @Prop({
     type: Number,
     default: ChapterStatus.Private,

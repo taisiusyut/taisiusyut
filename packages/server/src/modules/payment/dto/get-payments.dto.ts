@@ -33,7 +33,7 @@ export class GetPayments
     Partial<Omit<Param$GetPayments, keyof Excluded>> {
   @IsOptional()
   @IsMongoId()
-  @Group(['Root', 'Admin'])
+  @Group(['payment_get_by_user'])
   user?: string;
 
   @IsOptional()

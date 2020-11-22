@@ -7,6 +7,7 @@ import {
   ArgumentMetadata,
   UnauthorizedException
 } from '@nestjs/common';
+import { permissonsMap } from '@/permissions';
 
 /**
  *  Using @Group or @Expose with @Transform in DTO return `unedfined` property,
@@ -27,7 +28,7 @@ export class AccessPipe implements PipeTransform {
 
     if (metadata.metatype && value instanceof metadata.metatype) {
       const newValue = classToClass(value, {
-        groups: [role]
+        groups: [role, ...permissonsMap[role]]
       });
 
       for (const k in newValue) {

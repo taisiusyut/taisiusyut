@@ -46,7 +46,7 @@ class UpdateBook
   @IsOptional()
   @IsEnum(BookStatus)
   @Transform(value => value && Number(value))
-  @Group(['Root', 'Admin'])
+  @Group(['book_status_update'])
   status?: BookStatus;
 }
 

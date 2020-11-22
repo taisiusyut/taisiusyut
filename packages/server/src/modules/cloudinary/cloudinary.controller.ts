@@ -11,7 +11,7 @@ export class CloudinaryController {
   constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   @Post(routes.cloudinary_sign)
-  @Access('Root', 'Admin', 'Author')
+  @Access('cloudinary_sign')
   cloudinarySign(@Body() dto: CloudinarySignDto) {
     return this.cloudinaryService.sign(dto);
   }

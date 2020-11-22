@@ -1,7 +1,7 @@
-import { UserRole } from '@/typings';
 import { Expose, ExposeOptions } from 'class-transformer';
+import { UserRole, Permissions } from '@/typings';
 
-type Key = keyof typeof UserRole;
+type Key = keyof typeof UserRole | Permissions;
 
 export const Group = (
   groups: Key[],

@@ -27,7 +27,7 @@ export function testDeleteChapter() {
     ${'client'} | ${'cannot'} | ${HttpStatus.FORBIDDEN} | ${1}
     ${'author'} | ${'cannot'} | ${HttpStatus.FORBIDDEN} | ${1}
   `(
-    `$user $expected delete book`,
+    `$user $expected delete chapter`,
     async ({ user, status, length }: Record<string, any>) => {
       let response = await createChapter(author.token, book.id);
       const chapter: Schema$Chapter = response.body;

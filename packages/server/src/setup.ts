@@ -6,6 +6,7 @@ import {
 import { ValidationPipe } from '@nestjs/common';
 import { MongooseExceptionFilter } from '@/utils/mongoose';
 import { UserRole } from '@/typings';
+import { allPermissions } from '@/permissions';
 import helmet from 'fastify-helmet';
 import rateLimit from 'fastify-rate-limit';
 import compression from 'fastify-compress';
@@ -19,12 +20,14 @@ export const fastifyAdapter = () =>
     querystringParser: qs.parse as FastifyServerOptions['querystringParser']
   });
 
-const groups = Object.values(UserRole);
+const groups = [...Object.values(UserRole), ...allPermissions];
 
 export function setupApp(app: NestFastifyApplication): void {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      // Since validation pipe cannot assign `group` option dynamically
+      //
       transformOptions: { groups } // for access.pipe.ts
     })
   );

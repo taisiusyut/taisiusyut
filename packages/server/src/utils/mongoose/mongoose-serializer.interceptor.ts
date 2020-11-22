@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { CLASS_SERIALIZER_OPTIONS } from '@nestjs/common/serializer/class-serializer.constants';
 import { PaginateResult, UserRole } from '@/typings';
+import { permissonsMap } from '@/permissions';
 import { TEXT_SCORE } from './mongoose-crud.service';
 
 type Res =
@@ -26,14 +27,19 @@ export class MongooseSerializerInterceptor extends ClassSerializerInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const contextOptions = this._getContextOptions(context);
     const req = context.switchToHttp().getRequest<FastifyRequest>();
+    const role = req?.user?.role;
 
     const options = {
       ...this.defaultOptions,
       ...contextOptions
     };
 
-    if (req?.user?.role) {
-      options.groups = [...(options.groups || []), UserRole[req.user.role]];
+    if (role) {
+      options.groups = [
+        ...(options.groups || []),
+        UserRole[role],
+        ...permissonsMap[role]
+      ];
     }
 
     return next.handle().pipe(

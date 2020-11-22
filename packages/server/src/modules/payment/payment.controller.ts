@@ -31,7 +31,7 @@ export class PaymentController {
     private readonly paymentService: PaymentService
   ) {}
 
-  @Access('Author', 'Client')
+  @Access('payment_create')
   @Post(routes.payment.create_payment)
   async create(
     @Req() { user }: FastifyRequest,
@@ -71,7 +71,7 @@ export class PaymentController {
     return result.value;
   }
 
-  @Access('Root', 'Admin')
+  @Access('payment_update')
   @Patch(routes.payment.update_payment)
   update(
     @ObjectId('id') id: string,

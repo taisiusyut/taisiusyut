@@ -45,7 +45,7 @@ export class ChapterController {
     private readonly chapterService: ChapterService
   ) {}
 
-  @Access('Author')
+  @Access('chapter_create')
   @Post(routes.chapter.create_chapter)
   async create(
     @Req() req: FastifyRequest,
@@ -89,7 +89,7 @@ export class ChapterController {
     throw new BadRequestException('book not found or status is not allow');
   }
 
-  @Access('Root', 'Admin', 'Author')
+  @Access('chapter_update')
   @Patch(routes.chapter.update_chapter)
   async update(
     @Req() req: FastifyRequest,
@@ -134,7 +134,7 @@ export class ChapterController {
     return chapter;
   }
 
-  @Access('Root', 'Admin')
+  @Access('chapter_delete')
   @Delete(routes.chapter.delete_chapter)
   delete(
     @ObjectId('bookID') bookID: string,
@@ -227,7 +227,7 @@ export class ChapterController {
     return chapter;
   }
 
-  @Access('Author')
+  @Access()
   @HttpCode(HttpStatus.OK)
   @Post(routes.chapter.public_private_chapter)
   async togglePublicPrivate(

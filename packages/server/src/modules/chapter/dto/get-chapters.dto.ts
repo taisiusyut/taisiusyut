@@ -45,7 +45,7 @@ class GetChapters
 
   @IsOptional()
   @IsChapterStatus()
-  @Group(['Root', 'Admin', 'Author'])
+  @Group(['chapter_status_get'])
   status?: ChapterStatus;
 
   @IsOptional()

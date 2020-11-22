@@ -82,7 +82,10 @@ export function testUpdateBook() {
 
   test.each(['root', 'admin'])('%s can update book status', async user => {
     const status = BookStatus.Public;
-    const response = await updateBook(getUser(user).token, book.id, { status });
+    let response = await createBook(author.token);
+    const book = response.body;
+
+    response = await updateBook(getUser(user).token, book.id, { status });
     expect(response.error).toBeFalse();
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toHaveProperty('status', status);

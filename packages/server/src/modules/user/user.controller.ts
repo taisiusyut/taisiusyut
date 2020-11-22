@@ -40,7 +40,7 @@ export class UserController {
     };
   }
 
-  @Access('Root', 'Admin')
+  @Access('user_get_all')
   @Get(routes.user.get_users)
   getUsers(@Query() query: GetUsersDto, @Req() req: FastifyRequest) {
     let condition: Condition[] = [];
@@ -70,7 +70,7 @@ export class UserController {
     return result;
   }
 
-  @Access('Root', 'Admin')
+  @Access('user_create')
   @Post(routes.user.create_user)
   create(@Req() req: FastifyRequest, @Body() createUserDto: CreateUserDto) {
     if (
@@ -134,7 +134,7 @@ export class UserController {
     return result;
   }
 
-  @Access('Root', 'Admin')
+  @Access('user_delete')
   @Delete(routes.user.delete_user)
   async delete(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
     const self = id === req.user?.user_id;

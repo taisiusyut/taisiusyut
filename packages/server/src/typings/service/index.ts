@@ -6,6 +6,7 @@ export * from './chapter';
 export * from './cloudinary';
 export * from './user';
 export * from './payment';
+export * from './permissions';
 
 export interface ApiResponse<T> {
   statusCode: number;

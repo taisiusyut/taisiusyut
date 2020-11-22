@@ -56,7 +56,7 @@ class UpdateChapter
 
   @IsOptional()
   @IsChapterStatus()
-  @Group(['Root', 'Admin'])
+  @Group(['chapter_status_update'])
   status?: ChapterStatus;
 
   @IsOptional()
