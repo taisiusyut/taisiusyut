@@ -107,7 +107,10 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
 
   return (
     <Card>
-      <PageHeader title={`${prefix} Chapter`} goback={`/admin/book/${bookID}`}>
+      <PageHeader
+        title={`${prefix} Chapter`}
+        goBackURL={`/admin/book/${bookID}`}
+      >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {saved ? (
             <Icon icon="saved" iconSize={14}></Icon>

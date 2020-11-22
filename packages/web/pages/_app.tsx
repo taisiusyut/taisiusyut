@@ -4,6 +4,7 @@ import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import { useRxAsync } from 'use-rx-hooks';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { HistoryBackProvider } from '@/hooks/useHistoryBack';
 import { UserRole } from '@/typings';
 import '@/styles/globals.scss';
 import 'typeface-muli';
@@ -49,12 +50,14 @@ function AppContent({ Component, pageProps }: ExtendAppProps) {
 
 function App(props: ExtendAppProps) {
   return (
-    <AuthProvider>
-      <Head>
-        <title>睇小說</title>
-      </Head>
-      <AppContent {...props} />
-    </AuthProvider>
+    <HistoryBackProvider>
+      <AuthProvider>
+        <Head>
+          <title>睇小說</title>
+        </Head>
+        <AppContent {...props} />
+      </AuthProvider>
+    </HistoryBackProvider>
   );
 }
 

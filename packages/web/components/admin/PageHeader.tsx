@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
-import router from 'next/router';
 import { Button, H4 } from '@blueprintjs/core';
+import { useHistoryBack } from '@/hooks/useHistoryBack';
 import { resolve } from 'styled-jsx/css';
 
 interface Props {
   title?: ReactNode;
-  goback?: string;
   children?: ReactNode;
+  goBackURL?: string;
 }
 
 const h4 = resolve`
@@ -22,16 +22,17 @@ const button = resolve`
   }
 `;
 
-export function PageHeader({ title, goback, children }: Props) {
+export function PageHeader({ title, goBackURL: url, children }: Props) {
+  const goBack = useHistoryBack();
   return (
     <div className="header">
       <div className="title">
-        {goback && (
+        {url && (
           <Button
             minimal
             icon="arrow-left"
             className={button.className}
-            onClick={() => router.push(goback)}
+            onClick={() => goBack(url)}
           />
         )}
         <H4 className={h4.className}>{title}</H4>

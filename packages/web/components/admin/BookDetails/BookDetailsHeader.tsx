@@ -62,7 +62,7 @@ export function BookDetailsHeader({ book, role, onUpdate }: Props) {
   return (
     <>
       <Card>
-        <PageHeader goback={`/admin/book`} title="Book Details">
+        <PageHeader goBackURL={`/admin/book`} title="Book Details">
           {actions}
         </PageHeader>
       </Card>
