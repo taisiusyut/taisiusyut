@@ -27,7 +27,7 @@ export function setupApp(app: NestFastifyApplication): void {
     new ValidationPipe({
       transform: true,
       // Since validation pipe cannot assign `group` option dynamically
-      //
+      // We need to whitelist by default and filter out by `access.pipe`
       transformOptions: { groups } // for access.pipe.ts
     })
   );

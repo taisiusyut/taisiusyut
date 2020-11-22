@@ -1,7 +1,5 @@
-/** eslint-disable */
-
-// type CRUD<T extends string> = any;
-type CRUD<T extends string> = `${T}_create` | `${T}_update` | `${T}_delete` | `${T}_get_all` | `${T}_get`
+type CRUD<T extends string> = string | T;
+// type CRUD<T extends string> = `${T}_create` | `${T}_update` | `${T}_delete` | `${T}_get_all` | `${T}_get`
 
 export type UserPermission = CRUD<'user'>;
 
