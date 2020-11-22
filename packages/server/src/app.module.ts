@@ -30,10 +30,10 @@ const configure = (load: ConfigFactory[] = []) =>
         .default('development'),
       CLOUDINARY_URL: Joi.string().allow('').default(''),
       JWT_SECRET: Joi.string().default('JWT_SECRET'),
-      JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number()
+      JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(15),
+      REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number()
         .min(1)
         .default(7 * 24 * 60),
-      REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(15),
       DEFAULT_USERNAME: Joi.string().default('admin'),
       DEFAULT_PASSWORD: Joi.string().default('12345678')
     })
