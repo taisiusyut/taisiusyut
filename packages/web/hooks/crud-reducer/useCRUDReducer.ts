@@ -15,7 +15,7 @@ export type UseCRUDReducer<
   Prefill extends any = any
 > = () => [CRUDState<I, Prefill>, Dispatched<CRUDActionCreators<I, K>>];
 
-interface CreateUseCRUDReducerOps<I, Prefill>
+export interface CreateUseCRUDReducerOps<I, Prefill>
   extends CreateCRUDReducerOptions<Prefill> {
   state?: Partial<CRUDState<I, Prefill>>;
 }

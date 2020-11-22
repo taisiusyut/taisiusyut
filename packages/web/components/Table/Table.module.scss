@@ -22,4 +22,13 @@
   height: 60px;
   vertical-align: middle;
   white-space: nowrap;
+
+  &:empty {
+    &:after {
+      @include dimen(80%, 1.2em);
+      content: '';
+      display: block;
+      background-color: #ccc;
+    }
+  }
 }

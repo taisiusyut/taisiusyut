@@ -5,7 +5,7 @@ import {
   AllowedNames,
   paginateSelector,
   createUseCRUDReducer,
-  CreateCRUDReducerOptions,
+  CreateUseCRUDReducerOps,
   CRUDState,
   Dispatched,
   CRUDActionCreators
@@ -33,9 +33,14 @@ type UsePaginationLocal<
   pagination: PaginationProps;
 };
 
-interface CrudOptions<Prefill> extends CreateCRUDReducerOptions<Prefill> {}
+interface CrudOptions<I, Prefill> extends CreateUseCRUDReducerOps<I, Prefill> {}
 
 const getParams = (path: string) => qs.parse(path.split('?')[1] || '');
+
+const createPlaceHolder = <Prefill>(length: number, prefill: Prefill) => ({
+  ids: Array.from({ length }, (_, index) => String(index)),
+  list: Array.from({ length }, () => prefill)
+});
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
@@ -45,22 +50,42 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions: CrudOptions<false> & { prefill: false }
+  curdOptions: CrudOptions<I, false> & { prefill: false }
 ): UsePaginationLocal<I, K, false>;
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions?: CrudOptions<Partial<I> | false>
-): UsePaginationLocal<I, K, Partial<I> | false> {
-  const useCRUDReducer = createUseCRUDReducer<I, K, Partial<I> | false>(key, {
-    prefill: {},
-    state: {
-      params: getParams(
-        typeof window !== 'undefined' ? window.location.href : ''
-      )
-    },
+  curdOptions: CrudOptions<I, Partial<I>> & { prefill?: {} }
+): UsePaginationLocal<I, K, false>;
+
+export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
+  key: K,
+  request: <P>(params?: P) => Promise<PaginateResult<I>>,
+  {
+    state,
+    prefill = {},
     ...curdOptions
+  }: CrudOptions<I, Partial<I> | false> = {}
+): UsePaginationLocal<I, K, Partial<I> | false> {
+  const initialParams = getParams(
+    typeof window !== 'undefined' ? window.location.href : ''
+  );
+  delete initialParams['pageNo'];
+  delete initialParams['pageSIze'];
+
+  const useCRUDReducer = createUseCRUDReducer<I, K, Partial<I> | false>(key, {
+    ...curdOptions,
+    prefill,
+    state: {
+      ...state,
+      ...(prefill !== false &&
+        (createPlaceHolder(10, prefill) as Pick<
+          CRUDState<I, Partial<I>>,
+          'ids' | 'list'
+        >)),
+      params: initialParams
+    }
   });
 
   return function usePaginationLocal(options?: Options) {

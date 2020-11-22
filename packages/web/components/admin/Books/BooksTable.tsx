@@ -47,11 +47,16 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
   {
     id: 'tags',
     Header: 'Tags',
-    accessor: book => (
-      <div style={{ maxWidth: 200, whiteSpace: 'break-spaces' }}>
-        <Tags tags={book.tags || []} />
-      </div>
-    )
+    accessor: book =>
+      book.tags ? (
+        book.tags.length ? (
+          <div style={{ maxWidth: 200, whiteSpace: 'break-spaces' }}>
+            <Tags tags={book.tags || []} />
+          </div>
+        ) : (
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;-</div>
+        )
+      ) : null
   },
   {
     id: 'createdAt',
