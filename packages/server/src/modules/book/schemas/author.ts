@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { Schema$Author, Schema$BookAuthor } from '@/typings';
-import { groups } from '@/decorators';
+import { groups } from '@/utils/access';
 
 const Private = () => Expose({ groups: groups('Root', 'Admin') });
 

@@ -2,7 +2,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Category, Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
 import { IsDescription, IsTags, IsBookName, IsCategory } from './';
-import { Group } from '@/decorators';
+import { Group } from '@/utils/access';
 
 class Excluded implements Partial<Record<keyof Schema$Book, unknown>> {
   @Exclude()

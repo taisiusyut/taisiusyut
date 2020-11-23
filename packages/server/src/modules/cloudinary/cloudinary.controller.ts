@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { routes } from '@/constants/routes';
-import { Access } from '@/guard/access.guard';
+import { Access } from '@/utils/access';
 import { CloudinarySignDto } from './dto';
 import { CloudinaryService } from './cloudinary.service';
 

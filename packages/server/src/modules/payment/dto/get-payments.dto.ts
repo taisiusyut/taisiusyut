@@ -6,7 +6,7 @@ import {
   PaymentStatus,
   PaymentType
 } from '@/typings';
-import { Group } from '@/decorators';
+import { Group } from '@/utils/access';
 import { QueryDto } from '@/utils/mongoose';
 
 class Excluded extends QueryDto implements Partial<Schema$Payment> {

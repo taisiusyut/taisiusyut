@@ -1,5 +1,4 @@
-type CRUD<T extends string> = string | T;
-// type CRUD<T extends string> = `${T}_create` | `${T}_update` | `${T}_delete` | `${T}_get_all` | `${T}_get`
+type CRUD<T extends string> = `${T}_create` | `${T}_update` | `${T}_delete` | `${T}_get_all` | `${T}_get`
 
 export type UserPermission = CRUD<'user'>;
 
@@ -21,7 +20,7 @@ export type PaymentPermission = CRUD<'payment'> | 'payment_get_by_user';
 
 export type CloudinaryPermission = 'cloudinary_sign';
 
-export type Permissions =
+export type Permission =
   | UserPermission
   | BookPermission
   | ChapterPermission

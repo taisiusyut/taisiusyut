@@ -7,7 +7,7 @@ import {
   ArgumentMetadata,
   UnauthorizedException
 } from '@nestjs/common';
-import { permissonsMap } from '@/permissions';
+import { permissonsMap } from './permission-config';
 
 /**
  *  Using @Group or @Expose with @Transform in DTO return `unedfined` property,

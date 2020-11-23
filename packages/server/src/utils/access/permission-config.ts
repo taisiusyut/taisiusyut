@@ -1,6 +1,7 @@
-import { UserRole, Permissions } from '@/typings';
+import { UserRole } from '@/typings';
+import { Permission } from './permission-types';
 
-export const permissonsMap: Record<UserRole, Permissions[]> = {
+export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Root]: [
     'user_create',
     'user_update',
@@ -82,5 +83,5 @@ export const allPermissions = Object.values(permissonsMap).reduce(
       (result, p) => (result.includes(p) ? result : [...result, p]),
       result
     ),
-  [] as Permissions[]
+  [] as Permission[]
 );

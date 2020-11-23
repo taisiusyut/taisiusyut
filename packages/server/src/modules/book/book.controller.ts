@@ -15,13 +15,12 @@ import {
 import { ObjectID } from 'mongodb';
 import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
-import { Access } from '@/guard/access.guard';
 import { routes } from '@/constants';
 import { BookService } from './book.service';
 import { ObjectId } from '@/decorators';
 import { BookStatus, UserRole } from '@/typings';
 import { Condition } from '@/utils/mongoose';
-import { AccessPipe } from '@/pipe';
+import { AccessPipe, Access } from '@/utils/access';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { Book } from './schemas/book.schema';
 

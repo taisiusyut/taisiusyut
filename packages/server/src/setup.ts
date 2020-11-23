@@ -4,9 +4,9 @@ import {
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
-import { MongooseExceptionFilter } from '@/utils/mongoose';
 import { UserRole } from '@/typings';
-import { allPermissions } from '@/permissions';
+import { MongooseExceptionFilter } from '@/utils/mongoose';
+import { allPermissions } from '@/utils/access';
 import helmet from 'fastify-helmet';
 import rateLimit from 'fastify-rate-limit';
 import compression from 'fastify-compress';

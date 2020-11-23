@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { Permissions } from '@/typings';
-import { permissonsMap } from '@/permissions';
+import { Permission } from './permission-types';
+import { permissonsMap } from './permission-config';
 
 type AccessType =
-  | Permissions
+  | Permission
   | 'Everyone'
   | 'Auth' // registered
   | 'Optional'; // registered or everyone
@@ -58,7 +58,7 @@ export class AcessGuard extends AuthGuard('jwt') {
 
           if (!!req.user?.role) {
             const permissions = permissonsMap[req.user.role];
-            return access.every(a => permissions.includes(a as Permissions));
+            return access.every(a => permissions.includes(a as Permission));
           }
         }
         return false;

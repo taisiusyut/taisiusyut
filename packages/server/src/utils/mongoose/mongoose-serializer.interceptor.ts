@@ -10,17 +10,20 @@ import {
   PlainLiteralObject,
   ExecutionContext,
   CallHandler,
-  ClassSerializerInterceptor
+  ClassSerializerInterceptor,
+  // Class
 } from '@nestjs/common';
 import { CLASS_SERIALIZER_OPTIONS } from '@nestjs/common/serializer/class-serializer.constants';
 import { PaginateResult, UserRole } from '@/typings';
-import { permissonsMap } from '@/permissions';
+import { permissonsMap } from '@/utils/access';
 import { TEXT_SCORE } from './mongoose-crud.service';
 
 type Res =
   | PlainLiteralObject
   | Array<PlainLiteralObject>
   | PaginateResult<unknown>;
+
+// console.log(CLASS);
 
 @Injectable()
 export class MongooseSerializerInterceptor extends ClassSerializerInterceptor {

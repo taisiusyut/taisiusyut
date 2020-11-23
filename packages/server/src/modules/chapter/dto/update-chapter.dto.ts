@@ -6,7 +6,7 @@ import {
   Param$UpdateChapter,
   Schema$Chapter
 } from '@/typings';
-import { Group } from '@/decorators';
+import { Group } from '@/utils/access';
 import {
   IsChapterName,
   IsChapterStatus,

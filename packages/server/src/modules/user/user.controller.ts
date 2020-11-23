@@ -15,9 +15,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { routes } from '@/constants';
-import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
 import { UserRole } from '@/typings';
+import { Access } from '@/utils/access';
 import { Condition } from '@/utils/mongoose';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';

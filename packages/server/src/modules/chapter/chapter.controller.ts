@@ -16,12 +16,11 @@ import {
 import { FastifyRequest } from 'fastify';
 import { FilterQuery } from 'mongoose';
 import { routes } from '@/constants';
-import { Access } from '@/guard/access.guard';
 import { ObjectId } from '@/decorators';
-import { AccessPipe } from '@/pipe';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { BookService } from '@/modules/book/book.service';
 import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
+import { Access, AccessPipe } from '@/utils/access';
 import { Condition } from '@/utils/mongoose';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';

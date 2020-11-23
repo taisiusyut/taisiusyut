@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseSerializerInterceptor } from '@/utils/mongoose';
-import { AcessGuard } from '@/guard/access.guard';
+import { AcessGuard } from '@/utils/access';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
 import { BookModule } from '@/modules/book/book.module';

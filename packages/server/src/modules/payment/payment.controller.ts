@@ -12,10 +12,9 @@ import {
 import { FastifyRequest } from 'fastify';
 import { BookService } from '@/modules/book/book.service';
 import { routes } from '@/constants';
-import { Access } from '@/guard/access.guard';
 import { UserRole } from '@/typings';
 import { ObjectId } from '@/decorators';
-import { AccessPipe } from '@/pipe';
+import { Access, AccessPipe } from '@/utils/access';
 import { PaymentService } from './payment.service';
 import {
   CreatePaymentDto,

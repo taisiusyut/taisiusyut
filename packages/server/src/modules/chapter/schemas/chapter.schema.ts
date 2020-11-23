@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
-import { Group } from '@/decorators';
+import { Group } from '@/utils/access';
 
 @Schema({
   timestamps: true,
