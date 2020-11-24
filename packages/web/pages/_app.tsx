@@ -29,10 +29,15 @@ function Redirect({ redirect }: { redirect?: string }) {
 
 function AppContent({ Component, pageProps }: ExtendAppProps) {
   const [{ loginStatus, user }, actions] = useAuth();
+  const access = Component.access;
+
+  if (access && process.env.NEXT_PUBLIC_GUEST) {
+    access.push(process.env.NEXT_PUBLIC_GUEST as UserRole);
+  }
 
   useRxAsync(actions.authenticate);
 
-  if (!Component.access || (user && Component.access.includes(user.role))) {
+  if (!access || (user && access.includes(user.role))) {
     const Layout = Component.layout || React.Fragment;
     return (
       <Layout>

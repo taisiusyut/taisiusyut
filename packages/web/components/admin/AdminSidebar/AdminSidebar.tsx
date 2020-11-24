@@ -52,6 +52,12 @@ const itemsOptions: ItemOptions[] = [
   }
 ];
 
+if (process.env.NEXT_PUBLIC_GUEST) {
+  for (const option of itemsOptions) {
+    option.access.push(process.env.NEXT_PUBLIC_GUEST as UserRole);
+  }
+}
+
 export function AdminSidebar() {
   const { user } = useAuthState();
 
