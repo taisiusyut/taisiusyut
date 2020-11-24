@@ -156,7 +156,7 @@ export class AuthController {
     }
   }
 
-  @Access('Auth')
+  @Access('delete-account')
   @HttpCode(HttpStatus.OK)
   @Delete(routes.auth.delete_account)
   async delete(
@@ -167,6 +167,8 @@ export class AuthController {
     if (!req.user)
       throw new InternalServerErrorException(`user is ${req.user}`);
 
+    if (req.user.role === UserRole.Guest) throw new ForbiddenException();
+
     await this.validateUser(req.user.username, password);
 
     await this.userService.delete({ _id: req.user.user_id });
@@ -174,7 +176,7 @@ export class AuthController {
     await this.logout(req, res);
   }
 
-  @Access('Auth')
+  @Access('modify-password')
   @HttpCode(HttpStatus.OK)
   @Patch(routes.auth.modify_password)
   async modifyPassword(
@@ -184,6 +186,8 @@ export class AuthController {
   ) {
     if (!req.user)
       throw new InternalServerErrorException(`user is ${req.user}`);
+
+    if (req.user.role === UserRole.Guest) throw new ForbiddenException();
 
     await this.validateUser(req.user.username, password);
 

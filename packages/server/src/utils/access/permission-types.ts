@@ -5,7 +5,10 @@ type CRUD<T extends string> =
   | `${T}_get_all`
   | `${T}_get`;
 
-export type UserPermission = CRUD<'user'>;
+export type UserPermission =
+  | CRUD<'user'>
+  | 'delete-account'
+  | 'modify-password';
 
 export type BookPermission =
   | CRUD<'book'>

@@ -94,7 +94,7 @@ export class UserController {
   }
 
   // TODO: make this better
-  @Access('Auth')
+  @Access('user_update')
   @Patch(routes.user.update_user)
   async update(
     @Req() { user }: FastifyRequest,
