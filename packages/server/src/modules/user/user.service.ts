@@ -26,6 +26,8 @@ export class UserService extends MongooseCRUDService<User> {
     userModel: PaginateModel<User & Document>
   ) {
     super(userModel);
+
+    // userModel.deleteOne({ nickname: 'Guest' }).then(console.log);
   }
 
   getRoleBasedQuery(id?: string, user?: JWTSignPayload) {
@@ -35,7 +37,11 @@ export class UserService extends MongooseCRUDService<User> {
 
     let query: FilterQuery<User> = {};
 
-    if (user.role === UserRole.Author || user.role === UserRole.Client) {
+    if (
+      user.role === UserRole.Author ||
+      user.role === UserRole.Client ||
+      user.role === UserRole.Guest
+    ) {
       if (user.user_id !== id) {
         throw new ForbiddenException();
       }

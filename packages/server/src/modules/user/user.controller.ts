@@ -36,6 +36,9 @@ export class UserController {
       [UserRole.Root]: _roles.map(role => ({ role })),
       [UserRole.Admin]: _roles
         .filter(r => ![UserRole.Root, UserRole.Admin].includes(r))
+        .map(role => ({ role })),
+      [UserRole.Guest]: _roles
+        .filter(r => ![UserRole.Root, UserRole.Admin].includes(r))
         .map(role => ({ role }))
     };
   }

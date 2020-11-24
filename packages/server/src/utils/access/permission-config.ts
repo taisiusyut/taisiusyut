@@ -1,55 +1,34 @@
 import { UserRole } from '@/typings';
 import { Permission } from './permission-types';
 
+const admin: Permission[] = [
+  'user_create',
+  'user_update',
+  'user_delete',
+  'user_get_all',
+  'user_get',
+
+  'book_update',
+  'book_delete',
+  'book_get_all',
+  'book_get',
+  'book_status_get',
+  'book_status_update',
+
+  'chapter_update',
+  'chapter_delete',
+  'chapter_get_all',
+  'chapter_get',
+  'chapter_status_get',
+  'chapter_status_update',
+
+  'payment_update',
+  'payment_get_by_user'
+];
+
 export const permissonsMap: Record<UserRole, Permission[]> = {
-  [UserRole.Root]: [
-    'user_create',
-    'user_update',
-    'user_delete',
-    'user_get_all',
-    'user_get',
-
-    'book_update',
-    'book_delete',
-    'book_get_all',
-    'book_get',
-    'book_status_get',
-    'book_status_update',
-
-    'chapter_update',
-    'chapter_delete',
-    'chapter_get_all',
-    'chapter_get',
-    'chapter_status_get',
-    'chapter_status_update',
-
-    'payment_update',
-    'payment_get_by_user'
-  ],
-  [UserRole.Admin]: [
-    'user_create',
-    'user_update',
-    'user_delete',
-    'user_get_all',
-    'user_get',
-
-    'book_update',
-    'book_delete',
-    'book_get_all',
-    'book_get',
-    'book_status_get',
-    'book_status_update',
-
-    'chapter_update',
-    'chapter_delete',
-    'chapter_get_all',
-    'chapter_get',
-    'chapter_status_get',
-    'chapter_status_update',
-
-    'payment_update',
-    'payment_get_by_user'
-  ],
+  [UserRole.Root]: [...admin],
+  [UserRole.Admin]: admin,
   [UserRole.Author]: [
     'user_get',
 
@@ -74,6 +53,16 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Client]: [
     //
     'payment_create'
+  ],
+  [UserRole.Guest]: [
+    'user_get_all',
+    'book_get_all',
+    'book_status_get',
+
+    'chapter_get_all',
+    'chapter_status_get',
+
+    'payment_get_all'
   ]
 };
 

@@ -14,7 +14,8 @@ export enum UserRole {
   Root = 'Root',
   Admin = 'Admin',
   Author = 'Author',
-  Client = 'Client'
+  Client = 'Client',
+  Guest = 'Guest'
 }
 
 export interface BaseUser extends Timestamp {
@@ -34,11 +35,16 @@ export interface Schema$Admin extends BaseUser {
   role: UserRole.Admin;
 }
 
+export interface Schema$Guest extends BaseUser {
+  role: UserRole.Guest;
+}
+
 export type Schema$User =
   | Schema$Root
   | Schema$Admin
   | Schema$Client
-  | Schema$Author;
+  | Schema$Author
+  | Schema$Guest;
 
 export interface SharedCreateUser {
   email: string;
