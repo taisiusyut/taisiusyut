@@ -6,10 +6,6 @@
   margin-bottom: 5px;
 
   :global {
-    .#{$ns}-divider {
-      @include margin-y(25px);
-    }
-
     .#{$ns}-button {
       $size: 35px;
       min-width: $size;
@@ -20,10 +16,14 @@
       }
     }
 
-    .#{$ns}-button:not([class*=#{'' + $ns + '-intent-'}]):disabled,
-    .#{$ns}-button:not([class*=#{'' + $ns + '-intent-'}]).#{$ns}-disabled {
-      box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2),
-        inset 0 -1px 0 rgba(16, 22, 26, 0.1);
+    [data-theme^='light'] & {
+      .#{$ns}-button:not([class*=#{'' + $ns + '-intent-'}]):disabled,
+      .#{$ns}-button:not([class*=#{'' + $ns + '-intent-'}]).#{$ns}-disabled {
+        box-shadow: 
+          // prettier-ignore
+          inset 0 0 0 1px rgba(16, 22, 26, 0.2),
+          inset 0 -1px 0 rgba(16, 22, 26, 0.1);
+      }
     }
   }
 }

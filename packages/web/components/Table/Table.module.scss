@@ -3,7 +3,15 @@
 .table {
   @include flex($flex-direction: column);
   @include relative();
+}
+
+.table-content {
   overflow: auto;
+  padding-bottom: 15px;
+}
+
+.divider {
+  margin-bottom: 25px;
 }
 
 .th {

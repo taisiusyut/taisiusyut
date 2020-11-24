@@ -6,7 +6,7 @@ import {
   useRowSelect,
   Row
 } from 'react-table';
-import { HTMLTable } from '@blueprintjs/core';
+import { Divider, HTMLTable } from '@blueprintjs/core';
 import { Pagination, PaginationProps } from '@/components/Pagination';
 import { NotFound } from '@/components/NotFound';
 import classes from './Table.module.scss';
@@ -65,44 +65,48 @@ export function Table<T extends {}>({
 
   return (
     <div className={`${classes.table} ${className}`.trim()}>
-      <HTMLTable
-        {...getTableProps()}
-        interactive={typeof onRowClick === 'function'}
-      >
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => {
-                return (
-                  <th {...column.getHeaderProps()}>
-                    {column.render('Header')}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map(row => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className={row.isSelected ? rowSelectedClassName : undefined}
-                onClick={event => onRowClick && onRowClick(row, event)}
-              >
-                {row.cells.map(cell => (
-                  <td {...cell.getCellProps()} className={classes.td}>
-                    {cell.render('Cell')}
-                  </td>
-                ))}
+      <div className={classes['table-content']}>
+        <HTMLTable
+          {...getTableProps()}
+          interactive={typeof onRowClick === 'function'}
+        >
+          <thead>
+            {headerGroups.map(headerGroup => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => {
+                  return (
+                    <th {...column.getHeaderProps()}>
+                      {column.render('Header')}
+                    </th>
+                  );
+                })}
               </tr>
-            );
-          })}
-        </tbody>
-      </HTMLTable>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map(row => {
+              prepareRow(row);
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className={row.isSelected ? rowSelectedClassName : undefined}
+                  onClick={event => onRowClick && onRowClick(row, event)}
+                >
+                  {row.cells.map(cell => (
+                    <td {...cell.getCellProps()} className={classes.td}>
+                      {cell.render('Cell')}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </HTMLTable>
 
-      {!loading && page.length === 0 && <NotFound />}
+        {!loading && page.length === 0 && <NotFound />}
+      </div>
+
+      <Divider className={classes.divider} />
 
       <Pagination
         total={data.length}

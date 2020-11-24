@@ -1,5 +1,5 @@
 import React, { useReducer, Reducer, useEffect } from 'react';
-import { Button, ButtonGroup, Intent, Divider } from '@blueprintjs/core';
+import { Button, ButtonGroup, Intent } from '@blueprintjs/core';
 import classNames from './Pagination.module.scss';
 
 // Credit:
@@ -109,11 +109,8 @@ export const Pagination = React.memo<PaginationProps>(
       onPageChange(page);
     };
 
-    if (state.totalPages <= 1) return null;
-
     return (
       <div className={classNames.pagiation}>
-        <Divider />
         <ButtonGroup>
           <Button
             disabled={state.currentPage === 1}

@@ -27,12 +27,6 @@ const itemsOptions: ItemOptions[] = [
     }
   },
   {
-    href: '/admin/users',
-    icon: 'user',
-    text: 'Users',
-    access: [UserRole.Root, UserRole.Admin]
-  },
-  {
     href: '/admin/payment',
     icon: 'dollar',
     text: 'Payment',
@@ -42,6 +36,12 @@ const itemsOptions: ItemOptions[] = [
     href: '/admin/chat',
     icon: 'chat',
     text: 'Chat',
+    access: [UserRole.Root, UserRole.Admin]
+  },
+  {
+    href: '/admin/users',
+    icon: 'user',
+    text: 'Users',
     access: [UserRole.Root, UserRole.Admin]
   },
   {
