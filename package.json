@@ -59,8 +59,5 @@
   },
   "engines": {
     "node": ">=12.x"
-  },
-  "resolutions": {
-    "webpack": "~4.43.0"
   }
 }
