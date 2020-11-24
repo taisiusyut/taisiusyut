@@ -26,10 +26,11 @@
 // @import '~@blueprintjs/core/src/components/forms/index';
 
 // Since some error on `forms/controls`, we need to extract imports from `forms/index`
+@import '~@blueprintjs/core/src/components/forms/common';
 // @import '~@blueprintjs/core/src/components/forms/control-group';
 // @import '~@blueprintjs/core/src/components/forms/controls';
 // @import '~@blueprintjs/core/src/components/forms/file-input';
-// @import '~@blueprintjs/core/src/components/forms/form-group';
+@import '~@blueprintjs/core/src/components/forms/form-group';
 @import '~@blueprintjs/core/src/components/forms/input-group';
 @import '~@blueprintjs/core/src/components/forms/input';
 @import '~@blueprintjs/core/src/components/forms/label';
@@ -57,7 +58,7 @@ form {
 @import '~@blueprintjs/core/src/components/spinner/spinner';
 // @import '~@blueprintjs/core/src/components/tabs/tabs';
 @import '~@blueprintjs/core/src/components/tag/tag';
-@import '~@blueprintjs/core/src/components/tag-input/tag-input';
+// @import '~@blueprintjs/core/src/components/tag-input/tag-input';
 @import '~@blueprintjs/core/src/components/toast/toast';
 @import '~@blueprintjs/core/src/components/tooltip/tooltip';
 // @import '~@blueprintjs/core/src/components/tree/tree';
