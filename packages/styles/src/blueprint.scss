@@ -20,9 +20,25 @@
 // @import '~@blueprintjs/core/src/components/context-menu/context-menu';
 @import '~@blueprintjs/core/src/components/divider/divider';
 @import '~@blueprintjs/core/src/components/dialog/dialog';
-@import '~@blueprintjs/core/src/components/drawer/drawer';
+// @import '~@blueprintjs/core/src/components/drawer/drawer';
 // @import '~@blueprintjs/core/src/components/editable-text/editable-text';
-@import '~@blueprintjs/core/src/components/forms/index';
+
+// @import '~@blueprintjs/core/src/components/forms/index';
+
+// Since some error on `forms/controls`, we need to extract imports from `forms/index`
+// @import '~@blueprintjs/core/src/components/forms/control-group';
+// @import '~@blueprintjs/core/src/components/forms/controls';
+// @import '~@blueprintjs/core/src/components/forms/file-input';
+// @import '~@blueprintjs/core/src/components/forms/form-group';
+@import '~@blueprintjs/core/src/components/forms/input-group';
+@import '~@blueprintjs/core/src/components/forms/input';
+@import '~@blueprintjs/core/src/components/forms/label';
+// @import '~@blueprintjs/core/src/components/forms/numeric-input';
+
+form {
+  display: block;
+}
+
 @import '~@blueprintjs/core/src/components/html-select/html-select';
 @import '~@blueprintjs/core/src/components/html-table/html-table';
 // @import '~@blueprintjs/core/src/components/hotkeys/hotkeys';

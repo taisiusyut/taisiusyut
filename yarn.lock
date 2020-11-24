@@ -462,9 +462,9 @@
     classnames "^2.2"
     tslib "~1.13.0"
 
-"@blueprintjs/source@https://github.com/palantir/blueprint.git#2981d803":
+"@blueprintjs/source@https://github.com/palantir/blueprint.git#ed40d65":
   version "3.25.0"
-  resolved "https://github.com/palantir/blueprint.git#2981d8032d6a565b9cd5cdaea70e72e9d74ca8fb"
+  resolved "https://github.com/palantir/blueprint.git#ed40d65bbac3219f7c9b54f12dad255171144e44"
   dependencies:
     "@types/chai" "4.2.12"
     "@types/classnames" "2.2.10"

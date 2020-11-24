@@ -1,11 +1,11 @@
 @import '~styles/utils';
 
 .table {
-  @include flex($flex-direction: column);
   @include relative();
 }
 
 .table-content {
+  @include flex($flex-direction: column);
   overflow: auto;
   padding-bottom: 15px;
 }
