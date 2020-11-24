@@ -5,6 +5,7 @@
   "license": "MIT",
   "author": "Pong <samfunghp@gmail.com>",
   "scripts": {
+    "start": "yarn web start",
     "server": "yarn workspace @fullstack/server",
     "style": "yarn workspace @fullstack/style",
     "web": "yarn workspace @fullstack/web",
