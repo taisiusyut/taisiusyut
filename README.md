@@ -4,10 +4,17 @@ A project for learning full-stack development
 
 ## Goal
 
-- **Server:** NestJS + Fastify + MongoDB **[WIP]**
-- **Admin Panel**: NextJS
-- **Web**: NextJS
-- **Apps**: React Native
+- **Server:**
+  - [NestJS](https://nestjs.com/)
+  - Fastify
+  - MongoDB
+- **Admin**: [WIP] [[Preview](https://taisiusyut-demo.herokuapp.com/)] - login as `guest123` and `a12345678`
+  - [NextJS](https://nextjs.org/)
+  - [Blueprintjs](https://blueprintjs.com/docs/) - styles components
+- **Web**:
+  - [NextJS](https://nextjs.org/)
+- **App**:
+  - React Native
 
 ## Development
 
@@ -26,7 +33,7 @@ then
 yarn dev
 ```
 
-### image upload
+### Image upload
 
 Currently, images are upload to [Cloudinary](https://cloudinary.com/), <br />
 If you are Heroku user, you could enable the [Cloudinary Add-ons](https://elements.heroku.com/addons/cloudinary). <br />
