@@ -27,28 +27,25 @@ export function testDeleteAccount() {
     defaultRoot = response.body;
   });
 
-  test.each(['root', 'admin', 'author', 'client'])(
-    '%s can delete account',
-    async type => {
-      const account = mock[type as keyof typeof mock];
-      let response = await createUserAndLogin(
-        (auth.root || defaultRoot).token,
-        account
-      );
-      auth[type] = response.body;
+  test.each(['root', 'admin'])('%s can delete account', async type => {
+    const account = mock[type as keyof typeof mock];
+    let response = await createUserAndLogin(
+      (auth.root || defaultRoot).token,
+      account
+    );
+    auth[type] = response.body;
 
-      const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
-      expect(cookie).toBeObject();
+    const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
+    expect(cookie).toBeObject();
 
-      response = await deleteAccount(auth[type].token, account);
-      expect(response.error).toBeFalse();
-      expect(response.status).toBe(HttpStatus.OK);
-      expect(
-        extractCookies(response.header, REFRESH_TOKEN_COOKIES).value
-      ).toBeEmpty();
+    response = await deleteAccount(auth[type].token, account);
+    expect(response.error).toBeFalse();
+    expect(response.status).toBe(HttpStatus.OK);
+    expect(
+      extractCookies(response.header, REFRESH_TOKEN_COOKIES).value
+    ).toBeEmpty();
 
-      response = await login(account);
-      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    }
-  );
+    response = await login(account);
+    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+  });
 }
