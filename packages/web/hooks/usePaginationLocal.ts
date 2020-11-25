@@ -33,7 +33,7 @@ type UsePaginationLocal<
   pagination: PaginationProps;
 };
 
-interface CrudOptions<I, Prefill> extends CreateUseCRUDReducerOps<I, Prefill> {}
+interface CrudOptions<Prefill> extends CreateUseCRUDReducerOps<Prefill> {}
 
 const getParams = (path: string) => qs.parse(path.split('?')[1] || '');
 
@@ -50,23 +50,23 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions: CrudOptions<I, false> & { prefill: false }
+  curdOptions: CrudOptions<false> & { prefill: false }
 ): UsePaginationLocal<I, K, false>;
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions: CrudOptions<I, Partial<I>> & { prefill?: {} }
+  curdOptions: CrudOptions<Partial<I>> & { prefill?: {} }
 ): UsePaginationLocal<I, K, false>;
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
   {
-    state,
+    defaultState,
     prefill = {},
     ...curdOptions
-  }: CrudOptions<I, Partial<I> | false> = {}
+  }: CrudOptions<Partial<I> | false> = {}
 ): UsePaginationLocal<I, K, Partial<I> | false> {
   const initialParams = getParams(
     typeof window !== 'undefined' ? window.location.href : ''
@@ -77,8 +77,8 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   const useCRUDReducer = createUseCRUDReducer<I, K, Partial<I> | false>(key, {
     ...curdOptions,
     prefill,
-    state: {
-      ...state,
+    defaultState: {
+      ...defaultState,
       ...(prefill !== false &&
         (createPlaceHolder(10, prefill) as Pick<
           CRUDState<I, Partial<I>>,

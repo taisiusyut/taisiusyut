@@ -37,6 +37,7 @@ export interface CreateCRUDReducerOptions<
   prefill?: Prefill;
   actionTypes?: M;
   keyGenerator?: (index: number) => string;
+  defaultState?: Partial<CRUDState<any, any>>;
 }
 
 export const defaultKeyGenerator = (() => {
@@ -81,6 +82,16 @@ const insertHanlder = (from: number, to: number) => <T1, T2>(
   return [...arr.slice(0, from), ...ids, ...arr.slice(to)];
 };
 
+export const DefaultState: CRUDState<any, any> = {
+  byIds: {},
+  ids: [],
+  list: [],
+  pageNo: 1,
+  pageSize: 10,
+  total: 0,
+  params: {}
+};
+
 export const createCRUDReducer: CreateCRUDReducer = <
   I,
   K extends Key<I>,
@@ -90,21 +101,16 @@ export const createCRUDReducer: CreateCRUDReducer = <
   key: K,
   options?: CreateCRUDReducerOptions<Prefill, M>
 ): [CRUDState<I, Prefill>, CRUDReducer<I, K, Prefill, M>] => {
-  const defaultState: CRUDState<I, any> = {
-    byIds: {},
-    ids: [],
-    list: [],
-    pageNo: 1,
-    pageSize: 10,
-    total: 0,
-    params: {}
-  };
-
   const {
     prefill = null,
     keyGenerator = defaultKeyGenerator,
     actionTypes = DefaultCRUDActionTypes as M
   } = options || {};
+
+  const defaultState = {
+    ...DefaultState,
+    ...options?.defaultState
+  } as CRUDState<I, any>;
 
   const reducer: CRUDReducer<I, K, Prefill, M> = (
     state = defaultState,
