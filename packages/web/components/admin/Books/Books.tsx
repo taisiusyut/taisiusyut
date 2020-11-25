@@ -70,7 +70,9 @@ export function Books() {
         loading={loading}
         pagination={pagination}
         isAuthor={user?.role === UserRole.Author}
-        onRowClick={row => router.push(`/admin/book/${row.original.id}`)}
+        onRowClick={row =>
+          row.original.id && router.push(`/admin/book/${row.original.id}`)
+        }
       />
     </Card>
   );
