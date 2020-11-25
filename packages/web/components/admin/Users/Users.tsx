@@ -75,7 +75,7 @@ export function Users() {
               openUsersMenu({
                 title: row.original.username,
                 offset: { top: event.pageY, left: event.pageX },
-                onClosed: () => row.toggleRowSelected(),
+                onClose: () => row.toggleRowSelected(),
                 user: row.original as Schema$User,
                 onUpdate: actions.update,
                 onDelete: actions.delete
