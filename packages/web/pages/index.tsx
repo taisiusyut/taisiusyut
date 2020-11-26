@@ -1,5 +1,9 @@
-export default function Home() {
-  return <div>Home</div>;
+import React from 'react';
+import { ClientLayout } from '@/components/client/ClientLayout';
+import { ClientHome } from '@/components/client/ClientHome';
+
+export default function HomePage() {
+  return <ClientHome />;
 }
 
-Home.isPublic = true;
+HomePage.layout = ClientLayout;

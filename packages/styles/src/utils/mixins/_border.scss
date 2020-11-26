@@ -1,11 +1,19 @@
 @mixin fake-border(
   $position: bottom,
   $dividerWidth: 1px,
-  $color: #000,
-  $width: 100%
+  $color: var(--divider-color),
+  $length: 100%
 ) {
-  background: linear-gradient(to left, $color 0, $color 100%);
-  background-size: $width $dividerWidth;
+  @if $position == left or $position == right {
+    background: linear-gradient(to top, $color 0, $color 100%);
+    background-size: $dividerWidth, $length;
+    background-position: $position center;
+  } @else {
+    @debug $position;
+    background: linear-gradient(to left, $color 0, $color 100%);
+    background-size: $length $dividerWidth;
+    background-position: center $position;
+  }
+
   background-repeat: no-repeat;
-  background-position: center $position;
 }

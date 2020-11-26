@@ -1,0 +1,8 @@
+@import '~styles/utils';
+
+.book-shelf {
+  @include flex($flex-direction: column);
+  @include fake-border(right);
+  @include relative();
+  min-width: 300px;
+}
