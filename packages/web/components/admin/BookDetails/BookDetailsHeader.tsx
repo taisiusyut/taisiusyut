@@ -23,41 +23,43 @@ const PublishBook = withPublishBook(MenuItem);
 const FinishBook = withFinishBook(MenuItem);
 const UpdateBook = withUpdateBook(MenuItem);
 
-// TODO:  createdAt
+// TODO: createdAt, author
 
 export function BookDetailsHeader({ book, role, onUpdate }: Props) {
-  const actions = role === UserRole.Author && (
-    <Popover
-      position="left-top"
-      content={
-        <Menu>
-          <MenuItem text="New Chapter" />
-          <UpdateBook
-            text="Update Book"
+  let actions, menu;
+
+  if (role === UserRole.Author) {
+    menu = (
+      <Menu>
+        <UpdateBook
+          text="Update Book"
+          bookID={book.id}
+          book={book}
+          onUpdate={onUpdate}
+        />
+        {book.status === BookStatus.Private && (
+          <PublishBook
+            text="Publish Book"
             bookID={book.id}
-            book={book}
-            onUpdate={onUpdate}
+            onSuccess={onUpdate}
           />
-          {book.status === BookStatus.Private && (
-            <PublishBook
-              text="Publish Book"
-              bookID={book.id}
-              onSuccess={onUpdate}
-            />
-          )}
-          {book.status === BookStatus.Public && (
-            <FinishBook
-              text="Finish Book"
-              bookID={book.id}
-              onSuccess={onUpdate}
-            />
-          )}
-        </Menu>
-      }
-    >
-      <Button icon="more" minimal />
-    </Popover>
-  );
+        )}
+        {book.status === BookStatus.Public && (
+          <FinishBook
+            text="Finish Book"
+            bookID={book.id}
+            onSuccess={onUpdate}
+          />
+        )}
+      </Menu>
+    );
+
+    actions = (
+      <Popover position="left-top" content={menu}>
+        <Button icon="more" minimal />
+      </Popover>
+    );
+  }
 
   return (
     <>

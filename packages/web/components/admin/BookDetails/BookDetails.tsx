@@ -31,7 +31,7 @@ const {
 
 const onFailure = Toaster.apiError.bind(Toaster, `Get chapters failure`);
 
-const gotooChapter = (bookID: string, chapterID?: string) => {
+const gotoChapter = (bookID: string, chapterID?: string) => {
   let pathname = `/admin/book/${bookID}/chapters`;
   if (chapterID) {
     pathname += `/${chapterID}`;
@@ -54,32 +54,28 @@ export function BookDetails({ book, onUpdate }: Props) {
 
   const isAuthor = user?.role === UserRole.Author;
 
-  const filter = (
-    <Filter initialValues={state.params} className={classes.filter}>
-      <FilterInput name="id" label="Chapter ID" />
-      <FilterInput name="name" label="Name" />
-      <FormItem name="status" label="Status">
-        <ChapterStatusSelect />
-      </FormItem>
-      <FormItem name="type" label="Type">
-        <ChapterTypeSelect />
-      </FormItem>
-      <FilterDateRange name="createdAt" label="Created At" />
-      <FilterDateRange name="updatedAt" label="Updated At" />
-    </Filter>
-  );
-
   return (
     <div>
       <BookDetailsHeader book={book} role={user?.role} onUpdate={onUpdate} />
       <Card className={classes.chapters}>
         <PageHeader title="Chapters">
           {isAuthor && (
-            <Button minimal icon="plus" onClick={() => gotooChapter(book.id)} />
+            <Button minimal icon="plus" onClick={() => gotoChapter(book.id)} />
           )}
         </PageHeader>
 
-        {filter}
+        <Filter initialValues={state.params} className={classes.filter}>
+          <FilterInput name="id" label="Chapter ID" />
+          <FilterInput name="name" label="Name" />
+          <FormItem name="status" label="Status">
+            <ChapterStatusSelect />
+          </FormItem>
+          <FormItem name="type" label="Type">
+            <ChapterTypeSelect />
+          </FormItem>
+          <FilterDateRange name="createdAt" label="Created At" />
+          <FilterDateRange name="updatedAt" label="Updated At" />
+        </Filter>
 
         <ChapterTable
           data={state.list}
@@ -87,7 +83,7 @@ export function BookDetails({ book, onUpdate }: Props) {
             isAuthor
               ? row => {
                   const chapterID = row.original.id;
-                  return chapterID && gotooChapter(book.id, chapterID);
+                  return chapterID && gotoChapter(book.id, chapterID);
                 }
               : undefined
           }
