@@ -1,5 +1,7 @@
 module.exports = {
-  reactStrictMode: true,
+  // Do not enable strict mode globally.
+  // Since @blueprintjs is violate the strict mode ...
+  reactStrictMode: false,
   images: {
     domains: ['res.cloudinary.com']
   },
