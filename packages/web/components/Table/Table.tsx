@@ -106,14 +106,18 @@ export function Table<T extends {}>({
         {!loading && page.length === 0 && <NotFound />}
       </div>
 
-      <Divider className={classes.divider} />
+      {!!page.length && (
+        <>
+          <Divider className={classes.divider} />
 
-      <Pagination
-        total={data.length}
-        pageNo={state.pageIndex + 1}
-        pageSize={state.pageSize}
-        onPageChange={onPageChange}
-      />
+          <Pagination
+            total={data.length}
+            pageNo={state.pageIndex + 1}
+            pageSize={state.pageSize}
+            onPageChange={onPageChange}
+          />
+        </>
+      )}
     </div>
   );
 }
