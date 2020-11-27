@@ -93,7 +93,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  // TODO: make this better
   @Access('user_update')
   @Patch(routes.user.update_user)
   async update(
@@ -101,33 +100,10 @@ export class UserController {
     @ObjectId('id') id: string,
     @Body() updateUserDto: UpdateUserDto
   ) {
-    const self = id === user?.user_id;
-    const query: FilterQuery<User> = {
-      _id: id
-    };
-
-    let error: string | undefined;
-
-    if (!self) {
-      const targetUser = await this.userService.findOne({ _id: id });
-      // Root user should have one only.
-      // If the request user is the root user,
-      // `self` should be true and will not enter this section
-      if (targetUser?.role === UserRole.Root) error = '';
-      if (targetUser?.role === UserRole.Admin && user?.role !== UserRole.Root)
-        error = 'admin user cannot update by other admin';
-    }
-
-    if (user?.role === UserRole.Author || user?.role === UserRole.Client) {
-      if (!self) {
-        error = 'canoot update other user';
-      }
-      query.role = user?.role;
-    }
-
-    if (typeof error === 'string') {
-      throw new ForbiddenException(error);
-    }
+    const query: FilterQuery<User> = this.userService.getRoleBasedQuery(
+      id,
+      user
+    );
 
     const result = await this.userService.update(query, updateUserDto);
 

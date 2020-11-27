@@ -3,7 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
 import { routes } from '@/constants/routes';
 import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
-import { createUserDto, CreateUserDto, createUser } from './user';
+import {
+  createUserDto,
+  CreateUserDto,
+  createUser,
+  UpdateUserDto
+} from './user';
 
 export async function login(payload: Param$Login): Promise<Response> {
   return request.post(routes.login).send(payload);
@@ -100,6 +105,23 @@ export async function createUsers(useGlobal = false) {
 
 export async function setupUsers() {
   [admin, author, client] = await createUsers(true);
+}
+
+export function getProfile(token: string) {
+  return request
+    .get(routes.profile)
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
+export function updateProfile(
+  token: string,
+  changes: UpdateUserDto | Record<string, unknown>
+) {
+  return request
+    .patch(routes.profile)
+    .set('Authorization', `bearer ${token}`)
+    .send(changes);
 }
 
 export const getUser = (user: unknown) => global[user as 'root'];

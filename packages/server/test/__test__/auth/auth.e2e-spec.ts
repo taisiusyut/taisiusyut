@@ -17,6 +17,8 @@ import { createUser, createUserDto } from '../../service/user';
 import { extractCookies } from '../../service/cookies';
 import { testDeleteAccount } from './delete-account';
 import { testModifyPassword } from './modify-password';
+import { testGetProfile } from './get-profile';
+import { testUpdateProfile } from './update-profile';
 
 describe('AuthController (e2e)', () => {
   const configService = app.get<ConfigService>(ConfigService);
@@ -142,4 +144,6 @@ describe('AuthController (e2e)', () => {
 
   describe(`(POST) Delete Account`, testDeleteAccount);
   describe(`(PTCH) Modify Password`, testModifyPassword);
+  describe(`(GET)  Get Profile`, testGetProfile);
+  describe(`(PTCH) Update Profile`, testUpdateProfile);
 });

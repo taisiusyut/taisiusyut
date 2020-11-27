@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
   Req,
@@ -24,11 +25,11 @@ import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/schemas/user.schema';
 import { throwMongoError } from '@/utils/mongoose';
-import { Access } from '@/utils/access';
+import { Access, AccessPipe } from '@/utils/access';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshToken } from './schemas/refreshToken.schema';
-import { DeleteAccountDto, ModifyPasswordDto } from './dto';
+import { DeleteAccountDto, ModifyPasswordDto, UpdateProfileDto } from './dto';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
@@ -201,5 +202,45 @@ export class AuthController {
     }
 
     await this.logout(req, res);
+  }
+
+  @Access('Auth')
+  @HttpCode(HttpStatus.OK)
+  @Get(routes.auth.profile)
+  getProfile(@Req() req: FastifyRequest) {
+    return this.userService.findOne({ _id: req.user?.user_id });
+  }
+
+  @Access('Auth')
+  @HttpCode(HttpStatus.OK)
+  @Patch(routes.auth.profile)
+  async updateProfile(
+    @Req() req: FastifyRequest,
+    @Body(AccessPipe) updateProfileDto: UpdateProfileDto
+  ) {
+    if (req.user?.role === UserRole.Guest) {
+      throw new ForbiddenException();
+    }
+
+    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+
+    const user = await this.userService.update(
+      {
+        _id: req.user?.user_id,
+        role: req.user?.role // required for discrimination
+      },
+      updateProfileDto
+    );
+
+    const { nickname, email } = updateProfileDto;
+
+    if (nickname || email) {
+      await this.refreshTokenService.update(
+        { refreshToken: tokenFromCookies },
+        { nickname, email }
+      );
+    }
+
+    return user;
   }
 }

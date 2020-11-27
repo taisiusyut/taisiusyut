@@ -8,8 +8,8 @@ export function testGetUser() {
     await setupUsers();
   });
 
-  test.each(['root', 'admin', 'author', 'client'])(
-    `global %s can access his/her profile`,
+  test.each(['root', 'admin'])(
+    `global %s can access user profile`,
     async user => {
       const auth = getUser(user);
       const response = await getUserProfile(auth.token, auth.user.user_id);

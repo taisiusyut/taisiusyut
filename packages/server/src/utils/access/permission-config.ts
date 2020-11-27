@@ -34,7 +34,6 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Admin]: admin,
   [UserRole.Author]: [
     'user_get',
-    'user_update',
 
     'book_create',
     'book_update',
@@ -56,7 +55,7 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
 
     'modify-password'
   ],
-  [UserRole.Client]: ['user_update', 'payment_create', 'modify-password'],
+  [UserRole.Client]: ['payment_create', 'modify-password'],
   [UserRole.Guest]: [
     'user_get_all',
     'book_get_all',
