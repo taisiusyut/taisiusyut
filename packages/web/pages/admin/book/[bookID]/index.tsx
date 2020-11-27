@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { GetServerSideProps } from 'next';
+import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { BookDetails } from '@/components/admin/BookDetails';
 import { UserRole, Schema$Book } from '@/typings';
 import { getBook } from '@/service';
 
-interface Props {
-  bookID: string;
-}
-
 type BookState = Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
 
-export default function BookDetailsPage({ bookID }: Props) {
+export default function BookDetailsPage() {
+  const { bookID } = router.query;
+
+  if (typeof bookID !== 'string') {
+    throw new Error(`bookID is ${bookID}`);
+  }
+
   const [book, setBook] = useState<BookState>({
     id: bookID
   });
@@ -30,15 +32,3 @@ export default function BookDetailsPage({ bookID }: Props) {
 BookDetailsPage.layout = AdminLayout;
 BookDetailsPage.access = [UserRole.Root, UserRole.Admin, UserRole.Author];
 BookDetailsPage.redirect = '/admin';
-
-export const getServerSideProps: GetServerSideProps<Props> = async context => {
-  if (typeof context.query.bookID !== 'string') {
-    throw new Error(`context.query.bookID is ${context.query.bookID}`);
-  }
-
-  return {
-    props: {
-      bookID: context.query.bookID
-    }
-  };
-};
