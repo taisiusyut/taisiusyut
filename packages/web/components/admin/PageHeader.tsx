@@ -6,7 +6,7 @@ import { resolve } from 'styled-jsx/css';
 interface Props {
   title?: ReactNode;
   children?: ReactNode;
-  goBackURL?: string;
+  fallbackURL?: string;
 }
 
 const h4 = resolve`
@@ -22,17 +22,17 @@ const button = resolve`
   }
 `;
 
-export function PageHeader({ title, goBackURL: url, children }: Props) {
+export function PageHeader({ title, fallbackURL, children }: Props) {
   const goBack = useHistoryBack();
   return (
     <div className="header">
       <div className="title">
-        {url && (
+        {fallbackURL && (
           <Button
             minimal
             icon="arrow-left"
             className={button.className}
-            onClick={() => goBack(url)}
+            onClick={() => goBack({ fallback: fallbackURL })}
           />
         )}
         <H4 className={h4.className}>{title}</H4>

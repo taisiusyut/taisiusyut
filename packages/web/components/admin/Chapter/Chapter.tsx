@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -15,6 +14,7 @@ import { ApiError, createChapter, updateChapter } from '@/service';
 import { createChapterSotrage } from '@/utils/storage';
 import { Toaster } from '@/utils/toaster';
 import { ChapterForm, ChapterState } from './ChapterForm';
+import { useHistoryBack } from '@/hooks/useHistoryBack';
 
 // TODO: upload
 interface Props {
@@ -44,6 +44,8 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
   );
 
+  const goBack = useHistoryBack();
+
   const [saved, setSaved] = useState<Partial<ChapterState> | null>();
   const [wordCount, setWordCount] = useState<number | null>(null);
 
@@ -51,8 +53,8 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     return {
       onSuccess: () => {
         storageRef.current.removeItem();
+        goBack({ fallback: `/admin/book/${bookID}` });
         Toaster.success({ message: `${prefix} chapter success` });
-        router.push(`/admin/book/${bookID}`);
       },
       onFailure: (error: ApiError) => {
         Toaster.apiError(`${prefix} chapter failure`, error);
@@ -109,7 +111,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     <Card>
       <PageHeader
         title={`${prefix} Chapter`}
-        goBackURL={`/admin/book/${bookID}`}
+        fallbackURL={`/admin/book/${bookID}`}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {saved ? (

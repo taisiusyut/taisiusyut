@@ -12,7 +12,11 @@ interface Props {
   children?: ReactNode;
 }
 
-type GoBack = (fallbackUrl?: string) => Promise<void>;
+interface GoBackOptions {
+  fallback?: string;
+}
+
+type GoBack = (options?: GoBackOptions) => Promise<void>;
 
 const ActionContext = React.createContext<GoBack | undefined>(undefined);
 
@@ -28,12 +32,12 @@ export function useHistoryBack() {
 
 export function HistoryBackProvider({ children }: Props) {
   const records = useRef(previousUrls.get());
-  const goBack = useCallback<GoBack>(async fallbackUrl => {
+  const goBack = useCallback(async (options?: GoBackOptions) => {
     const previous = records.current.slice(-1)[0];
     if (previous) {
       router.back();
-    } else if (fallbackUrl) {
-      await router.replace(fallbackUrl);
+    } else if (options?.fallback) {
+      await router.replace(options.fallback);
     }
     records.current.pop();
   }, []);
