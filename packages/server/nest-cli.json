@@ -1,4 +1,7 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src/modules"
+  "sourceRoot": "src/modules",
+  "compilerOptions": {
+    "plugins": ["nestjs-ts-transform-paths"]
+  }
 }
