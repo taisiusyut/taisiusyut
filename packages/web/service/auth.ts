@@ -3,6 +3,7 @@ import type {
   Param$CreateUser,
   Param$DeleteAccount,
   Param$ModifyPassword,
+  Param$UpdateUser,
   Schema$Authenticated,
   Schema$User
 } from '@/typings';
@@ -25,3 +26,8 @@ export const deleteAccount = (data: Param$DeleteAccount) =>
 
 export const modifyPassword = (payload: Param$ModifyPassword) =>
   api.patch<unknown>(routes.modify_password, payload);
+
+export const getProfile = () => api.get<Schema$User>(routes.profile);
+
+export const updateProfile = (payload: Param$UpdateUser) =>
+  api.patch<Schema$User>(routes.profile, payload);

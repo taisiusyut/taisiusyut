@@ -5,7 +5,7 @@ import { Button } from '@blueprintjs/core';
 import { createUserForm } from '@/components/UserForm';
 import type { ContentEditorProps } from '@/components/admin/ContentEditor';
 import { useAuth } from '@/hooks/useAuth';
-import { getUser, updateUser } from '@/service';
+import { getProfile, updateProfile as updateProfileAPI } from '@/service';
 import { UserRole, Schema$User } from '@/typings';
 import { SettingsSection } from './SettingsSection';
 import { Toaster } from '@/utils/toaster';
@@ -29,7 +29,7 @@ const useProfile = () => {
   const [{ user }, { updateProfile }] = useAuth();
   const { user_id } = user || {};
 
-  const [{ loading }, { fetch }] = useRxAsync(getUser, {
+  const [{ loading }, { fetch }] = useRxAsync(getProfile, {
     defer: true,
     onSuccess: updateProfile,
     onFailure: getProfileFailure
@@ -48,7 +48,7 @@ const useUpdateUser = () => {
     updateProfile(user);
     Toaster.success({ message: `Profile update success` });
   });
-  const [{ loading }, { fetch }] = useRxAsync(updateUser, {
+  const [{ loading }, { fetch }] = useRxAsync(updateProfileAPI, {
     defer: true,
     onSuccess,
     onFailure: updateProfileFailure
