@@ -39,8 +39,7 @@ export const cloudinaryUpload = ({
 
   return axios.post<Response$CloudinaryUpload>(
     `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    createFormData({ api_key, ...payload }),
-    { useResponse: true } // for typings
+    createFormData({ api_key, ...payload })
   );
 };
 

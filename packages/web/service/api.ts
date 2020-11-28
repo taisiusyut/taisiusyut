@@ -1,9 +1,17 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig, CustomAxiosInstance } from 'axios';
 
-export const api = axios.create({
+function extendedAxiosInstance(
+  config: AxiosRequestConfig
+): CustomAxiosInstance {
+  const instance = axios.create(config);
+
+  instance.interceptors.response.use(response => {
+    return response.config.useResponse ? response : response.data;
+  });
+
+  return instance;
+}
+
+export const api = extendedAxiosInstance({
   baseURL: '/api'
-});
-
-api.interceptors.response.use(response => {
-  return response.config.useResponse ? response : response.data;
 });

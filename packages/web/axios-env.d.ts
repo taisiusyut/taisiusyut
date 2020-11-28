@@ -7,7 +7,7 @@ declare module 'axios' {
   }
 
   // prettier-ignore
-  interface AxiosInstance {
+  export interface CustomAxiosInstance extends AxiosInstance {
     request<T = any, R = AxiosResponse<T>> (config: AxiosRequestConfig & { useResponse: true }): Promise<R>;
     request<T = any>(config: AxiosRequestConfig): Promise<T>;
     
