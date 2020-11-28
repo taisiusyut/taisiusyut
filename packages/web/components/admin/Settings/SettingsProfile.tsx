@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
 import { createUserForm } from '@/components/UserForm';
 import type { ContentEditorProps } from '@/components/admin/ContentEditor';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useAuthActions } from '@/hooks/useAuth';
 import { getProfile, updateProfile as updateProfileAPI } from '@/service';
 import { UserRole, Schema$User } from '@/typings';
 import { SettingsSection } from './SettingsSection';
@@ -13,53 +13,40 @@ import classes from './Settings.module.scss';
 
 const { Form, FormItem, Email, Nickname, useForm } = createUserForm();
 
-const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
-const updateProfileFailure = Toaster.apiError.bind(
-  Toaster,
-  `Update profile failure`
-);
-
 const ContentEditor = dynamic<ContentEditorProps>(() =>
   import(`@/components/admin/ContentEditor`).then(
     ({ ContentEditor }) => ContentEditor
   )
 );
 
-const useProfile = () => {
-  const [{ user }, { updateProfile }] = useAuth();
-  const { user_id } = user || {};
-
-  const [{ loading }, { fetch }] = useRxAsync(getProfile, {
-    defer: true,
-    onSuccess: updateProfile,
-    onFailure: getProfileFailure
-  });
-
-  useEffect(() => {
-    user_id && fetch({ id: user_id });
-  }, [fetch, user_id]);
-
-  return { user, loading };
-};
-
 const useUpdateUser = () => {
-  const [, { updateProfile }] = useAuth();
-  const [onSuccess] = useState(() => (user: Schema$User) => {
-    updateProfile(user);
-    Toaster.success({ message: `Profile update success` });
-  });
+  const { updateProfile } = useAuthActions();
+  const [{ onSuccess, onFailure }] = useState(() => ({
+    onSuccess: (user: Schema$User) => {
+      updateProfile(user);
+      Toaster.success({ message: `Update profile success` });
+    },
+    onFailure: Toaster.apiError.bind(Toaster, `Update profile failure`)
+  }));
   const [{ loading }, { fetch }] = useRxAsync(updateProfileAPI, {
     defer: true,
     onSuccess,
-    onFailure: updateProfileFailure
+    onFailure
   });
   return { loading, fetch };
 };
 
+const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
+
 export function SettingsProfile() {
   const [form] = useForm();
-  const { user } = useProfile();
+  const [{ user }, { updateProfile }] = useAuth();
   const updateUser = useUpdateUser();
+
+  useRxAsync(getProfile, {
+    onSuccess: updateProfile,
+    onFailure: getProfileFailure
+  });
 
   return (
     <SettingsSection title="Profile" className={classes['profile']}>
@@ -89,12 +76,7 @@ export function SettingsProfile() {
           >
             Reset
           </Button>
-          <Button
-            type="submit"
-            intent="primary"
-            onClick={form.submit}
-            loading={updateUser.loading}
-          >
+          <Button type="submit" intent="primary" loading={updateUser.loading}>
             Apply
           </Button>
         </div>

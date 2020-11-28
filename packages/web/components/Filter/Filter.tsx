@@ -13,6 +13,7 @@ import {
   FormInstance
 } from '@/utils/form';
 import { setSearchParam } from '@/utils/setSearchParam';
+import { setRef } from '@/utils/setRef';
 import classes from './Filter.module.scss';
 import dayjs from 'dayjs';
 
@@ -55,11 +56,11 @@ export function createFilter<T extends Record<string, any>>(
 
   const FilterContent = React.forwardRef<FormInstance<T>, FormProps<T>>(
     ({ children, layout = 'grid', initialValues, onFinish, ...props }, ref) => {
-      const formRef = useRef<FormInstance<T> | null>();
+      const formRef = useRef<FormInstance<T>>(null);
       const [values] = useState(transoformInitialValues(initialValues));
 
       // cannot pass `initialValues` props to `Form`
-      // otherwise `form.resetFields()` will not works
+      // otherwise `form.resetFields()` will not "clear the values"
       useEffect(() => {
         values && formRef.current?.setFieldsValue(values);
       }, [values]);
@@ -71,11 +72,7 @@ export function createFilter<T extends Record<string, any>>(
           <Form
             {...props}
             layout={layout}
-            ref={form => {
-              formRef.current = form;
-              if (typeof ref === 'function') ref(form);
-              else if (ref) ref.current = form;
-            }}
+            ref={setRef(ref, formRef)}
             onFinish={payload => {
               setSearchParam(payload as Record<string, unknown>);
               onFinish && onFinish(payload);
@@ -91,7 +88,7 @@ export function createFilter<T extends Record<string, any>>(
                 formRef.current?.submit();
               }}
             >
-              Reset
+              Clear
             </Button>
             <Button intent="primary" onClick={formRef.current?.submit}>
               Apply
@@ -141,12 +138,6 @@ export function createFilter<T extends Record<string, any>>(
       if (isOpen) {
         handler();
 
-        // wait for filter content mount
-        setTimeout(() => {
-          const values = formRef.current?.getFieldsValue();
-          setFiltered(hasFilter(values));
-        }, 0);
-
         const handleClose = () => setIsOpen(false);
         window.addEventListener('resize', handleClose);
         return () => window.removeEventListener('resize', handleClose);
@@ -157,6 +148,7 @@ export function createFilter<T extends Record<string, any>>(
 
     useEffect(() => {
       initialValues && formRef.current?.setFieldsValue(initialValues);
+      setFiltered(hasFilter(initialValues));
     }, [initialValues]);
 
     return (

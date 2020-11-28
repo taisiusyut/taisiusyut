@@ -3,7 +3,7 @@ import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
 import { createUserForm, userValidators } from '@/components/UserForm';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthActions } from '@/hooks/useAuth';
 import { Schema$Authenticated } from '@/typings';
 
 const { Form, Username, Password } = createUserForm();
@@ -17,8 +17,11 @@ function onSuccess(auth: Schema$Authenticated) {
 }
 
 export function AdminLoginForm() {
-  const [{ loginStatus }, { authenticate }] = useAuth();
-  const [, { fetch }] = useRxAsync(authenticate, { defer: true, onSuccess });
+  const { authenticate } = useAuthActions();
+  const [{ loading }, { fetch }] = useRxAsync(authenticate, {
+    defer: true,
+    onSuccess
+  });
 
   return (
     <Form onFinish={fetch}>
@@ -26,12 +29,7 @@ export function AdminLoginForm() {
 
       <Password validators={[userValidators.password.required]} />
 
-      <Button
-        fill
-        type="submit"
-        intent="primary"
-        loading={loginStatus === 'loading'}
-      >
+      <Button fill type="submit" intent="primary" loading={loading}>
         Login
       </Button>
 
