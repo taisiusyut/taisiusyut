@@ -40,9 +40,9 @@ export class User implements InsertedUserSchema {
   })
   role: UserRole;
 
-  createdAt: string;
+  createdAt: number;
 
-  updatedAt: string;
+  updatedAt: number;
 
   @Prop({
     type: String,

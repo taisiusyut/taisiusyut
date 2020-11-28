@@ -10,8 +10,7 @@ import {
   PlainLiteralObject,
   ExecutionContext,
   CallHandler,
-  ClassSerializerInterceptor,
-  // Class
+  ClassSerializerInterceptor
 } from '@nestjs/common';
 import { CLASS_SERIALIZER_OPTIONS } from '@nestjs/common/serializer/class-serializer.constants';
 import { PaginateResult, UserRole } from '@/typings';
@@ -22,8 +21,6 @@ type Res =
   | PlainLiteralObject
   | Array<PlainLiteralObject>
   | PaginateResult<unknown>;
-
-// console.log(CLASS);
 
 @Injectable()
 export class MongooseSerializerInterceptor extends ClassSerializerInterceptor {
@@ -84,6 +81,15 @@ export class MongooseSerializerInterceptor extends ClassSerializerInterceptor {
       plainOrClass,
       options
     );
+
+    // transform timestamp to number for NextJS
+    if (plainObject.createdAt instanceof Date) {
+      plainObject.createdAt = plainObject.createdAt.getTime();
+    }
+
+    if (plainObject.updatedAt instanceof Date) {
+      plainObject.updatedAt = plainObject.updatedAt.getTime();
+    }
 
     return plainObject;
   }

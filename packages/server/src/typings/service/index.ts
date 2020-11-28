@@ -32,8 +32,8 @@ export interface PaginateResult<T> {
 }
 
 export interface Timestamp {
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export type DateRange = [string, string];

@@ -76,7 +76,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   }
 
   async paginate(
-    query: FilterQuery<D> & QueryDto = {},
+    query: FilterQuery<Omit<D, 'createdAt' | 'updatedAt'>> & QueryDto = {},
     { projection, ...options }: PaginateOptions = {}
   ) {
     const {

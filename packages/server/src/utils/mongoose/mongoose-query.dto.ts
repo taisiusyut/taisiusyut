@@ -55,12 +55,12 @@ class Base implements QuerySchema {
   @IsOptional()
   @ValidateNested()
   @DateRange()
-  createdAt?: MongoDateRange;
+  createdAt?: number | MongoDateRange;
 
   @IsOptional()
   @ValidateNested()
   @DateRange()
-  updatedAt?: MongoDateRange;
+  updatedAt?: number | MongoDateRange;
 }
 
 export class QueryDto

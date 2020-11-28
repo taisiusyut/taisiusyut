@@ -17,10 +17,10 @@ class Excluded implements Partial<Schema$RefreshToken> {
   id?: string;
 
   @Exclude()
-  createdAt?: string;
+  createdAt?: undefined;
 
   @Exclude()
-  updatedAt?: string;
+  updatedAt?: undefined;
 }
 
 export class CreateRefreshTokenDto

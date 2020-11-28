@@ -25,9 +25,9 @@ export class RefreshToken implements Schema$RefreshToken {
   @Prop({ type: String, required: true, unique: true })
   refreshToken: string;
 
-  createdAt: string;
+  createdAt: number;
 
-  updatedAt: string;
+  updatedAt: number;
 
   constructor(payload: Partial<RefreshToken>) {
     Object.assign(this, payload);
