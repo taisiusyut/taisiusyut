@@ -7,19 +7,14 @@ import { UserRole } from '@/typings';
 import { getChapter } from '@/service';
 import { Toaster } from '@/utils/toaster';
 
+interface Params {
+  bookID: string;
+  chapterID: string;
+}
+
 const onFailure = Toaster.apiError.bind(Toaster, `Get chapter failure`);
 
-export default function UpdateChapterPage() {
-  const { bookID, chapterID } = router.query;
-
-  if (typeof bookID !== 'string') {
-    throw new Error(`bookID must be a string`);
-  }
-
-  if (typeof chapterID !== 'string') {
-    throw new Error(`chapterID must be a string`);
-  }
-
+function UpdateChapterPageContent({ bookID, chapterID }: Params) {
   const [{ data }, { fetch }] = useRxAsync(getChapter, {
     defer: true,
     onFailure
@@ -30,6 +25,16 @@ export default function UpdateChapterPage() {
   }, [fetch, bookID, chapterID]);
 
   return <Chapter bookID={bookID} chapterID={chapterID} chapter={data} />;
+}
+
+export default function UpdateChapterPage() {
+  const { bookID, chapterID } = router.query;
+
+  if (typeof bookID !== 'string' || typeof chapterID !== 'string') {
+    return null;
+  }
+
+  return <UpdateChapterPageContent bookID={bookID} chapterID={chapterID} />;
 }
 
 UpdateChapterPage.layout = AdminLayout;

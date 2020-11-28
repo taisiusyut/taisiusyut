@@ -6,15 +6,13 @@ import { BookDetails } from '@/components/admin/BookDetails';
 import { UserRole, Schema$Book } from '@/typings';
 import { getBook } from '@/service';
 
+interface Props {
+  bookID: string;
+}
+
 type BookState = Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
 
-export default function BookDetailsPage() {
-  const { bookID } = router.query;
-
-  if (typeof bookID !== 'string') {
-    throw new Error(`bookID is ${bookID}`);
-  }
-
+function BookDetailsPageContent({ bookID }: Props) {
   const [book, setBook] = useState<BookState>({
     id: bookID
   });
@@ -27,6 +25,14 @@ export default function BookDetailsPage() {
   useRxAsync(request, { onSuccess: setBook });
 
   return <BookDetails book={book} onUpdate={onUpdate} />;
+}
+
+export default function BookDetailsPage() {
+  const { bookID } = router.query;
+  if (typeof bookID !== 'string') {
+    return null;
+  }
+  return <BookDetailsPageContent bookID={bookID} />;
 }
 
 BookDetailsPage.layout = AdminLayout;

@@ -8,7 +8,7 @@ export default function CreateChapterPage() {
   const { bookID } = router.query;
 
   if (typeof bookID !== 'string') {
-    throw new Error(`bookID is ${bookID}`);
+    return null;
   }
 
   return <Chapter bookID={bookID} />;

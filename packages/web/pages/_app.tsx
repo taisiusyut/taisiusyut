@@ -27,7 +27,8 @@ function Redirect({ redirect }: { redirect?: string }) {
   return <div hidden />;
 }
 
-function AppContent({ Component, pageProps }: ExtendAppProps) {
+function AppContent(props: ExtendAppProps) {
+  const { Component, pageProps } = props;
   const [{ loginStatus, user }, actions] = useAuth();
   const access = Component.access;
 
