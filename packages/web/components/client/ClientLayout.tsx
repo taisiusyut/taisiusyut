@@ -21,14 +21,15 @@ export function ClientLayout({ children }: Props) {
           }
 
           .layout-body {
-            @include dimen(100%);
+            @include sq-dimen(100%);
             @include margin-x(auto);
             @include flex();
             min-height: 100%;
           }
 
           .layout-content {
-            @include dimen(100%);
+            @include sq-dimen(100%);
+            @include flex($flex-direction: column);
             flex: 1 1 auto;
             overflow: hidden;
           }

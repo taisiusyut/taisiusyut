@@ -1,7 +1,9 @@
-import { Aggregate, Document, PaginateModel } from 'mongoose';
+import { Aggregate, Document, FilterQuery, PaginateModel } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Schema$Category, Schema$Tags } from '@/typings';
+import { from, of } from 'rxjs';
+import { mergeMap, zipAll } from 'rxjs/operators';
+import { BookStatus, Schema$Category, Schema$Tags } from '@/typings';
 import { MongooseCRUDService } from '@/utils/mongoose';
 import { Book } from './schemas/book.schema';
 
@@ -38,5 +40,31 @@ export class BookService extends MongooseCRUDService<Book> {
         tag: '$_id',
         total: 1
       });
+  }
+
+  async random(
+    total: number,
+    query: FilterQuery<Book> = { status: BookStatus.Public }
+  ) {
+    const count = await this.bookModel.countDocuments(query);
+
+    const pool: number[] = [];
+    while (pool.length < total && pool.length < count) {
+      const rand = Math.floor(Math.random() * count);
+      if (!pool.includes(rand)) {
+        pool.push(rand);
+      }
+    }
+    return from(pool)
+      .pipe(
+        mergeMap(idx => {
+          const promise = (this.bookModel
+            .findOne(query)
+            .skip(idx) as unknown) as Promise<Book>;
+          return of(promise);
+        }, 2),
+        zipAll()
+      )
+      .toPromise();
   }
 }

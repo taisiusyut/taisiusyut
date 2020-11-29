@@ -5,7 +5,8 @@ import {
   PaginateOptions,
   FilterQuery,
   UpdateQuery,
-  QueryFindOneAndUpdateOptions
+  QueryFindOneAndUpdateOptions,
+  QueryFindOptions
 } from 'mongoose';
 import { nGrams } from 'mongoose-fuzzy-searching/helpers';
 import { PaginateResult, Order } from '@/typings';
@@ -71,8 +72,12 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     return this.model.findOne(query, projection);
   }
 
-  async findAll(query?: FilterQuery<D>): Promise<T[]> {
-    return this.model.find(query || {});
+  async findAll(
+    query: FilterQuery<D> = {},
+    projection: any | null = null,
+    options: QueryFindOptions = {}
+  ): Promise<T[]> {
+    return this.model.find(query, projection, options);
   }
 
   async paginate(

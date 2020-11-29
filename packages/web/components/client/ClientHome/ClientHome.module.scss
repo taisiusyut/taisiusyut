@@ -1,0 +1,39 @@
+@import '~styles/utils';
+
+.content {
+  @include dimen(100%);
+  @include padding-x(25px);
+  @include padding-y(25px);
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.section {
+  + .section {
+    margin-top: 50px;
+  }
+  &:last-child {
+    margin-bottom: 30px;
+  }
+}
+
+.section-content {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  @media (min-width: 1300px) {
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+  }
+}
+
+.section-card {
+  @include flex(center);
+  padding-left: 30px;
+}
+
+.book-info {
+  line-height: 1.6em;
+  > div:nth-child(n + 2) {
+    color: var(--text-light-color);
+  }
+}
