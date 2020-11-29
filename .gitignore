@@ -33,4 +33,4 @@ tsconfig.tsbuildinfo
 !.yarn/versions
 .pnp.*
 
-match-storage
+*.dump
