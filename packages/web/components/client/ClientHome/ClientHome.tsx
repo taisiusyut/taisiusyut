@@ -1,5 +1,7 @@
 import React from 'react';
+import { ControlGroup, Button } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
+import { SearchInput } from '@/components/Input';
 import { Schema$Book } from '@/typings';
 import { ClientHomeSection } from './ClientHomeSection';
 import classes from './ClientHome.module.scss';
@@ -17,6 +19,14 @@ export function ClientHome({ data }: ClientHomeProps) {
   return (
     <>
       <ClientHeader />
+      <div
+        style={{ padding: 25, maxWidth: 768, margin: 'auto', width: '100%' }}
+      >
+        <ControlGroup>
+          <SearchInput />
+          <Button icon="search" />
+        </ControlGroup>
+      </div>
       <div className={classes.content}>
         <ClientHomeSection title="最近更新" books={[]} />
         <ClientHomeSection title="最多瀏覽" books={data.mostvisited} />
