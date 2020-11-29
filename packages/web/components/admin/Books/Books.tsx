@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import router from 'next/router';
 import { Card } from '@blueprintjs/core';
 import { useAuthState } from '@/hooks/useAuth';
@@ -6,14 +6,12 @@ import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { createFilter } from '@/components/Filter';
 import { BookStatusSelect, CategorySelect } from '@/components/Select';
-import { Order, UserRole, Schema$Book, Param$GetBooks } from '@/typings';
+import { Order, UserRole, Param$GetBooks } from '@/typings';
 import { getBooks } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { CreateBook } from './CreateBook';
 import { BooksTable } from './BooksTable';
 import classes from './Books.module.scss';
-
-const useBooks = createUsePaginationLocal<Schema$Book, 'id'>('id', getBooks);
 
 const onFailure = Toaster.apiError.bind(Toaster, 'Get books Failure');
 
@@ -26,6 +24,16 @@ const {
 
 export function Books() {
   const { user } = useAuthState();
+
+  const [useBooks] = useState(() =>
+    createUsePaginationLocal('id', (params?: Param$GetBooks) =>
+      getBooks({
+        ...params,
+        author: user?.role === UserRole.Author ? user.user_id : undefined
+      })
+    )
+  );
+
   const { state, actions, loading, pagination } = useBooks({ onFailure });
   const { sort = { createdAt: Order.DESC } } = state.params;
 
