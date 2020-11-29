@@ -54,4 +54,14 @@ export function testPublicPrivateChapter() {
     response = await privateChapter(author.token, book.id, chapter.id);
     expect(response.body).toHaveProperty('status', ChapterStatus.Private);
   });
+
+  test('client cannot update chapter status to public/private', async () => {
+    let response = await createChapter(author.token, book.id);
+    const chapter: Schema$Chapter = response.body;
+    expect(chapter).not.toHaveProperty('status', ChapterStatus.Public);
+
+    response = await publicChapter(client.token, book.id, chapter.id);
+    expect(response.status).toBe(HttpStatus.FORBIDDEN);
+    expect(response.body.status).not.toBe(ChapterStatus.Public);
+  });
 }

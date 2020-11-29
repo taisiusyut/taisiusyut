@@ -48,6 +48,8 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
     'chapter_get_all',
     'chapter_get',
     'chapter_status_get',
+    'chapter_public',
+    'chapter_private',
 
     'payment_create',
 

@@ -226,7 +226,7 @@ export class ChapterController {
     return chapter;
   }
 
-  @Access()
+  @Access('chapter_public', 'chapter_private')
   @HttpCode(HttpStatus.OK)
   @Post(routes.chapter.public_private_chapter)
   async togglePublicPrivate(
