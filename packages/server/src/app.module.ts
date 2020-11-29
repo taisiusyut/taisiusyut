@@ -37,7 +37,7 @@ interface Configs {
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
-        CLOUDINARY_URL: Joi.string().optional().default(''),
+        CLOUDINARY_URL: Joi.string().optional().allow('').default(''),
         JWT_SECRET: Joi.string().default('JWT_SECRET'),
         JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(15),
         REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number()

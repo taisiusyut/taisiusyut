@@ -1,12 +1,7 @@
 import { FastifyRequest } from 'fastify';
 import { classToClass } from 'class-transformer';
 import { REQUEST } from '@nestjs/core';
-import {
-  Inject,
-  PipeTransform,
-  ArgumentMetadata,
-  UnauthorizedException
-} from '@nestjs/common';
+import { Inject, PipeTransform, ArgumentMetadata } from '@nestjs/common';
 import { permissonsMap } from './permission-config';
 
 /**
@@ -22,13 +17,9 @@ export class AccessPipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata) {
     const role = this.request.user?.role;
 
-    if (!role) {
-      throw new UnauthorizedException();
-    }
-
     if (metadata.metatype && value instanceof metadata.metatype) {
       const newValue = classToClass(value, {
-        groups: [role, ...permissonsMap[role]]
+        groups: role && [role, ...permissonsMap[role]]
       });
 
       for (const k in newValue) {

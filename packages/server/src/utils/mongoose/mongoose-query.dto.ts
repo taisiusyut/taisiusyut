@@ -43,7 +43,7 @@ class Base implements QuerySchema {
       return value;
     }
   })
-  sort?: Order;
+  sort?: Record<string, Order>;
 
   @Exclude()
   condition?: Condition[];
