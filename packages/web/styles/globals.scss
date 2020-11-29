@@ -25,7 +25,7 @@
 
 [data-theme^='dark'] {
   --primary-color: #{lighten(#222, 5%)};
-  --secondary-color: #222;
+  --secondary-color: #{lighten(#222, 1%)};
   --text-color: #dfdedb;
   --text-light-color: #a09c97;
   --icon-color: #{darken(#dfdedb, 30%)};

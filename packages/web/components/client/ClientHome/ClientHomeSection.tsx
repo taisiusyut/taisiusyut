@@ -19,8 +19,12 @@ export function ClientHomeSection({ title, books }: Props) {
       <H5>{title}</H5>
       <div className={classes['section-content']}>
         {books.map(book => (
-          // TODO: interactive
-          <Card key={book.id} className={classes['section-card']}>
+          <Card
+            key={book.id}
+            className={classes['section-card']}
+            interactive
+            elevation={1}
+          >
             <div>
               <BookModel cover={book.cover} />
             </div>
