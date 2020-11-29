@@ -29,7 +29,7 @@ export const Routes = {
     public_finish_book: '/:id/:type(public|finish)'
   },
   chapter: {
-    prefix: '/book/:bookID/chapters',
+    prefix: '/book/:bookID/chapter',
     create_chapter: '',
     get_chapters: '',
     get_chapter: '/:chapterID',

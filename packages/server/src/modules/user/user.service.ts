@@ -6,8 +6,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { MongooseCRUDService } from '@/utils/mongoose';
 import { PaginateModel, Document, FilterQuery } from 'mongoose';
-import { User } from './schemas/user.schema';
 import { JWTSignPayload, UserRole } from '@/typings';
+import { User } from './schemas/user.schema';
 
 const roles = Object.values(UserRole);
 
@@ -26,8 +26,6 @@ export class UserService extends MongooseCRUDService<User> {
     userModel: PaginateModel<User & Document>
   ) {
     super(userModel);
-
-    // userModel.deleteOne({ nickname: 'Guest' }).then(console.log);
   }
 
   getRoleBasedQuery(id?: string, user?: JWTSignPayload) {
