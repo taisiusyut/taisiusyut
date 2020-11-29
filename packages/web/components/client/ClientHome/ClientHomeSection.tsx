@@ -1,4 +1,5 @@
 import React from 'react';
+import router from 'next/router';
 import { Card, H5 } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Schema$Book, Category } from '@/typings';
@@ -24,6 +25,7 @@ export function ClientHomeSection({ title, books }: Props) {
             className={classes['section-card']}
             interactive
             elevation={1}
+            onClick={() => router.push(`/book/${book.id}`)}
           >
             <div>
               <BookModel cover={book.cover} />

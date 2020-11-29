@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { Button, H4 } from '@blueprintjs/core';
-import { useHistoryBack } from '@/hooks/useHistoryBack';
+import { H4 } from '@blueprintjs/core';
+import { HistoryBackButton } from '@/components/HistoryBackButton';
 import { resolve } from 'styled-jsx/css';
 
 interface Props {
@@ -23,16 +23,13 @@ const button = resolve`
 `;
 
 export function PageHeader({ title, fallbackURL, children }: Props) {
-  const goBack = useHistoryBack();
   return (
     <div className="header">
       <div className="title">
         {fallbackURL && (
-          <Button
-            minimal
-            icon="arrow-left"
+          <HistoryBackButton
+            fallbackURL={fallbackURL}
             className={button.className}
-            onClick={() => goBack({ fallback: fallbackURL })}
           />
         )}
         <H4 className={h4.className}>{title}</H4>

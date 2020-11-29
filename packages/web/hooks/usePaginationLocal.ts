@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import router from 'next/router';
+import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import {
   AllowedNames,
@@ -26,6 +26,7 @@ type UsePaginationLocal<
 > = (
   options?: Options | undefined
 ) => {
+  data: CRUDState<I, Prefill>['list'];
   state: CRUDState<I, Prefill>;
   fetch: any;
   actions: Dispatched<CRUDActionCreators<I, K>>;
@@ -78,20 +79,21 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     ...curdOptions,
     prefill,
     defaultState: {
-      ...defaultState,
       ...(prefill !== false &&
         (createPlaceHolder(10, prefill) as Pick<
           CRUDState<I, Partial<I>>,
           'ids' | 'list'
         >)),
+      ...defaultState,
       params: initialParams
     }
   });
 
   return function usePaginationLocal(options?: Options) {
     const [state, actions] = useCRUDReducer();
-    const { asPath } = router;
     const { pageNo, pageSize, params } = state;
+    const router = useRouter();
+    const { asPath } = router;
 
     const [{ loading }, { fetch }] = useRxAsync(request, {
       ...options,
@@ -99,9 +101,13 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       onSuccess: actions.paginate
     });
 
-    const { hasData } = paginateSelector(state, {
-      prefill: {}
-    });
+    const { hasData, list } = useMemo(
+      () =>
+        paginateSelector(state, {
+          prefill: {}
+        }),
+      [state]
+    );
 
     useEffect(() => {
       actions.params(getParams(asPath));
@@ -112,7 +118,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       if (router.query.pageNo && Number(router.query.pageNo) !== pageNo) {
         setSearchParam(params => ({ ...params, pageNo }));
       }
-    }, [pageNo]);
+    }, [pageNo, router]);
 
     useEffect(() => {
       if (!hasData) {
@@ -129,6 +135,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     };
 
     return {
+      data: list,
       state,
       fetch,
       actions,

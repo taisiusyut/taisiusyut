@@ -14,7 +14,11 @@ let promise: Promise<INestApplication> | undefined;
 export const serializer = new MongooseSerializerInterceptor({});
 
 async function createInstance() {
-  const instance = await NestFactory.create(AppModule.init(), fastifyAdapter());
+  const instance = await NestFactory.create(
+    AppModule.init(),
+    fastifyAdapter(),
+    { logger: false }
+  );
   await instance.init();
   await instance.getHttpAdapter().getInstance().ready();
   return instance;
@@ -38,4 +42,12 @@ export async function getBookService() {
 
 export async function getChpaterService() {
   return getServerInstance(ChapterService);
+}
+
+export async function closeInstance() {
+  if (instance) {
+    await instance.close();
+  }
+  instance = undefined;
+  promise = undefined;
 }

@@ -1,0 +1,64 @@
+@import '~styles/utils';
+
+.content {
+  padding: 20px;
+}
+
+.book-model {
+  @include margin-x(15px);
+}
+
+.header {
+  @include flex(flex-start);
+  margin-top: 10px;
+
+  .header-title {
+    @include flex(flex-end);
+    margin-bottom: 10px;
+    h3 {
+      margin-bottom: 0;
+    }
+
+    span {
+      margin-left: 10px;
+      color: var(--text-light-color);
+    }
+  }
+
+  .header-content {
+    flex: 1 1 auto;
+  }
+
+  .description {
+    @include margin-y(10px 7.5px);
+    font-size: 15px;
+    line-height: 1.5em;
+    word-break: break-all;
+  }
+}
+
+.chapters-card {
+  margin-top: 20px;
+
+  .divider {
+    @include margin-y(15px);
+  }
+}
+
+.chapters {
+  margin-top: 20px;
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  @media (min-width: 1300px) {
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+  }
+
+  .chapter-item {
+    align-self: baseline;
+  }
+
+  .tag {
+    margin-right: 5px;
+  }
+}
