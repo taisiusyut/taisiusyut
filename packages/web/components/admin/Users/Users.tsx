@@ -20,10 +20,7 @@ const {
 
 const onFailure = Toaster.apiError.bind(Toaster, 'Get users failure');
 
-const useUserPagination = createUsePaginationLocal<Schema$User, 'id'>(
-  'id',
-  getUsers
-);
+const useUserPagination = createUsePaginationLocal('id', getUsers);
 
 export function Users() {
   const { state, loading, pagination, actions } = useUserPagination({

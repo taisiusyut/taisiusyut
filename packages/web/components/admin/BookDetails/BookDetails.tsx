@@ -6,12 +6,7 @@ import { PageHeader } from '@/components/admin/PageHeader';
 import { ChapterStatusSelect, ChapterTypeSelect } from '@/components/Select';
 import { useAuthState } from '@/hooks/useAuth';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
-import {
-  UserRole,
-  Schema$Book,
-  Schema$Chapter,
-  Param$GetChapters
-} from '@/typings';
+import { UserRole, Schema$Book, Param$GetChapters } from '@/typings';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { BookDetailsHeader, OnUpdate } from './BookDetailsHeader';
@@ -42,7 +37,7 @@ const gotoChapter = (bookID: string, chapterID?: string) => {
 export function BookDetails({ book, onUpdate }: Props) {
   const { user } = useAuthState();
   const [useChapters] = useState(() =>
-    createUsePaginationLocal<Schema$Chapter, 'id'>(
+    createUsePaginationLocal(
       'id',
       (params?: Param$GetChapters) =>
         getChapters({ ...params, bookID: book.id, timestamp: true }),
