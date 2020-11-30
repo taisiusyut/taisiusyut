@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import { Meta } from '@/components/Meta';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import {
   ClientBookDetails,
@@ -91,7 +92,25 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
 };
 
 export default function ClientBookDetailsPage(props: Props) {
-  return <ClientBookDetails {...props} />;
+  const { book } = props;
+  let head: React.ReactNode = null;
+
+  if (book) {
+    head = (
+      <Meta
+        title={`${book.name} | ${book.author.nickname} | 睇小說`}
+        keywords={book.name}
+        description={book.description}
+      />
+    );
+  }
+
+  return (
+    <>
+      {head}
+      <ClientBookDetails {...props} />;
+    </>
+  );
 }
 
 ClientBookDetailsPage.layout = ClientLayout;

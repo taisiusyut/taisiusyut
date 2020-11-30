@@ -6,6 +6,7 @@ import Document, {
   Main,
   NextScript
 } from 'next/document';
+import { Meta } from '@/components/Meta';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -20,6 +21,7 @@ class MyDocument extends Document {
           <link rel="icon" type="image/x-icon" href="/favicon.ico" />
           <link rel="preload" href="/preload.js" as="script" />
         </Head>
+        <Meta />
         <body>
           <script src="/preload.js" />
           <Main />
