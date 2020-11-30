@@ -44,7 +44,9 @@ export class BookService extends MongooseCRUDService<Book> {
 
   async random(
     total: number,
-    query: FilterQuery<Book> = { status: BookStatus.Public }
+    query: FilterQuery<Book> = {
+      $or: [{ status: BookStatus.Public }, { status: BookStatus.Finished }]
+    }
   ) {
     const count = await this.bookModel.countDocuments(query);
 

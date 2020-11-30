@@ -4,14 +4,14 @@ import {
   AppModule,
   fastifyAdapter,
   BookService,
+  BookController,
   ChapterService,
+  ChapterController,
   MongooseSerializerInterceptor
 } from '@fullstack/server';
 
 let instance: INestApplication | undefined;
 let promise: Promise<INestApplication> | undefined;
-
-export const serializer = new MongooseSerializerInterceptor({});
 
 async function createInstance() {
   const instance = await NestFactory.create(
@@ -33,15 +33,23 @@ export async function getServerInstance<T, R = T>(type: Type<T>): Promise<R> {
     instance = await promise;
   }
 
-  return instance.get(type);
+  return instance.resolve(type);
 }
 
 export async function getBookService() {
   return getServerInstance(BookService);
 }
 
+export async function getBookController() {
+  return getServerInstance(BookController);
+}
+
 export async function getChpaterService() {
   return getServerInstance(ChapterService);
+}
+
+export async function getChpaterController() {
+  return getServerInstance(ChapterController);
 }
 
 export async function closeInstance() {
@@ -50,4 +58,15 @@ export async function closeInstance() {
   }
   instance = undefined;
   promise = undefined;
+}
+
+export const serializer = new MongooseSerializerInterceptor({});
+
+type Payload = Parameters<typeof serializer.serialize>[0];
+type TransformOptions = Parameters<typeof serializer.serialize>[1];
+export function serialize<T>(payload: Payload, options?: TransformOptions) {
+  return serializer.serialize(payload, {
+    excludePrefixes: ['_'],
+    ...options
+  }) as T;
 }

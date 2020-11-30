@@ -1,5 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
+import { IncomingMessage } from 'http';
 import { Meta } from '@/components/Meta';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import {
@@ -7,68 +8,37 @@ import {
   ClientBookDetailsProps
 } from '@/components/client/ClientBookDetails';
 import {
-  getBookService,
-  getChpaterService,
-  serializer
+  getBookController,
+  getChpaterController,
+  serialize
 } from '@/service/server';
-import {
-  PaginateResult,
-  BookStatus,
-  ChapterStatus,
-  Schema$Book
-} from '@/typings';
+import { PaginateResult, ChapterStatus, Schema$Book } from '@/typings';
 import { Order, Schema$Chapter } from '@/../server/dist';
 
 // TODO: handle private book/chatper
 
 interface Props extends ClientBookDetailsProps {}
 
-async function getData(bookID: string): Promise<ClientBookDetailsProps> {
-  const [bookService, chpaterService] = await Promise.all([
-    getBookService(),
-    getChpaterService()
+async function getData(
+  req: IncomingMessage,
+  bookID: string
+): Promise<ClientBookDetailsProps> {
+  const [bookController, chapterController] = await Promise.all([
+    getBookController(),
+    getChpaterController()
   ]);
 
-  const getBook = bookService
-    .findOne({
-      _id: bookID,
-      $or: [{ status: BookStatus.Public }, { status: BookStatus.Finished }]
-    })
-    .then(
-      book =>
-        book &&
-        (serializer.transformToPlain(book, {
-          excludePrefixes: ['_']
-        }) as Schema$Book)
-    );
+  const getBook = bookController
+    .getBook(req as any, bookID)
+    .then(book => book && serialize<Schema$Book>(book));
 
-  const getChapters = chpaterService
-    .paginate(
-      {
-        book: bookID,
-        pageSize: 20,
-        status: ChapterStatus.Public,
-        sort: { createdAt: Order.ASC }
-      },
-      {
-        projection: {
-          content: 0,
-          createdAt: 0,
-          updatedAt: 0
-        }
-      }
-    )
-    .then(
-      response =>
-        ({
-          ...response,
-          data: response.data.map(chapter =>
-            serializer.transformToPlain(chapter, {
-              excludePrefixes: ['_']
-            })
-          )
-        } as PaginateResult<Schema$Chapter>)
-    );
+  const getChapters = chapterController
+    .getChapters(req as any, bookID, {
+      pageSize: 20,
+      status: ChapterStatus.Public,
+      sort: { createdAt: Order.ASC }
+    })
+    .then(response => serialize<PaginateResult<Schema$Chapter>>(response));
 
   const [book, chapters] = await Promise.all([getBook, getChapters]);
 
@@ -87,7 +57,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
   }
 
   return {
-    props: await getData(bookID)
+    props: await getData(context.req, bookID)
   };
 };
 
@@ -108,7 +78,7 @@ export default function ClientBookDetailsPage(props: Props) {
   return (
     <>
       {head}
-      <ClientBookDetails {...props} />;
+      <ClientBookDetails {...props} />
     </>
   );
 }
