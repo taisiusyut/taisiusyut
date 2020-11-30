@@ -1,6 +1,5 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { IncomingMessage } from 'http';
 import { Meta } from '@/components/Meta';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import {
@@ -19,21 +18,31 @@ import { Order, Schema$Chapter } from '@/../server/dist';
 
 interface Props extends ClientBookDetailsProps {}
 
-async function getData(
-  req: IncomingMessage,
-  bookID: string
-): Promise<ClientBookDetailsProps> {
+type Params = {
+  bookID: string;
+};
+
+export const getServerSideProps: GetServerSideProps<
+  Props,
+  Params
+> = async context => {
+  const { bookID } = context.params || {};
+
+  if (typeof bookID !== 'string') {
+    throw new Error(`bookID is ${bookID}`);
+  }
+
   const [bookController, chapterController] = await Promise.all([
-    getBookController(),
-    getChpaterController()
+    getBookController(context.res.app),
+    getChpaterController(context.res.app)
   ]);
 
   const getBook = bookController
-    .getBook(req as any, bookID)
+    .getBook(context.req as any, bookID)
     .then(book => book && serialize<Schema$Book>(book));
 
   const getChapters = chapterController
-    .getChapters(req as any, bookID, {
+    .getChapters(context.req as any, bookID, {
       pageSize: 20,
       status: ChapterStatus.Public,
       sort: { createdAt: Order.ASC }
@@ -43,21 +52,11 @@ async function getData(
   const [book, chapters] = await Promise.all([getBook, getChapters]);
 
   return {
-    bookID,
-    book,
-    chapters
-  };
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async context => {
-  const { bookID } = context.query;
-
-  if (typeof bookID !== 'string') {
-    throw new Error(`bookID is ${bookID}`);
-  }
-
-  return {
-    props: await getData(context.req, bookID)
+    props: {
+      bookID,
+      book,
+      chapters
+    }
   };
 };
 

@@ -24,33 +24,32 @@ async function createInstance() {
   return instance;
 }
 
-export async function getServerInstance<T, R = T>(type: Type<T>): Promise<R> {
-  if (!promise) {
-    promise = createInstance();
-  }
+export async function getServerInstance<T, R = T>(
+  type: Type<T>,
+  defaultInstance?: INestApplication
+): Promise<R> {
+  if (defaultInstance) {
+    instance = defaultInstance;
+  } else {
+    if (!promise) {
+      promise = createInstance();
+    }
 
-  if (!instance) {
-    instance = await promise;
+    if (!instance) {
+      instance = await promise;
+    }
   }
-
   return instance.resolve(type);
 }
 
-export async function getBookService() {
-  return getServerInstance(BookService);
-}
+const createGetter = <T, R = T>(payload: Type<T>) => (
+  defaultInstance?: INestApplication
+) => getServerInstance<T, R>(payload, defaultInstance);
 
-export async function getBookController() {
-  return getServerInstance(BookController);
-}
-
-export async function getChpaterService() {
-  return getServerInstance(ChapterService);
-}
-
-export async function getChpaterController() {
-  return getServerInstance(ChapterController);
-}
+export const getBookService = createGetter(BookService);
+export const getBookController = createGetter(BookController);
+export const getChpaterService = createGetter(ChapterService);
+export const getChpaterController = createGetter(ChapterController);
 
 export async function closeInstance() {
   if (instance) {

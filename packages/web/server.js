@@ -1,8 +1,7 @@
 // @ts-check
 
 const path = require('path');
-/** @type {any} */
-const next = require('next');
+const { default: next } = require('next');
 const { NestFactory } = require('@nestjs/core');
 const { AppModule, fastifyAdapter, setupApp } = require('@fullstack/server');
 
@@ -33,6 +32,7 @@ async function startServer({ dev, port }) {
         if (req.url.startsWith('/api')) {
           next();
         } else {
+          res.app = nest;
           return handle(req, res);
         }
       }
