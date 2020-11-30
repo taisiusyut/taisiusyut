@@ -26,7 +26,7 @@ export const Access = (
   return SetMetadata(AccessMetakey, access);
 };
 
-export class AcessGuard extends AuthGuard('jwt') {
+export class AccessGuard extends AuthGuard('jwt') {
   constructor(@Inject(Reflector) private reflector: Reflector) {
     super();
   }
