@@ -40,6 +40,7 @@ async function getClientHomePageData(): Promise<ClientHomeProps['data']> {
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const data = await getClientHomePageData();
   return {
+    revalidate: 60 * 60,
     props: {
       data
     }

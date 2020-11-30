@@ -2,7 +2,9 @@
 
 .book-shelf {
   @include flex($flex-direction: column);
-  @include fake-border(right);
+  // @include fake-border(right);
   @include relative();
   min-width: 300px;
+  border-right: 1px solid var(--divider-color);
+  background-color: var(--primary-color);
 }

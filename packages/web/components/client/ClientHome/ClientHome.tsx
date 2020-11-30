@@ -24,7 +24,7 @@ export function ClientHome({ data }: ClientHomeProps) {
       >
         <ControlGroup>
           <SearchInput />
-          <Button icon="search" />
+          <Button icon="search" intent="primary" />
         </ControlGroup>
       </div>
       <div className={classes.content}>

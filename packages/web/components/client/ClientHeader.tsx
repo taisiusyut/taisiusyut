@@ -53,8 +53,9 @@ export function ClientHeader({
             @include dimen(100%, $header-height);
             @include flex(center, center);
             @include padding-x(15px);
-            @include fake-border($position: bottom);
+            border-bottom: 1px solid var(--divider-color);
             flex: 0 0 auto;
+            background-color: var(--primary-color);
           }
 
           .header-title {

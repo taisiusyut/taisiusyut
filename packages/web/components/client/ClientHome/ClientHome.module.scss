@@ -27,11 +27,12 @@
 }
 
 .section-card {
-  @include flex(center);
+  @include flex();
   padding-left: 30px;
 }
 
 .book-info {
+  padding-top: 3px;
   line-height: 1.6em;
   > div:nth-child(n + 2) {
     color: var(--text-light-color);
