@@ -25,16 +25,16 @@ export function paginateSelector<S extends CRUDState<any, any>>({
   const start = (pageNo - 1) * pageSize;
   const _list = list.slice(start, start + pageSize);
 
-  let hasData = !!_list.length;
+  let hasData = false;
   for (const item of _list) {
-    if (!item || (typeof item === 'object' && Object.keys(item).length === 0)) {
-      hasData = false;
+    if (item && typeof item === 'object' && Object.keys(item).length > 1) {
+      hasData = true;
       break;
     }
   }
 
   return {
-    list,
+    list: _list,
     ids,
     pageNo,
     pageSize,

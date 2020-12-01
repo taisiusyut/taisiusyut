@@ -6,42 +6,37 @@ import {
   createCRUDReducer,
   CreateCRUDReducerOptions
 } from './crudReducer';
-import {
-  Key,
-  getCRUDActionsCreator,
-  CRUDActionCreators,
-  DefaultCRUDActionTypes as actionTypes
-} from './crudAction';
+import { Key, getCRUDActionsCreator, CRUDActionCreators } from './crudAction';
 import { bindDispatch, Dispatched } from './bindDispatch';
 
 export type UseCRUDReducer<
   I,
   K extends Key<I>,
-  Prefill extends any = any
+  Prefill extends boolean = true
 > = () => [CRUDState<I, Prefill>, Dispatched<CRUDActionCreators<I, K>>];
 
-export interface CreateUseCRUDReducerOps<Prefill>
-  extends CreateCRUDReducerOptions<Prefill> {}
+export interface CreateUseCRUDReducerOps<I, Prefill extends boolean = true>
+  extends CreateCRUDReducerOptions<Prefill> {
+  initializer?: (arg: CRUDState<I, Prefill>) => CRUDState<I, Prefill>;
+}
 
 // prettier-ignore
 export interface CreateUseCRUDReducer  {
   <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<false> & { prefill: false }): UseCRUDReducer<I, K, false>;
-  <I, K extends Key<I>, Prefill = any>(key: K, options: CreateUseCRUDReducerOps<Prefill> & { prefill: Prefill }): UseCRUDReducer<I, K, Prefill>;
-  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<unknown>): UseCRUDReducer<I, K, null>
+  <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<true>): UseCRUDReducer<I, K, true>;
+  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<boolean>): UseCRUDReducer<I, K, boolean>
 }
 
 export const createUseCRUDReducer: CreateUseCRUDReducer = <I, K extends Key<I>>(
   key: K,
-  { defaultState, ...options }: CreateUseCRUDReducerOps<any> = {}
+  { initializer, ...options }: CreateUseCRUDReducerOps<any> = {}
 ): UseCRUDReducer<I, K, any> => {
-  const [initialState, reducer] = createCRUDReducer<I, K, any>(key, {
-    ...options,
-    defaultState,
-    actionTypes
-  });
+  const [initialState, reducer] = createCRUDReducer<I, K, any>(key, options);
 
   return function useCRUDReducer() {
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [state, dispatch] = useReducer(reducer, initialState, state =>
+      initializer ? initializer(state) : state
+    );
 
     const [actions] = useState(() => {
       const [actions] = getCRUDActionsCreator<I, K>()();

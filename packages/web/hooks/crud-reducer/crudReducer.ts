@@ -10,10 +10,10 @@ import {
   List
 } from './crudAction';
 
-export interface CRUDState<I, Prefill extends any = null> {
+export interface CRUDState<I, Prefill extends boolean = true> {
   ids: string[];
   byIds: Record<string, I>;
-  list: Prefill extends false ? I[] : (I | Prefill)[];
+  list: Prefill extends true ? (I | Partial<I>)[] : I[];
   pageNo: number;
   pageSize: number;
   total: number;
@@ -23,7 +23,7 @@ export interface CRUDState<I, Prefill extends any = null> {
 export type CRUDReducer<
   I,
   K extends Key<I>,
-  Prefill extends any = null,
+  Prefill extends boolean = true,
   M extends CRUDActionTypes = CRUDActionTypes
 > = (
   state: CRUDState<I, Prefill>,
@@ -71,8 +71,8 @@ export function equals(a: any, b: any): boolean {
 // prettier-ignore
 export interface CreateCRUDReducer  {
   <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options: CreateCRUDReducerOptions<false, M> & { prefill: false }): [CRUDState<I, false>, CRUDReducer<I, K, false, M>];
-  <I, K extends Key<I>, Prefill = any, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options: CreateCRUDReducerOptions<Prefill, M> & { prefill: Prefill }): [CRUDState<I, Prefill>, CRUDReducer<I, K, Prefill, M>];
-  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<null, M>): [CRUDState<I, null>, CRUDReducer<I, K, null, M>];
+  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<true, M>): [CRUDState<I, true>, CRUDReducer<I, K, true, M>];
+  <I, K extends Key<I>, M extends CRUDActionTypes = CRUDActionTypes>(key: K, options?: CreateCRUDReducerOptions<boolean, M>): [CRUDState<I, true>, CRUDReducer<I, K, boolean, M>];
 }
 
 const insertHanlder = (from: number, to: number) => <T1, T2>(
@@ -92,17 +92,31 @@ export const DefaultState: CRUDState<any, any> = {
   params: {}
 };
 
+export function createPlaceholder<I, K extends Key<I>>(
+  key: K,
+  length: number,
+  keyGenerator: (idx: number) => string = defaultKeyGenerator
+) {
+  return {
+    ids: Array.from({ length }, (_, index) => keyGenerator(index)),
+    list: Array.from(
+      { length },
+      (_, index) => (({ [key]: keyGenerator(index) } as unknown) as Partial<I>)
+    )
+  };
+}
+
 export const createCRUDReducer: CreateCRUDReducer = <
   I,
   K extends Key<I>,
-  Prefill extends any = any,
+  Prefill extends boolean = true,
   M extends CRUDActionTypes = CRUDActionTypes
 >(
   key: K,
   options?: CreateCRUDReducerOptions<Prefill, M>
-): [CRUDState<I, Prefill>, CRUDReducer<I, K, Prefill, M>] => {
+): [CRUDState<I, boolean>, CRUDReducer<I, K, boolean, M>] => {
   const {
-    prefill = null,
+    prefill = true,
     keyGenerator = defaultKeyGenerator,
     actionTypes = DefaultCRUDActionTypes as M
   } = options || {};
@@ -140,6 +154,8 @@ export const createCRUDReducer: CreateCRUDReducer = <
 
         const length = total - state.ids.length;
 
+        const placeholder = createPlaceholder<I, K>(key, length, keyGenerator);
+
         return {
           ...state,
           total,
@@ -149,17 +165,8 @@ export const createCRUDReducer: CreateCRUDReducer = <
             ...state.byIds,
             ...byIds
           },
-          ids: insert(
-            [
-              ...state.ids,
-              ...Array.from({ length }, (_, index) => keyGenerator(index))
-            ],
-            ids
-          ),
-          list: insert(
-            [...state.list, ...Array.from({ length }, () => prefill)],
-            list
-          )
+          ids: insert([...state.ids, ...placeholder.ids], ids),
+          list: insert([...state.list, ...placeholder.list], list)
         };
       })();
     }

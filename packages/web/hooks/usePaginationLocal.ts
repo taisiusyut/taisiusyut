@@ -1,14 +1,16 @@
-import { useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useReducer } from 'react';
 import router, { useRouter } from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import {
   AllowedNames,
   paginateSelector,
-  createUseCRUDReducer,
-  CreateUseCRUDReducerOps,
+  CreateCRUDReducerOptions,
   CRUDState,
   Dispatched,
-  CRUDActionCreators
+  CRUDActionCreators,
+  createCRUDReducer,
+  getCRUDActionsCreator,
+  bindDispatch
 } from '@/hooks/crud-reducer';
 import { PaginateResult } from '@/typings';
 import { PaginationProps } from '@/components/Pagination';
@@ -22,7 +24,7 @@ interface Options {
 type UsePaginationLocal<
   I,
   K extends AllowedNames<I, string>,
-  Prefill = Partial<I>
+  Prefill extends boolean = true
 > = (
   options?: Options | undefined
 ) => {
@@ -34,65 +36,48 @@ type UsePaginationLocal<
   pagination: PaginationProps;
 };
 
-interface CrudOptions<Prefill> extends CreateUseCRUDReducerOps<Prefill> {}
+interface CrudOptions<I, Prefill extends boolean>
+  extends CreateCRUDReducerOptions<Prefill> {
+  initializer?: (arg: CRUDState<I, Prefill>) => CRUDState<I, Prefill>;
+}
 
 const getParams = (path: string) => qs.parse(path.split('?')[1] || '');
 
-const createPlaceHolder = <Prefill>(length: number, prefill: Prefill) => ({
-  ids: Array.from({ length }, (_, index) => String(index)),
-  list: Array.from({ length }, () => prefill)
-});
-
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
-  request: <P>(params?: P) => Promise<PaginateResult<I>>
-): UsePaginationLocal<I, K, Partial<I>>;
+  request: <P>(params?: P) => Promise<PaginateResult<I>>,
+  curdOptions?: CrudOptions<I, true>
+): UsePaginationLocal<I, K, true>;
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions: CrudOptions<false> & { prefill: false }
+  curdOptions: CrudOptions<I, false> & { prefill: false }
 ): UsePaginationLocal<I, K, false>;
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   key: K,
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  curdOptions: CrudOptions<Partial<I>> & { prefill?: {} }
-): UsePaginationLocal<I, K, false>;
-
-export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
-  key: K,
-  request: <P>(params?: P) => Promise<PaginateResult<I>>,
-  {
-    defaultState,
-    prefill = {},
-    ...curdOptions
-  }: CrudOptions<Partial<I> | false> = {}
-): UsePaginationLocal<I, K, Partial<I> | false> {
+  { initializer, ...curdOptions }: CrudOptions<I, boolean> = {}
+): UsePaginationLocal<I, K, boolean> {
   const initialParams = getParams(
     typeof window !== 'undefined' ? window.location.href : ''
   );
   delete initialParams['pageNo'];
   delete initialParams['pageSIze'];
 
-  const useCRUDReducer = createUseCRUDReducer<I, K, Partial<I> | false>(key, {
-    ...curdOptions,
-    prefill,
-    defaultState: {
-      ...defaultState,
-      ...(prefill !== false &&
-        (createPlaceHolder(10, prefill) as Pick<
-          CRUDState<I, Partial<I>>,
-          'ids' | 'list'
-        >)),
-      params: initialParams
-    }
-  });
+  const [initialState, reducer] = createCRUDReducer<I, K>(key, curdOptions);
 
   return function usePaginationLocal(options?: Options) {
-    const [state, actions] = useCRUDReducer();
+    const [state, dispatch] = useReducer(reducer, initialState, state =>
+      initializer ? initializer(state) : state
+    );
+
+    const [actions] = useState(() => {
+      const [actions] = getCRUDActionsCreator<I, K>()();
+      return { dispatch, ...bindDispatch(actions, dispatch) };
+    });
     const { pageNo, pageSize, params } = state;
-    const { asPath } = useRouter();
 
     const [{ loading }, { fetch }] = useRxAsync(request, {
       ...options,
@@ -101,6 +86,8 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     });
 
     const { hasData, list } = useMemo(() => paginateSelector(state), [state]);
+
+    const { asPath } = useRouter();
 
     useEffect(() => {
       actions.params(getParams(asPath));
