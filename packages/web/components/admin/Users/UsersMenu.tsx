@@ -37,7 +37,9 @@ export function UsersMenu({
             icon="user"
             text={user.nickname}
             onClick={() => {
-              router.push({ search: `id=${user.id}` });
+              router.push({ search: `id=${user.id}` }, undefined, {
+                shallow: true
+              });
             }}
           />
           <MenuDivider />
