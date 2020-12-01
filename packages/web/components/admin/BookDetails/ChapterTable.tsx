@@ -30,7 +30,10 @@ const chapterColumns: Column<Partial<Schema$Chapter>>[] = [
   {
     id: 'price',
     Header: 'Price',
-    accessor: ({ price }) => price || <div>&nbsp;&nbsp;&nbsp;-</div>
+    accessor: chapter =>
+      Object.keys(chapter).length
+        ? chapter.price || <div>&nbsp;&nbsp;&nbsp;-</div>
+        : null
   },
   {
     id: 'createdAt',

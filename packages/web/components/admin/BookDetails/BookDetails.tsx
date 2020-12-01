@@ -37,15 +37,12 @@ const gotoChapter = (bookID: string, chapterID?: string) => {
 export function BookDetails({ book, onUpdate }: Props) {
   const { user } = useAuthState();
   const [useChapters] = useState(() =>
-    createUsePaginationLocal(
-      'id',
-      (params?: Param$GetChapters) =>
-        getChapters({ ...params, bookID: book.id, timestamp: true }),
-      { prefill: false }
+    createUsePaginationLocal('id', (params?: Param$GetChapters) =>
+      getChapters({ ...params, bookID: book.id, timestamp: true })
     )
   );
 
-  const { state } = useChapters({ onFailure });
+  const { state, pagination } = useChapters({ onFailure });
 
   const isAuthor = user?.role === UserRole.Author;
 
@@ -73,6 +70,7 @@ export function BookDetails({ book, onUpdate }: Props) {
         </Filter>
 
         <ChapterTable
+          pagination={pagination}
           data={state.list}
           onRowClick={
             isAuthor

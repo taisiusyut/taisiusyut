@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import {
   AllowedNames,
@@ -79,12 +79,12 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     ...curdOptions,
     prefill,
     defaultState: {
+      ...defaultState,
       ...(prefill !== false &&
         (createPlaceHolder(10, prefill) as Pick<
           CRUDState<I, Partial<I>>,
           'ids' | 'list'
         >)),
-      ...defaultState,
       params: initialParams
     }
   });
@@ -92,8 +92,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   return function usePaginationLocal(options?: Options) {
     const [state, actions] = useCRUDReducer();
     const { pageNo, pageSize, params } = state;
-    const router = useRouter();
-    const { asPath } = router;
+    const { asPath } = useRouter();
 
     const [{ loading }, { fetch }] = useRxAsync(request, {
       ...options,
@@ -101,13 +100,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       onSuccess: actions.paginate
     });
 
-    const { hasData, list } = useMemo(
-      () =>
-        paginateSelector(state, {
-          prefill: {}
-        }),
-      [state]
-    );
+    const { hasData, list } = useMemo(() => paginateSelector(state), [state]);
 
     useEffect(() => {
       actions.params(getParams(asPath));
@@ -118,7 +111,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       if (router.query.pageNo && Number(router.query.pageNo) !== pageNo) {
         setSearchParam(params => ({ ...params, pageNo }));
       }
-    }, [pageNo, router]);
+    }, [pageNo]);
 
     useEffect(() => {
       if (!hasData) {
