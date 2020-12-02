@@ -3,18 +3,37 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { from, of } from 'rxjs';
 import { mergeMap, zipAll } from 'rxjs/operators';
-import { BookStatus, Schema$Category, Schema$Tags } from '@/typings';
+import {
+  BookStatus,
+  JWTSignPayload,
+  Schema$Category,
+  Schema$Tags,
+  UserRole
+} from '@/typings';
 import { MongooseCRUDService } from '@/utils/mongoose';
 import { Book } from './schemas/book.schema';
 
+const allBookStatus = Object.values(BookStatus).filter(
+  (v): v is BookStatus => typeof v === 'number'
+);
 @Injectable()
 export class BookService extends MongooseCRUDService<Book> {
+  readonly bookStatus = allBookStatus.map(status => ({ status }));
+  readonly publicStatus = [
+    { status: BookStatus.Public },
+    { status: BookStatus.Finished }
+  ];
+
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     @InjectModel(Book.name)
     private readonly bookModel: PaginateModel<Book & Document>
   ) {
     super(bookModel);
+  }
+
+  isPublicStatus(status: BookStatus) {
+    return status === BookStatus.Public || status === BookStatus.Finished;
   }
 
   categories(): Aggregate<Schema$Category[]> {
@@ -68,5 +87,33 @@ export class BookService extends MongooseCRUDService<Book> {
         zipAll()
       )
       .toPromise();
+  }
+
+  getRoleBasedQuery(
+    user?: JWTSignPayload,
+    defaultQuery?: Omit<FilterQuery<Book>, 'createdAt' | 'updatedAt'>
+  ) {
+    const query: FilterQuery<Book> = { ...defaultQuery };
+    if (!user || user.role === UserRole.Client) {
+      if (
+        !query.status ||
+        typeof query.status !== 'number' ||
+        !this.isPublicStatus(query.status)
+      ) {
+        delete query.status;
+        query.$or = this.publicStatus;
+      }
+    } else if (user.role === UserRole.Author) {
+      if (query.status) {
+        query.author = user.user_id;
+      } else {
+        query.$or = this.bookStatus.map(payload =>
+          this.isPublicStatus(payload.status)
+            ? payload
+            : { ...payload, author: user.user_id }
+        );
+      }
+    }
+    return query;
   }
 }

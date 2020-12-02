@@ -12,30 +12,19 @@ import {
   HttpStatus,
   BadRequestException
 } from '@nestjs/common';
-import { ObjectID } from 'mongodb';
 import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
 import { BookService } from './book.service';
 import { ObjectId } from '@/decorators';
-import { BookStatus, UserRole } from '@/typings';
+import { BookStatus } from '@/typings';
 import { Condition } from '@/utils/mongoose';
 import { AccessPipe, Access } from '@/utils/access';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { Book } from './schemas/book.schema';
 
-const allBookStatus = Object.values(BookStatus).filter(
-  (v): v is BookStatus => typeof v === 'number'
-);
-
 @Controller('book')
 export class BookController {
-  private bookStatus = allBookStatus.map(status => ({ status }));
-  private publicStatus = [
-    { status: BookStatus.Public },
-    { status: BookStatus.Finished }
-  ];
-
   constructor(private readonly bookService: BookService) {}
 
   isPublicStatus(status: BookStatus) {
@@ -58,18 +47,14 @@ export class BookController {
     @ObjectId('id') id: string,
     @Body(AccessPipe) updateBookDto: UpdateBookDto
   ) {
-    const query: FilterQuery<Book> = {
+    const query: FilterQuery<Book> = this.bookService.getRoleBasedQuery(user, {
       _id: id
-    };
-
-    if (user?.role === UserRole.Author) {
-      query.author = user.user_id;
-    }
+    });
 
     const book = await this.bookService.update(query, updateBookDto);
 
     if (!book) {
-      throw new BadRequestException(`book not found`);
+      throw new NotFoundException(`book not found`);
     }
 
     return book;
@@ -83,34 +68,16 @@ export class BookController {
 
   @Access('Optional')
   @Get(routes.book.get_book)
-  async getBook(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
-    const user = req.user;
-    const query: Parameters<BookService['findOne']>[0] = {
-      _id: id
-    };
-
-    // make sure client/tourist cannot access other books status
-    if (!user?.role || user.role === UserRole.Client) {
-      query.$or = this.publicStatus;
-    }
+  async getBook(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+    const query = this.bookService.getRoleBasedQuery(user, { _id: id });
 
     const book = await this.bookService.findOne(query);
 
-    if (book) {
-      const author = (book.author as unknown) as { _id: ObjectID };
-      // make sure author cannot get other authors non-public book
-
-      if (
-        user?.role === UserRole.Root ||
-        user?.role === UserRole.Admin ||
-        this.isPublicStatus(book.status) ||
-        (user?.role === UserRole.Author && author._id.equals(user.user_id))
-      ) {
-        return book;
-      }
+    if (!book) {
+      throw new NotFoundException('book not found');
     }
 
-    throw new NotFoundException('book not found');
+    return book;
   }
 
   @Access('Optional')
@@ -126,27 +93,10 @@ export class BookController {
       condition.push({ tags: { $in: [tag] } });
     }
 
-    if (!user?.role || user.role === UserRole.Client) {
-      if (!query.status || !this.isPublicStatus(query.status)) {
-        delete query.status;
-        condition.push({ $or: this.publicStatus });
-      }
-    } else if (user.role === UserRole.Author) {
-      // make sure author cannot get other authors non-public book
-      if (query.status) {
-        query.author = user.user_id;
-      } else {
-        condition.push({
-          $or: this.bookStatus.map(payload =>
-            this.isPublicStatus(payload.status)
-              ? payload
-              : { ...payload, author: user.user_id }
-          )
-        });
-      }
-    }
-
-    return this.bookService.paginate({ ...query, condition });
+    return this.bookService.paginate({
+      ...(this.bookService.getRoleBasedQuery(user, query) as GetBooksDto),
+      condition
+    });
   }
 
   @Access('book_public', 'book_finish')

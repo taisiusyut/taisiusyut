@@ -102,7 +102,7 @@ export function testUpdateBook() {
 
     for (const params of updatePayload) {
       response = await updateBook(author.token, book.id, params);
-      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.status).toBe(HttpStatus.NOT_FOUND);
     }
   });
 }
