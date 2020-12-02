@@ -46,6 +46,7 @@ export class User implements InsertedUserSchema {
 
   @Prop({
     type: String,
+    unique: true, // for author
     default: function (this: PropOptions & User) {
       return this.username;
     }
