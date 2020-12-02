@@ -1,6 +1,8 @@
 @import '~styles/utils';
 
 .content {
+  @include sq-dimen(100%);
+  overflow: auto;
   padding: 20px;
 }
 
@@ -60,5 +62,15 @@
 
   .tag {
     margin-right: 5px;
+  }
+
+  .chapter-name {
+    flex: 1 1 auto;
+    &:empty {
+      @include dimen(80%, 20px);
+      content: '';
+      display: block;
+      background-color: rgba($gray3, 0.2);
+    }
   }
 }

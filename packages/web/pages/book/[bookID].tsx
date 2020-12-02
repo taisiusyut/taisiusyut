@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<
   Props,
   Params
 > = async context => {
-  const { bookID } = context.params || {};
+  const { bookID, ...query } = context.query;
 
   if (typeof bookID !== 'string') {
     throw new Error(`bookID is ${bookID}`);
@@ -43,9 +43,10 @@ export const getServerSideProps: GetServerSideProps<
 
   const getChapters = chapterController
     .getChapters(context.req as any, bookID, {
-      pageSize: 20,
+      pageSize: 30,
       status: ChapterStatus.Public,
-      sort: { createdAt: Order.ASC }
+      sort: { createdAt: Order.ASC },
+      ...query
     })
     .then(response => serialize<PaginateResult<Schema$Chapter>>(response));
 

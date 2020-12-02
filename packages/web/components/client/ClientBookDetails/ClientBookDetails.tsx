@@ -24,7 +24,7 @@ import classes from './ClientBookDetails.module.scss';
 export interface ClientBookDetailsData {
   bookID: string;
   book: Schema$Book | null;
-  chapters: PaginateResult<Schema$Chapter>;
+  chapters?: PaginateResult<Schema$Chapter>;
 }
 
 export interface ClientBookDetailsProps extends ClientBookDetailsData {}
@@ -41,9 +41,7 @@ function useBook(
 export function ClientBookDetails(props: ClientBookDetailsProps) {
   const book = useBook(props.bookID, props.book);
   const [useChapters] = useState(() => {
-    const [initialState, reducer] = createCRUDReducer<Schema$Chapter, 'id'>(
-      'id'
-    );
+    const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
     return createUsePaginationLocal(
       'id',
       (params?: Param$GetChapters) =>
@@ -53,9 +51,12 @@ export function ClientBookDetails(props: ClientBookDetailsProps) {
           sort: { createdAt: Order.ASC }
         }),
       {
-        defaultState: reducer(initialState, {
-          type: DefaultCRUDActionTypes.PAGINATE,
-          payload: props.chapters
+        defaultState: { pageSize: props.chapters?.pageSize },
+        initializer: state => ({
+          ...reducer(state, {
+            type: DefaultCRUDActionTypes.PAGINATE,
+            payload: props.chapters
+          })
         })
       }
     );

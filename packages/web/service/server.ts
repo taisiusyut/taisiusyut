@@ -62,16 +62,6 @@ export const getBookController = createGetter(BookController);
 export const getChpaterService = createGetter(ChapterService);
 export const getChpaterController = createGetter(ChapterController);
 
-export async function closeInstance() {
-  if (process.env.NODE_ENV === 'development') {
-    if (app) {
-      await app.close();
-    }
-    app = undefined;
-    appPromise = undefined;
-  }
-}
-
 export const serializer = new MongooseSerializerInterceptor({});
 
 type Payload = Parameters<typeof serializer.serialize>[0];
