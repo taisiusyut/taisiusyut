@@ -6,7 +6,6 @@ import React, {
   useRef
 } from 'react';
 import router from 'next/router';
-import { createSessionStorage } from '@/utils/storage';
 
 interface Props {
   children?: ReactNode;
@@ -20,8 +19,6 @@ type GoBack = (options?: GoBackOptions) => Promise<void>;
 
 const ActionContext = React.createContext<GoBack | undefined>(undefined);
 
-const previousUrls = createSessionStorage<string[]>('previous_urls', []);
-
 export function useHistoryBack() {
   const context = useContext(ActionContext);
   if (context === undefined) {
@@ -31,22 +28,26 @@ export function useHistoryBack() {
 }
 
 export function HistoryBackProvider({ children }: Props) {
-  const records = useRef(previousUrls.get());
+  const records = useRef<string[]>([]);
   const goBack = useCallback(async (options?: GoBackOptions) => {
-    const previous = records.current.slice(-1)[0];
+    const previous = records.current[records.current.length - 2];
     if (previous) {
-      router.back();
+      router.push(previous);
     } else if (options?.fallback) {
       await router.replace(options.fallback);
     }
-    records.current.pop();
+    records.current = records.current.slice(0, -2);
   }, []);
 
   useEffect(() => {
     const handler = (url: string) => {
-      records.current = [...records.current.slice(-5), url];
+      const last = records.current.slice(-1)[0];
+      if (!last || last.replace(/\?.*/, '') !== url.replace(/\?.*/, '')) {
+        records.current = [...records.current.slice(-5), url];
+      }
     };
     router.events.on('routeChangeComplete', handler);
+    handler(router.asPath);
     return () => router.events.off('routeChangeComplete', handler);
   }, []);
 
