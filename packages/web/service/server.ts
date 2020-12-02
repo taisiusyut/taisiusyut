@@ -10,9 +10,6 @@ import {
   MongooseSerializerInterceptor
 } from '@fullstack/server';
 
-let instance: INestApplication | undefined;
-let promise: Promise<INestApplication> | undefined;
-
 async function createInstance() {
   const instance = await NestFactory.create(
     AppModule.init(),
@@ -29,22 +26,36 @@ export async function getServerInstance<T, R = T>(
   defaultInstance?: INestApplication
 ): Promise<R> {
   if (defaultInstance) {
-    instance = defaultInstance;
+    app = defaultInstance;
   } else {
-    if (!promise) {
-      promise = createInstance();
+    if (!appPromise) {
+      appPromise = createInstance();
     }
 
-    if (!instance) {
-      instance = await promise;
+    if (!app) {
+      try {
+        app = await Promise.race([
+          appPromise,
+          new Promise(resolve => setTimeout(resolve, 3000)).then(() =>
+            Promise.reject(`get instance time out`)
+          )
+        ]);
+      } catch (error) {
+        appPromise = undefined;
+        return getServerInstance(type, defaultInstance);
+      }
     }
   }
-  return instance.resolve(type);
+
+  return app.resolve(type);
 }
 
-const createGetter = <T, R = T>(payload: Type<T>) => (
+const createGetter = <T, R = T>(payload: Type<T>) => async (
   defaultInstance?: INestApplication
-) => getServerInstance<T, R>(payload, defaultInstance);
+) => {
+  const result = await getServerInstance<T, R>(payload, defaultInstance);
+  return result;
+};
 
 export const getBookService = createGetter(BookService);
 export const getBookController = createGetter(BookController);
@@ -52,11 +63,13 @@ export const getChpaterService = createGetter(ChapterService);
 export const getChpaterController = createGetter(ChapterController);
 
 export async function closeInstance() {
-  if (instance) {
-    await instance.close();
+  if (process.env.NODE_ENV === 'development') {
+    if (app) {
+      await app.close();
+    }
+    app = undefined;
+    appPromise = undefined;
   }
-  instance = undefined;
-  promise = undefined;
 }
 
 export const serializer = new MongooseSerializerInterceptor({});

@@ -8,3 +8,10 @@ declare module 'http' {
     app?: INestApplication;
   }
 }
+
+declare global {
+  // eslint-disable-next-line
+  let app: INestApplication | undefined = undefined;
+  // eslint-disable-next-line
+  let appPromise: Promise<INestApplication> | undefined = undefined;
+}
