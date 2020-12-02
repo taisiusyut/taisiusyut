@@ -24,7 +24,7 @@ export class AuthService {
     username: string,
     password: string
   ): Promise<JWTSignPayload> {
-    const user = await this.userService.findOne({ username }, '+password');
+    const user = await this.userService.findOne({ username }, {}, '+password');
 
     if (user) {
       const valid = await bcrypt.compare(password, user.password);
