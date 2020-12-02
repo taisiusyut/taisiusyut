@@ -8,7 +8,6 @@ import {
   Req,
   Query,
   BadRequestException,
-  InternalServerErrorException,
   HttpCode,
   HttpStatus
 } from '@nestjs/common';
@@ -34,17 +33,11 @@ export class ChapterController {
   @Access('chapter_create')
   @Post(routes.chapter.create_chapter)
   async create(
-    @Req() req: FastifyRequest,
+    @Req() { user }: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @Body() createChapterDto: CreateChapterDto
   ) {
-    const author = req.user?.user_id;
-
-    if (!author) {
-      throw new InternalServerErrorException(
-        `create book failure, "author" should be defined but receive ${author}`
-      );
-    }
+    const author = user?.user_id;
 
     const bookQuery: FilterQuery<Book> = {
       _id: bookID,
@@ -80,26 +73,18 @@ export class ChapterController {
   @Access('chapter_update')
   @Patch(routes.chapter.update_chapter)
   async update(
-    @Req() req: FastifyRequest,
+    @Req() { user }: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string,
     @Body(AccessPipe) updateChapterDto: UpdateChapterDto
   ) {
-    const { user_id, role } = req.user || {};
-
-    if (!user_id) {
-      throw new InternalServerErrorException(
-        `update book failure, "user_id" should be defined but receive ${user_id}`
-      );
-    }
-
     const query: FilterQuery<Chapter> = {
       _id: chapterID,
       book: bookID
     };
 
-    if (role === UserRole.Author) {
-      query.author = user_id;
+    if (user?.role === UserRole.Author) {
+      query.author = user.user_id;
     }
 
     if (updateChapterDto.type === ChapterType.Pay) {
