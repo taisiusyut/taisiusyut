@@ -8,7 +8,6 @@ import {
   Req,
   Query,
   BadRequestException,
-  ForbiddenException,
   InternalServerErrorException,
   HttpCode,
   HttpStatus
@@ -21,24 +20,12 @@ import { Book } from '@/modules/book/schemas/book.schema';
 import { BookService } from '@/modules/book/book.service';
 import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
-import { Condition } from '@/utils/mongoose';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
 import { CreateChapterDto, GetChaptersDto, UpdateChapterDto } from './dto';
 
-const allChapterStatus = Object.values(ChapterStatus).filter(
-  (v): v is ChapterStatus => typeof v === 'number'
-);
-
-const allChapterType = Object.values(ChapterType).filter(
-  (v): v is ChapterType => typeof v === 'number'
-);
-
 @Controller(routes.chapter.prefix)
 export class ChapterController {
-  readonly chapterStatus = allChapterStatus.map(status => ({ status }));
-  readonly chapterTypes = allChapterType.map(type => ({ type }));
-
   constructor(
     private readonly bookService: BookService,
     private readonly chapterService: ChapterService
@@ -147,29 +134,14 @@ export class ChapterController {
   @Access('Optional')
   @Get(routes.chapter.get_chapters)
   getChapters(
-    @Req() req: FastifyRequest,
+    @Req() { user }: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @Query(AccessPipe) { timestamp, ...query }: GetChaptersDto
   ) {
-    const user = req.user;
-    const condition: Condition[] = [];
-
-    if (!user?.role || user.role === UserRole.Client) {
-      query.status = ChapterStatus.Public;
-    } else if (user.role === UserRole.Author) {
-      // make sure author cannot get other authors non-public chapters
-      if (query.status) {
-        query.author = user.user_id;
-      } else {
-        condition.push({
-          $or: this.chapterStatus.map(payload =>
-            payload.status === ChapterStatus.Public
-              ? payload
-              : { ...payload, author: user.user_id }
-          )
-        });
-      }
-    }
+    const chapterQuery = {
+      ...query,
+      ...(this.chapterService.getRoleBasedQuery(user) as GetChaptersDto)
+    };
 
     // do not select these properties
     let projection: { [K in keyof Chapter]?: number } = {
@@ -186,9 +158,8 @@ export class ChapterController {
 
     return this.chapterService.paginate(
       {
-        ...query,
-        book: bookID,
-        condition
+        ...chapterQuery,
+        book: bookID
       },
       { projection }
     );
@@ -201,28 +172,16 @@ export class ChapterController {
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
   ) {
-    // TODO: make this better
-    const chapter = await this.chapterService.findOne({
+    const chapterQuery: FilterQuery<Chapter> = {
+      ...this.chapterService.getRoleBasedQuery(user),
       _id: chapterID,
       book: bookID
-    });
+    };
+
+    const chapter = await this.chapterService.findOne(chapterQuery);
 
     if (!chapter) {
       throw new BadRequestException(`chapter not found`);
-    }
-
-    if (
-      chapter.type === ChapterType.Pay ||
-      chapter.status !== ChapterStatus.Public
-    ) {
-      const hasPermission =
-        user?.role === UserRole.Root ||
-        user?.role === UserRole.Admin ||
-        (user?.role === UserRole.Author && user.user_id === chapter.author);
-
-      if (!hasPermission) {
-        throw new ForbiddenException();
-      }
     }
 
     return chapter;

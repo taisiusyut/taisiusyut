@@ -4,6 +4,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongooseCRUDService } from '@/utils/mongoose';
 import { Chapter } from './schemas/chapter.schema';
+import {
+  ChapterType,
+  ChapterStatus,
+  JWTSignPayload,
+  UserRole
+} from '@/typings';
 
 export interface GetPriceResult {
   price: number;
@@ -13,8 +19,19 @@ export interface GetPriceResult {
 const toObjectId = (payload: string) =>
   (new ObjectId(payload) as unknown) as string;
 
+const allChapterStatus = Object.values(ChapterStatus).filter(
+  (v): v is ChapterStatus => typeof v === 'number'
+);
+
+const allChapterType = Object.values(ChapterType).filter(
+  (v): v is ChapterType => typeof v === 'number'
+);
+
 @Injectable()
 export class ChapterService extends MongooseCRUDService<Chapter> {
+  readonly chapterStatus = allChapterStatus.map(status => ({ status }));
+  readonly chapterTypes = allChapterType.map(type => ({ type }));
+
   constructor(
     @InjectModel(Chapter.name)
     private readonly chapterModel: PaginateModel<Chapter & Document>
@@ -53,5 +70,19 @@ export class ChapterService extends MongooseCRUDService<Chapter> {
     }
 
     return result;
+  }
+
+  getRoleBasedQuery(user?: JWTSignPayload) {
+    const query: FilterQuery<Chapter> = {};
+    if (!user || user.role === UserRole.Client) {
+      query.status = ChapterStatus.Public;
+    } else if (user.role === UserRole.Author) {
+      query.$or = this.chapterStatus.map(payload =>
+        payload.status === ChapterStatus.Public
+          ? payload
+          : { ...payload, author: user.user_id }
+      );
+    }
+    return query;
   }
 }

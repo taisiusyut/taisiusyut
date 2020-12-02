@@ -94,7 +94,7 @@ export function testGetChapter() {
             content: expect.any(String)
           });
         } else {
-          expect(response.status).toBe(HttpStatus.FORBIDDEN);
+          expect(response.status).toBe(HttpStatus.BAD_REQUEST);
         }
       }
     }
