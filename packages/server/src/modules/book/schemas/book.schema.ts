@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$Book, BookStatus, Category } from '@/typings';
-import { Group } from '@/utils/access';
 import { Author } from './author';
 
 @Schema({
@@ -43,7 +42,6 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Type(() => Author)
   author: Author | string;
 
-  @Group(['book_status_get'])
   @Prop({
     type: Number,
     default: BookStatus.Private,

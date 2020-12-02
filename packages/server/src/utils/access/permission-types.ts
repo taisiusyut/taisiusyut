@@ -14,7 +14,6 @@ export type BookPermission =
   | CRUD<'book'>
   | 'book_public'
   | 'book_finish'
-  | 'book_status_get'
   | 'book_status_update';
 
 export type ChapterPermission =

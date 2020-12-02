@@ -12,7 +12,6 @@ const admin: Permission[] = [
   'book_delete',
   'book_get_all',
   'book_get',
-  'book_status_get',
   'book_status_update',
 
   'chapter_update',
@@ -39,7 +38,6 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
     'book_update',
     'book_get_all',
     'book_get',
-    'book_status_get',
     'book_public',
     'book_finish',
 
@@ -61,7 +59,6 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Guest]: [
     'user_get_all',
     'book_get_all',
-    'book_status_get',
 
     'chapter_get_all',
     'chapter_status_get',

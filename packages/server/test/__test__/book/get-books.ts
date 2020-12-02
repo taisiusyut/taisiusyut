@@ -119,9 +119,6 @@ export function testGetBooks() {
 
       if (user === 'client') {
         expect(response.body.data).not.toContainObject({
-          status: expect.any(Number)
-        });
-        expect(response.body.data).not.toContainObject({
           id: expect.anything(),
           email: expect.anything(),
           username: expect.anything(),
@@ -187,10 +184,6 @@ export function testGetBooks() {
         expect(response.body.total).toBe(length);
         expect(response.body.data).toHaveLength(length);
       }
-
-      expect(response.body.data).not.toContainObject({
-        status: expect.any(Number)
-      });
     }
   });
 }
