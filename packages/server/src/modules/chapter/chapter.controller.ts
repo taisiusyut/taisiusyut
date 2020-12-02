@@ -78,6 +78,8 @@ export class ChapterController {
       };
       const count = await this.chapterService.countDocuments(query);
 
+      createChapterDto.content = createChapterDto.content.trimEnd();
+
       return this.chapterService.create({
         number: count + 1,
         ...createChapterDto,
