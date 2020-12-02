@@ -47,7 +47,7 @@ export function HistoryBackProvider({ children }: Props) {
       }
     };
     router.events.on('routeChangeComplete', handler);
-    handler(router.asPath);
+    handler(window.location.pathname);
     return () => router.events.off('routeChangeComplete', handler);
   }, []);
 
