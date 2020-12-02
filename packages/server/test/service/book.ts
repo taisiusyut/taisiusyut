@@ -56,13 +56,16 @@ export function getBooks(token: string, query: GetBooksDto = {}) {
     .query(qs.stringify(query));
 }
 
-export function getBook(
-  token: string,
-  id: string,
-  query?: Record<string, unknown>
-) {
+export function getBook(token: string, id: string) {
   return request
     .get(routes.get_book.generatePath({ id }))
     .set('Authorization', `bearer ${token}`)
-    .query(qs.stringify(query));
+    .send();
+}
+
+export function getBookByName(token: string, name: string) {
+  return request
+    .get(routes.get_book_by_name.generatePath({ name }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
 }

@@ -24,6 +24,7 @@ export const Routes = {
     create_book: '',
     get_books: '',
     get_book: '/:id',
+    get_book_by_name: '/name/:name',
     update_book: '/:id',
     delete_book: '/:id',
     public_finish_book: '/:id/:type(public|finish)'

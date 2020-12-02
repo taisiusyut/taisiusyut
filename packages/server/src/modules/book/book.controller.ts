@@ -10,7 +10,8 @@ import {
   NotFoundException,
   HttpCode,
   HttpStatus,
-  BadRequestException
+  BadRequestException,
+  Param
 } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
@@ -66,18 +67,29 @@ export class BookController {
     return this.bookService.delete({ _id: id });
   }
 
+  async handleGetBook(query: FilterQuery<Book>) {
+    const book = await this.bookService.findOne(query);
+    if (!book) {
+      throw new NotFoundException('book not found');
+    }
+    return book;
+  }
+
   @Access('Optional')
   @Get(routes.book.get_book)
   async getBook(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
     const query = this.bookService.getRoleBasedQuery(user, { _id: id });
+    return this.handleGetBook(query);
+  }
 
-    const book = await this.bookService.findOne(query);
-
-    if (!book) {
-      throw new NotFoundException('book not found');
-    }
-
-    return book;
+  @Access('Optional')
+  @Get(routes.book.get_book_by_name)
+  async getBookByName(
+    @Req() { user }: FastifyRequest,
+    @Param('name') name: string
+  ) {
+    const query = this.bookService.getRoleBasedQuery(user, { name });
+    return this.handleGetBook(query);
   }
 
   @Access('Optional')
