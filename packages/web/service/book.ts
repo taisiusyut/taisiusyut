@@ -22,6 +22,11 @@ export const getBooks = (params?: Param$GetBooks) =>
 export const getBook = ({ id }: { id: string }) =>
   api.get<Schema$Book>(routes.get_book.generatePath({ id }));
 
+export const getBookByName = ({ bookName }: { bookName: string }) =>
+  api.get<Schema$Book>(
+    routes.get_book_by_name.generatePath({ name: bookName })
+  );
+
 export const updateBook = ({ id, ...payload }: Param$UpdateBook) =>
   api.patch<Schema$Book>(routes.update_book.generatePath({ id }), payload);
 

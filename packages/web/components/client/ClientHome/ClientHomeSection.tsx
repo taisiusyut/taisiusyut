@@ -25,7 +25,7 @@ export function ClientHomeSection({ title, books }: Props) {
             className={classes['section-card']}
             interactive
             elevation={1}
-            onClick={() => router.push(`/book/${book.id}`)}
+            onClick={() => router.push(`/book/${book.name}`)}
           >
             <div>
               <BookModel cover={book.cover} />

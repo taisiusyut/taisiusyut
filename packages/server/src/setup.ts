@@ -17,6 +17,9 @@ export type { NestFastifyApplication };
 
 export const fastifyAdapter = () =>
   new FastifyAdapter({
+    // https://github.com/fastify/fastify/blob/master/docs/Server.md#maxparamlength
+    // increase `maxParamLength` for get book by name
+    maxParamLength: 500,
     querystringParser: qs.parse as FastifyServerOptions['querystringParser']
   });
 

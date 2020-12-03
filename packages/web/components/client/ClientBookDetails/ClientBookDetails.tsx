@@ -16,30 +16,34 @@ import {
   Schema$Chapter,
   Param$GetChapters
 } from '@/typings';
-import { getBook, getChapters } from '@/service';
+import { getBookByName, getChapters } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
 import { ClientBookDetailsChapters } from './ClientBookDetailsChapters';
 import classes from './ClientBookDetails.module.scss';
 
 export interface ClientBookDetailsData {
-  bookID: string;
+  bookName: string;
   book: Schema$Book | null;
   chapters?: PaginateResult<Schema$Chapter>;
 }
 
 export interface ClientBookDetailsProps extends ClientBookDetailsData {}
 
+export interface ChaptersProps {
+  bookID: string;
+  chapters?: PaginateResult<Schema$Chapter>;
+}
+
 function useBook(
-  bookID: string,
+  bookName: string,
   initialData?: Schema$Book | null
 ): Partial<Schema$Book> {
-  const [request] = useState(() => () => getBook({ id: bookID }));
+  const [request] = useState(() => () => getBookByName({ bookName }));
   const [{ data }] = useRxAsync(request, { defer: !!initialData });
   return initialData || data || {};
 }
 
-export function ClientBookDetails(props: ClientBookDetailsProps) {
-  const book = useBook(props.bookID, props.book);
+function Chapters({ bookID, chapters }: ChaptersProps) {
   const [useChapters] = useState(() => {
     const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
     return createUsePaginationLocal(
@@ -47,15 +51,15 @@ export function ClientBookDetails(props: ClientBookDetailsProps) {
       (params?: Param$GetChapters) =>
         getChapters({
           ...params,
-          bookID: props.bookID,
+          bookID,
           sort: { createdAt: Order.ASC }
         }),
       {
-        defaultState: { pageSize: props.chapters?.pageSize },
+        defaultState: { pageSize: chapters?.pageSize },
         initializer: state => ({
           ...reducer(state, {
             type: DefaultCRUDActionTypes.PAGINATE,
-            payload: props.chapters
+            payload: chapters
           })
         })
       }
@@ -64,19 +68,30 @@ export function ClientBookDetails(props: ClientBookDetailsProps) {
   const { data, pagination } = useChapters();
 
   return (
-    <div>
+    <Card className={classes['chapters-card']}>
+      <ClientBookDetailsChapters chapters={data} />
+      <Divider className={classes.divider} />
+      <Pagination {...pagination} />
+    </Card>
+  );
+}
+
+export function ClientBookDetails({
+  bookName,
+  book: defaultBook,
+  chapters
+}: ClientBookDetailsProps) {
+  const book = useBook(bookName, defaultBook);
+
+  return (
+    <>
       <ClientHeader left={<HistoryBackButton fallbackURL="/" />} />
       <div className={classes['content']}>
-        <Card elevation={1}>
+        <Card>
           <ClientBookDetailsBook book={book} />
         </Card>
-
-        <Card elevation={1} className={classes['chapters-card']}>
-          <ClientBookDetailsChapters chapters={data} />
-          <Divider className={classes.divider} />
-          <Pagination {...pagination} />
-        </Card>
+        {book.id && <Chapters bookID={book.id} chapters={chapters} />}
       </div>
-    </div>
+    </>
   );
 }

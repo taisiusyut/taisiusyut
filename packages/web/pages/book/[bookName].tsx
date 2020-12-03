@@ -11,25 +11,30 @@ import {
   getChpaterController,
   serialize
 } from '@/service/server';
-import { PaginateResult, ChapterStatus, Schema$Book } from '@/typings';
-import { Order, Schema$Chapter } from '@/../server/dist';
+import {
+  Order,
+  PaginateResult,
+  ChapterStatus,
+  Schema$Chapter,
+  Schema$Book
+} from '@/typings';
 
 // TODO: handle private book/chatper
 
 interface Props extends ClientBookDetailsProps {}
 
 type Params = {
-  bookID: string;
+  bookName: string;
 };
 
 export const getServerSideProps: GetServerSideProps<
   Props,
   Params
 > = async context => {
-  const { bookID, ...query } = context.query;
+  const { bookName, ...query } = context.query;
 
-  if (typeof bookID !== 'string') {
-    throw new Error(`bookID is ${bookID}`);
+  if (typeof bookName !== 'string') {
+    throw new Error(`bookName is ${bookName}`);
   }
 
   const [bookController, chapterController] = await Promise.all([
@@ -37,24 +42,24 @@ export const getServerSideProps: GetServerSideProps<
     getChpaterController(context.res.app)
   ]);
 
-  const getBook = bookController
-    .getBook(context.req as any, bookID)
-    .then(book => book && serialize<Schema$Book>(book));
+  const book = await bookController
+    .getBookByName(context.req as any, bookName)
+    .then(book => book && serialize<Schema$Book | null>(book));
 
-  const getChapters = chapterController
-    .getChapters(context.req as any, bookID, {
-      pageSize: 30,
-      status: ChapterStatus.Public,
-      sort: { createdAt: Order.ASC },
-      ...query
-    })
-    .then(response => serialize<PaginateResult<Schema$Chapter>>(response));
-
-  const [book, chapters] = await Promise.all([getBook, getChapters]);
+  const chapters = book
+    ? await chapterController
+        .getChapters(context.req as any, book.id, {
+          pageSize: 30,
+          status: ChapterStatus.Public,
+          sort: { createdAt: Order.ASC },
+          ...query
+        })
+        .then(response => serialize<PaginateResult<Schema$Chapter>>(response))
+    : undefined;
 
   return {
     props: {
-      bookID,
+      bookName,
       book,
       chapters
     }
