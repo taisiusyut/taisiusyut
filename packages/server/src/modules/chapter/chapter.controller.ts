@@ -9,7 +9,9 @@ import {
   Query,
   BadRequestException,
   HttpCode,
-  HttpStatus
+  HttpStatus,
+  Param,
+  ParseIntPipe
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { FilterQuery } from 'mongoose';
@@ -150,16 +152,14 @@ export class ChapterController {
     );
   }
 
-  @Access('Optional')
-  @Get(routes.chapter.get_chapter)
-  async getChapter(
-    @Req() { user }: FastifyRequest,
-    @ObjectId('bookID') bookID: string,
-    @ObjectId('chapterID') chapterID: string
+  async handleGetChapter(
+    { user }: FastifyRequest,
+    bookID: string,
+    query: FilterQuery<Chapter>
   ) {
     const chapterQuery: FilterQuery<Chapter> = {
       ...this.chapterService.getRoleBasedQuery(user),
-      _id: chapterID,
+      ...query,
       book: bookID
     };
 
@@ -170,6 +170,26 @@ export class ChapterController {
     }
 
     return chapter;
+  }
+
+  @Access('Optional')
+  @Get(routes.chapter.get_chapter)
+  async getChapter(
+    @Req() req: FastifyRequest,
+    @ObjectId('bookID') bookID: string,
+    @ObjectId('chapterID') chapterID: string
+  ) {
+    return this.handleGetChapter(req, bookID, { _id: chapterID });
+  }
+
+  @Access('Optional')
+  @Get(routes.chapter.get_chapter_by_no)
+  async getChapterbyNo(
+    @Req() req: FastifyRequest,
+    @ObjectId('bookID') bookID: string,
+    @Param('chapterNo', ParseIntPipe) chapterNo: number
+  ) {
+    return this.handleGetChapter(req, bookID, { number: chapterNo });
   }
 
   @Access('chapter_public', 'chapter_private')

@@ -19,7 +19,7 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   id: string;
 
   @Prop({ type: Number, required: true })
-  number: string;
+  number: number;
 
   @Prop({ type: String, required: true, trim: true })
   name: string;

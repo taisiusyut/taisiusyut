@@ -34,6 +34,7 @@ export const Routes = {
     create_chapter: '',
     get_chapters: '',
     get_chapter: '/:chapterID',
+    get_chapter_by_no: '/number/:chapterNo',
     update_chapter: '/:chapterID',
     delete_chapter: '/:chapterID',
     public_private_chapter: '/:chapterID/:type(public|private)'

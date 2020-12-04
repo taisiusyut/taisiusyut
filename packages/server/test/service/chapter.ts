@@ -108,3 +108,14 @@ export function getChapter(token: string, bookID: string, chapterID: string) {
     .set('Authorization', `bearer ${token}`)
     .send();
 }
+
+export function getChapterByNo(
+  token: string,
+  bookID: string,
+  chapterNo: number
+) {
+  return request
+    .get(routes.get_chapter_by_no.generatePath({ bookID, chapterNo }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
