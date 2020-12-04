@@ -42,12 +42,15 @@ export function HistoryBackProvider({ children }: Props) {
   useEffect(() => {
     const handler = (url: string) => {
       const last = records.current.slice(-1)[0];
-      if (!last || last.replace(/\?.*/, '') !== url.replace(/\?.*/, '')) {
-        records.current = [...records.current.slice(-5), url];
-      }
+      const maxRecords = 5;
+      const samePathname =
+        !!last && last.replace(/\?.*/, '') === url.replace(/\?.*/, '');
+      records.current = samePathname
+        ? [...records.current.slice(-maxRecords, -1), url] // replace last path
+        : [...records.current.slice(-maxRecords), url];
     };
     router.events.on('routeChangeComplete', handler);
-    handler(window.location.pathname);
+    handler(window.location.pathname + window.location.search);
     return () => router.events.off('routeChangeComplete', handler);
   }, []);
 
