@@ -43,7 +43,7 @@
   margin-top: 20px;
 
   .divider {
-    @include margin-y(15px);
+    @include margin-y(50px 15px);
   }
 }
 

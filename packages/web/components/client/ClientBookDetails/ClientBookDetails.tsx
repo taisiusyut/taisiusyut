@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { Card, Divider } from '@blueprintjs/core';
+import { Card, Divider, H4 } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { HistoryBackButton } from '@/components/HistoryBackButton';
 import { Pagination } from '@/components/Pagination';
@@ -70,7 +70,9 @@ function Chapters({ bookID, bookName, chapters }: ChaptersProps) {
 
   return (
     <Card className={classes['chapters-card']}>
+      <H4>&nbsp;&nbsp;章節目錄</H4>
       <ClientBookDetailsChapters bookName={bookName} chapters={data} />
+      <div className={classes['chapters-footer']}></div>
       <Divider className={classes.divider} />
       <Pagination {...pagination} />
     </Card>
