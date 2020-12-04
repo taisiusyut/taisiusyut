@@ -31,19 +31,20 @@ export interface ClientBookDetailsProps extends ClientBookDetailsData {}
 
 export interface ChaptersProps {
   bookID: string;
+  bookName: string;
   chapters?: PaginateResult<Schema$Chapter>;
 }
 
 function useBook(
   bookName: string,
   initialData?: Schema$Book | null
-): Partial<Schema$Book> {
+): Schema$Book | null {
   const [request] = useState(() => () => getBookByName({ bookName }));
   const [{ data }] = useRxAsync(request, { defer: !!initialData });
-  return initialData || data || {};
+  return initialData || data || null;
 }
 
-function Chapters({ bookID, chapters }: ChaptersProps) {
+function Chapters({ bookID, bookName, chapters }: ChaptersProps) {
   const [useChapters] = useState(() => {
     const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
     return createUsePaginationLocal(
@@ -69,7 +70,7 @@ function Chapters({ bookID, chapters }: ChaptersProps) {
 
   return (
     <Card className={classes['chapters-card']}>
-      <ClientBookDetailsChapters chapters={data} />
+      <ClientBookDetailsChapters bookName={bookName} chapters={data} />
       <Divider className={classes.divider} />
       <Pagination {...pagination} />
     </Card>
@@ -87,10 +88,10 @@ export function ClientBookDetails({
     <>
       <ClientHeader left={<HistoryBackButton fallbackURL="/" />} />
       <div className={classes['content']}>
-        <Card>
-          <ClientBookDetailsBook book={book} />
-        </Card>
-        {book.id && <Chapters bookID={book.id} chapters={chapters} />}
+        <Card>{book && <ClientBookDetailsBook book={book} />}</Card>
+        {book && (
+          <Chapters bookID={book.id} bookName={book.name} chapters={chapters} />
+        )}
       </div>
     </>
   );

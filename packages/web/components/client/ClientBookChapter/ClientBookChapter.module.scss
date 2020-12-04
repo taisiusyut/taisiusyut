@@ -1,0 +1,12 @@
+@import '~styles/utils';
+
+.content {
+  @include sq-dimen(100%);
+  overflow: auto;
+  padding: 20px;
+}
+
+.paramgraph {
+  font-size: 18px;
+  white-space: pre-wrap;
+}
