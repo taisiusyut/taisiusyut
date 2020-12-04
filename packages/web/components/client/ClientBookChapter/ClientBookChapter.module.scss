@@ -3,10 +3,23 @@
 .content {
   @include sq-dimen(100%);
   overflow: auto;
-  padding: 20px;
+
+  @media (max-width: 480px) {
+    padding: 20px;
+  }
+
+  @media (min-width: 481px) {
+    padding: 40px;
+  }
+
+  padding-bottom: calc(25px + env(safe-area-inset-bottom));
 }
 
 .paramgraph {
   font-size: 18px;
+  line-height: 1.5em;
   white-space: pre-wrap;
+  + .paramgraph {
+    margin-top: 1em;
+  }
 }
