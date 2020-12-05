@@ -223,7 +223,7 @@ export class ChapterController {
       );
     }
 
-    this.eventEmitter.emitAsync(
+    this.eventEmitter.emit(
       PublicChapterEvent.name,
       new PublicChapterEvent({ bookID, chapterID })
     );

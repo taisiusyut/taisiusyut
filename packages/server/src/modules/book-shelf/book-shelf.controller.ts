@@ -7,12 +7,11 @@ import {
   Get,
   Patch,
   Post,
-  Req
+  Req,
+  Query
 } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
 import { BookService } from '@/modules/book/book.service';
 import { ChapterService } from '@/modules/chapter/chapter.service';
-import { PublicChapterEvent } from '@/modules/chapter/event';
 import { ObjectId } from '@/decorators';
 import { routes } from '@/constants';
 import { Order } from '@/typings';
@@ -29,8 +28,11 @@ export class BookShelfController {
     private readonly chapterService: ChapterService
   ) {}
 
-  @Get(routes.get_books_from_shelf)
-  get(@Req() { user }: FastifyRequest, { sort }: GetBooksFromShelfDto) {
+  @Get(routes.book_shelf.get_books_from_shelf)
+  get(
+    @Req() { user }: FastifyRequest,
+    @Query() { sort }: GetBooksFromShelfDto
+  ) {
     if (!user) {
       throw new ForbiddenException(`user is ${user}`);
     }
@@ -88,14 +90,6 @@ export class BookShelfController {
         book: bookID
       },
       dto
-    );
-  }
-
-  @OnEvent(PublicChapterEvent.name)
-  updateLatestChapter(payload: PublicChapterEvent) {
-    this.bookShelfService.updateMany(
-      { book: payload.bookID },
-      { latestChapter: payload.chapterID }
     );
   }
 }

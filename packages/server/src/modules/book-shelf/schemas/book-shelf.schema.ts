@@ -42,7 +42,8 @@ export class BookShelf
 
   @Prop({
     type: Types.ObjectId,
-    ref: Chapter.name
+    ref: Chapter.name,
+    autopopulate: true
   })
   latestChapter?: string | null;
 

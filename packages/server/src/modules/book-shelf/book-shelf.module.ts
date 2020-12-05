@@ -4,6 +4,7 @@ import { BookModule } from '@/modules/book/book.module';
 import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { BookShelfService } from './book-shelf.service';
 import { BookShelfController } from './book-shelf.controller';
+import { BookShelfEventConsumer } from './book-shelf.event-consumer';
 import { BookShelf, BookShelfSchema } from './schemas';
 import autopopulate from 'mongoose-autopopulate';
 
@@ -23,7 +24,7 @@ import autopopulate from 'mongoose-autopopulate';
     ChapterModule
   ],
   controllers: [BookShelfController],
-  providers: [BookShelfService],
+  providers: [BookShelfService, BookShelfEventConsumer],
   exports: [BookShelfService]
 })
 export class BookShelfModule {}
