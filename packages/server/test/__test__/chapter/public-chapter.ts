@@ -8,13 +8,9 @@ import {
 } from '@/typings';
 import { createBook, publicBook } from '../../service/book';
 import { createUserAndLogin, setupUsers } from '../../service/auth';
-import {
-  createChapter,
-  privateChapter,
-  publicChapter
-} from '../../service/chapter';
+import { createChapter, publicChapter } from '../../service/chapter';
 
-export function testPublicPrivateChapter() {
+export function testPublicChapter() {
   let book: Schema$Book;
 
   beforeAll(async () => {
@@ -44,18 +40,9 @@ export function testPublicPrivateChapter() {
     // public chapter success
     response = await publicChapter(author.token, book.id, chapter.id);
     expect(response.body).toHaveProperty('status', ChapterStatus.Public);
-
-    // other author cannot make chapter private
-    response = await privateChapter(otherAutor.token, book.id, chapter.id);
-    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    expect(response.body.status).not.toBe(ChapterStatus.Public);
-
-    // private chapter success
-    response = await privateChapter(author.token, book.id, chapter.id);
-    expect(response.body).toHaveProperty('status', ChapterStatus.Private);
   });
 
-  test('client cannot update chapter status to public/private', async () => {
+  test('client cannot update chapter status to public', async () => {
     let response = await createChapter(author.token, book.id);
     const chapter: Schema$Chapter = response.body;
     expect(chapter).not.toHaveProperty('status', ChapterStatus.Public);

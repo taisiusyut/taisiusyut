@@ -192,32 +192,25 @@ export class ChapterController {
     return this.handleGetChapter(req, bookID, { number: chapterNo });
   }
 
-  @Access('chapter_public', 'chapter_private')
+  @Access('chapter_public')
   @HttpCode(HttpStatus.OK)
-  @Post(routes.chapter.public_private_chapter)
-  async togglePublicPrivate(
+  @Post(routes.chapter.public_chapter)
+  async public(
     @Req() req: FastifyRequest<any>,
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
   ) {
     // TODO: chapter cannot public if book is not public ?
-    const currStatus =
-      req.params.type === 'public'
-        ? ChapterStatus.Private
-        : ChapterStatus.Public;
 
     const result = await this.chapterService.update(
       {
         _id: chapterID,
         book: bookID,
         author: req.user?.user_id,
-        status: currStatus
+        status: ChapterStatus.Private
       },
       {
-        status:
-          currStatus === ChapterStatus.Public
-            ? ChapterStatus.Private
-            : ChapterStatus.Public
+        status: ChapterStatus.Public
       }
     );
 

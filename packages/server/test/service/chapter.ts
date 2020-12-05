@@ -53,27 +53,9 @@ export function publicChapter(
 ) {
   return request
     .post(
-      routes.public_private_chapter.generatePath({
+      routes.public_chapter.generatePath({
         bookID,
-        chapterID,
-        type: 'public'
-      })
-    )
-    .set('Authorization', `bearer ${token}`)
-    .send();
-}
-
-export function privateChapter(
-  token: string,
-  bookID: string,
-  chapterID: string
-) {
-  return request
-    .post(
-      routes.public_private_chapter.generatePath({
-        bookID,
-        chapterID,
-        type: 'private'
+        chapterID
       })
     )
     .set('Authorization', `bearer ${token}`)
