@@ -1,4 +1,4 @@
-import { IsOptional, IsMongoId, IsNumber } from 'class-validator';
+import { IsOptional, IsMongoId, IsInt, Min } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Schema$BookShelf, Param$UpdateBookInShelf } from '@/typings';
 
@@ -12,6 +12,7 @@ class Excluded implements Partial<Schema$BookShelf> {
   @Exclude()
   book?: undefined;
 
+  @Exclude()
   latestChapter?: string;
 
   @Exclude()
@@ -32,7 +33,8 @@ class UpdateBookInShelf
   pin?: boolean;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   @Transform(value => value && JSON.parse(value))
   lastVisit?: number;
 }

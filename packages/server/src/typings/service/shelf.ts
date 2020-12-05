@@ -1,4 +1,4 @@
-import { Timestamp } from './';
+import { Timestamp, Pagination } from './index';
 import { Schema$Book } from './book';
 
 export interface Schema$BookShelf extends Timestamp {
@@ -9,6 +9,8 @@ export interface Schema$BookShelf extends Timestamp {
   lastVisit?: number | null;
   latestChapter?: string | null;
 }
+
+export interface Param$GetBooksFromShelf extends Pagination {}
 
 export interface Param$AddBookToShelf {
   book: string;

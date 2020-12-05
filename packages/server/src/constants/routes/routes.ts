@@ -47,9 +47,9 @@ export const Routes = {
   },
   book_shelf: {
     prefix: '/book-shelf',
-    get_book_shelf: '',
-    add_book_to_shelf: '/add/:bookID',
-    remove_book_from_shelf: '/remove/:bookID',
-    update_book_in_shelf: '/update/:bookID'
+    get_books_from_shelf: '',
+    add_book_to_shelf: '/:bookID',
+    remove_book_from_shelf: '/:bookID',
+    update_book_in_shelf: '/:bookID'
   }
 };
