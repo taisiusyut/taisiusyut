@@ -10,6 +10,7 @@ import { BookModule } from '@/modules/book/book.module';
 import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { PaymentModule } from '@/modules/payment/payment.module';
+import { BookShelfModule } from './modules/book-shelf/book-shelf.module';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
@@ -47,7 +48,8 @@ interface Configs {
         DEFAULT_PASSWORD: Joi.string().default('12345678'),
         MONGODB_URI: Joi.string().optional()
       })
-    })
+    }),
+    BookShelfModule
   ],
   providers: [
     {

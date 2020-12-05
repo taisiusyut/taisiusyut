@@ -44,5 +44,12 @@ export const Routes = {
     get_payments: '',
     create_payment: '',
     update_payment: '/:id'
+  },
+  book_shelf: {
+    prefix: '/book-shelf',
+    get_book_shelf: '',
+    add_book_to_shelf: '/add/:bookID',
+    remove_book_from_shelf: '/remove/:bookID',
+    update_book_in_shelf: '/update/:bookID'
   }
 };
