@@ -7,8 +7,10 @@ import {
   Post,
   Req
 } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { BookService } from '@/modules/book/book.service';
 import { ChapterService } from '@/modules/chapter/chapter.service';
+import { PublicChapterEvent } from '@/modules/chapter/event';
 import { ObjectId } from '@/decorators';
 import { routes } from '@/constants';
 import { BookShelfService } from './book-shelf.service';
@@ -69,6 +71,14 @@ export class BookShelfController {
         book: bookID
       },
       dto
+    );
+  }
+
+  @OnEvent(PublicChapterEvent.name)
+  updateLatestChapter(payload: PublicChapterEvent) {
+    this.bookShelfService.updateMany(
+      { book: payload.bookID },
+      { latestChapter: payload.chapterID }
     );
   }
 }

@@ -7,7 +7,8 @@ import {
   UpdateQuery,
   QueryFindOneAndUpdateOptions,
   QueryFindOptions,
-  QueryFindBaseOptions
+  QueryFindBaseOptions,
+  ModelUpdateOptions
 } from 'mongoose';
 import { nGrams } from 'mongoose-fuzzy-searching/helpers';
 import { PaginateResult, Order } from '@/typings';
@@ -64,6 +65,14 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
       omitUndefined: true,
       ...options
     });
+  }
+
+  updateMany(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>,
+    options: ModelUpdateOptions = {}
+  ) {
+    return this.model.updateMany(query, changes, options);
   }
 
   async findOne(

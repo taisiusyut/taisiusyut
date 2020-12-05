@@ -13,6 +13,7 @@ import {
   Param,
   ParseIntPipe
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FastifyRequest } from 'fastify';
 import { FilterQuery } from 'mongoose';
 import { routes } from '@/constants';
@@ -23,13 +24,15 @@ import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
+import { PublicChapterEvent } from './event';
 import { CreateChapterDto, GetChaptersDto, UpdateChapterDto } from './dto';
 
 @Controller(routes.chapter.prefix)
 export class ChapterController {
   constructor(
     private readonly bookService: BookService,
-    private readonly chapterService: ChapterService
+    private readonly chapterService: ChapterService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   @Access('chapter_create')
@@ -219,6 +222,11 @@ export class ChapterController {
         `book or chapter not found or current status is not allow`
       );
     }
+
+    this.eventEmitter.emitAsync(
+      PublicChapterEvent.name,
+      new PublicChapterEvent({ bookID, chapterID })
+    );
 
     return result;
   }

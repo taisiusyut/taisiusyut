@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseSerializerInterceptor } from '@/utils/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AccessGuard } from '@/utils/access';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
@@ -26,6 +27,8 @@ interface Configs {
     ChapterModule,
     CloudinaryModule,
     PaymentModule,
+    BookShelfModule,
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [
@@ -48,8 +51,7 @@ interface Configs {
         DEFAULT_PASSWORD: Joi.string().default('12345678'),
         MONGODB_URI: Joi.string().optional()
       })
-    }),
-    BookShelfModule
+    })
   ],
   providers: [
     {
