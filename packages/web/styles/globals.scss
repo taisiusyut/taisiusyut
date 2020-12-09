@@ -12,8 +12,6 @@
   --text-light-color: #999;
   --icon-color: #{lighten(#000, 30%)};
   --divider-color: #{$pt-divider-black};
-  --hover-color: rgba(0, 0, 0, 0.04);
-  --active-color: rgba(0, 0, 0, 0.08);
   --shadow-color: #ccc;
   --placeholder-color: #e0e0e0;
   --logo-shadow: 2px 4px 6px #ccc;
@@ -21,6 +19,9 @@
   --book-model-left-color: #eee;
   --book-model-front-bottom-color: #ccc;
   --book-model-shadow-color: #666;
+
+  --item-hover-color: rgba(0, 0, 0, 0.04);
+  --item-active-color: rgba(0, 0, 0, 0.08);
 }
 
 [data-theme^='dark'] {
@@ -30,15 +31,16 @@
   --text-light-color: #a09c97;
   --icon-color: #{darken(#dfdedb, 30%)};
   --divider-color: #{$pt-dark-divider-black};
-  --hover-color: #393939;
-  --active-color: #393939;
   --shadow-color: #191919;
   --placeholder-color: #888;
   --logo-shadow: 2px 4px 6px #333;
 
   --book-model-left-color: #fff;
-  --book-model-front-bottom-color: #999;
+  --book-model-front-bottom-color: #ccc;
   --book-model-shadow-color: #111;
+
+  --item-hover-color: #393939;
+  --item-active-color: #393939;
 }
 
 @each $name, $color in $base-colors {
