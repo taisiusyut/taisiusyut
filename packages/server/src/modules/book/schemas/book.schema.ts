@@ -37,7 +37,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
     type: Types.ObjectId,
     ref: User.name,
     required: true,
-    autopopulate: true
+    autopopulate: { maxDepth: 1 }
   })
   @Type(() => Author)
   author: Author | string;

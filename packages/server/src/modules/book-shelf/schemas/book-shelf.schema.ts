@@ -29,7 +29,7 @@ export class BookShelf
     type: Types.ObjectId,
     ref: Book.name,
     required: true,
-    autopopulate: true
+    autopopulate: { maxDepth: 1 }
   })
   @Type(() => Book)
   book: string | Book;
@@ -43,7 +43,7 @@ export class BookShelf
   @Prop({
     type: Types.ObjectId,
     ref: Chapter.name,
-    autopopulate: true
+    autopopulate: { maxDepth: 1 }
   })
   latestChapter?: string | null;
 
