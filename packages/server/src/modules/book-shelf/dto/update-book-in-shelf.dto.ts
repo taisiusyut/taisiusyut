@@ -16,7 +16,7 @@ class Excluded implements Partial<Schema$BookShelf> {
   bookID?: undefined;
 
   @Exclude()
-  latestChapter?: string;
+  latestChapter?: undefined;
 
   @Exclude()
   createdAt?: undefined;
