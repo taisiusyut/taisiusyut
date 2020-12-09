@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
+import { AdminPreferencesProvider } from '@/hooks/useAdminPreferences';
 import { AdminSidebar } from './AdminSidebar';
-import { AdminPreferencesProvider } from './AdminPreferences';
 
 interface Props {
   children?: ReactNode;

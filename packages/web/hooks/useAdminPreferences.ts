@@ -44,7 +44,7 @@ export function usePreferencesActions() {
   return context;
 }
 
-export function usePreferences() {
+export function useAdminPreferences() {
   return [usePreferencesState(), usePreferencesActions()] as const;
 }
 
@@ -70,11 +70,9 @@ export function AdminPreferencesProvider({ children }: Props) {
     []
   );
 
-  return (
-    <ActionContext.Provider value={actions}>
-      <StateContext.Provider value={preferences}>
-        {children}
-      </StateContext.Provider>
-    </ActionContext.Provider>
+  return React.createElement(
+    ActionContext.Provider,
+    { value: actions },
+    React.createElement(StateContext.Provider, { value: preferences }, children)
   );
 }
