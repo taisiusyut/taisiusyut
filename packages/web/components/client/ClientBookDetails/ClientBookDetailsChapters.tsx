@@ -1,5 +1,5 @@
 import React from 'react';
-import router from 'next/router';
+import Link from 'next/link';
 import { Schema$Chapter } from '@/typings';
 import { Classes, Tag } from '@blueprintjs/core';
 import classes from './ClientBookDetails.module.scss';
@@ -18,19 +18,21 @@ export function ClientBookDetailsChapters({ bookName, chapters }: Props) {
     <div className={classes.chapters}>
       {chapters.map(chapter => {
         return (
-          <div
+          <Link
             key={chapter.id}
-            className={[Classes.MENU_ITEM, classes['chapter-item']].join(' ')}
-            onClick={() =>
-              router.push(`/book/${bookName}/chapter/${chapter.number}`)
-            }
+            href={`/book/${bookName}/chapter/${chapter.number}`}
           >
-            <Tag minimal className={classes.tag}>
-              {chapter.number &&
-                String(chapter.number).padStart(maxLength, '0')}
-            </Tag>
-            <span className={classes['chapter-name']}>{chapter.name}</span>
-          </div>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a
+              className={[Classes.MENU_ITEM, classes['chapter-item']].join(' ')}
+            >
+              <Tag minimal className={classes.tag}>
+                {chapter.number &&
+                  String(chapter.number).padStart(maxLength, '0')}
+              </Tag>
+              <span className={classes['chapter-name']}>{chapter.name}</span>
+            </a>
+          </Link>
         );
       })}
     </div>
