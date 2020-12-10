@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { defer, Observable, throwError } from 'rxjs';
+import React, { ReactNode, useEffect } from 'react';
+import { defer, fromEvent, Observable, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import {
   Param$Login,
@@ -25,6 +25,8 @@ export const StateContext = React.createContext<State | undefined>(undefined);
 export const ActionContext = React.createContext<AuthActions | undefined>(
   undefined
 );
+
+const LOGOUT = 'logout';
 
 const authenticate$ = (payload?: AuthenticatePayload) =>
   payload && 'email' in payload
@@ -59,15 +61,25 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
             Toaster.success({ message: 'Logout success' });
           }
           clearJwtToken();
+
           dispatch({ type: 'LOGOUT' });
+
+          try {
+            localStorage.removeItem(LOGOUT);
+          } catch {}
         } catch (error) {
           Toaster.apiError('Logout failure', error);
         }
       },
       authenticate: payload => {
         dispatch({ type: 'AUTHENTICATE' });
+
         return authenticate$(payload).pipe(
           tap(auth => {
+            try {
+              localStorage.setItem(LOGOUT, String(+new Date()));
+            } catch {}
+
             dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: auth.user });
           }),
           catchError(error => {
@@ -78,6 +90,18 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    // logout current page when user is logout at other tab/page or clear all storage
+    const subscription = fromEvent<StorageEvent>(window, 'storage').subscribe(
+      event => {
+        if (event.key === LOGOUT && event.newValue === null) {
+          authActions.logout({ slient: true });
+        }
+      }
+    );
+    return () => subscription.unsubscribe();
+  }, [authActions]);
 
   return React.createElement(
     StateContext.Provider,
