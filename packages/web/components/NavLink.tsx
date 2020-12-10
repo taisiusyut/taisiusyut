@@ -6,6 +6,7 @@ import { UrlObject } from 'url';
 interface Props extends LinkProps {
   activeClassName?: string;
   children: ReactElement;
+  dynamic?: boolean;
 }
 
 const isActive = (regex: RegExp, url?: string | UrlObject) => {
@@ -20,14 +21,21 @@ const isActive = (regex: RegExp, url?: string | UrlObject) => {
 export function NavLink({
   children,
   activeClassName = 'active',
+  dynamic,
   ...props
 }: Props) {
-  const { pathname } = useRouter();
+  const { pathname, asPath } = useRouter();
   const child = Children.only(children);
   const childClassName = child.props.className || '';
-  const regex = new RegExp(`${pathname.replace(/\/?\[.*\]/, '(/[.*])?')}$`);
 
-  const className = [props.href, props.as].some(url => isActive(regex, url))
+  const className = [props.href, props.as].some(url =>
+    dynamic
+      ? isActive(
+          new RegExp(`${pathname.replace(/\/?\[.*\]/, '(/[.*]$)?')}`),
+          url
+        )
+      : url === decodeURIComponent(asPath)
+  )
     ? `${childClassName} ${activeClassName}`.trim()
     : childClassName;
 

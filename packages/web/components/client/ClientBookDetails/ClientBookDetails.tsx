@@ -4,6 +4,7 @@ import { Card, Divider, H4 } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { HistoryBackButton } from '@/components/HistoryBackButton';
 import { Pagination } from '@/components/Pagination';
+import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import {
   createCRUDReducer,
@@ -88,7 +89,10 @@ export function ClientBookDetails({
 
   return (
     <>
-      <ClientHeader left={<HistoryBackButton fallbackURL="/" />} />
+      <ClientHeader
+        left={<HistoryBackButton fallbackURL="/" />}
+        right={<>{book && <BookShelfToggle bookID={book.id} />}</>}
+      />
       <div className={classes['content']}>
         <Card>{book && <ClientBookDetailsBook book={book} />}</Card>
         {book && (

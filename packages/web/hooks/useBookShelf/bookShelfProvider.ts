@@ -9,32 +9,27 @@ import {
   Dispatched
 } from '../crud-reducer';
 
-export type BookShelf =
-  | Schema$BookShelf
-  | (Partial<Schema$BookShelf> & { id: string });
+export type BookShelf = (Schema$BookShelf | Partial<Schema$BookShelf>) & {
+  bookID: string;
+};
+
 type State = CRUDState<BookShelf, false>;
-type Actions = Dispatched<CRUDActionCreators<BookShelf, 'id'>>;
+type Actions = Dispatched<CRUDActionCreators<BookShelf, 'bookID'>>;
 
 export const StateContext = React.createContext<State | undefined>(undefined);
 export const ActionContext = React.createContext<Actions | undefined>(
   undefined
 );
 
-const [initialState, reducer] = createCRUDReducer<BookShelf, 'id'>('id', {
-  prefill: false
-});
+const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
+  'bookID',
+  { prefill: false }
+);
 
-const [crudActions] = getCRUDActionsCreator<BookShelf, 'id'>()();
+const [crudActions] = getCRUDActionsCreator<BookShelf, 'bookID'>()();
 
 export function BookShelfProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState, state =>
-    reducer(
-      state,
-      crudActions.list(
-        Array.from({ length: 10 }, () => ({ id: String(Math.random()) }))
-      )
-    )
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [actions] = useState({
     dispatch,
     ...bindDispatch(crudActions, dispatch)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { publishBook } from '@/service';
 import { BookStatus } from '@/typings';
@@ -10,8 +10,8 @@ interface Props {
   onSuccess?: (payload: { status: BookStatus }) => void;
 }
 
-interface OnClick {
-  onClick?: (event: any) => void;
+interface OnClick<E extends HTMLElement = HTMLElement> {
+  onClick?: (event: MouseEvent<E>) => void;
 }
 
 export function withPublishBook<P extends OnClick>(

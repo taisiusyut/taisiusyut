@@ -40,7 +40,7 @@
   --book-model-shadow-color: #111;
 
   --item-hover-color: #393939;
-  --item-active-color: #393939;
+  --item-active-color: #555;
 }
 
 @each $name, $color in $base-colors {

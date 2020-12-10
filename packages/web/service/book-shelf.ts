@@ -8,10 +8,8 @@ export const getBookShelf = () =>
 export const addBookToShelf = (bookID: string) =>
   api.post<Schema$BookShelf>(routes.add_book_to_shelf.generatePath({ bookID }));
 
-export const removeBookToShelf = (bookID: string) =>
-  api.delete<Schema$BookShelf>(
-    routes.remove_book_from_shelf.generatePath({ bookID })
-  );
+export const removeBookFromShelf = (bookID: string) =>
+  api.delete(routes.remove_book_from_shelf.generatePath({ bookID }));
 
 export const updateBookInShelf = ({
   bookID,

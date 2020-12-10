@@ -54,41 +54,49 @@
 
 .book-shelf-item-content {
   flex: 1 1 auto;
+  overflow: hidden;
 }
+
+$line-height: 1.765em;
+$min-height: 1em;
 
 .book-name,
 .book-author,
 .book-latest-chapter {
-  $line-height: 1.765em;
-  $min-height: 1em;
-
+  @include dimen(100%);
   @include text-overflow-ellipsis();
-  line-height: $line-height;
-  float: left;
   clear: both;
+  float: left;
+  line-height: $line-height;
+}
 
-  &:empty {
-    @include margin-y(($line-height - $min-height) / 2);
-    background-color: var(--book-model-front-bottom-color);
-    min-height: $min-height;
-    max-width: 70%;
+.skeleton {
+  .book-name:empty {
+    width: 50%;
+  }
+
+  .book-author:empty {
+    width: 60%;
+  }
+
+  .book-latest-chapter:empty {
+    width: 80%;
+  }
+
+  .book-name,
+  .book-author,
+  .book-latest-chapter {
+    &:empty {
+      @include margin-y(($line-height - $min-height) / 2);
+      background-color: var(--book-model-front-bottom-color);
+      min-height: $min-height;
+      max-width: 70%;
+    }
   }
 }
 
-.book-name:empty {
-  width: 50%;
-}
-
-.book-author:empty {
-  width: 60%;
-}
-
-.book-latest-chapter:empty {
-  width: 80%;
-}
-
 .book-author,
-.book-latest {
+.book-latest-chapter {
   color: var(--text-light-color);
   font-size: 0.85em;
 }
