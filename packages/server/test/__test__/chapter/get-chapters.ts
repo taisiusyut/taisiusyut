@@ -155,12 +155,6 @@ export function testGetChapters() {
           createdAt: expect.anything(),
           updateddAt: expect.anything()
         });
-
-        if (user === 'client') {
-          expect(response.body.data).not.toContainObject({
-            status: expect.anything()
-          });
-        }
       }
     }
   );

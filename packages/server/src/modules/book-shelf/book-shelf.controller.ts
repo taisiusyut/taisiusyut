@@ -8,7 +8,8 @@ import {
   Patch,
   Post,
   Req,
-  Query
+  Query,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
 import { ChapterService } from '@/modules/chapter/chapter.service';
@@ -53,11 +54,17 @@ export class BookShelfController {
         book: bookID
       };
 
-      const [chapter] = await this.chapterService.findAll(
-        { ...this.chapterService.getRoleBasedQuery(req.user), bookID },
+      const chapters = await this.chapterService.findAll(
+        { ...this.chapterService.getRoleBasedQuery(req.user), book: bookID },
         null,
         { limit: 1, sort: { createdAt: Order.DESC } }
       );
+
+      const [chapter] = chapters;
+
+      if (chapters.length > 1) {
+        throw new InternalServerErrorException(`chapters more then one`);
+      }
 
       const latestChapter = chapter?._id;
       if (latestChapter) {
