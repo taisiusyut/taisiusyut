@@ -1,9 +1,6 @@
 import React from 'react';
 import { ThemeSelector } from '@/components/ThemeSelector';
-import {
-  Preferences,
-  usePreferences
-} from '@/components/admin/AdminPreferences';
+import { Preferences, useAdminPreferences } from '@/hooks/useAdminPreferences';
 import { SettingsSection } from './SettingsSection';
 import { createForm } from '@/utils/form';
 import classes from './Settings.module.scss';
@@ -11,7 +8,7 @@ import classes from './Settings.module.scss';
 const { Form, FormItem } = createForm<Preferences>({ inline: true });
 
 export function SettingsPreferences() {
-  const [initialValues, actions] = usePreferences();
+  const [initialValues, actions] = useAdminPreferences();
 
   return (
     <SettingsSection title="Preferences" className={classes.preferences}>
