@@ -4,7 +4,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
-import { Group } from '@/utils/access';
 
 @Schema({
   timestamps: true,
@@ -45,7 +44,6 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Type(() => Book)
   book: string;
 
-  @Group(['chapter_status_get'])
   @Prop({
     type: Number,
     default: ChapterStatus.Private,

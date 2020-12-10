@@ -20,7 +20,6 @@ export type ChapterPermission =
   | CRUD<'chapter'>
   | 'chapter_public'
   | 'chapter_private'
-  | 'chapter_status_get'
   | 'chapter_status_update';
 
 export type PaymentPermission = CRUD<'payment'> | 'payment_get_by_user';

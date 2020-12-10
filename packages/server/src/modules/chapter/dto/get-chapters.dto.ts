@@ -7,7 +7,6 @@ import {
   Param$GetChapters
 } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
-import { Group } from '@/utils/access';
 import { IsChapterStatus, IsChapterType, IsPrice } from './';
 
 class Excluded
@@ -45,7 +44,6 @@ class GetChapters
 
   @IsOptional()
   @IsChapterStatus()
-  @Group(['chapter_status_get'])
   status?: ChapterStatus;
 
   @IsOptional()

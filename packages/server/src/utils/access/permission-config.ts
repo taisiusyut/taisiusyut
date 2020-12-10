@@ -18,7 +18,6 @@ const admin: Permission[] = [
   'chapter_delete',
   'chapter_get_all',
   'chapter_get',
-  'chapter_status_get',
   'chapter_status_update',
 
   'payment_update',
@@ -45,7 +44,6 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
     'chapter_update',
     'chapter_get_all',
     'chapter_get',
-    'chapter_status_get',
     'chapter_public',
     'chapter_private',
 
@@ -61,7 +59,6 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
     'book_get_all',
 
     'chapter_get_all',
-    'chapter_status_get',
 
     'payment_get_all'
   ]
