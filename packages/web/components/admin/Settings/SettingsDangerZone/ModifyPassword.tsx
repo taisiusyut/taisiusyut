@@ -17,10 +17,10 @@ export function ModifyPassword() {
     const payload = await form.validateFields();
     try {
       await modifyPassword(payload);
-      Toaster.success({ message: 'Modify account success' });
+      Toaster.success({ message: 'Modify password success' });
       logout();
     } catch (error) {
-      Toaster.apiError('Modify account failure', error);
+      Toaster.apiError('Modify password failure', error);
       throw error;
     }
   }

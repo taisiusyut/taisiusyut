@@ -44,7 +44,7 @@ export class AuthService {
         });
       }
 
-      throw new BadRequestException('incorrect Password');
+      throw new BadRequestException('incorrect password');
     } else {
       const root = await this.userService.findOne({ role: UserRole.Root });
 
