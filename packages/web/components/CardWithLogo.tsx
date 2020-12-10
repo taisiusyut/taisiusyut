@@ -1,7 +1,5 @@
-import Image from 'next/image';
-import { Card, H5, ICardProps } from '@blueprintjs/core';
-
-const imageSize = 130;
+import { Card, ICardProps } from '@blueprintjs/core';
+import { Logo } from '@/components/Logo';
 
 export function CardWithLogo({
   title,
@@ -13,10 +11,7 @@ export function CardWithLogo({
     <div className="card">
       <Card {...props} elevation={elevation}>
         <div className="header">
-          <div className="logo">
-            <Image src="/logo.png" width={imageSize} height={imageSize} />
-          </div>
-          <H5 children={title} />
+          <Logo imageSize={130} />
         </div>
         <div>{children}</div>
       </Card>
@@ -39,11 +34,6 @@ export function CardWithLogo({
             :global(h5) {
               white-space: break-spaces;
             }
-          }
-
-          .logo {
-            @include margin-y(-10px -25px);
-            filter: drop-shadow(var(--logo-shadow));
           }
         `}
       </style>
