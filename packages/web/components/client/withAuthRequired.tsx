@@ -6,7 +6,6 @@ import {
 import { Logo } from '@/components/Logo';
 import { createUserForm } from '@/components/UserForm';
 import { useAuthActions } from '@/hooks/useAuth';
-import { Toaster } from '@/utils/toaster';
 import { RegistrationForm, LoginForm } from './ClientForm';
 
 interface OnClick<E extends HTMLElement = HTMLElement> {
@@ -28,23 +27,17 @@ export function withAuthRequired<P extends OnClick>(
     const [form] = useForm();
     const { authenticate } = useAuthActions();
 
-    function handleConfirm(errorMsg: string) {
-      return async function () {
-        const payload = await form.validateFields();
-        try {
-          await authenticate(payload).toPromise();
-        } catch (error) {
-          Toaster.apiError(errorMsg, error);
-          throw error;
-        }
-      };
+    async function handleConfirm() {
+      const payload = await form.validateFields();
+      await authenticate(payload).toPromise();
     }
 
     function handleRegistration() {
+      form.resetFields();
       openConfirmDialog({
         ...dialogProps,
         onCancel: handleLogin,
-        onConfirm: handleConfirm('Registration failure'),
+        onConfirm: handleConfirm,
         title: '會員註冊',
         confirmText: '註冊',
         cancelText: '登入',
@@ -57,10 +50,11 @@ export function withAuthRequired<P extends OnClick>(
     }
 
     function handleLogin() {
+      form.resetFields();
       openConfirmDialog({
         ...dialogProps,
         onCancel: handleRegistration,
-        onConfirm: handleConfirm('Login failure'),
+        onConfirm: handleConfirm,
         title: '會員登入',
         confirmText: '登入',
         cancelText: '註冊',

@@ -9,7 +9,7 @@ const { Form, Username, Password, ConfirmPassword, Email } = createUserForm();
 
 export function LoginForm(props: UserFormProps) {
   return (
-    <Form>
+    <Form {...props}>
       {props.children}
       <Username validators={[userValidators.username.required]} />
       <Password validators={[userValidators.password.required]} />

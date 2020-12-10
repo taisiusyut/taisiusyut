@@ -41,7 +41,6 @@ export function useGetBookShelf() {
   useEffect(() => {
     switch (auth.loginStatus) {
       case 'unknown':
-      case 'loading':
         actions.list(
           Array.from({ length: 10 }, () => ({ bookID: String(Math.random()) }))
         );
