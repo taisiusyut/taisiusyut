@@ -14,4 +14,11 @@ declare global {
   let app: INestApplication | undefined = undefined;
   // eslint-disable-next-line
   let appPromise: Promise<INestApplication> | undefined = undefined;
+
+  namespace NodeJS {
+    interface Global {
+      app: INestApplication | undefined;
+      appPromise: Promise<INestApplication> | undefined;
+    }
+  }
 }

@@ -10,6 +10,11 @@ import {
   MongooseSerializerInterceptor
 } from '@fullstack/server';
 
+if (typeof global.app === 'undefined') {
+  global.app = undefined;
+  global.appPromise = undefined;
+}
+
 async function createInstance() {
   const instance = await NestFactory.create(
     AppModule.init(),

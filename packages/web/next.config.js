@@ -1,6 +1,3 @@
-global.app = undefined;
-global.appPromise = undefined;
-
 module.exports = {
   // Do not enable strict mode globally.
   // Since @blueprintjs is violate the strict mode ...
