@@ -53,8 +53,6 @@ export function withUpdateProfile<P extends OnClick>(
         title,
         onConfirm,
         icon: 'user',
-        footerMode: 2,
-        divider: false,
         confirmText: '確認',
         cancelText: '取消',
         children: (

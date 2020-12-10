@@ -9,26 +9,16 @@ import {
   Button,
   Classes,
   Dialog,
-  Divider,
   IDialogProps,
-  IButtonProps,
   Intent
 } from '@blueprintjs/core';
 import { createOpenOverlay } from '@/utils/openOverlay';
-
-export enum FooterMode {
-  Default,
-  Half,
-  Fill
-}
 
 export interface ConfirmDialogProps extends IDialogProps {
   children?: ReactNode;
   intent?: Intent;
   confirmText?: string;
   cancelText?: string;
-  divider?: boolean;
-  footerMode?: FooterMode;
   onConfirm?: () => Promise<unknown>;
   onCancel?: () => unknown | Promise<unknown>;
 }
@@ -61,8 +51,6 @@ export function ConfirmDialog({
   onClose,
   onConfirm,
   onCancel,
-  divider,
-  footerMode,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   intent = 'primary',
@@ -73,49 +61,10 @@ export function ConfirmDialog({
     onSuccess: onClose
   });
 
-  const cancelButton = (
-    <Button
-      onClick={async (event: SyntheticEvent<HTMLElement>) => {
-        const cancel = onCancel && onCancel();
-        await cancel;
-        onClose && onClose(event);
-      }}
-      disabled={loading}
-    >
-      {cancelText}
-    </Button>
-  );
-
-  const confirmButton = (
-    <Button intent={intent} onClick={fetch} loading={loading}>
-      {confirmText}
-    </Button>
-  );
-
-  let footer = (
-    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-      {cancelButton}
-      {confirmButton}
-    </div>
-  );
-
-  if (footerMode === FooterMode.Half) {
-    footer = (
-      <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-        {React.cloneElement<IButtonProps>(cancelButton, { fill: true })}
-        {React.cloneElement<IButtonProps>(confirmButton, { fill: true })}
-      </div>
-    );
-  }
-
-  if (footerMode === FooterMode.Fill) {
-    footer = (
-      <div>
-        {React.cloneElement<IButtonProps>(confirmButton, { fill: true })}
-        <div style={{ margin: '10px 0' }}></div>
-        {React.cloneElement<IButtonProps>(cancelButton, { fill: true })}
-      </div>
-    );
+  async function handleCancel(event: SyntheticEvent<HTMLElement>) {
+    const cancel = onCancel && onCancel();
+    await cancel;
+    onClose && onClose(event);
   }
 
   return (
@@ -126,11 +75,18 @@ export function ConfirmDialog({
       canOutsideClickClose={!loading}
       className={className}
     >
-      <div className={Classes.DIALOG_BODY}>
-        {children}
-        {children && divider !== false && <Divider style={{ marginTop: 20 }} />}
+      <div className={Classes.DIALOG_BODY}>{children}</div>
+      <div className={Classes.DIALOG_FOOTER}>
+        <div>
+          <Button fill intent={intent} onClick={fetch} loading={loading}>
+            {confirmText}
+          </Button>
+          <div style={{ margin: '10px 0' }}></div>
+          <Button fill disabled={loading} onClick={handleCancel}>
+            {cancelText}
+          </Button>
+        </div>
       </div>
-      <div className={Classes.DIALOG_FOOTER}>{footer}</div>
     </Dialog>
   );
 }

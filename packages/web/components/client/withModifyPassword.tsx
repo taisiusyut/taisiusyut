@@ -38,8 +38,7 @@ export function withModifyPassword<P extends OnClick>(
         title,
         onConfirm,
         icon: 'lock',
-        footerMode: 2,
-        divider: false,
+        intent: 'danger',
         confirmText: '確認',
         cancelText: '取消',
         children: <ModifyPasswordForm form={form} />

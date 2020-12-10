@@ -18,9 +18,7 @@ export interface OnClick<E extends HTMLElement = HTMLElement> {
 const { useForm } = createUserForm();
 
 const dialogProps: Partial<ConfirmDialogProps> = {
-  icon: 'user',
-  divider: false,
-  footerMode: 2
+  icon: 'user'
 };
 
 export function withAuthRequired<P extends OnClick>(

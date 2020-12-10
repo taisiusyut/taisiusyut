@@ -19,8 +19,8 @@
 .cover {
   @include dimen(120px);
   @include relative();
-  background-color: var(--secondary-color);
-  box-shadow: $pt-input-box-shadow;
+  background-color: var(--primary-color);
+  box-shadow: $pt-dark-elevation-shadow-0;
   cursor: pointer;
 
   &.uploaded {
