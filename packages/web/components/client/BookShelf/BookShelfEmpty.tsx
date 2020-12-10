@@ -35,10 +35,10 @@ export function BookShelfEmpty() {
   if (auth.loginStatus !== 'loggedIn') {
     content = (
       <NonIdealState
-        description="請先登陸"
+        description="請先登入"
         action={
           <LoginButton
-            text="登陸"
+            text="登入"
             intent="primary"
             onClick={() => router.push(searchURL)}
           />

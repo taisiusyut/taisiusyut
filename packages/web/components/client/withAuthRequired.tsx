@@ -1,14 +1,25 @@
 import React, { MouseEvent } from 'react';
-import { openConfirmDialog } from '@/components/ConfirmDialog';
-import { createUserForm, userValidators } from '@/components/UserForm';
+import {
+  openConfirmDialog,
+  ConfirmDialogProps
+} from '@/components/ConfirmDialog';
+import { Logo } from '@/components/Logo';
+import { createUserForm } from '@/components/UserForm';
 import { useAuthActions } from '@/hooks/useAuth';
 import { Toaster } from '@/utils/toaster';
+import { RegistrationForm, LoginForm } from './ClientForm';
 
 interface OnClick<E extends HTMLElement = HTMLElement> {
   onClick?: (event: MouseEvent<E>) => void;
 }
 
-const { Form, Username, Password, useForm } = createUserForm();
+const { useForm } = createUserForm();
+
+const dialogProps: Partial<ConfirmDialogProps> = {
+  icon: 'user',
+  divider: false,
+  footerMode: 2
+};
 
 export function withAuthRequired<P extends OnClick>(
   Component: React.ComponentType<P>
@@ -17,30 +28,50 @@ export function withAuthRequired<P extends OnClick>(
     const [form] = useForm();
     const { authenticate } = useAuthActions();
 
-    async function onConfirm() {
-      try {
+    function handleConfirm(errorMsg: string) {
+      return async function () {
         const payload = await form.validateFields();
-        await authenticate(payload).toPromise();
-      } catch (error) {
-        Toaster.apiError(`Login failure`, error);
-      }
+        try {
+          await authenticate(payload).toPromise();
+        } catch (error) {
+          Toaster.apiError(errorMsg, error);
+          throw error;
+        }
+      };
     }
 
-    function handleClick() {
+    function handleRegistration() {
       openConfirmDialog({
-        onConfirm,
-        title: '登陸',
-        confirmText: 'Login',
-        divider: false,
+        ...dialogProps,
+        onCancel: handleLogin,
+        onConfirm: handleConfirm('Registration failure'),
+        title: '會員註冊',
+        confirmText: '註冊',
+        cancelText: '登入',
         children: (
-          <Form form={form}>
-            <Username validators={[userValidators.username.required]} />
-            <Password validators={[userValidators.password.required]} />
-          </Form>
+          <RegistrationForm form={form}>
+            <Logo />
+          </RegistrationForm>
         )
       });
     }
 
-    return <Component {...((props as unknown) as P)} onClick={handleClick} />;
+    function handleLogin() {
+      openConfirmDialog({
+        ...dialogProps,
+        onCancel: handleRegistration,
+        onConfirm: handleConfirm('Login failure'),
+        title: '會員登入',
+        confirmText: '登入',
+        cancelText: '註冊',
+        children: (
+          <LoginForm form={form}>
+            <Logo />
+          </LoginForm>
+        )
+      });
+    }
+
+    return <Component {...((props as unknown) as P)} onClick={handleLogin} />;
   };
 }

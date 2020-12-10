@@ -1,10 +1,8 @@
 import React, {
   ReactNode,
   createContext,
-  useState,
-  useEffect,
   useContext,
-  useMemo
+  SyntheticEvent
 } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import {
@@ -13,10 +11,16 @@ import {
   Dialog,
   Divider,
   IDialogProps,
+  IButtonProps,
   Intent
 } from '@blueprintjs/core';
-import { useBoolean } from '@/hooks/useBoolean';
 import { createOpenOverlay } from '@/utils/openOverlay';
+
+export enum FooterMode {
+  Default,
+  Half,
+  Fill
+}
 
 export interface ConfirmDialogProps extends IDialogProps {
   children?: ReactNode;
@@ -24,7 +28,9 @@ export interface ConfirmDialogProps extends IDialogProps {
   confirmText?: string;
   cancelText?: string;
   divider?: boolean;
+  footerMode?: FooterMode;
   onConfirm?: () => Promise<unknown>;
+  onCancel?: () => unknown | Promise<unknown>;
 }
 
 interface ActionContext {
@@ -49,43 +55,14 @@ export const openConfirmDialog = createOpenOverlay<ConfirmDialogProps>(
   ConfirmDialog
 );
 
-export const ConfirmDialogProvider: React.FC = ({ children }) => {
-  const [props, setProps] = useState<Partial<ConfirmDialogProps>>();
-  const [isOpen, open, close] = useBoolean();
-  const { onClosed } = props || {};
-  const value = useMemo<ActionContext>(
-    () => ({ openConfirmDialog: setProps }),
-    []
-  );
-
-  useEffect(() => {
-    props && open();
-  }, [props, open]);
-
-  return (
-    <DialogContext.Provider value={value}>
-      {children}
-      {props && (
-        <ConfirmDialog
-          {...props}
-          isOpen={isOpen}
-          onClose={close}
-          onClosed={(...args) => {
-            onClosed && onClosed(...args);
-            setProps(undefined);
-          }}
-        />
-      )}
-    </DialogContext.Provider>
-  );
-};
-
 export function ConfirmDialog({
   className = '',
   children,
   onClose,
   onConfirm,
+  onCancel,
   divider,
+  footerMode,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   intent = 'primary',
@@ -95,6 +72,51 @@ export function ConfirmDialog({
     defer: true,
     onSuccess: onClose
   });
+
+  const cancelButton = (
+    <Button
+      onClick={async (event: SyntheticEvent<HTMLElement>) => {
+        const cancel = onCancel && onCancel();
+        await cancel;
+        onClose && onClose(event);
+      }}
+      disabled={loading}
+    >
+      {cancelText}
+    </Button>
+  );
+
+  const confirmButton = (
+    <Button intent={intent} onClick={fetch} loading={loading}>
+      {confirmText}
+    </Button>
+  );
+
+  let footer = (
+    <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+      {cancelButton}
+      {confirmButton}
+    </div>
+  );
+
+  if (footerMode === FooterMode.Half) {
+    footer = (
+      <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+        {React.cloneElement<IButtonProps>(cancelButton, { fill: true })}
+        {React.cloneElement<IButtonProps>(confirmButton, { fill: true })}
+      </div>
+    );
+  }
+
+  if (footerMode === FooterMode.Fill) {
+    footer = (
+      <div>
+        {React.cloneElement<IButtonProps>(confirmButton, { fill: true })}
+        <div style={{ margin: '10px 0' }}></div>
+        {React.cloneElement<IButtonProps>(cancelButton, { fill: true })}
+      </div>
+    );
+  }
 
   return (
     <Dialog
@@ -108,16 +130,7 @@ export function ConfirmDialog({
         {children}
         {children && divider !== false && <Divider style={{ marginTop: 20 }} />}
       </div>
-      <div className={Classes.DIALOG_FOOTER}>
-        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-          <Button onClick={onClose} disabled={loading}>
-            {cancelText}
-          </Button>
-          <Button intent={intent} onClick={fetch} loading={loading}>
-            {confirmText}
-          </Button>
-        </div>
-      </div>
+      <div className={Classes.DIALOG_FOOTER}>{footer}</div>
     </Dialog>
   );
 }
