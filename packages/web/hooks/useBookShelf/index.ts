@@ -39,11 +39,20 @@ export function useGetBookShelf() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    switch (auth.loginStatus) {
+      case 'unknown':
+      case 'loading':
+        actions.list(
+          Array.from({ length: 10 }, () => ({ bookID: String(Math.random()) }))
+        );
+        break;
+      case 'required':
+        actions.list([]);
+        break;
+    }
+
     if (auth.user) {
       setLoading(true);
-      actions.list(
-        Array.from({ length: 10 }, () => ({ bookID: String(Math.random()) }))
-      );
       const subscription = defer(() => getBookShelf()).subscribe(
         books => {
           setLoading(false);

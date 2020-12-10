@@ -48,6 +48,8 @@ export function BookShelfItem({
   }
 
   return (
-    <div className={[...className, 'skeleton'].join(' ').trim()}>{content}</div>
+    <div className={[...className, classes.skeleton].join(' ').trim()}>
+      {content}
+    </div>
   );
 }
