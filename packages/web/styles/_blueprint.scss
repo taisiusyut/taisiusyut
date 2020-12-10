@@ -1,19 +1,17 @@
 @import '~styles/utils';
 
-.#{$ns}-button:not([class*='bp3-intent-']) {
-  .#{$ns}-icon.#{$ns}-icon {
-    color: var(--text-color);
-  }
+.#{$ns}-button .#{$ns}-icon.#{$ns}-icon {
+  color: var(--text-color) !important;
 }
 
 .#{$ns}-dialog.#{$ns}-dialog {
   @include dimen(auto);
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   min-width: 300px;
   overflow: hidden;
 
   .#{$ns}-dialog-header {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     height: 50px;
     padding-right: 10px;
     .#{$ns}-heading {
@@ -53,7 +51,7 @@ a:hover,
 
 [data-theme^='dark'] {
   .#{$ns}-popover.#{$ns}-popover {
-    .bp3-popover-arrow {
+    .#{$ns}-popover-arrow {
       &:before {
         box-shadow: $pt-dark-elevation-shadow-0;
       }

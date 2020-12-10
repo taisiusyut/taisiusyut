@@ -63,7 +63,7 @@ export function ClientHeader({
             font-size: 16px;
             font-weight: bold;
             margin-bottom: 0;
-            text-align-last: center;
+            text-align: center;
           }
         `}
       </style>

@@ -1,0 +1,44 @@
+@import '~styles/utils';
+
+.item {
+  @include flex(center);
+  background-color: var(--primary-color);
+  // prettier-ignore
+  box-shadow: 
+    0 0 0 1px var(--divider-color), 
+    0 0 0 rgba($black, 0),
+    0 0 0 rgba($black, 0);
+  margin: 1px 0px;
+  padding: 15px;
+
+  + .item {
+    margin-top: -1px;
+  }
+
+  .item-left {
+    flex: 1 0 auto;
+  }
+
+  .item-right {
+    flex: 0 1 auto;
+  }
+}
+
+.spacer {
+  padding: 7.5px 10px;
+  background-color: var(--secondary-color);
+}
+
+.interactive {
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background-color: var(--item-hover-color);
+  }
+}
+
+.footer {
+  @include margin-x(20px);
+  margin-top: 10px;
+}
