@@ -7,10 +7,10 @@ interface Props extends UserFormProps {
 
 const { Form, Username, Password, ConfirmPassword, Email } = createUserForm();
 
-export function RegistrationForm(props: Props) {
+export function RegistrationForm({ head, children, ...props }: Props) {
   return (
     <Form {...props}>
-      {props.children}
+      {head}
 
       <Username
         validators={[
@@ -31,6 +31,8 @@ export function RegistrationForm(props: Props) {
       <ConfirmPassword />
 
       <Email />
+
+      {children}
     </Form>
   );
 }

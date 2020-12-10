@@ -11,7 +11,7 @@ export function CardWithLogo({
     <div className="card">
       <Card {...props} elevation={elevation}>
         <div className="header">
-          <Logo imageSize={130} />
+          <Logo imageSize={110} />
         </div>
         <div>{children}</div>
       </Card>
