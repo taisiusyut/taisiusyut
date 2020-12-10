@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { Prop, PropOptions, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { InsertedUserSchema, UserRole } from '@/typings';
 import bcrypt from 'bcrypt';
@@ -40,10 +40,6 @@ export class User implements InsertedUserSchema {
   })
   role: UserRole;
 
-  createdAt: number;
-
-  updatedAt: number;
-
   @Prop({
     type: String,
     unique: true, // for author
@@ -54,6 +50,12 @@ export class User implements InsertedUserSchema {
   nickname?: string;
 
   description?: string;
+
+  @Transform(Number)
+  createdAt: number;
+
+  @Transform(Number)
+  updatedAt: number;
 
   constructor(payload: Partial<User>) {
     Object.assign(this, payload);

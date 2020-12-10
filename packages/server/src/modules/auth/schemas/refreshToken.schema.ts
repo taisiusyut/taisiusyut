@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { UserRole, Schema$RefreshToken } from '@/typings';
+import { Transform } from 'class-transformer';
 
 @Schema({
   timestamps: true,
@@ -25,8 +26,10 @@ export class RefreshToken implements Schema$RefreshToken {
   @Prop({ type: String, required: true, unique: true })
   refreshToken: string;
 
+  @Transform(Number)
   createdAt: number;
 
+  @Transform(Number)
   updatedAt: number;
 
   constructor(payload: Partial<RefreshToken>) {

@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
@@ -29,7 +29,7 @@ export class BookShelf
     type: Types.ObjectId,
     ref: Book.name,
     required: true,
-    autopopulate: { maxDepth: 1 }
+    autopopulate: { maxDepth: 2 }
   })
   @Type(() => Book)
   book: string | Book;
@@ -47,8 +47,10 @@ export class BookShelf
   })
   latestChapter?: string | null;
 
+  @Transform(Number)
   createdAt: string;
 
+  @Transform(Number)
   updatedAt: string;
 
   constructor(payload: Partial<BookShelf>) {

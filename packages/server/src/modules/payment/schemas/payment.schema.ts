@@ -9,7 +9,7 @@ import {
 } from '@/typings';
 import { BookPaymentSchema } from './payment-book.schema';
 import { ChapterPaymentSchema } from './payment-chapter.schema';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 
 @Schema({ discriminatorKey: 'type' })
 export class PaymentDetails {
@@ -55,8 +55,10 @@ export class Payment implements Schema$Payment {
   })
   status: PaymentStatus;
 
+  @Transform(Number)
   createdAt: string;
 
+  @Transform(Number)
   updatedAt: string;
 
   constructor(payload: Partial<Payment>) {

@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$Book, BookStatus, Category } from '@/typings';
@@ -49,8 +49,10 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   })
   status: BookStatus;
 
+  @Transform(Number)
   createdAt: string;
 
+  @Transform(Number)
   updatedAt: string;
 
   constructor(payload: Partial<Book>) {
