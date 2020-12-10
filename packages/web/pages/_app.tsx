@@ -4,7 +4,7 @@ import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import { useRxAsync } from 'use-rx-hooks';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
-import { HistoryBackProvider } from '@/hooks/useHistoryBack';
+import { GoBackProvider } from '@/hooks/useGoBack';
 import { UserRole } from '@/typings';
 import '@/styles/globals.scss';
 import 'typeface-muli';
@@ -56,14 +56,14 @@ function AppContent(props: ExtendAppProps) {
 
 function App(props: ExtendAppProps) {
   return (
-    <HistoryBackProvider>
+    <GoBackProvider>
       <AuthProvider>
         <Head>
           <title>睇小說</title>
         </Head>
         <AppContent {...props} />
       </AuthProvider>
-    </HistoryBackProvider>
+    </GoBackProvider>
   );
 }
 

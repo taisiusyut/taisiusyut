@@ -14,7 +14,7 @@ import { ApiError, createChapter, updateChapter } from '@/service';
 import { createChapterSotrage } from '@/utils/storage';
 import { Toaster } from '@/utils/toaster';
 import { ChapterForm, ChapterState } from './ChapterForm';
-import { useHistoryBack } from '@/hooks/useHistoryBack';
+import { useGoBack } from '@/hooks/useGoBack';
 
 // TODO: upload
 interface Props {
@@ -44,7 +44,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
   );
 
-  const goBack = useHistoryBack();
+  const goBack = useGoBack();
 
   const [saved, setSaved] = useState<Partial<ChapterState> | null>();
   const [wordCount, setWordCount] = useState<number | null>(null);
@@ -53,7 +53,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     return {
       onSuccess: () => {
         storageRef.current.removeItem();
-        goBack({ fallback: `/admin/book/${bookID}` });
+        goBack({ targetPath: `/admin/book/${bookID}` });
         Toaster.success({ message: `${prefix} chapter success` });
       },
       onFailure: (error: ApiError) => {
@@ -111,7 +111,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     <Card>
       <PageHeader
         title={`${prefix} Chapter`}
-        fallbackURL={`/admin/book/${bookID}`}
+        targetPath={`/admin/book/${bookID}`}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {saved ? (

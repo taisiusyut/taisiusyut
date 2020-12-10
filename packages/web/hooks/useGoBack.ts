@@ -1,3 +1,7 @@
+/**
+ * Anims to preserve search params in previous url
+ */
+
 import React, {
   ReactNode,
   useCallback,
@@ -12,14 +16,14 @@ interface Props {
 }
 
 interface GoBackOptions {
-  fallback?: string;
+  targetPath: string;
 }
 
-type GoBack = (options?: GoBackOptions) => Promise<void>;
+type GoBack = (options: GoBackOptions) => Promise<void>;
 
 const ActionContext = React.createContext<GoBack | undefined>(undefined);
 
-export function useHistoryBack() {
+export function useGoBack() {
   const context = useContext(ActionContext);
   if (context === undefined) {
     throw new Error('useHistoryActions must be used within a HistoryProvider');
@@ -27,14 +31,14 @@ export function useHistoryBack() {
   return context;
 }
 
-export function HistoryBackProvider({ children }: Props) {
+export function GoBackProvider({ children }: Props) {
   const records = useRef<string[]>([]);
-  const goBack = useCallback(async (options?: GoBackOptions) => {
+  const goBack = useCallback<GoBack>(async options => {
     const previous = records.current[records.current.length - 2];
-    if (previous) {
-      router.push(previous);
-    } else if (options?.fallback) {
-      await router.replace(options.fallback);
+    if (previous && previous.replace(/\?.*/, '') === options.targetPath) {
+      await router.push(previous);
+    } else {
+      await router.push(options.targetPath);
     }
     records.current = records.current.slice(0, -2);
   }, []);

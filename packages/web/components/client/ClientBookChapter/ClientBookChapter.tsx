@@ -1,7 +1,7 @@
 import React from 'react';
 import { Schema$Chapter } from '@/typings';
 import { ClientBookChapterContent } from './ClientBookChapterContent';
-import { HistoryBackButton } from '@/components/HistoryBackButton';
+import { GoBackButton } from '@/components/GoBackButton';
 import { ClientHeader } from '@/components/client/ClientHeader';
 
 export interface ClientBookChapterData {
@@ -20,11 +20,7 @@ export function ClientBookChapter({
     <>
       <ClientHeader
         title={chapter && `第${chapter.number}章 ${chapter.name}`}
-        left={
-          <HistoryBackButton
-            fallbackURL={chapter ? `/book/${bookName}` : '/'}
-          />
-        }
+        left={<GoBackButton targetPath={chapter ? `/book/${bookName}` : '/'} />}
       />
       {chapter && <ClientBookChapterContent chapter={chapter} />}
     </>

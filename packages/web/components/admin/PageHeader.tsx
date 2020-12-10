@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 import { H4 } from '@blueprintjs/core';
-import { HistoryBackButton } from '@/components/HistoryBackButton';
+import { GoBackButton } from '@/components/GoBackButton';
 import { resolve } from 'styled-jsx/css';
 
 interface Props {
   title?: ReactNode;
   children?: ReactNode;
-  fallbackURL?: string;
+  targetPath?: string;
 }
 
 const h4 = resolve`
@@ -22,15 +22,12 @@ const button = resolve`
   }
 `;
 
-export function PageHeader({ title, fallbackURL, children }: Props) {
+export function PageHeader({ title, targetPath, children }: Props) {
   return (
     <div className="header">
       <div className="title">
-        {fallbackURL && (
-          <HistoryBackButton
-            fallbackURL={fallbackURL}
-            className={button.className}
-          />
+        {targetPath && (
+          <GoBackButton targetPath={targetPath} className={button.className} />
         )}
         <H4 className={h4.className}>{title}</H4>
       </div>

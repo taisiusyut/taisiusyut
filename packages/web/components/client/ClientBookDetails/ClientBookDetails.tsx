@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { Card, Divider, H4 } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
-import { HistoryBackButton } from '@/components/HistoryBackButton';
+import { GoBackButton } from '@/components/GoBackButton';
 import { Pagination } from '@/components/Pagination';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
@@ -90,7 +90,7 @@ export function ClientBookDetails({
   return (
     <>
       <ClientHeader
-        left={<HistoryBackButton fallbackURL="/" />}
+        left={<GoBackButton targetPath="/" />}
         right={<>{book && <BookShelfToggle bookID={book.id} />}</>}
       />
       <div className={classes['content']}>

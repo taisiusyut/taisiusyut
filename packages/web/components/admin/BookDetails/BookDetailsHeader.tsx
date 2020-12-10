@@ -64,7 +64,7 @@ export function BookDetailsHeader({ book, role, onUpdate }: Props) {
   return (
     <>
       <Card>
-        <PageHeader fallbackURL={`/admin/book`} title="Book Details">
+        <PageHeader targetPath={`/admin/book`} title="Book Details">
           {actions}
         </PageHeader>
       </Card>
