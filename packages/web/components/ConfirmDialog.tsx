@@ -21,6 +21,9 @@ import { createOpenOverlay } from '@/utils/openOverlay';
 export interface ConfirmDialogProps extends IDialogProps {
   children?: ReactNode;
   intent?: Intent;
+  confirmText?: string;
+  cancelText?: string;
+  divider?: boolean;
   onConfirm?: () => Promise<unknown>;
 }
 
@@ -82,6 +85,9 @@ export function ConfirmDialog({
   children,
   onClose,
   onConfirm,
+  divider,
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
   intent = 'primary',
   ...props
 }: ConfirmDialogProps) {
@@ -100,15 +106,15 @@ export function ConfirmDialog({
     >
       <div className={Classes.DIALOG_BODY}>
         {children}
-        <Divider style={{ marginTop: 20 }} />
+        {children && divider !== false && <Divider style={{ marginTop: 20 }} />}
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
           <Button onClick={onClose} disabled={loading}>
-            Cancel
+            {cancelText}
           </Button>
           <Button intent={intent} onClick={fetch} loading={loading}>
-            Confirm
+            {confirmText}
           </Button>
         </div>
       </div>
