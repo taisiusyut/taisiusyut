@@ -12,7 +12,7 @@ const { Form, FormItem, useForm } = createForm<Param$DeleteAccount>();
 
 function PasswordForm(props: FormProps<Param$DeleteAccount>) {
   return (
-    <Form {...props} style={{ width: 400 }}>
+    <Form {...props}>
       <FormItem
         name="password"
         label="Confirm Passwrod"

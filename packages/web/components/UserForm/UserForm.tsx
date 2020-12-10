@@ -2,17 +2,17 @@ import React from 'react';
 import {
   Param$CreateUser,
   Param$UpdateUser,
-  Param$UpdateAuthor
+  Param$UpdateAuthor,
+  Param$ModifyPassword
 } from '@/typings';
 import { createForm, validators, FormProps, FormItemProps } from '@/utils/form';
-import { Input, Password as PasswordInput } from './Input';
-import { UserRoleSelect } from './Select';
+import { Input, Password as PasswordInput } from '../Input';
+import { UserRoleSelect } from '../Select';
 
 type UserFormSchema = Param$CreateUser &
   Partial<Omit<Param$UpdateUser, 'id'>> &
-  Partial<Omit<Param$UpdateAuthor, 'id'>> & {
-    confirmPassword?: string;
-  };
+  Partial<Omit<Param$UpdateAuthor, 'id'>> &
+  Param$ModifyPassword;
 
 export type UserFormProps = FormProps<UserFormSchema>;
 export type UserFormInstance = NonNullable<FormProps<UserFormSchema>['form']>;
@@ -46,7 +46,7 @@ export function createUserForm({
 
   const ConfirmPassword = () => (
     <FormItem
-      name="confirmPassword"
+      name="confirmNewPassword"
       label="Confirm Password"
       deps={['password']}
       validators={({ password }) => [

@@ -4,11 +4,14 @@ import {
   ConfirmDialogProps
 } from '@/components/ConfirmDialog';
 import { Logo } from '@/components/Logo';
-import { createUserForm } from '@/components/UserForm';
-import { useAuthActions } from '@/hooks/useAuth';
-import { RegistrationForm, LoginForm } from './ClientForm';
+import {
+  createUserForm,
+  RegistrationForm,
+  LoginForm
+} from '@/components/UserForm';
+import { useAuth } from '@/hooks/useAuth';
 
-interface OnClick<E extends HTMLElement = HTMLElement> {
+export interface OnClick<E extends HTMLElement = HTMLElement> {
   onClick?: (event: MouseEvent<E>) => void;
 }
 
@@ -25,7 +28,7 @@ export function withAuthRequired<P extends OnClick>(
 ) {
   return function OpenLoginDialog(props: P) {
     const [form] = useForm();
-    const { authenticate } = useAuthActions();
+    const [{ loginStatus }, { authenticate }] = useAuth();
 
     async function handleConfirm() {
       const payload = await form.validateFields();
@@ -41,11 +44,7 @@ export function withAuthRequired<P extends OnClick>(
         title: '會員註冊',
         confirmText: '註冊',
         cancelText: '登入',
-        children: (
-          <RegistrationForm form={form}>
-            <Logo />
-          </RegistrationForm>
-        )
+        children: <RegistrationForm form={form} head={<Logo />} />
       });
     }
 
@@ -58,14 +57,15 @@ export function withAuthRequired<P extends OnClick>(
         title: '會員登入',
         confirmText: '登入',
         cancelText: '註冊',
-        children: (
-          <LoginForm form={form}>
-            <Logo />
-          </LoginForm>
-        )
+        children: <LoginForm form={form} head={<Logo />} />
       });
     }
 
-    return <Component {...((props as unknown) as P)} onClick={handleLogin} />;
+    return (
+      <Component
+        {...((props as unknown) as P)}
+        onClick={loginStatus === 'loggedIn' ? props.onClick : handleLogin}
+      />
+    );
   };
 }

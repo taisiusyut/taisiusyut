@@ -2,19 +2,12 @@ import React from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
-import { createUserForm, userValidators } from '@/components/UserForm';
+import { createUserForm, RegistrationForm } from '@/components/UserForm';
 import { UserRole, Param$CreateUser } from '@/typings';
 import { clearJwtToken, createUser, logout } from '@/service';
 import { Toaster } from '@/utils/toaster';
 
-const {
-  Form,
-  Username,
-  Password,
-  ConfirmPassword,
-  Email,
-  useForm
-} = createUserForm();
+const { useForm } = createUserForm();
 
 const registration = async (payload: Param$CreateUser) => {
   await createUser({ ...payload, role: UserRole.Root });
@@ -45,30 +38,10 @@ export function RootRegisterForm() {
   });
 
   return (
-    <Form
+    <RegistrationForm
       form={form}
-      onFinish={({ confirmPassword, ...params }) => fetch(params)}
+      onFinish={({ confirmNewPassword, ...params }) => fetch(params)}
     >
-      <Username
-        validators={[
-          userValidators.username.required,
-          userValidators.username.format
-        ]}
-      />
-
-      <Password
-        deps={['username']}
-        validators={({ username }) => [
-          userValidators.password.required,
-          userValidators.password.format,
-          userValidators.password.equalToUsername(username)
-        ]}
-      />
-
-      <ConfirmPassword />
-
-      <Email />
-
       <Button fill type="submit" intent="primary" loading={loading}>
         Register
       </Button>
@@ -81,6 +54,6 @@ export function RootRegisterForm() {
       >
         Reset Form
       </Button>
-    </Form>
+    </RegistrationForm>
   );
 }

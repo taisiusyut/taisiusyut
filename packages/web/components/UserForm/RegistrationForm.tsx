@@ -1,23 +1,13 @@
-import React from 'react';
-import {
-  createUserForm,
-  userValidators,
-  UserFormProps
-} from '@/components/UserForm';
+import React, { ReactNode } from 'react';
+import { createUserForm, userValidators, UserFormProps } from './UserForm';
+
+interface Props extends UserFormProps {
+  head?: ReactNode;
+}
 
 const { Form, Username, Password, ConfirmPassword, Email } = createUserForm();
 
-export function LoginForm(props: UserFormProps) {
-  return (
-    <Form {...props}>
-      {props.children}
-      <Username validators={[userValidators.username.required]} />
-      <Password validators={[userValidators.password.required]} />
-    </Form>
-  );
-}
-
-export function RegistrationForm(props: UserFormProps) {
+export function RegistrationForm(props: Props) {
   return (
     <Form {...props}>
       {props.children}
