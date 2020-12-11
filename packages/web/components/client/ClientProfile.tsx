@@ -12,6 +12,7 @@ import { withModifyPassword } from '@/components/client/withModifyPassword';
 import { withUpdateProfile } from '@/components/client/withUpdateProfile';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
+import { UserRole } from '@/typings';
 import dayjs from 'dayjs';
 
 const handleClick = () => void 0;
@@ -35,7 +36,6 @@ export function ClientProfileDialog(props: ListViewDialogProps) {
       <ListItem rightElement={auth.user.nickname}>暱稱</ListItem>
 
       <ListItem
-        onClick={handleClick}
         rightElement={dayjs(auth.user.createdAt).format(`YYYY年MM日DD日`)}
       >
         註冊日期
@@ -54,6 +54,12 @@ export function ClientProfileDialog(props: ListViewDialogProps) {
       </ListItem>
 
       <ListSpacer />
+
+      {auth.user.role === UserRole.Client && (
+        <ListItem onClick={handleClick} rightElement={chevron}>
+          我要做作者
+        </ListItem>
+      )}
 
       <ListViewDialogFooter>
         <Button
