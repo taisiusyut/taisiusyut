@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import router from 'next/router';
-import dynamic from 'next/dynamic';
 import { Button, Popover, IPopoverProps, H4 } from '@blueprintjs/core';
-import type { IDateRangeInputProps } from '@blueprintjs/datetime';
+import { DateRangeInput } from '@blueprintjs/datetime';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { Input, SearchInput } from '@/components/Input';
 import {
@@ -16,6 +15,7 @@ import { setSearchParam } from '@/utils/setSearchParam';
 import { setRef } from '@/utils/setRef';
 import classes from './Filter.module.scss';
 import dayjs from 'dayjs';
+import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
 
 interface FilterInputProps {
   deps?: undefined;
@@ -25,12 +25,6 @@ interface FilterInputProps {
 interface FilterDateRangeProps {
   deps?: undefined;
 }
-
-const DateRangeInput = dynamic<IDateRangeInputProps>(() =>
-  import(
-    /* webpackChunkName: "@blueprintjs/datetime" */ '@blueprintjs/datetime'
-  ).then(({ DateRangeInput }) => DateRangeInput)
-);
 
 function toDateRange(payload?: string[]) {
   return payload?.map(s => new Date(s));
