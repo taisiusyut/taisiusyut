@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useState, useContext } from 'react';
-import { createAdminStorage } from '@/utils/storage';
+import { createClientStorage } from '@/utils/storage';
 
 interface Props {
   children: ReactNode;
@@ -8,15 +8,28 @@ interface Props {
 export interface Preferences {
   theme: Theme;
   accentColor: AccentColor;
+  pagingDisplay: boolean;
+  fixWidth: boolean;
+  fontSize: number;
+  lineHeight: string;
+  autoFetchNextChapter: boolean;
 }
 
 interface PreferencesActions {
   update: (payload: Partial<Preferences>) => void;
 }
 
-export const adminPreferencesStorage = createAdminStorage<Preferences>(
+export const clientPreferencesStorage = createClientStorage<Preferences>(
   'preferences',
-  { theme: 'light', accentColor: 'blue' }
+  {
+    theme: 'dark',
+    accentColor: 'blue',
+    pagingDisplay: true,
+    fixWidth: true,
+    fontSize: 16,
+    lineHeight: '1.5em',
+    autoFetchNextChapter: true
+  }
 );
 
 const StateContext = React.createContext<Preferences | undefined>(undefined);
@@ -24,32 +37,32 @@ const ActionContext = React.createContext<PreferencesActions | undefined>(
   undefined
 );
 
-export function useAdminPreferencesState() {
+export function useClientPreferencesState() {
   const context = useContext(StateContext);
   if (context === undefined) {
     throw new Error(
-      'useAdminPreferencesState must be used within a AdminPreferencesProvider'
+      'useClientPreferencesState must be used within a ClientPreferencesProvider'
     );
   }
   return context;
 }
 
-export function useAdminPreferencesActions() {
+export function useClientPreferencesActions() {
   const context = useContext(ActionContext);
   if (context === undefined) {
     throw new Error(
-      'useAdminPreferencesActions must be used within a AdminPreferencesProvider'
+      'useClientPreferencesActions must be used within a ClientPreferencesProvider'
     );
   }
   return context;
 }
 
-export function useAdminPreferences() {
-  return [useAdminPreferencesState(), useAdminPreferencesActions()] as const;
+export function useClientPreferences() {
+  return [useClientPreferencesState(), useClientPreferencesActions()] as const;
 }
 
-export function AdminPreferencesProvider({ children }: Props) {
-  const [state, setState] = useState(adminPreferencesStorage.get());
+export function ClientPreferencesProvider({ children }: Props) {
+  const [state, setState] = useState(clientPreferencesStorage.get());
   const actions = useMemo<PreferencesActions>(
     () => ({
       update: changes =>
@@ -63,6 +76,8 @@ export function AdminPreferencesProvider({ children }: Props) {
           if (changes.accentColor) {
             window.__setAccentColor(changes.accentColor);
           }
+
+          clientPreferencesStorage.save(preferences);
 
           return preferences;
         })

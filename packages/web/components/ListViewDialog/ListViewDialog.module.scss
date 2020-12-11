@@ -20,13 +20,20 @@
   }
 
   .item-right {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
   }
 }
 
 .spacer {
-  padding: 7.5px 10px;
+  padding: 7.5px 0px;
   background-color: var(--secondary-color);
+  &:not(:empty) {
+    padding: 10px 15px;
+  }
+
+  :global(.#{$ns}-dialog-header) + & {
+    margin-top: 1px;
+  }
 }
 
 .interactive {

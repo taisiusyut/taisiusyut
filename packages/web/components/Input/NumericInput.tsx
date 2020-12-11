@@ -13,7 +13,6 @@ export function NumericInput({
 } = {}) {
   return (
     <BpNumericInput
-      fill
       clampValueOnBlur
       autoComplete="off"
       allowNumericCharactersOnly={false}

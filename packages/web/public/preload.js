@@ -1,10 +1,21 @@
 // @ts-check
 
 /**
- * @typedef {{ theme: Theme, accentColor: AccentColor }} Preferences
+ * @typedef {{ theme?: Theme, accentColor?: AccentColor }} Preferences
  */
 
 (function () {
+  window.__setTheme = function (theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList[theme === 'dark' ? 'add' : 'remove'](
+      'bp3-dark'
+    );
+  };
+
+  window.__setAccentColor = function (color) {
+    document.documentElement.setAttribute('data-accent-color', color);
+  };
+
   try {
     var keys = {
       root: 'taisiusyut',
@@ -22,36 +33,10 @@
     var storage = rootStorage[storageKey] || {};
 
     /** @type {Preferences}} */
-    var preferences = storage['preferences'] || {
-      theme: 'light',
-      accentColor: 'blue'
-    };
+    var preferences = storage['preferences'] || {};
 
-    /**
-     * @param {Preferences} preferences
-     */
-    var save = function (preferences) {
-      storage['preferences'] = preferences;
-      rootStorage[storageKey] = storage;
-      localStorage.setItem(keys.root, JSON.stringify(rootStorage));
-    };
-
-    window.__setTheme = function (theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      document.documentElement.classList[theme === 'dark' ? 'add' : 'remove'](
-        'bp3-dark'
-      );
-      preferences['theme'] = theme;
-      save(preferences);
-    };
-    window.__setTheme(preferences.theme);
-
-    window.__setAccentColor = function (color) {
-      document.documentElement.setAttribute('data-accent-color', color);
-      preferences['accentColor'] = color;
-      save(preferences);
-    };
-    window.__setAccentColor(preferences.accentColor);
+    window.__setTheme(preferences['theme'] || 'dark');
+    window.__setAccentColor(preferences['accentColor'] || 'blue');
   } catch (error) {
     console.log(error);
   }
