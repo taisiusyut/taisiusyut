@@ -1,11 +1,9 @@
-@import '~styles/utils';
-
-.#{$ns}-button .#{$ns}-icon.#{$ns}-icon {
+.#{$ns}-button:not([class*='intent']) .#{$ns}-icon {
   color: var(--text-color) !important;
 }
 
 .#{$ns}-dialog.#{$ns}-dialog {
-  @include dimen(auto);
+  width: auto;
   background-color: var(--secondary-color);
   min-width: 300px;
   overflow: hidden;
