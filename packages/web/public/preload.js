@@ -8,8 +8,8 @@
   try {
     var keys = {
       root: 'taisiusyut',
-      admin: 'taisiusyut/admin',
-      client: 'taisiusyut/client'
+      admin: 'admin',
+      client: 'client'
     };
 
     /** @type {Record<string, Record<string, any>>} */

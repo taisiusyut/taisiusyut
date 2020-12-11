@@ -3,52 +3,82 @@ import { JSONParse } from './JSONParse';
 export interface IStorage<T> {
   key: string;
   get(): T;
-  save(value: T): void;
-  removeItem: () => void;
+  get<K extends keyof T>(key: K): T[K];
+  get<K extends keyof T>(key?: K): T | T[K];
+  set<K extends keyof T>(key: K, value: T[K]): void;
+  remove: <K extends keyof T = any>(key: K) => void;
 }
 
-type WebStorage = Pick<
-  globalThis.Storage,
-  'getItem' | 'setItem' | 'removeItem'
->;
+const memoryStorage = (() => {
+  const store: Record<string, any> = {};
+  const storage: IStorage<Record<string, any>> = {
+    key: 'memory',
+    get(key?: string) {
+      if (typeof key === 'undefined') {
+        return store;
+      }
+      return store[key];
+    },
+    set(key, value) {
+      store[key] = value;
+    },
+    remove(key) {
+      delete store[key];
+    }
+  };
+  return storage;
+})();
 
-function createStorage<T>(storage: WebStorage) {
-  return (key: string, defaultValue: T) => {
+function createStorageFromWebStorage(webStorage: globalThis.Storage) {
+  return <T extends {}>(key: string, defaultValue: T): IStorage<T> => {
     let value = defaultValue;
     return {
-      storage,
       key,
-      get: () => {
-        value = JSONParse<T>(storage.getItem(key) || '', value);
-        return value;
+      get: <K extends keyof T>(prop?: K) => {
+        value = JSONParse<T>(webStorage.getItem(key) || '', value);
+        if (typeof prop !== 'undefined') {
+          return value[prop];
+        }
+        return value as T;
       },
-      save: (newValue: T) => {
-        value = newValue;
-        storage.setItem(key, JSON.stringify(newValue));
+      set: (prop, newValue) => {
+        value[prop] = newValue;
+        webStorage.setItem(key, JSON.stringify(value));
       },
-      removeItem: () => {
-        storage.removeItem(key);
+      remove: prop => {
+        delete value[prop];
+        webStorage.setItem(key, JSON.stringify(value));
       }
     };
   };
 }
 
-export function mockStorage(key: string, storage: WebStorage): WebStorage {
-  const baseStorage = createStorage<Record<string, unknown>>(storage)(key, {});
-  return {
-    getItem: key => JSON.stringify(baseStorage.get()[key]),
-    setItem: (key, value) =>
-      baseStorage.save({ ...baseStorage.get(), [key]: JSONParse(value, null) }),
-    removeItem: key => {
-      const state = baseStorage.get();
-      delete state[key];
-      baseStorage.save(state);
-    }
+function wrapStorage(storage: IStorage<Record<string, any>>) {
+  return <T extends {}>(key: string, defaultValue: T): IStorage<T> => {
+    let value = defaultValue;
+    return {
+      key,
+      get: <K extends keyof T>(prop?: K) => {
+        value = storage.get(key);
+        if (typeof prop !== 'undefined') {
+          return value[prop];
+        }
+        return value as T;
+      },
+      set: (prop, newValue) => {
+        value[prop] = newValue;
+        storage.set(key, value);
+      },
+      remove: prop => {
+        delete value[prop];
+        storage.set(key, JSON.stringify(value));
+      }
+    };
   };
 }
 
 export function storageSupport() {
-  const mod = 'FULLSTACK_TEST_STORAGE';
+  const mod = 'TEST_STORAGE';
   try {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(mod, mod);
@@ -60,45 +90,29 @@ export function storageSupport() {
   return false;
 }
 
-const memoryStorage = ((): WebStorage => {
-  const store: Record<string, string | null> = {};
-  return {
-    getItem: key => store[key] || null,
-    setItem: (key, value) => {
-      store[key] = value;
-    },
-    removeItem: key => {
-      delete store[key];
-    }
-  };
-})();
-
-export const createLocalStorage: <T>(
+export const createLocalStorage = <T extends {}>(
   key: string,
   defaultValue: T
-) => IStorage<T> = createStorage(
-  storageSupport() ? localStorage : memoryStorage
-);
+) =>
+  storageSupport()
+    ? createStorageFromWebStorage(localStorage)(key, defaultValue)
+    : (memoryStorage as IStorage<T>);
 
-export const createSessionStorage: <T>(
+export const createSessionStorage = <T extends {}>(
   key: string,
   defaultValue: T
-) => IStorage<T> = createStorage(
-  storageSupport() ? sessionStorage : memoryStorage
+) =>
+  storageSupport()
+    ? createStorageFromWebStorage(sessionStorage)(key, defaultValue)
+    : (memoryStorage as IStorage<T>);
+
+const createTaisiusyutStorage = wrapStorage(
+  createLocalStorage('taisiusyut', {} as Record<string, any>)
 );
 
-export const storage = storageSupport()
-  ? mockStorage('taisiusyut', localStorage)
-  : memoryStorage;
-
-const _adminStorage = mockStorage('taisiusyut/admin', storage);
 export const createAdminStorage: <T>(
   key: string,
   defaultValue: T
-) => IStorage<T> = createStorage(_adminStorage);
-
-const _chapterStorage = mockStorage('chapters', _adminStorage);
-export const createChapterSotrage: <T>(
-  key: string,
-  defaultValue: T
-) => IStorage<T> = createStorage(_chapterStorage);
+) => IStorage<T> = wrapStorage(
+  createTaisiusyutStorage('admin', {} as Record<string, any>)
+);

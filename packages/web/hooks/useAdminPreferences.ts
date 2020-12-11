@@ -14,7 +14,7 @@ interface PreferencesActions {
   update: (payload: Partial<Preferences>) => void;
 }
 
-export const preferencesStorage = createAdminStorage<Preferences>(
+export const adminPreferencesStorage = createAdminStorage<Preferences>(
   'preferences',
   { theme: 'light', accentColor: 'blue' }
 );
@@ -24,32 +24,34 @@ const ActionContext = React.createContext<PreferencesActions | undefined>(
   undefined
 );
 
-export function usePreferencesState() {
+export function useAdminPreferencesState() {
   const context = useContext(StateContext);
   if (context === undefined) {
     throw new Error(
-      'usePreferencesState must be used within a AdminPreferencesProvider'
+      'useAdminPreferencesState must be used within a AdminPreferencesProvider'
     );
   }
   return context;
 }
 
-export function usePreferencesActions() {
+export function useAdminPreferencesActions() {
   const context = useContext(ActionContext);
   if (context === undefined) {
     throw new Error(
-      'usePreferencesActions must be used within a AdminPreferencesProvider'
+      'useAdminPreferencesActions must be used within a AdminPreferencesProvider'
     );
   }
   return context;
 }
 
 export function useAdminPreferences() {
-  return [usePreferencesState(), usePreferencesActions()] as const;
+  return [useAdminPreferencesState(), useAdminPreferencesActions()] as const;
 }
 
 export function AdminPreferencesProvider({ children }: Props) {
-  const [preferences, udpatePreferences] = useState(preferencesStorage.get());
+  const [preferences, udpatePreferences] = useState(
+    adminPreferencesStorage.get()
+  );
   const actions = useMemo<PreferencesActions>(
     () => ({
       update: changes =>
