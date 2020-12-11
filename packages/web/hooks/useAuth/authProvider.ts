@@ -28,25 +28,32 @@ export const ActionContext = React.createContext<AuthActions | undefined>(
 
 const LOGOUT = 'logout';
 
-const authenticate$ = (payload?: AuthenticatePayload) =>
-  payload && 'email' in payload
-    ? defer(() => registration(payload)).pipe(
-        switchMap(() => {
-          Toaster.success({ message: 'Registration Success' });
-          return getJwtToken$(payload);
-        }),
-        catchError(error => {
-          Toaster.apiError('Registration failure', error);
-          return throwError(error);
-        })
-      )
-    : getJwtToken$(payload).pipe(
-        catchError(error => {
-          const isLogin = !!payload;
-          isLogin && Toaster.apiError('Login failure', error);
-          return throwError(error);
-        })
-      );
+function authenticate$(
+  payload?: AuthenticatePayload
+): Observable<Schema$Authenticated> {
+  if (payload && 'email' in payload) {
+    return defer(() => registration(payload)).pipe(
+      switchMap(() => {
+        Toaster.success({ message: 'Registration Success' });
+        const { username, password } = payload;
+        return authenticate$({ username, password });
+      }),
+      catchError(error => {
+        Toaster.apiError('Registration failure', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  // handle for login / referesh-token
+  const isLogin = !!payload;
+  return getJwtToken$(payload).pipe(
+    catchError(error => {
+      isLogin && Toaster.apiError('Login failure', error);
+      return throwError(error);
+    })
+  );
+}
 
 export function AuthProvider({ children }: { children?: ReactNode }) {
   const [state, dispatch] = React.useReducer(authReducer, initialState);

@@ -6,6 +6,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { GoBackProvider } from '@/hooks/useGoBack';
 import { UserRole } from '@/typings';
+import { Toaster } from '@/utils/toaster';
 import '@/styles/globals.scss';
 import 'typeface-muli';
 
@@ -17,13 +18,23 @@ interface ExtendAppProps extends AppProps {
   };
 }
 
-function Redirect({ redirect }: { redirect?: string }) {
+function Unthorized({
+  redirect,
+  role
+}: {
+  redirect?: string;
+  role?: UserRole;
+}) {
   useEffect(() => {
-    const pathname =
-      redirect || (router.asPath.startsWith(`/admin`) ? '/admin/login' : '/');
-    const url = { pathname, query: { from: router.asPath } };
-    router.push(url, pathname);
-  }, [redirect]);
+    const isAdminPage = router.asPath.startsWith(`/admin`);
+    const pathname = redirect || isAdminPage ? '/admin/login' : '/';
+
+    if (isAdminPage && role === UserRole.Client) {
+      Toaster.failure({ message: 'Permission denied ' });
+    }
+
+    router.push({ pathname, query: { from: router.asPath } }, pathname);
+  }, [redirect, role]);
   return <div hidden />;
 }
 
@@ -51,7 +62,7 @@ function AppContent(props: ExtendAppProps) {
     return null;
   }
 
-  return <Redirect redirect={Component.redirect} />;
+  return <Unthorized role={user?.role} redirect={Component.redirect} />;
 }
 
 function App(props: ExtendAppProps) {
