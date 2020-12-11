@@ -3,86 +3,126 @@ import { JSONParse } from './JSONParse';
 export interface IStorage<T> {
   key: string;
   get(): T;
-  get<K extends keyof T>(key: K): T[K];
-  get<K extends keyof T>(key?: K): T | T[K];
-  set<K extends keyof T>(key: K, value: T[K]): void;
+  get<K extends keyof T>(prop: K): T[K];
+  get<K extends keyof T>(prop?: K): T | T[K];
+  set<K extends keyof T>(prop: K, value: T[K]): void;
+  save(value: T): void;
   remove: <K extends keyof T = any>(key: K) => void;
+  clear: () => void;
 }
 
-const memoryStorage = (() => {
-  const store: Record<string, any> = {};
-  const storage: IStorage<Record<string, any>> = {
-    key: 'memory',
-    get(key?: string) {
-      if (typeof key === 'undefined') {
-        return store;
+function createMemoryStorage<T extends {}>(
+  key: string,
+  defaultValue: T
+): IStorage<T> {
+  let value = JSON.parse(JSON.stringify(defaultValue)) as T;
+  return {
+    key,
+    get: <K extends keyof T>(prop?: K) => {
+      if (typeof prop === 'undefined') {
+        return value;
       }
-      return store[key];
+
+      if (isObject(value)) {
+        return value[prop] as any;
+      }
+
+      throw new Error(`value is not an object`);
     },
-    set(key, value) {
-      store[key] = value;
+    set(key, newValue) {
+      value[key] = newValue;
+    },
+    save(newValue) {
+      value = newValue;
     },
     remove(key) {
-      delete store[key];
-    }
+      delete value[key];
+    },
+    clear: () => void 0
   };
-  return storage;
-})();
+}
+
+function isObject(payload: unknown): payload is Record<string, unknown> {
+  return typeof payload === 'object' && payload !== null;
+}
 
 function createStorageFromWebStorage(webStorage: globalThis.Storage) {
-  return <T extends {}>(key: string, defaultValue: T): IStorage<T> => {
-    let value = defaultValue;
+  return <T>(key: string, defaultValue: T): IStorage<T> => {
+    let value = JSONParse<T>(webStorage.getItem(key) || '', defaultValue);
     return {
       key,
       get: <K extends keyof T>(prop?: K) => {
-        value = JSONParse<T>(webStorage.getItem(key) || '', value);
-        if (typeof prop !== 'undefined') {
-          return value[prop];
+        if (typeof prop === 'undefined') {
+          return value;
         }
-        return value as T;
+
+        if (isObject(value)) {
+          return value[prop] as any;
+        }
+
+        throw new Error(`value is not an object`);
       },
       set: (prop, newValue) => {
         value[prop] = newValue;
         webStorage.setItem(key, JSON.stringify(value));
       },
+      save(newValue) {
+        value = newValue;
+        webStorage.setItem(key, JSON.stringify(value));
+      },
       remove: prop => {
         delete value[prop];
         webStorage.setItem(key, JSON.stringify(value));
+      },
+      clear: () => {
+        webStorage.removeItem(key);
       }
     };
   };
 }
 
-function wrapStorage(storage: IStorage<Record<string, any>>) {
-  return <T extends {}>(key: string, defaultValue: T): IStorage<T> => {
-    let value = defaultValue;
+function createStorageFromStorage(storage: IStorage<Record<string, any>>) {
+  return <T>(key: string, defaultValue: T): IStorage<T> => {
+    let value = (storage.get(key) ||
+      JSON.parse(JSON.stringify(defaultValue))) as T;
     return {
       key,
       get: <K extends keyof T>(prop?: K) => {
-        value = storage.get(key);
-        if (typeof prop !== 'undefined') {
-          return value[prop];
+        if (typeof prop === 'undefined') {
+          return value as T;
         }
-        return value as T;
+
+        if (isObject(value)) {
+          return value[prop] as any;
+        }
+
+        throw new Error(`value is not an object`);
       },
       set: (prop, newValue) => {
         value[prop] = newValue;
         storage.set(key, value);
       },
+      save(newValue) {
+        value = newValue;
+        storage.set(key, value);
+      },
       remove: prop => {
         delete value[prop];
-        storage.set(key, JSON.stringify(value));
+        storage.set(key, value);
+      },
+      clear: () => {
+        storage.remove(key);
       }
     };
   };
 }
 
 export function storageSupport() {
-  const mod = 'TEST_STORAGE';
+  const key = 'TEST_STORAGE';
   try {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(mod, mod);
-      localStorage.removeItem(mod);
+      localStorage.setItem(key, key);
+      localStorage.removeItem(key);
       return true;
     }
   } catch (e) {}
@@ -90,29 +130,26 @@ export function storageSupport() {
   return false;
 }
 
-export const createLocalStorage = <T extends {}>(
-  key: string,
-  defaultValue: T
-) =>
-  storageSupport()
-    ? createStorageFromWebStorage(localStorage)(key, defaultValue)
-    : (memoryStorage as IStorage<T>);
+export const createLocalStorage = storageSupport()
+  ? createStorageFromWebStorage(localStorage)
+  : createMemoryStorage;
 
-export const createSessionStorage = <T extends {}>(
-  key: string,
-  defaultValue: T
-) =>
-  storageSupport()
-    ? createStorageFromWebStorage(sessionStorage)(key, defaultValue)
-    : (memoryStorage as IStorage<T>);
+export const createSessionStorage = storageSupport()
+  ? createStorageFromWebStorage(sessionStorage)
+  : createMemoryStorage;
 
-const createTaisiusyutStorage = wrapStorage(
+const createTaisiusyutStorage = createStorageFromStorage(
   createLocalStorage('taisiusyut', {} as Record<string, any>)
 );
 
-export const createAdminStorage: <T>(
-  key: string,
-  defaultValue: T
-) => IStorage<T> = wrapStorage(
+export const createAdminStorage = createStorageFromStorage(
   createTaisiusyutStorage('admin', {} as Record<string, any>)
+);
+
+export const createChapterSotrage = createStorageFromStorage(
+  createAdminStorage('chapter', {} as Record<string, any>)
+);
+
+export const createClientStorage = createStorageFromStorage(
+  createTaisiusyutStorage('client', {} as Record<string, any>)
 );

@@ -52,7 +52,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
   const [{ onSuccess, onFailure }] = useState(() => {
     return {
       onSuccess: () => {
-        storageRef.current.removeItem();
+        storageRef.current.clear();
         goBack({ targetPath: `/admin/book/${bookID}` });
         Toaster.success({ message: `${prefix} chapter success` });
       },
