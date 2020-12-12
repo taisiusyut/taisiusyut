@@ -17,6 +17,7 @@ function ClientLayoutContent({ children }: Props) {
   const { pagingDisplay } = useClientPreferencesState();
   const { asPath } = useRouter();
   const [singlePage, setSinglePage] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const handler = () => {
@@ -27,17 +28,22 @@ function ClientLayoutContent({ children }: Props) {
       .pipe(startWith(null))
       .subscribe(handler);
 
+    setMounted(true);
+
     return () => subscription.unsubscribe();
   }, [pagingDisplay]);
 
   return (
     <div className="layout">
-      <div className="layout-body">
-        {(!singlePage || asPath === '/') && <BookShelf />}
-        {(!singlePage || asPath !== '/') && (
-          <div className="layout-content">{children}</div>
-        )}
-      </div>
+      {mounted && (
+        <div className="layout-body">
+          {(!singlePage || asPath === '/') && <BookShelf />}
+          {(!singlePage || asPath !== '/') && (
+            <div className="layout-content">{children}</div>
+          )}
+        </div>
+      )}
+
       <style jsx>
         {`
           .layout {

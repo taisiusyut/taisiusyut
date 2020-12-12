@@ -1,18 +1,19 @@
 import React from 'react';
-import { Button, IButtonProps } from '@blueprintjs/core';
 import { useGoBack } from '@/hooks/useGoBack';
+import { ButtonPopover, ButtonPopoverProps } from './ButtonPopover';
 
-interface GoBackButtonProps extends IButtonProps {
+interface GoBackButtonProps extends ButtonPopoverProps {
   targetPath: string;
 }
 
 export function GoBackButton({ targetPath, ...props }: GoBackButtonProps) {
   const goBack = useGoBack();
   return (
-    <Button
+    <ButtonPopover
       {...props}
       minimal
       icon="arrow-left"
+      content="返回"
       onClick={() => goBack({ targetPath })}
     />
   );

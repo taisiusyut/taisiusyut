@@ -76,8 +76,15 @@ body {
   color: var(--text-color);
   margin: 0;
   padding: 0;
-  font-size: $pt-font-size;
   font-family: 'Muli', #{$pt-font-family};
+
+  @media (min-width: 641px) {
+    font-size: $pt-font-size;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 16px;
+  }
 }
 
 img {

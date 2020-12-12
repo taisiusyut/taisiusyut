@@ -31,6 +31,7 @@
 
 .section-card {
   @include flex();
+  @include sq-dimen(100%);
   padding-left: 30px;
 }
 
