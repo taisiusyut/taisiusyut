@@ -6,6 +6,7 @@ import { GoBackButton } from '@/components/GoBackButton';
 import { Pagination } from '@/components/Pagination';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+import { useBreakPoints } from '@/hooks/useBreakPoints';
 import {
   createCRUDReducer,
   DefaultCRUDActionTypes
@@ -21,7 +22,6 @@ import { getBookByName, getChapters } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
 import { ClientBookDetailsChapters } from './ClientBookDetailsChapters';
 import classes from './ClientBookDetails.module.scss';
-import { useBreakPoints } from '@/hooks/useBreakPoints';
 
 export interface ClientBookDetailsData {
   bookName: string;
@@ -96,7 +96,7 @@ export function ClientBookDetails({
   if (book) {
     let chapters: ReactNode = null;
 
-    if (!breakPoint || breakPoint > 640) {
+    if (breakPoint > 640) {
       chapters = (
         <ChaptersGrid
           bookID={book.id}

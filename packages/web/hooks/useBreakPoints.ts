@@ -13,15 +13,21 @@ function getBreakPoint(width: number): Point {
       return breakPoint;
     }
   }
-  return breakPoints.slice(-1)[0];
+  return 1280;
 }
 
 export function useBreakPoints() {
-  return React.useContext(Context);
+  const context = React.useContext(Context);
+  if (context === undefined) {
+    throw new Error('useBreakPoints must be used within a BreakPointsProvider');
+  }
+  return context;
 }
 
 export function BreakPointsProvider({ children }: { children: ReactElement }) {
-  const [breakPoint, setBreakPoint] = useState<Point>();
+  const [breakPoint, setBreakPoint] = useState<Point>(
+    typeof window !== 'undefined' ? getBreakPoint(window.innerWidth) : 1280
+  );
   const [onResize] = useState(() => ([entry]: IResizeEntry[]) => {
     setBreakPoint(getBreakPoint(entry.target.clientWidth));
   });

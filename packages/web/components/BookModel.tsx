@@ -108,7 +108,7 @@ export function BookModel({
             }
 
             .back {
-              box-shadow: 0px -3px 10px -2px var(--book-model-shadow-color);
+              box-shadow: 0px -3px 8px -1px var(--book-model-shadow-color);
             }
 
             .left {
