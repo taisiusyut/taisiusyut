@@ -1,3 +1,4 @@
+.#{$ns}-menu-item > .#{$ns}-icon,
 .#{$ns}-button:not([class*='intent']) .#{$ns}-icon {
   color: var(--text-color) !important;
 }
@@ -75,4 +76,9 @@ a:hover,
 .#{$ns}-input,
 .#{$ns}-html-select {
   font-size: inherit;
+}
+
+// for drawer trigger by long press in iPhone safari
+.#{$ns}-overlay-open {
+  user-select: none;
 }

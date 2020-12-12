@@ -14,11 +14,15 @@ export type BookShelf = (Schema$BookShelf | Partial<Schema$BookShelf>) & {
   bookID: string;
 };
 
-type State = CRUDState<BookShelf, false>;
-type Actions = Dispatched<CRUDActionCreators<BookShelf, 'bookID'>>;
+export type BookShelfState = CRUDState<BookShelf, false>;
+export type BookShelfActions = Dispatched<
+  CRUDActionCreators<BookShelf, 'bookID'>
+>;
 
-export const StateContext = React.createContext<State | undefined>(undefined);
-export const ActionContext = React.createContext<Actions | undefined>(
+export const StateContext = React.createContext<BookShelfState | undefined>(
+  undefined
+);
+export const ActionContext = React.createContext<BookShelfActions | undefined>(
   undefined
 );
 

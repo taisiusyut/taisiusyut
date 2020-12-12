@@ -94,3 +94,48 @@ $min-height: 1em;
 .book-shelf-empty {
   @include sq-dimen(100%);
 }
+
+.book-shelf-item-drawer {
+  .drawer-header {
+    @include flex(center);
+    font-size: 14px;
+    padding: 20px 15px 20px 25px;
+
+    &:hover {
+      background-color: var(--item-hover-color);
+    }
+
+    > div:last-child {
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
+
+  .drawer-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--divider-color);
+  }
+
+  .grid {
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    padding: 15px;
+
+    &:hover {
+      background-color: var(--item-hover-color);
+    }
+
+    :global(.#{$ns}-icon) {
+      svg {
+        font-size: 1em;
+      }
+    }
+  }
+
+  .grid-text {
+    font-size: 0.8em;
+    margin-top: 0.7em;
+  }
+}
