@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @typedef {{ theme?: Theme, accentColor?: AccentColor }} Preferences
+ * @typedef {{ theme?: Theme, accentColor?: AccentColor, fixWidth?: boolean }} Preferences
  */
 
 (function () {
@@ -14,6 +14,13 @@
 
   window.__setAccentColor = function (color) {
     document.documentElement.setAttribute('data-accent-color', color);
+  };
+
+  window.__setFixWidth = function (flag) {
+    document.documentElement.setAttribute(
+      'data-width',
+      flag ? 'fixed' : 'stretch'
+    );
   };
 
   try {
@@ -37,6 +44,11 @@
 
     window.__setTheme(preferences['theme'] || 'dark');
     window.__setAccentColor(preferences['accentColor'] || 'blue');
+    window.__setFixWidth(
+      typeof preferences['fixWidth'] === 'undefined'
+        ? false
+        : preferences['fixWidth']
+    );
   } catch (error) {
     console.log(error);
   }

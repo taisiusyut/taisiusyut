@@ -59,6 +59,8 @@ export function ClientHeader({
           }
 
           .header-title {
+            @include text-overflow-ellipsis();
+            @include padding-x(10px);
             flex: 1 1 auto;
             font-size: 16px;
             font-weight: bold;

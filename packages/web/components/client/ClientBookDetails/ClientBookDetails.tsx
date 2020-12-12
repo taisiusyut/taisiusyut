@@ -5,6 +5,7 @@ import { ClientHeader } from '@/components/client/ClientHeader';
 import { GoBackButton } from '@/components/GoBackButton';
 import { Pagination } from '@/components/Pagination';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
+import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import {
   createCRUDReducer,
@@ -91,7 +92,12 @@ export function ClientBookDetails({
     <>
       <ClientHeader
         left={<GoBackButton targetPath="/" />}
-        right={<>{book && <BookShelfToggle bookID={book.id} />}</>}
+        right={
+          <>
+            {book && <BookShelfToggle bookID={book.id} />}
+            <ClientPreferences />
+          </>
+        }
       />
       <div className={classes['content']}>
         <Card>{book && <ClientBookDetailsBook book={book} />}</Card>

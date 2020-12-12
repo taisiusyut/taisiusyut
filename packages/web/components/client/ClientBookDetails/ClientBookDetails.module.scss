@@ -52,8 +52,11 @@
   display: grid;
   grid-gap: 20px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  @media (min-width: 1300px) {
-    grid-template-columns: repeat(5, minmax(150px, 1fr));
+
+  :global(.layout-body:not(.fix-width)) & {
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+    }
   }
 
   .chapter-item {

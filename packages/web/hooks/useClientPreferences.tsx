@@ -25,8 +25,8 @@ export const clientPreferencesStorage = createClientStorage<Preferences>(
     theme: 'dark',
     accentColor: 'blue',
     pagingDisplay: true,
-    fixWidth: true,
-    fontSize: 16,
+    fixWidth: false,
+    fontSize: 18,
     lineHeight: '1.5em',
     autoFetchNextChapter: true
   }
@@ -75,6 +75,10 @@ export function ClientPreferencesProvider({ children }: Props) {
 
           if (changes.accentColor) {
             window.__setAccentColor(changes.accentColor);
+          }
+
+          if (typeof changes.fixWidth !== 'undefined') {
+            window.__setFixWidth(changes.fixWidth);
           }
 
           clientPreferencesStorage.save(preferences);
