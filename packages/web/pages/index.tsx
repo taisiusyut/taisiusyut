@@ -2,6 +2,7 @@ import React from 'react';
 import { GetStaticProps } from 'next';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import { ClientHome, ClientHomeProps } from '@/components/client/ClientHome';
+import { Meta } from '@/components/Meta';
 import { getBookService, serializer } from '@/service/server';
 import { Schema$Book, Order, BookStatus } from '@/typings';
 
@@ -48,7 +49,12 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 };
 
 export default function HomePage({ data }: Props) {
-  return <ClientHome data={data} />;
+  return (
+    <>
+      <Meta />
+      <ClientHome data={data} />
+    </>
+  );
 }
 
 HomePage.layout = ClientLayout;
