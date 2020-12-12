@@ -5,6 +5,11 @@ module.exports = {
   images: {
     domains: ['res.cloudinary.com']
   },
+  exportPathMap: function () {
+    return {
+      '/explore': { page: '/' }
+    };
+  },
   async rewrites() {
     return process.env.NODE_ENV === 'production'
       ? []

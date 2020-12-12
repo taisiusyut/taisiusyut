@@ -1,6 +1,12 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { fromEvent } from 'rxjs';
+import { startWith } from 'rxjs/operators';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
-import { ClientPreferencesProvider } from '@/hooks/useClientPreferences';
+import {
+  ClientPreferencesProvider,
+  useClientPreferencesState
+} from '@/hooks/useClientPreferences';
 import { BookShelf } from './BookShelf';
 
 interface Props {
@@ -8,11 +14,29 @@ interface Props {
 }
 
 function ClientLayoutContent({ children }: Props) {
+  const { pagingDisplay } = useClientPreferencesState();
+  const { asPath } = useRouter();
+  const [singlePage, setSinglePage] = useState(false);
+
+  useEffect(() => {
+    const handler = () => {
+      setSinglePage(!pagingDisplay || window.innerWidth <= 768);
+    };
+
+    const subscription = fromEvent(window, 'resize')
+      .pipe(startWith(null))
+      .subscribe(handler);
+
+    return () => subscription.unsubscribe();
+  }, [pagingDisplay]);
+
   return (
     <div className="layout">
       <div className="layout-body">
-        <BookShelf />
-        <div className="layout-content">{children}</div>
+        {(!singlePage || asPath === '/') && <BookShelf />}
+        {(!singlePage || asPath !== '/') && (
+          <div className="layout-content">{children}</div>
+        )}
       </div>
       <style jsx>
         {`
@@ -29,18 +53,17 @@ function ClientLayoutContent({ children }: Props) {
             min-height: 100%;
 
             :global([data-width='fixed']) & {
-              max-width: 1280px;
-              // prettier-ignore
-              box-shadow: 
-                0 0 0 1px var(--divider-color), 
-                0 0 0 rgba($black, 0),
-                0 0 0 rgba($black, 0);
+              $target-width: 1280px;
+              @media (min-width: $target-width) {
+                max-width: $target-width;
+              }
             }
           }
 
           .layout-content {
             @include sq-dimen(100%);
             @include flex($flex-direction: column);
+            @include shadow-border();
             flex: 1 1 auto;
             overflow: hidden;
           }

@@ -53,12 +53,14 @@ export function ClientProfileDialog(props: ListViewDialogProps) {
         付費記錄
       </ListItem>
 
-      <ListSpacer />
-
       {auth.user.role === UserRole.Client && (
-        <ListItem onClick={handleClick} rightElement={chevron}>
-          我要做作者
-        </ListItem>
+        <>
+          <ListSpacer />
+
+          <ListItem onClick={handleClick} rightElement={chevron}>
+            我要做作者
+          </ListItem>
+        </>
       )}
 
       <ListViewDialogFooter>

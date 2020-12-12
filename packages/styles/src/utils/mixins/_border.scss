@@ -17,3 +17,11 @@
 
   background-repeat: no-repeat;
 }
+
+@mixin shadow-border {
+  // prettier-ignore
+  box-shadow: 
+    0 0 0 1px var(--divider-color), 
+    0 0 0 rgba(#000, 0),
+    0 0 0 rgba(#000, 0);
+}
