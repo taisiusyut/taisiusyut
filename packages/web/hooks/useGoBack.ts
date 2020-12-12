@@ -15,8 +15,8 @@ interface Props {
   children?: ReactNode;
 }
 
-interface GoBackOptions {
-  targetPath: string;
+export interface GoBackOptions {
+  targetPath: string | string[];
 }
 
 type GoBack = (options: GoBackOptions) => Promise<void>;
@@ -33,12 +33,19 @@ export function useGoBack() {
 
 export function GoBackProvider({ children }: Props) {
   const records = useRef<string[]>([]);
-  const goBack = useCallback<GoBack>(async options => {
+  const goBack = useCallback<GoBack>(async ({ targetPath }) => {
     const previous = records.current[records.current.length - 2];
-    if (previous && previous.replace(/\?.*/, '') === options.targetPath) {
+    const paths = Array.isArray(targetPath) ? targetPath : [targetPath];
+
+    if (
+      paths.some(
+        path =>
+          previous && decodeURIComponent(previous).replace(/\?.*/, '') === path
+      )
+    ) {
       await router.push(previous);
     } else {
-      await router.push(options.targetPath);
+      await router.push(paths[0]);
     }
     records.current = records.current.slice(0, -2);
   }, []);

@@ -19,17 +19,19 @@ interface PreferencesActions {
   update: (payload: Partial<Preferences>) => void;
 }
 
+export const defaultPreferences: Preferences = {
+  theme: 'dark',
+  accentColor: 'blue',
+  pagingDisplay: true,
+  fixWidth: false,
+  fontSize: 18,
+  lineHeight: '1.5em',
+  autoFetchNextChapter: true
+};
+
 export const clientPreferencesStorage = createClientStorage<Preferences>(
   'preferences',
-  {
-    theme: 'dark',
-    accentColor: 'blue',
-    pagingDisplay: true,
-    fixWidth: false,
-    fontSize: 18,
-    lineHeight: '1.5em',
-    autoFetchNextChapter: true
-  }
+  defaultPreferences
 );
 
 const StateContext = React.createContext<Preferences | undefined>(undefined);

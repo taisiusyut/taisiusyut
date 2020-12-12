@@ -69,3 +69,10 @@ a:hover,
     }
   }
 }
+
+// https://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone
+// Disable Auto Zoom in Input “Text” tag - Safari on iPhone
+.#{$ns}-input,
+.#{$ns}-html-select {
+  font-size: inherit;
+}

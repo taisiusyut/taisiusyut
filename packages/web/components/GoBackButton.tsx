@@ -1,10 +1,8 @@
 import React from 'react';
-import { useGoBack } from '@/hooks/useGoBack';
+import { useGoBack, GoBackOptions } from '@/hooks/useGoBack';
 import { ButtonPopover, ButtonPopoverProps } from './ButtonPopover';
 
-interface GoBackButtonProps extends ButtonPopoverProps {
-  targetPath: string;
-}
+interface GoBackButtonProps extends ButtonPopoverProps, GoBackOptions {}
 
 export function GoBackButton({ targetPath, ...props }: GoBackButtonProps) {
   const goBack = useGoBack();

@@ -22,7 +22,7 @@ export function ClientBookChapter({
     <>
       <ClientHeader
         title={chapter && `第${chapter.number}章 ${chapter.name}`}
-        left={<GoBackButton targetPath={chapter ? `/book/${bookName}` : '/'} />}
+        left={<GoBackButton targetPath={['/', `/book/${bookName}`]} />}
         right={[<ClientPreferences key="0" />]}
       />
       {chapter && <ClientBookChapterContent chapter={chapter} />}

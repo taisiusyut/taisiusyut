@@ -34,7 +34,7 @@ export function BookShelfItem({
     const active = decodeURIComponent(asPath).startsWith(basePath);
 
     return (
-      <Link href={lastVisit ? `${basePath}/chapter/${lastVisit}` : basePath}>
+      <Link href={`${basePath}/chapter/${lastVisit || 1}`}>
         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a
           className={[...className, active ? classes.active : '']
