@@ -13,8 +13,9 @@ export function ClientBookDetailsBook({ book }: Props) {
   return (
     <div className={classes.header}>
       <BookModel
-        className={classes['book-model']}
+        flatten
         width={80}
+        className={classes['book-model']}
         cover={book.cover}
       />
 

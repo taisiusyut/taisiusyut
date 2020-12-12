@@ -71,8 +71,9 @@ export function BookDetailsHeader({ book, role, onUpdate }: Props) {
       <Card style={{ marginTop: 15 }}>
         <div className={classes.header}>
           <BookModel
-            className={classes['book-model']}
+            flatten
             width={80}
+            className={classes['book-model']}
             cover={book.cover}
           />
 

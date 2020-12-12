@@ -14,9 +14,9 @@ export function BookShelfItem({
 }: Props) {
   const { asPath } = useRouter();
   const className = [classes['book-shelf-item']];
-  const content = (
+  const content = (flatten: boolean) => (
     <>
-      <BookModel width={55} modelClassName={classes['book-model']} />
+      <BookModel width={55} flatten={flatten} />
       <div className={classes['book-shelf-item-content']}>
         <div className={classes['book-name']}>{book?.name}</div>
         <div className={classes['book-author']}>
@@ -41,7 +41,7 @@ export function BookShelfItem({
             .join(' ')
             .trim()}
         >
-          {content}
+          {content(active)}
         </a>
       </Link>
     );
@@ -49,7 +49,7 @@ export function BookShelfItem({
 
   return (
     <div className={[...className, classes.skeleton].join(' ').trim()}>
-      {content}
+      {content(false)}
     </div>
   );
 }

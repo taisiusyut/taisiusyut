@@ -40,16 +40,6 @@
   &.active {
     background-color: var(--item-active-color);
   }
-
-  .book-model {
-    transition: transform 0.4s ease;
-  }
-
-  &.active {
-    .book-model {
-      transform: rotateY(0deg) rotateX(0deg);
-    }
-  }
 }
 
 .book-shelf-item-content {

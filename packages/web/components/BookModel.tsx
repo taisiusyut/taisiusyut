@@ -6,6 +6,7 @@ interface Props {
   modelClassName?: string;
   width?: number;
   cover?: string | null;
+  flatten?: boolean;
 }
 
 const cover_1x1 = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGM6AwAA0gDPuMu6oQAAAABJRU5ErkJggg==`;
@@ -14,6 +15,7 @@ export function BookModel({
   cover,
   className = '',
   modelClassName = '',
+  flatten,
   width = 60
 }: Props) {
   const ratio = width / 60;
@@ -21,7 +23,11 @@ export function BookModel({
 
   return (
     <div className={`book-model-outer ${className}`.trim()}>
-      <div className={`book-model ${modelClassName}`.trim()}>
+      <div
+        className={['book-model', modelClassName, flatten ? 'flatten' : '']
+          .join(' ')
+          .trim()}
+      >
         <div className="front">
           <Image
             layout="fixed"
@@ -56,8 +62,14 @@ export function BookModel({
             width: 100%;
             height: 100%;
             position: absolute;
+            will-change: transform;
+            transition: transform 0.4s ease;
             transform-style: preserve-3d;
             transform: rotateY(30deg) rotateX(12deg);
+
+            &.flatten {
+              transform: rotateY(0deg) rotateX(0deg);
+            }
 
             .front {
               transform: rotateY(0deg) translateZ(${thickness / 2}px);
