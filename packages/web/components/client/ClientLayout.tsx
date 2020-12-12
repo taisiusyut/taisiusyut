@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { fromEvent } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
+import { BreakPointsProvider } from '@/hooks/useBreakPoints';
 import {
   ClientPreferencesProvider,
   useClientPreferencesState
@@ -35,13 +36,16 @@ function ClientLayoutContent({ children }: Props) {
 
   return (
     <div className="layout">
+      {/* TODO: check mounted for server side */}
       {mounted && (
-        <div className="layout-body">
-          {(!singlePage || asPath === '/') && <BookShelf />}
-          {(!singlePage || asPath !== '/') && (
-            <div className="layout-content">{children}</div>
-          )}
-        </div>
+        <BreakPointsProvider>
+          <div className="layout-body">
+            {(!singlePage || asPath === '/') && <BookShelf />}
+            {(!singlePage || asPath !== '/') && (
+              <div className="layout-content">{children}</div>
+            )}
+          </div>
+        </BreakPointsProvider>
       )}
 
       <style jsx>

@@ -15,7 +15,7 @@ export function ClientBookDetailsChapters({ bookName, chapters }: Props) {
   const maxLength = String(chapters.slice(-1)[0]?.number || '').length;
 
   return (
-    <div className={classes.chapters}>
+    <div className={classes['chapters-grid']}>
       {chapters.map(chapter => {
         return (
           <Link

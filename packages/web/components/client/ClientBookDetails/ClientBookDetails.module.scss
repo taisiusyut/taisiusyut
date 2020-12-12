@@ -1,53 +1,92 @@
 @import '~styles/utils';
 
 .content {
+  @include flex($flex-direction: column);
   @include sq-dimen(100%);
   overflow: auto;
   padding: 20px;
+
+  > :global(.#{$ns}-card) {
+    + :global(.#{$ns}-card) {
+      margin-top: 20px;
+    }
+  }
 }
 
-.book-model {
-  @include margin-x(15px);
-}
-
-.header {
-  @include flex(flex-start);
+.book {
   margin-top: 10px;
 
-  .header-title {
-    @include flex(flex-end);
+  .book-model {
+    @include margin-x(5px 15px);
+    float: left;
     margin-bottom: 10px;
-    h3 {
-      margin-bottom: 0;
+  }
+
+  .book-title {
+    @include flex(flex-end, $wrap: wrap);
+    margin-bottom: 5px;
+
+    @media (max-width: 480px) {
+      font-size: 18px;
     }
 
-    span {
-      margin-left: 10px;
+    @media (min-width: 481px) {
+      font-size: 20px;
+    }
+
+    .name {
+      font-weight: bold;
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
+
+    .author {
       color: var(--text-light-color);
+      font-size: 0.8em;
+      margin-top: 0.25em;
     }
   }
 
-  .header-content {
-    flex: 1 1 auto;
+  .book-content {
+    float: left;
+    width: calc(100% - 110px);
+  }
+
+  .tags {
+    @include relative(null, null, -5px);
+    margin-bottom: 10px;
   }
 
   .description {
-    @include margin-y(10px 7.5px);
-    font-size: 15px;
     line-height: 1.5em;
     word-break: break-all;
   }
 }
 
-.chapters-card {
-  margin-top: 20px;
+.chapters-grid-card {
+  @include flex($flex-direction: column);
+  flex: 1 1 auto;
+
+  .spacer {
+    flex: 1 1 auto;
+  }
 
   .divider {
     @include margin-y(50px 15px);
   }
+
+  .chapter-head {
+    margin-left: 10px;
+  }
 }
 
-.chapters {
+.chapter-head {
+  @media (min-width: 481px) {
+    font-size: 18px;
+  }
+}
+
+.chapters-grid {
   margin-top: 20px;
   display: grid;
   grid-gap: 20px;
@@ -76,4 +115,8 @@
       background-color: rgba($gray3, 0.2);
     }
   }
+}
+
+.chapters-list-trigger {
+  @include flex(center, space-between);
 }

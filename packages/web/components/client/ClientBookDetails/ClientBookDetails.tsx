@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { ComponentProps, ReactNode, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { Card, Divider, H4 } from '@blueprintjs/core';
+import { Card, Divider, Icon } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { GoBackButton } from '@/components/GoBackButton';
 import { Pagination } from '@/components/Pagination';
-import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import {
@@ -22,6 +21,7 @@ import { getBookByName, getChapters } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
 import { ClientBookDetailsChapters } from './ClientBookDetailsChapters';
 import classes from './ClientBookDetails.module.scss';
+import { useBreakPoints } from '@/hooks/useBreakPoints';
 
 export interface ClientBookDetailsData {
   bookName: string;
@@ -46,7 +46,7 @@ function useBook(
   return initialData || data || null;
 }
 
-function Chapters({ bookID, bookName, chapters }: ChaptersProps) {
+function ChaptersGrid({ bookID, bookName, chapters }: ChaptersProps) {
   const [useChapters] = useState(() => {
     const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
     return createUsePaginationLocal(
@@ -71,11 +71,11 @@ function Chapters({ bookID, bookName, chapters }: ChaptersProps) {
   const { data, pagination } = useChapters();
 
   return (
-    <Card className={classes['chapters-card']}>
-      <H4>&nbsp;&nbsp;章節目錄</H4>
+    <Card className={classes['chapters-grid-card']}>
+      <div className={classes['chapter-head']}>章節目錄</div>
       <ClientBookDetailsChapters bookName={bookName} chapters={data} />
-      <div className={classes['chapters-footer']}></div>
-      <Divider className={classes.divider} />
+      <div className={classes['spacer']} />
+      <Divider className={classes['divider']} />
       <Pagination {...pagination} />
     </Card>
   );
@@ -83,28 +83,56 @@ function Chapters({ bookID, bookName, chapters }: ChaptersProps) {
 
 export function ClientBookDetails({
   bookName,
-  book: defaultBook,
-  chapters
+  book: initialBook,
+  chapters: initialChapters
 }: ClientBookDetailsProps) {
-  const book = useBook(bookName, defaultBook);
+  const book = useBook(bookName, initialBook);
+  const breakPoint = useBreakPoints();
+  const headerProps: ComponentProps<typeof ClientHeader> = {
+    title: '書籍詳情',
+    left: <GoBackButton targetPath="/" />
+  };
+
+  if (book) {
+    let chapters: ReactNode = null;
+
+    if (!breakPoint || breakPoint > 640) {
+      chapters = (
+        <ChaptersGrid
+          bookID={book.id}
+          bookName={book.name}
+          chapters={initialChapters}
+        />
+      );
+    } else {
+      chapters = (
+        <Card interactive className={classes['chapters-list-trigger']}>
+          <div className={classes['chapter-head']}>章節目錄</div>
+          <Icon icon="chevron-right" />
+        </Card>
+      );
+    }
+
+    return (
+      <>
+        <ClientHeader
+          {...headerProps}
+          right={[<ClientPreferences key="1" />]}
+        />
+        <div className={classes['content']}>
+          <Card>
+            <ClientBookDetailsBook book={book} />
+          </Card>
+          {chapters}
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <ClientHeader
-        left={<GoBackButton targetPath="/" />}
-        right={
-          <>
-            {book && <BookShelfToggle bookID={book.id} />}
-            <ClientPreferences />
-          </>
-        }
-      />
-      <div className={classes['content']}>
-        <Card>{book && <ClientBookDetailsBook book={book} />}</Card>
-        {book && (
-          <Chapters bookID={book.id} bookName={book.name} chapters={chapters} />
-        )}
-      </div>
+      <ClientHeader {...headerProps} />
+      <div className={classes['content']}>Book not found</div>
     </>
   );
 }

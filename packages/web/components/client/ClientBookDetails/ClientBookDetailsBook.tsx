@@ -1,5 +1,4 @@
 import React from 'react';
-import { H3 } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Tags } from '@/components/Tags';
 import { BookStatus, Schema$Book } from '@/typings';
@@ -11,7 +10,7 @@ interface Props {
 
 export function ClientBookDetailsBook({ book }: Props) {
   return (
-    <div className={classes.header}>
+    <div className={classes['book']}>
       <BookModel
         flatten
         width={80}
@@ -19,11 +18,14 @@ export function ClientBookDetailsBook({ book }: Props) {
         cover={book.cover}
       />
 
-      <div className={classes['header-content']}>
-        <div className={classes['header-title']}>
-          <H3>{book.name}</H3>
-          <span>{book.author?.nickname} 著</span>
+      <div className={classes['book-content']}>
+        <div className={classes['book-title']}>
+          <span className={classes['name']}>{book.name}</span>
+          <span className={classes['author']}>{book.author?.nickname} 著</span>
         </div>
+      </div>
+
+      <div className={classes['tags']}>
         {book.status && (
           <Tags
             tags={[
@@ -32,8 +34,9 @@ export function ClientBookDetailsBook({ book }: Props) {
             ]}
           />
         )}
-        <div className={classes.description}>{book.description}</div>
       </div>
+
+      <div className={classes.description}>{book.description}</div>
     </div>
   );
 }
