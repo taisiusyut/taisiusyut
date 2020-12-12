@@ -4,8 +4,8 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Schema$BookShelf } from '@/typings';
 import { addBookToShelf, getBookShelf, removeBookFromShelf } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import { useAuthState } from '../useAuth';
-import { StateContext, ActionContext } from './bookShelfProvider';
+import { useAuthState } from '@/hooks/useAuth';
+import { StateContext, ActionContext, shelfStorage } from './bookShelfProvider';
 
 export * from './bookShelfProvider';
 
@@ -41,9 +41,7 @@ export function useGetBookShelf() {
   useEffect(() => {
     switch (auth.loginStatus) {
       case 'unknown':
-        actions.list(
-          Array.from({ length: 10 }, () => ({ bookID: String(Math.random()) }))
-        );
+        actions.list(shelfStorage.get());
         break;
       case 'required':
         actions.list([]);
@@ -54,8 +52,12 @@ export function useGetBookShelf() {
       setLoading(true);
       const subscription = defer(() => getBookShelf()).subscribe(
         books => {
+          const payload = books.map(data => ({
+            ...data,
+            bookID: data.book.id
+          }));
           setLoading(false);
-          actions.list(books.map(data => ({ ...data, bookID: data.book.id })));
+          actions.list(payload);
         },
         error => {
           setLoading(false);

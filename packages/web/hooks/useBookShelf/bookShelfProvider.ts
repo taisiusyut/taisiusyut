@@ -1,5 +1,6 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { Schema$BookShelf } from '@/typings';
+import { createClientStorage } from '@/utils/storage';
 import {
   bindDispatch,
   getCRUDActionsCreator,
@@ -21,6 +22,15 @@ export const ActionContext = React.createContext<Actions | undefined>(
   undefined
 );
 
+const placeholder = Array.from<unknown, BookShelf>({ length: 10 }, () => ({
+  bookID: String(Math.random())
+}));
+
+export const shelfStorage = createClientStorage<BookShelf[]>(
+  'shelf',
+  placeholder
+);
+
 const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
   'bookID',
   { prefill: false }
@@ -29,11 +39,17 @@ const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
 const [crudActions] = getCRUDActionsCreator<BookShelf, 'bookID'>()();
 
 export function BookShelfProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState, state =>
+    reducer(state, { type: 'LIST', payload: shelfStorage.get() })
+  );
   const [actions] = useState({
     dispatch,
     ...bindDispatch(crudActions, dispatch)
   });
+
+  useEffect(() => {
+    shelfStorage.save(state.list);
+  }, [state]);
 
   return React.createElement(
     StateContext.Provider,
