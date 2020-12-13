@@ -5,6 +5,7 @@ import { ClientHeader } from '@/components/client/ClientHeader';
 import { GoBackButton } from '@/components/GoBackButton';
 import { Pagination } from '@/components/Pagination';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
+import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
 import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { useBreakPoints } from '@/hooks/useBreakPoints';
 import {
@@ -81,6 +82,8 @@ function ChaptersGrid({ bookID, bookName, chapters }: ChaptersProps) {
   );
 }
 
+const ChaptersListDrawerCard = withChaptersListDrawer(Card);
+
 export function ClientBookDetails({
   bookName,
   book: initialBook,
@@ -106,10 +109,16 @@ export function ClientBookDetails({
       );
     } else {
       chapters = (
-        <Card interactive className={classes['chapters-list-trigger']}>
+        <ChaptersListDrawerCard
+          interactive
+          chapterNo={0}
+          bookID={book.id}
+          bookName={book.name}
+          className={classes['chapters-list-trigger']}
+        >
           <div className={classes['chapter-head']}>章節目錄</div>
           <Icon icon="chevron-right" />
-        </Card>
+        </ChaptersListDrawerCard>
       );
     }
 

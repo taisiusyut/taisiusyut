@@ -36,12 +36,12 @@ export function ClientHeader({
 
   return (
     <div className="header">
-      <div>
+      <div className="left">
         {left}
         {fillLeft}
       </div>
       <div className="header-title">{title}</div>
-      <div>
+      <div className="right">
         {right}
         {fillRight}
       </div>
@@ -66,6 +66,11 @@ export function ClientHeader({
             font-weight: bold;
             margin-bottom: 0;
             text-align: center;
+          }
+
+          .left,
+          .right {
+            flex: 0 0 auto;
           }
         `}
       </style>

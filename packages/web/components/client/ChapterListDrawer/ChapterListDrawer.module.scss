@@ -13,7 +13,7 @@
 }
 
 .list-content {
-  @include dimen(400px, 100%);
+  @include dimen(320px, 100%);
   max-width: calc(100vw - 70px);
   overflow: hidden;
 }
@@ -38,8 +38,24 @@
   margin-right: 10px;
   min-width: 50px;
   text-align: center;
+
+  &:empty {
+    &:before {
+      @include sq-dimen(20px);
+      content: '';
+      display: block;
+      background-color: rgba($gray3, 0.2);
+      margin: auto;
+    }
+  }
 }
 
 .chapter-name {
   @include text-overflow-ellipsis();
+
+  &:empty {
+    @include dimen(70%, 20px);
+    display: block;
+    background-color: rgba($gray3, 0.2);
+  }
 }

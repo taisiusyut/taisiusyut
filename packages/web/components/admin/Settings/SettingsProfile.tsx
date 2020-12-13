@@ -13,10 +13,12 @@ import classes from './Settings.module.scss';
 
 const { Form, FormItem, Email, Nickname, useForm } = createUserForm();
 
-const ContentEditor = dynamic<ContentEditorProps>(() =>
-  import(`@/components/admin/ContentEditor`).then(
-    ({ ContentEditor }) => ContentEditor
-  )
+const ContentEditor = dynamic<ContentEditorProps>(
+  () =>
+    import(
+      /* webpackChunkName: "chapters-list-drawer" */ `@/components/admin/ContentEditor`
+    ).then(({ ContentEditor }) => ContentEditor),
+  { ssr: false }
 );
 
 const useUpdateUser = () => {
