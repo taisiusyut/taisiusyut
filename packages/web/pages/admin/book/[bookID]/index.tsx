@@ -3,6 +3,7 @@ import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { BookDetails } from '@/components/admin/BookDetails';
+import { Toaster } from '@/utils/toaster';
 import { UserRole, Schema$Book } from '@/typings';
 import { getBook } from '@/service';
 
@@ -11,6 +12,8 @@ interface Props {
 }
 
 type BookState = Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
+
+const onFailure = Toaster.apiError.bind(Toaster, `Get book failure`);
 
 function BookDetailsPageContent({ bookID }: Props) {
   const [book, setBook] = useState<BookState>({
@@ -22,7 +25,7 @@ function BookDetailsPageContent({ bookID }: Props) {
       setBook(book => ({ ...book, ...payload }))
   });
 
-  useRxAsync(request, { onSuccess: setBook });
+  useRxAsync(request, { onSuccess: setBook, onFailure });
 
   return <BookDetails book={book} onUpdate={onUpdate} />;
 }

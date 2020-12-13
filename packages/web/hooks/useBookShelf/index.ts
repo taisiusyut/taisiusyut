@@ -74,7 +74,7 @@ export function useGetBookShelf() {
 
 export function useBookInShelfToggle(bookID: string) {
   const [state, actions] = useBookShelf();
-  const { request, onSuccess } = useMemo(() => {
+  const { request, onSuccess, onFailure } = useMemo(() => {
     return {
       onSuccess: (payload: Schema$BookShelf | null) => {
         if (payload) {
@@ -82,6 +82,9 @@ export function useBookInShelfToggle(bookID: string) {
         } else {
           actions.delete({ bookID });
         }
+      },
+      onFailure: (error: any) => {
+        Toaster.apiError(`Error`, error);
       },
       request: (exist: boolean) =>
         exist
@@ -92,7 +95,8 @@ export function useBookInShelfToggle(bookID: string) {
 
   const [{ loading }, { fetch }] = useRxAsync(request, {
     defer: true,
-    onSuccess
+    onSuccess,
+    onFailure
   });
 
   return [state.ids.includes(bookID), loading, fetch] as const;

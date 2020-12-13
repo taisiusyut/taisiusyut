@@ -14,16 +14,19 @@ const { Form, Nickname, Email, useForm } = createUserForm();
 
 const title = '更改帳號資料';
 
+const onFailure = Toaster.apiError.bind(Toaster, `Update profile failure`);
+
 export function withUpdateProfile<P extends OnClick>(
   Component: React.ComponentType<P>
 ) {
-  return function WithMUpdateProfile(props: P) {
+  return function WithUpdateProfile(props: P) {
     const [form] = useForm();
     const [auth, actions] = useAuth();
 
     useRxAsync(getProfile, {
       defer: !!auth.user?.email,
-      onSuccess: actions.updateProfile
+      onSuccess: actions.updateProfile,
+      onFailure
     });
 
     async function onConfirm() {

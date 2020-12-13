@@ -12,6 +12,7 @@ import {
   createCRUDReducer,
   DefaultCRUDActionTypes
 } from '@/hooks/crud-reducer';
+import { Toaster } from '@/utils/toaster';
 import {
   Order,
   PaginateResult,
@@ -38,12 +39,21 @@ export interface ChaptersProps {
   chapters?: PaginateResult<Schema$Chapter>;
 }
 
+const onGetBookFailure = Toaster.apiError.bind(Toaster, `Get book failure`);
+const onGetChapterFailure = Toaster.apiError.bind(
+  Toaster,
+  `Get chapters failure`
+);
+
 function useBook(
   bookName: string,
   initialData?: Schema$Book | null
 ): Schema$Book | null {
   const [request] = useState(() => () => getBookByName({ bookName }));
-  const [{ data }] = useRxAsync(request, { defer: !!initialData });
+  const [{ data }] = useRxAsync(request, {
+    defer: !!initialData,
+    onFailure: onGetBookFailure
+  });
   return initialData || data || null;
 }
 
@@ -69,7 +79,7 @@ function ChaptersGrid({ bookID, bookName, chapters }: ChaptersProps) {
       }
     );
   });
-  const { data, pagination } = useChapters();
+  const { data, pagination } = useChapters({ onFailure: onGetChapterFailure });
 
   return (
     <Card className={classes['chapters-grid-card']}>
