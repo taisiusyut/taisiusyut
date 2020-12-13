@@ -91,7 +91,7 @@ export class BookShelfController {
     @ObjectId('bookID') bookID: string,
     dto: UpdateBookInShelfDto
   ) {
-    return this.bookShelfService.update(
+    return this.bookShelfService.findOneAndUpdate(
       {
         user: req.user?.user_id,
         book: bookID

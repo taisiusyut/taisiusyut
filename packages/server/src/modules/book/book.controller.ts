@@ -52,7 +52,7 @@ export class BookController {
       _id: id
     });
 
-    const book = await this.bookService.update(query, updateBookDto);
+    const book = await this.bookService.findOneAndUpdate(query, updateBookDto);
 
     if (!book) {
       throw new NotFoundException(`book not found`);
@@ -120,7 +120,7 @@ export class BookController {
     const currStatus =
       req.params.type === 'public' ? BookStatus.Private : BookStatus.Public;
 
-    const book = await this.bookService.update(
+    const book = await this.bookService.findOneAndUpdate(
       { _id: id, author: req.user?.user_id, status: currStatus },
       {
         status:

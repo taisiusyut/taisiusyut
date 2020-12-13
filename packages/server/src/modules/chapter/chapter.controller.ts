@@ -103,7 +103,10 @@ export class ChapterController {
         );
     }
 
-    const chapter = await this.chapterService.update(query, updateChapterDto);
+    const chapter = await this.chapterService.findOneAndUpdate(
+      query,
+      updateChapterDto
+    );
 
     if (!chapter) {
       throw new BadRequestException(`book or chapter not found`);
@@ -205,7 +208,7 @@ export class ChapterController {
   ) {
     // TODO: chapter cannot public if book is not public ?
 
-    const result = await this.chapterService.update(
+    const result = await this.chapterService.findOneAndUpdate(
       {
         _id: chapterID,
         book: bookID,

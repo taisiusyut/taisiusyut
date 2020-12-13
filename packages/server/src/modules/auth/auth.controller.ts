@@ -62,7 +62,7 @@ export class AuthController {
     const refreshToken = uuidv4();
 
     try {
-      await this.refreshTokenService.update(
+      await this.refreshTokenService.findOneAndUpdate(
         { user_id: user.user_id },
         { ...signResult.user, refreshToken },
         { upsert: true }
@@ -98,7 +98,7 @@ export class AuthController {
       let refreshToken: RefreshToken | null = null;
 
       try {
-        refreshToken = await this.refreshTokenService.update(
+        refreshToken = await this.refreshTokenService.findOneAndUpdate(
           { refreshToken: tokenFromCookies },
           { refreshToken: newRefreshToken }
         );
@@ -192,7 +192,7 @@ export class AuthController {
 
     await this.validateUser(req.user.username, password);
 
-    const result = await this.userService.update(
+    const result = await this.userService.findOneAndUpdate(
       { _id: req.user.user_id },
       { password: newPassword }
     );
@@ -224,7 +224,7 @@ export class AuthController {
 
     const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
 
-    const user = await this.userService.update(
+    const user = await this.userService.findOneAndUpdate(
       {
         _id: req.user?.user_id,
         role: req.user?.role // required for discrimination
@@ -235,7 +235,7 @@ export class AuthController {
     const { nickname, email } = updateProfileDto;
 
     if (nickname || email) {
-      await this.refreshTokenService.update(
+      await this.refreshTokenService.findOneAndUpdate(
         { refreshToken: tokenFromCookies },
         { nickname, email }
       );

@@ -29,31 +29,31 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     await this.model.deleteOne(query);
   }
 
-  async update(
+  async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
     options: QueryFindOneAndUpdateOptions & { rawResult: true; new: false }
   ): Promise<FindAndModifyWriteOpResultObject<D> | null>;
-  async update(
+  async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
     options: QueryFindOneAndUpdateOptions & { rawResult: true; upsert: true }
   ): Promise<FindAndModifyWriteOpResultObject<D>>;
-  async update(
+  async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
     options: QueryFindOneAndUpdateOptions & { upsert: true }
   ): Promise<D>;
-  async update(
+  async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
     options: QueryFindOneAndUpdateOptions & { new: false; rawResult?: false }
   ): Promise<D | null>;
-  async update(
+  async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>
   ): Promise<D | null>;
-  async update(
+  async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,
     options?: QueryFindOneAndUpdateOptions

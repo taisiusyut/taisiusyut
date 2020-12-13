@@ -49,7 +49,7 @@ export class PaymentController {
       details
     );
 
-    const result = await this.paymentService.update(
+    const result = await this.paymentService.findOneAndUpdate(
       hasPaidQuery,
       {
         ...createPaymentDto,
@@ -76,7 +76,10 @@ export class PaymentController {
     @ObjectId('id') id: string,
     @Body() updatePaymentDto: UpdatePaymentDto
   ) {
-    const payment = this.paymentService.update({ _id: id }, updatePaymentDto);
+    const payment = this.paymentService.findOneAndUpdate(
+      { _id: id },
+      updatePaymentDto
+    );
     if (!payment) {
       throw new BadRequestException(`payment not found`);
     }

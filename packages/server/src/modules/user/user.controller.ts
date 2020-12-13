@@ -105,7 +105,10 @@ export class UserController {
       user
     );
 
-    const result = await this.userService.update(query, updateUserDto);
+    const result = await this.userService.findOneAndUpdate(
+      query,
+      updateUserDto
+    );
 
     if (!result) {
       throw new BadRequestException(`user not found`);
