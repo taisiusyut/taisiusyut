@@ -1,16 +1,16 @@
 import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import router from 'next/router';
+import { fromEvent } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Schema$Chapter } from '@/typings';
-import { ClientBookChapterContent } from './ClientBookChapterContent';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
 // import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
+import { ClientBookChapterContent } from './ClientBookChapterContent';
 import classes from './ClientBookChapter.module.scss';
-import { fromEvent, defer } from 'rxjs';
-import { exhaustMap, filter, map, pairwise, tap } from 'rxjs/operators';
-import { getChapterByNo } from '@/service';
 
 export interface ClientBookChapterData {
   bookID?: string;
@@ -29,55 +29,76 @@ export function ClientBookChapter({
   chapter: initialChapter,
   chapterNo: initialChapterNo
 }: ClientBookChapterProps) {
-  const [chapters, setChapters] = useState([initialChapter]);
-  const [currentChapter, setCurrentChapter] = useState(initialChapter);
-  const [hasNext, setHasNext] = useState(
-    initialChapter ? initialChapter.hasNext : false
+  const [chapters, setChapters] = useState([initialChapterNo]);
+  const [currentChapter, setCurrentChapter] = useState(initialChapterNo);
+
+  const [data, setData] = useState<Record<number, Schema$Chapter>>(
+    initialChapter ? { [initialChapter.number]: initialChapter } : {}
   );
   const ref = useRef<HTMLDivElement>(null);
+  const hasNext = useRef(initialChapter ? initialChapter.hasNext : false);
+  const loaded = useRef<Record<string, boolean>>({
+    [initialChapterNo]: !!initialChapter
+  });
 
   useEffect(() => {
     const scroller = ref.current;
-    let chapterNoRef = initialChapterNo;
+    let chapterNo = initialChapterNo;
+    let target = document.querySelector<HTMLDivElement>(
+      `#chapter-${chapterNo}`
+    );
     if (scroller && bookID) {
       const subscription = fromEvent<SyntheticEvent>(scroller, 'scroll')
         .pipe(
-          map<SyntheticEvent, number | undefined>(() => {
-            if (scroller.scrollTop === 0) {
-              // return -1;
-            } else if (
-              hasNext &&
-              scroller.scrollTop + scroller.offsetHeight >=
-                scroller.scrollHeight
-            ) {
-              return 1;
+          map<SyntheticEvent, -1 | 1 | undefined>(() => {
+            if (target) {
+              const ref =
+                scroller.scrollTop + scroller.offsetHeight + scroller.offsetTop;
+              if (ref < target.offsetTop) {
+                return -1;
+              } else if (
+                loaded.current[chapterNo] &&
+                ref - 40 >= target.offsetTop + target.offsetHeight
+              ) {
+                return 1;
+              }
             }
           }),
-          filter((i): i is number => !!i),
-          exhaustMap(plus => {
-            const chapterNo = chapterNoRef + plus;
-            return defer(() => getChapterByNo({ bookID, chapterNo })).pipe(
-              tap(() => {
-                chapterNoRef = chapterNo;
-              })
-            );
-          })
+          filter((i): i is -1 | 1 => !!i)
         )
-        .subscribe(chapter => {
-          setHasNext(chapter.hasNext);
-          setChapters(chapters => [...chapters, chapter]);
+        .subscribe(delta => {
+          const newChapterNo = chapterNo + delta;
+
+          if (hasNext.current) {
+            setChapters(chapters =>
+              chapters.includes(newChapterNo)
+                ? chapters
+                : [...chapters, newChapterNo]
+            );
+          }
+
+          const newTarget = document.querySelector<HTMLDivElement>(
+            `#chapter-${newChapterNo}`
+          );
+
+          if (newTarget) {
+            target = newTarget;
+            chapterNo = newChapterNo;
+            setCurrentChapter(chapterNo);
+            const url = `/book/${bookName}/chapter/${chapterNo}`;
+            router.replace(url, url, { shallow: true });
+          }
         });
       return () => subscription.unsubscribe();
     }
-  }, [bookID, initialChapter, initialChapterNo, hasNext]);
+  }, [bookID, bookName, initialChapter, initialChapterNo]);
 
   return (
     <>
       <ClientHeader
-        title={
-          currentChapter &&
-          `第${currentChapter.number}章 ${currentChapter.name}`
-        }
+        title={`第${currentChapter}章 ${
+          data[currentChapter]?.name || ''
+        }`.trim()}
         left={
           <GoBackButton targetPath={['/', '/explore', `/book/${bookName}`]} />
         }
@@ -97,12 +118,28 @@ export function ClientBookChapter({
         ]}
       />
       <div className={classes['chapters']} ref={ref}>
-        {chapters.map((chapter, idx) => (
-          <React.Fragment key={chapter?.id || idx}>
-            <ClientBookChapterContent chapter={chapter} />
-            <div id={`chapter-${chapter?.number}`}></div>
-          </React.Fragment>
-        ))}
+        {bookID &&
+          chapters.map(chapterNo => (
+            <div
+              key={chapterNo}
+              className={classes['content']}
+              id={`chapter-${chapterNo}`}
+            >
+              <ClientBookChapterContent
+                bookID={bookID}
+                chapterNo={chapterNo}
+                defaultChapter={data[chapterNo]}
+                onLoaded={chapter => {
+                  if (hasNext.current === true) {
+                    hasNext.current = chapter.hasNext;
+                  }
+                  loaded.current[chapter.number] = true;
+                  ref.current?.dispatchEvent(new Event('scroll'));
+                  setData(data => ({ ...data, [chapter.number]: chapter }));
+                }}
+              />
+            </div>
+          ))}
       </div>
     </>
   );

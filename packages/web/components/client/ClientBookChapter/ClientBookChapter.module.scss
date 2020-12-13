@@ -18,6 +18,13 @@
   // for firefox
   @include margin-y(40px);
   min-height: 100%;
+
+  &:nth-child(odd) {
+    background-color: red;
+  }
+  &:nth-child(even) {
+    background-color: blue;
+  }
 }
 
 .paramgraph {
