@@ -11,7 +11,7 @@ import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
     transform: (_model, raw) => new Chapter(raw)
   }
 })
-export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
+export class Chapter implements Schema$Chapter {
   @Exclude()
   _id: string;
 
@@ -61,11 +61,14 @@ export class Chapter implements Partial<Record<keyof Schema$Chapter, unknown>> {
   @Prop({ type: Number })
   price?: number;
 
-  @Transform(Number)
-  createdAt: string;
+  @Prop({ type: Boolean, default: false })
+  hasNext: boolean;
 
   @Transform(Number)
-  updatedAt: string;
+  createdAt: number;
+
+  @Transform(Number)
+  updatedAt: number;
 
   constructor(payload: Partial<Chapter>) {
     Object.assign(this, payload);

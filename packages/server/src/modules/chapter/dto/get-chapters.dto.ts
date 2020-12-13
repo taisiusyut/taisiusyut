@@ -23,6 +23,9 @@ class Excluded
 
   @Exclude()
   book?: undefined;
+
+  @Exclude()
+  hasNext?: undefined;
 }
 
 class GetChapters

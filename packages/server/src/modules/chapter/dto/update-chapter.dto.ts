@@ -1,5 +1,5 @@
-import { Exclude } from 'class-transformer';
-import { IsOptional } from 'class-validator';
+import { Exclude, Transform } from 'class-transformer';
+import { IsBoolean, IsOptional } from 'class-validator';
 import {
   ChapterStatus,
   ChapterType,
@@ -65,6 +65,13 @@ class UpdateChapter
 
   @IsPrice()
   price?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(value =>
+    typeof value === 'undefined' ? value : JSON.parse(value)
+  )
+  hasNext?: boolean;
 }
 
 export class UpdateChapterDto

@@ -67,6 +67,14 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     });
   }
 
+  updateOne(
+    query: FilterQuery<D>,
+    changes: UpdateQuery<D>,
+    options: ModelUpdateOptions = {}
+  ) {
+    return this.model.updateOne(query, changes, options);
+  }
+
   updateMany(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,

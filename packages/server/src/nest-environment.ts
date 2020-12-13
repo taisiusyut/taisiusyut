@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { setupApp, fastifyAdapter, NestFastifyApplication } from './setup';
 import NodeEnvironment from 'jest-environment-node';
 import supertest from 'supertest';
+import mongoose from 'mongoose';
 
 export default class NestNodeEnvironment extends NodeEnvironment {
   mongod = new MongoMemoryServer();
@@ -37,6 +38,7 @@ export default class NestNodeEnvironment extends NodeEnvironment {
 
   async teardown(): Promise<void> {
     await this.global.app.close();
+    await mongoose.connection.close();
     await this.mongod.stop();
     await super.teardown();
   }

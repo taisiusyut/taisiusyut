@@ -8,7 +8,11 @@ import {
 } from '@/typings';
 import { createBook, publicBook } from '../../service/book';
 import { createUserAndLogin, setupUsers } from '../../service/auth';
-import { createChapter, publicChapter } from '../../service/chapter';
+import {
+  getChapter,
+  publicChapter,
+  createChapter
+} from '../../service/chapter';
 
 export function testPublicChapter() {
   let book: Schema$Book;
@@ -21,7 +25,7 @@ export function testPublicChapter() {
     book = response.body;
   });
 
-  test('author can update chapter status to public/private', async () => {
+  test('author can update chapter status to public', async () => {
     let response = await createChapter(author.token, book.id);
     const chapter: Schema$Chapter = response.body;
     expect(chapter).not.toHaveProperty('status', ChapterStatus.Public);
@@ -39,7 +43,28 @@ export function testPublicChapter() {
 
     // public chapter success
     response = await publicChapter(author.token, book.id, chapter.id);
-    expect(response.body).toHaveProperty('status', ChapterStatus.Public);
+    expect(response.body).toMatchObject({
+      status: ChapterStatus.Public,
+      hasNext: false,
+      number: 1
+    });
+
+    response = await createChapter(author.token, book.id);
+    const chapter2: Schema$Chapter = response.body;
+
+    response = await publicChapter(author.token, book.id, chapter2.id);
+    expect(response.body).toMatchObject({
+      status: ChapterStatus.Public,
+      hasNext: false,
+      number: 2
+    });
+
+    response = await getChapter(client.token, book.id, chapter.id);
+    expect(response.body).toMatchObject({
+      status: ChapterStatus.Public,
+      hasNext: true,
+      number: 1
+    });
   });
 
   test('client cannot update chapter status to public', async () => {

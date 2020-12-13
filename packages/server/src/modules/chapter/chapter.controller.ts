@@ -208,7 +208,7 @@ export class ChapterController {
   ) {
     // TODO: chapter cannot public if book is not public ?
 
-    const result = await this.chapterService.findOneAndUpdate(
+    const chapter = await this.chapterService.findOneAndUpdate(
       {
         _id: chapterID,
         book: bookID,
@@ -220,9 +220,9 @@ export class ChapterController {
       }
     );
 
-    if (!result) {
+    if (!chapter) {
       throw new BadRequestException(
-        `book or chapter not found or current status is not allow`
+        `book or chapter not found or current status is not allowed`
       );
     }
 
@@ -231,6 +231,17 @@ export class ChapterController {
       new PublicChapterEvent({ bookID, chapterID })
     );
 
-    return result;
+    if (chapter.number > 1) {
+      await this.chapterService.updateOne(
+        {
+          book: bookID,
+          author: req.user?.user_id,
+          number: chapter.number - 1
+        },
+        { hasNext: true }
+      );
+    }
+
+    return chapter;
   }
 }
