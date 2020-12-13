@@ -1,7 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
 import { Schema$Book } from '@/typings';
-import { addBookToShelf, getBooksFromShelf } from '../../service/book-shelf';
+import {
+  addBookToShelf,
+  getBooksFromShelf,
+  mapToLatestChapter
+} from '../../service/book-shelf';
 import { getUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
@@ -40,11 +44,9 @@ export function testLatestChapter() {
     for (const user of users) {
       const response = await getBooksFromShelf(getUser(user).token);
       expect(response.body[0].latestChapter).toBeDefined();
-      expect(response.body[0].latestChapter).toMatchObject({
-        number: chapter.number,
-        name: chapter.name,
-        id: chapter.id
-      });
+      expect(response.body[0].latestChapter).toEqual(
+        mapToLatestChapter(chapter)
+      );
     }
   });
 }

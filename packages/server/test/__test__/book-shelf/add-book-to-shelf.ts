@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { Schema$Book, Schema$Chapter, UserRole } from '@/typings';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
-import { addBookToShelf } from '../../service/book-shelf';
+import { addBookToShelf, mapToLatestChapter } from '../../service/book-shelf';
 import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
@@ -43,7 +43,9 @@ export function testAddBookToShelf() {
         const chapter = { ...chapters[Number(k)] };
         const response = await addBookToShelf(getUser(user).token, book.id);
         expect(response.status).toBe(HttpStatus.CREATED);
-        expect(response.body.latestChapter).toMatchObject(chapter);
+        expect(response.body.latestChapter).toEqual(
+          mapToLatestChapter(chapter)
+        );
       }
     }
   );
@@ -54,7 +56,9 @@ export function testAddBookToShelf() {
 
     response = await addBookToShelf(client.token, books[2].id);
     expect(response.status).toBe(HttpStatus.CREATED);
-    expect(response.body.latestChapter).toMatchObject(chapters[2]);
+    expect(response.body.latestChapter).toEqual(
+      mapToLatestChapter(chapters[2])
+    );
   });
 
   test(`other author can add public book to shelf but not private`, async () => {
@@ -68,7 +72,9 @@ export function testAddBookToShelf() {
 
     response = await addBookToShelf(otherAuthor.token, books[2].id);
     expect(response.status).toBe(HttpStatus.CREATED);
-    expect(response.body.latestChapter).toMatchObject(chapters[2]);
+    expect(response.body.latestChapter).toEqual(
+      mapToLatestChapter(chapters[2])
+    );
   });
 
   test(`cannot add a book to shelf twice`, async () => {
@@ -77,7 +83,9 @@ export function testAddBookToShelf() {
     for (const user of ['root', 'admin', 'author', 'client']) {
       let response = await addBookToShelf(getUser(user).token, books[2].id);
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.latestChapter).toMatchObject(chapters[2]);
+      expect(response.body.latestChapter).toEqual(
+        mapToLatestChapter(chapters[2])
+      );
 
       response = await addBookToShelf(getUser(user).token, books[2].id);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);

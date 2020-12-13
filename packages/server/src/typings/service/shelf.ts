@@ -5,10 +5,10 @@ import { Schema$Chapter } from './chapter';
 export interface Schema$BookShelf extends Timestamp {
   id: string;
   user: string;
-  book: Schema$Book;
+  book: Omit<Schema$Book, 'tags' | 'description'>;
   pin?: boolean;
   lastVisit?: number | null;
-  latestChapter?: Schema$Chapter | null;
+  latestChapter?: Pick<Schema$Chapter, 'id' | 'name' | 'number'> | null;
 }
 
 export interface Param$GetBooksFromShelf extends Pagination {}

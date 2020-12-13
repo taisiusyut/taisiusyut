@@ -4,7 +4,25 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Chapter } from '@/modules/chapter/schemas/chapter.schema';
-import { Schema$BookShelf } from '@/typings';
+import { Schema$Book, Schema$BookShelf } from '@/typings';
+
+type ShelfBook = Schema$BookShelf['book'];
+type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
+
+export const bookSelect: {
+  [X in Exclude<keyof Schema$Book, keyof ShelfBook>]: 0;
+} = {
+  tags: 0,
+  description: 0
+};
+
+export const latestChapterSelect: {
+  [X in keyof LatestChapter]: 1;
+} = {
+  id: 1,
+  name: 1,
+  number: 1
+};
 
 @Schema({
   timestamps: true,
@@ -29,7 +47,10 @@ export class BookShelf
     type: Types.ObjectId,
     ref: Book.name,
     required: true,
-    autopopulate: { maxDepth: 2 }
+    autopopulate: {
+      maxDepth: 2, // for author
+      select: bookSelect
+    }
   })
   @Type(() => Book)
   book: string | Book;
@@ -43,7 +64,10 @@ export class BookShelf
   @Prop({
     type: Types.ObjectId,
     ref: Chapter.name,
-    autopopulate: { maxDepth: 1 }
+    autopopulate: {
+      maxDepth: 1,
+      select: latestChapterSelect
+    }
   })
   latestChapter?: string | null;
 

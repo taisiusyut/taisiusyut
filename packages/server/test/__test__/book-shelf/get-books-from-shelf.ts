@@ -34,5 +34,11 @@ export function testGetBooksFromShelf() {
   test.each(users)(`%s can get books from shelf`, async user => {
     const response = await getBooksFromShelf(getUser(user).token);
     expect(response.body).toHaveLength(length);
+    expect(response.body).not.toContain({
+      book: {
+        tags: expect.anything(),
+        description: expect.anything()
+      }
+    });
   });
 }

@@ -1,5 +1,7 @@
 import { UpdateBookInShelfDto } from '@/modules/book-shelf/dto';
+import { latestChapterSelect } from '@/modules/book-shelf/schemas/book-shelf.schema';
 import { routes } from '@/constants';
+import { Schema$Chapter } from '@/typings';
 
 export function addBookToShelf(token: string, bookID: string) {
   return request
@@ -31,4 +33,14 @@ export function getBooksFromShelf(token: string) {
     .get(routes.get_books_from_shelf)
     .set('Authorization', `bearer ${token}`)
     .send();
+}
+
+export function mapToLatestChapter(chapter: Schema$Chapter) {
+  return Object.keys(latestChapterSelect).reduce(
+    (result, key) => ({
+      ...result,
+      [key]: chapter[key as keyof Schema$Chapter]
+    }),
+    {} as Partial<Schema$Chapter>
+  );
 }
