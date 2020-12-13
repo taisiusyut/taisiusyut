@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps<
     : null;
 
   return {
-    props: { bookName, chapterNo: Number(chapterNo), chapter }
+    props: { bookID: book?.id, bookName, chapterNo: Number(chapterNo), chapter }
   };
 };
 
