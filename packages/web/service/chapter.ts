@@ -25,6 +25,17 @@ export const getChapter = ({
     routes.get_chapter.generatePath({ bookID, chapterID })
   );
 
+export const getChapterByNo = ({
+  bookID,
+  chapterNo
+}: {
+  bookID: string;
+  chapterNo: number;
+}) =>
+  api.get<Schema$Chapter>(
+    routes.get_chapter_by_no.generatePath({ bookID, chapterNo })
+  );
+
 export const createChapter = ({ bookID, ...payload }: Param$CreateChapter) =>
   api.post<Schema$Chapter>(
     routes.create_chapter.generatePath({ bookID }),

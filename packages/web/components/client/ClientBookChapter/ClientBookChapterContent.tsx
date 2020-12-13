@@ -4,7 +4,7 @@ import { useClientPreferencesState } from '@/hooks/useClientPreferences';
 import classes from './ClientBookChapter.module.scss';
 
 export interface Props {
-  chapter: Schema$Chapter;
+  chapter: Schema$Chapter | null;
 }
 
 export function ClientBookChapterContent({ chapter }: Props) {
@@ -12,21 +12,19 @@ export function ClientBookChapterContent({ chapter }: Props) {
 
   if (chapter) {
     return (
-      <div className={classes.content}>
-        <div>
-          {chapter.content.split('\n').map((paramgraph, idx) => (
-            <p
-              key={idx}
-              className={classes.paramgraph}
-              style={{ fontSize, lineHeight }}
-            >
-              {paramgraph}
-            </p>
-          ))}
-        </div>
+      <div className={classes['content']}>
+        {chapter.content.split('\n').map((paramgraph, idx) => (
+          <p
+            key={idx}
+            className={classes.paramgraph}
+            style={{ fontSize, lineHeight }}
+          >
+            {paramgraph}
+          </p>
+        ))}
       </div>
     );
   }
 
-  return null;
+  return <div className={classes['content']}>404 Not Found</div>;
 }

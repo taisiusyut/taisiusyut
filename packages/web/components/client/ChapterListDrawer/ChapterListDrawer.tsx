@@ -41,9 +41,8 @@ export function ChapterListDrawer({
         chapter={chapter}
         onClick={event => {
           if (chapter.number) {
-            router
-              .push(`/book/${bookName}/chapter/${chapter.number}`)
-              .then(() => props.onClose && props.onClose(event));
+            props.onClose && props.onClose(event);
+            router.push(`/book/${bookName}/chapter/${chapter.number}`);
           }
         }}
         isActive={index === chapterNo - 1}

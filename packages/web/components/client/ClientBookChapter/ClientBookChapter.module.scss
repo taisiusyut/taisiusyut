@@ -1,18 +1,23 @@
 @import '~styles/utils';
 
-.content {
+.chapters {
   @include sq-dimen(100%);
   overflow: auto;
+  overflow-anchor: none;
 
   @media (max-width: 480px) {
-    padding: 20px;
+    @include padding-x(20px);
   }
 
   @media (min-width: 481px) {
-    padding: 40px;
+    @include padding-x(40px);
   }
+}
 
-  padding-bottom: calc(25px + env(safe-area-inset-bottom));
+.content {
+  // for firefox
+  @include margin-y(40px);
+  min-height: 100%;
 }
 
 .paramgraph {
