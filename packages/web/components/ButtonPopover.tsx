@@ -5,6 +5,7 @@ import {
   IButtonProps,
   IPopoverProps
 } from '@blueprintjs/core';
+import { isTouchable } from '@/constants';
 
 export interface ButtonPopoverProps
   extends IButtonProps,
@@ -18,7 +19,7 @@ export const ButtonPopover = React.forwardRef<any, ButtonPopoverProps>(
 
     return (
       <>
-        {content ? (
+        {content && !isTouchable ? (
           <Popover
             popoverClassName={'button-popover'}
             interactionKind="hover-target"
