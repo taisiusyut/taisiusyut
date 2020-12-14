@@ -2253,9 +2253,9 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@nestjs/cli@https://github.com/Pong420/nest-cli.git#a60c4a4ca6f8e125b1b588ae4cf07262427ae18f":
+"@nestjs/cli@https://github.com/Pong420/nest-cli.git#5ba47fd2c18364e6045fa6b83dd8e2429996f05b":
   version "7.5.4"
-  resolved "https://github.com/Pong420/nest-cli.git#a60c4a4ca6f8e125b1b588ae4cf07262427ae18f"
+  resolved "https://github.com/Pong420/nest-cli.git#5ba47fd2c18364e6045fa6b83dd8e2429996f05b"
   dependencies:
     "@angular-devkit/core" "11.0.3"
     "@angular-devkit/schematics" "11.0.3"
