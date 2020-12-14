@@ -17,6 +17,8 @@ import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { ClientBookChapterContent } from './ClientBookChapterContent';
 import classes from './ClientBookChapter.module.scss';
+import { useClientPreferencesState } from '@/hooks/useClientPreferences';
+import { Button } from '@blueprintjs/core';
 
 export interface ClientBookChapterData {
   bookID?: string;
@@ -46,7 +48,13 @@ export function ClientBookChapter({
     [initialChapterNo]: !!initialChapter
   });
 
+  const { autoFetchNextChapter } = useClientPreferencesState();
+
   useEffect(() => {
+    if (!autoFetchNextChapter) {
+      return;
+    }
+
     const scroller = scrollerRef.current;
     let chapterNo = initialChapterNo;
     let target = document.querySelector<HTMLDivElement>(
@@ -95,13 +103,24 @@ export function ClientBookChapter({
             target = newTarget;
             chapterNo = newChapterNo;
             setCurrentChapter(chapterNo);
-            const url = `/book/${bookName}/chapter/${chapterNo}`;
-            router.replace(url, url, { shallow: true });
           }
         });
       return () => subscription.unsubscribe();
     }
-  }, [bookID, bookName, initialChapter, initialChapterNo]);
+  }, [
+    bookID,
+    bookName,
+    initialChapter,
+    initialChapterNo,
+    autoFetchNextChapter
+  ]);
+
+  useEffect(() => {
+    if (initialChapterNo !== currentChapter) {
+      const url = `/book/${bookName}/chapter/${currentChapter}`;
+      router.replace(url, url, { shallow: true });
+    }
+  }, [bookName, initialChapterNo, currentChapter]);
 
   const title = `第${currentChapter}章 - ${bookName}`;
   const header = (
@@ -165,6 +184,22 @@ export function ClientBookChapter({
       {header}
       <div className={classes['chapters']} ref={scrollerRef}>
         {content}
+        {!autoFetchNextChapter &&
+          hasNext.current &&
+          loaded.current[currentChapter] && (
+            <div style={{ marginTop: 20, marginBottom: 20 }}>
+              <Button
+                fill
+                text="下一章"
+                intent="primary"
+                onClick={() => {
+                  const nextChpaterNo = currentChapter + 1;
+                  setCurrentChapter(nextChpaterNo);
+                  setChapters(chapters => [...chapters, nextChpaterNo]);
+                }}
+              />
+            </div>
+          )}
       </div>
     </>
   );

@@ -126,7 +126,7 @@ export function ClientPreferencesDialog(props: ListViewDialogProps) {
         </ListItem>
 
         <ListItem rightElement={<Switch name="autoFetchNextChapter" />}>
-          預載下一章節
+          自動加載下一章
         </ListItem>
 
         <ListViewDialogFooter>
