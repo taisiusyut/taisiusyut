@@ -94,7 +94,7 @@
 
   :global(.layout-body:not(.fix-width)) & {
     @media (min-width: 1280px) {
-      grid-template-columns: repeat(5, auto);
+      grid-template-columns: repeat(5, 1fr);
     }
   }
 
