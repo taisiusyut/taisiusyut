@@ -1,40 +1,84 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Schema$Chapter } from '@/typings';
-import { Classes, Tag } from '@blueprintjs/core';
-import classes from './ClientBookDetails.module.scss';
+import {
+  Order,
+  PaginateResult,
+  Param$GetChapters,
+  Schema$Chapter
+} from '@/typings';
+import { Card, Classes, Divider, Tag } from '@blueprintjs/core';
+import { Pagination } from '@/components/Pagination';
+import {
+  createCRUDReducer,
+  DefaultCRUDActionTypes
+} from '@/hooks/crud-reducer';
+import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+import { getChapters } from '@/service';
+import { Toaster } from '@/utils/toaster';
 
+import classes from './ClientBookDetails.module.scss';
 interface Props {
+  bookID: string;
   bookName: string;
-  chapters: Partial<Schema$Chapter>[];
+  chapters?: PaginateResult<Schema$Chapter>;
 }
 
 // TODO: empty chapter
 
-export function ClientBookDetailsChapters({ bookName, chapters }: Props) {
+const onFailure = Toaster.apiError.bind(Toaster, `Get chapters failure`);
+
+export function ClientBookDetailsChapters({
+  bookID,
+  bookName,
+  chapters: initialChapters
+}: Props) {
+  const [useChapters] = useState(() => {
+    const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
+    const request = (params?: Param$GetChapters) =>
+      getChapters({ ...params, bookID, sort: { createdAt: Order.ASC } });
+
+    return createUsePaginationLocal('id', request, {
+      defaultState: { pageSize: initialChapters?.pageSize },
+      initializer: state => ({
+        ...reducer(state, {
+          type: DefaultCRUDActionTypes.PAGINATE,
+          payload: initialChapters
+        })
+      })
+    });
+  });
+  const { data: chapters, pagination } = useChapters({ onFailure });
   const maxLength = String(chapters.slice(-1)[0]?.number || '').length;
 
   return (
-    <div className={classes['chapters-grid']}>
-      {chapters.map(chapter => {
-        return (
-          <Link
-            key={chapter.id}
-            href={`/book/${bookName}/chapter/${chapter.number}`}
-          >
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a
-              className={[Classes.MENU_ITEM, classes['chapter-item']].join(' ')}
+    <Card className={classes['chapters-grid']}>
+      <div className={classes['chapter-grid-head']}>章節目錄</div>
+      <div className={classes['grid']}>
+        {chapters.map(chapter => {
+          return (
+            <Link
+              key={chapter.id}
+              href={`/book/${bookName}/chapter/${chapter.number}`}
             >
-              <Tag minimal className={classes.tag}>
-                {chapter.number &&
-                  String(chapter.number).padStart(maxLength, '0')}
-              </Tag>
-              <span className={classes['chapter-name']}>{chapter.name}</span>
-            </a>
-          </Link>
-        );
-      })}
-    </div>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <a
+                className={[Classes.MENU_ITEM, classes['chapter-item']].join(
+                  ' '
+                )}
+              >
+                <Tag minimal className={classes.tag}>
+                  {chapter.number &&
+                    String(chapter.number).padStart(maxLength, '0')}
+                </Tag>
+                <span className={classes['chapter-name']}>{chapter.name}</span>
+              </a>
+            </Link>
+          );
+        })}
+      </div>
+      <div className={classes['spacer']} />
+      <Divider className={classes['divider']} />
+      <Pagination {...pagination} />
+    </Card>
   );
 }

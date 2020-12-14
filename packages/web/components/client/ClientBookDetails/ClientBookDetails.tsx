@@ -1,29 +1,19 @@
 import React, { ComponentProps, ReactNode, useState } from 'react';
+import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
-import { Card, Divider, Icon } from '@blueprintjs/core';
+import { Button, Card, Icon } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { GoBackButton } from '@/components/GoBackButton';
-import { Pagination } from '@/components/Pagination';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
-import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
 import { useBreakPoints } from '@/hooks/useBreakPoints';
-import {
-  createCRUDReducer,
-  DefaultCRUDActionTypes
-} from '@/hooks/crud-reducer';
 import { Toaster } from '@/utils/toaster';
-import {
-  Order,
-  PaginateResult,
-  Schema$Book,
-  Schema$Chapter,
-  Param$GetChapters
-} from '@/typings';
-import { getBookByName, getChapters } from '@/service';
+import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
+import { getBookByName } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
 import { ClientBookDetailsChapters } from './ClientBookDetailsChapters';
 import classes from './ClientBookDetails.module.scss';
+import { BookShelfToggle } from '../BookShelf/BookShelfToggle';
 
 export interface ClientBookDetailsData {
   bookName: string;
@@ -33,17 +23,7 @@ export interface ClientBookDetailsData {
 
 export interface ClientBookDetailsProps extends ClientBookDetailsData {}
 
-export interface ChaptersProps {
-  bookID: string;
-  bookName: string;
-  chapters?: PaginateResult<Schema$Chapter>;
-}
-
-const onGetBookFailure = Toaster.apiError.bind(Toaster, `Get book failure`);
-const onGetChapterFailure = Toaster.apiError.bind(
-  Toaster,
-  `Get chapters failure`
-);
+const onFailure = Toaster.apiError.bind(Toaster, `Get book failure`);
 
 function useBook(
   bookName: string,
@@ -52,44 +32,9 @@ function useBook(
   const [request] = useState(() => () => getBookByName({ bookName }));
   const [{ data }] = useRxAsync(request, {
     defer: !!initialData,
-    onFailure: onGetBookFailure
+    onFailure
   });
   return initialData || data || null;
-}
-
-function ChaptersGrid({ bookID, bookName, chapters }: ChaptersProps) {
-  const [useChapters] = useState(() => {
-    const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
-    return createUsePaginationLocal(
-      'id',
-      (params?: Param$GetChapters) =>
-        getChapters({
-          ...params,
-          bookID,
-          sort: { createdAt: Order.ASC }
-        }),
-      {
-        defaultState: { pageSize: chapters?.pageSize },
-        initializer: state => ({
-          ...reducer(state, {
-            type: DefaultCRUDActionTypes.PAGINATE,
-            payload: chapters
-          })
-        })
-      }
-    );
-  });
-  const { data, pagination } = useChapters({ onFailure: onGetChapterFailure });
-
-  return (
-    <Card className={classes['chapters-grid-card']}>
-      <div className={classes['chapter-head']}>章節目錄</div>
-      <ClientBookDetailsChapters bookName={bookName} chapters={data} />
-      <div className={classes['spacer']} />
-      <Divider className={classes['divider']} />
-      <Pagination {...pagination} />
-    </Card>
-  );
 }
 
 const ChaptersListDrawerCard = withChaptersListDrawer(Card);
@@ -111,7 +56,7 @@ export function ClientBookDetails({
 
     if (breakPoint > 640) {
       chapters = (
-        <ChaptersGrid
+        <ClientBookDetailsChapters
           bookID={book.id}
           bookName={book.name}
           chapters={initialChapters}
@@ -119,16 +64,27 @@ export function ClientBookDetails({
       );
     } else {
       chapters = (
-        <ChaptersListDrawerCard
-          interactive
-          chapterNo={0}
-          bookID={book.id}
-          bookName={book.name}
-          className={classes['chapters-list-trigger']}
-        >
-          <div className={classes['chapter-head']}>章節目錄</div>
-          <Icon icon="chevron-right" />
-        </ChaptersListDrawerCard>
+        <div className={classes['chapters-content']}>
+          <ChaptersListDrawerCard
+            interactive
+            chapterNo={0}
+            bookID={book.id}
+            bookName={book.name}
+            className={classes['chapters-list-trigger']}
+          >
+            <div className={classes['chapter-head']}>章節目錄</div>
+            <Icon icon="chevron-right" />
+          </ChaptersListDrawerCard>
+          <div className={classes['button-group']}>
+            <Button
+              fill
+              intent="primary"
+              text="第一章"
+              onClick={() => router.push(`/book/${bookName}/chapter/1`)}
+            />
+            <BookShelfToggle bookID={book.id} fill />
+          </div>
+        </div>
       );
     }
 
@@ -136,7 +92,10 @@ export function ClientBookDetails({
       <>
         <ClientHeader
           {...headerProps}
-          right={[<ClientPreferences key="1" />]}
+          right={[
+            <BookShelfToggle key="0" bookID={book.id} icon minimal />,
+            <ClientPreferences key="1" />
+          ]}
         />
         <div className={classes['content']}>
           <Card>
@@ -151,6 +110,7 @@ export function ClientBookDetails({
   return (
     <>
       <ClientHeader {...headerProps} />
+      {/* TODO: */}
       <div className={classes['content']}>Book not found</div>
     </>
   );

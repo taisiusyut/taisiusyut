@@ -63,7 +63,7 @@
   }
 }
 
-.chapters-grid-card {
+.chapters-grid {
   @include flex($flex-direction: column);
   flex: 1 1 auto;
 
@@ -80,13 +80,13 @@
   }
 }
 
-.chapter-head {
+.chapter-grid-head {
   @media (min-width: 481px) {
     font-size: 18px;
   }
 }
 
-.chapters-grid {
+.grid {
   margin-top: 20px;
   display: grid;
   grid-gap: 20px;
@@ -114,6 +114,18 @@
       display: block;
       background-color: rgba($gray3, 0.2);
     }
+  }
+}
+
+.chapters-content {
+  @include sq-dimen(100%);
+  @include flex(stretch, space-between, column);
+  padding-top: 20px;
+}
+
+.button-group {
+  button + button {
+    margin-top: 10px;
   }
 }
 
