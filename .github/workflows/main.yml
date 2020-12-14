@@ -50,7 +50,10 @@ jobs:
           yarn install --prefer-offline
 
       - name: Build project
-        run: yarn build
+        run: |
+          export MONGODB_URI=${{ secrets.MONGODB_URI }}
+          export NEXT_PUBLIC_ORIGIN=https://taisiusyut-demo
+          yarn build
 
       - name: Run test
         run: |
