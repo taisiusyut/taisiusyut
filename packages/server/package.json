@@ -57,7 +57,7 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^7.5.3",
+    "@nestjs/cli": "https://github.com/Pong420/nest-cli.git#a60c4a4ca6f8e125b1b588ae4cf07262427ae18f",
     "@nestjs/schematics": "^7.2.2",
     "@nestjs/testing": "^7.5.4",
     "@types/bcrypt": "^3.0.0",
