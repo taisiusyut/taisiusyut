@@ -15,6 +15,7 @@
  */
 
 const inliner = require('sass-inline-svg');
+const path = require('path');
 
 module.exports = {
   /**
@@ -23,10 +24,16 @@ module.exports = {
    * Usage:
    * svg-icon("16px/icon-name.svg", (path: (fill: $color)) )
    */
-  'svg-icon': inliner('../../node_modules/@blueprintjs/source/resources/icons', {
-    // run through SVGO first
-    optimize: true,
-    // minimal "uri" encoding is smaller than base64
-    encodingFormat: 'uri'
-  })
+  'svg-icon': inliner(
+    path.resolve(
+      process.cwd(),
+      '../../node_modules/@blueprintjs/source/resources/icons'
+    ),
+    {
+      // run through SVGO first
+      optimize: true,
+      // minimal "uri" encoding is smaller than base64
+      encodingFormat: 'uri'
+    }
+  )
 };
