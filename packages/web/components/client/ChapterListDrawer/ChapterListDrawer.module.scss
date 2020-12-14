@@ -22,7 +22,7 @@
   @include flex(center);
   @include padding-x(10px);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
 
   &:hover {
     background-color: var(--item-hover-color);

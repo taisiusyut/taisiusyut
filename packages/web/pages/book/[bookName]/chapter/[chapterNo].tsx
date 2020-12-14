@@ -71,7 +71,7 @@ export default function ClientBookChapterPage(props: Props) {
   return (
     <>
       {head}
-      <ClientBookChapter {...props} />
+      <ClientBookChapter {...props} key={JSON.stringify(props)} />
     </>
   );
 }

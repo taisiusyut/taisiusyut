@@ -45,7 +45,7 @@ export function ChapterListDrawer({
             router.push(`/book/${bookName}/chapter/${chapter.number}`);
           }
         }}
-        isActive={index === chapterNo - 1}
+        isActive={chapter.number === chapterNo}
       />
     );
   };
@@ -65,6 +65,7 @@ export function ChapterListDrawer({
   });
 
   const [{ loading }] = useRxAsync(request, {
+    defer: !props.isOpen,
     onSuccess,
     onFailure
   });
@@ -91,7 +92,7 @@ export function ChapterListDrawer({
               rowCount={rowCount}
               rowRenderer={rowRenderer}
               noRowsRenderer={loading ? undefined : () => <div>empty</div>}
-              scrollToIndex={chapterNo - 2}
+              scrollToIndex={(chapters[chapterNo - 1]?.number || 1) - 2}
               scrollToAlignment="start"
             />
           )}
