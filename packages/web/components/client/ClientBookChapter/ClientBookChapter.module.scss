@@ -3,7 +3,7 @@
 .chapters {
   @include sq-dimen(100%);
   overflow: auto;
-  overflow-anchor: none;
+  -webkit-overflow-scrolling: auto;
 
   @media (max-width: 480px) {
     @include padding-x(20px);
@@ -15,16 +15,16 @@
 }
 
 .content {
-  // for firefox
-  @include margin-y(40px);
+  padding-top: 40px;
+  margin-bottom: 40px; // this make sure content scrollable
   min-height: 100%;
 
-  &:nth-child(odd) {
-    background-color: red;
-  }
-  &:nth-child(even) {
-    background-color: blue;
-  }
+  // &:nth-child(odd) {
+  //   background-color: red;
+  // }
+  // &:nth-child(even) {
+  //   background-color: blue;
+  // }
 }
 
 .paramgraph {

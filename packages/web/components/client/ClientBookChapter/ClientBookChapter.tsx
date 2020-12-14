@@ -1,7 +1,13 @@
-import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import router from 'next/router';
 import { fromEvent } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { Schema$Chapter } from '@/typings';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ButtonPopover } from '@/components/ButtonPopover';
@@ -23,6 +29,18 @@ export interface ClientBookChapterProps extends ClientBookChapterData {}
 
 const ChpaterListButton = withChaptersListDrawer(ButtonPopover);
 
+// function getDirection(prev: number, next: number) {
+//   const delta = next - prev;
+//   switch (true) {
+//     case delta > 0:
+//       return 'down';
+//     case delta < 0:
+//       return 'up';
+//     default:
+//       return 'equal';
+//   }
+// }
+
 export function ClientBookChapter({
   bookID,
   bookName,
@@ -31,18 +49,17 @@ export function ClientBookChapter({
 }: ClientBookChapterProps) {
   const [chapters, setChapters] = useState([initialChapterNo]);
   const [currentChapter, setCurrentChapter] = useState(initialChapterNo);
-
   const [data, setData] = useState<Record<number, Schema$Chapter>>(
     initialChapter ? { [initialChapter.number]: initialChapter } : {}
   );
-  const ref = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const hasNext = useRef(initialChapter ? initialChapter.hasNext : false);
   const loaded = useRef<Record<string, boolean>>({
     [initialChapterNo]: !!initialChapter
   });
 
   useEffect(() => {
-    const scroller = ref.current;
+    const scroller = scrollerRef.current;
     let chapterNo = initialChapterNo;
     let target = document.querySelector<HTMLDivElement>(
       `#chapter-${chapterNo}`
@@ -50,16 +67,21 @@ export function ClientBookChapter({
     if (scroller && bookID) {
       const subscription = fromEvent<SyntheticEvent>(scroller, 'scroll')
         .pipe(
-          map<SyntheticEvent, -1 | 1 | undefined>(() => {
-            if (target) {
-              const ref =
-                scroller.scrollTop + scroller.offsetHeight + scroller.offsetTop;
-              if (ref < target.offsetTop) {
-                return -1;
-              } else if (
-                loaded.current[chapterNo] &&
-                ref - 40 >= target.offsetTop + target.offsetHeight
+          map(() => scroller.scrollTop),
+          distinctUntilChanged(),
+          map<number, -1 | 1 | undefined>(scrollTop => {
+            if (target && loaded.current[chapterNo]) {
+              const pos =
+                scrollTop + scroller.offsetHeight + scroller.offsetTop;
+
+              if (
+                scrollTop === 0 ||
+                pos <=
+                  target.offsetTop -
+                    (parseFloat(window.getComputedStyle(target).marginTop) || 0)
               ) {
+                return -1;
+              } else if (pos >= target.offsetTop + target.offsetHeight) {
                 return 1;
               }
             }
@@ -68,18 +90,28 @@ export function ClientBookChapter({
         )
         .subscribe(delta => {
           const newChapterNo = chapterNo + delta;
+          // const curScrollPos = scroller.scrollTop;
+          // const oldScroll = scroller.scrollHeight - scroller.offsetHeight;
 
-          if (hasNext.current) {
-            setChapters(chapters =>
-              chapters.includes(newChapterNo)
-                ? chapters
-                : [...chapters, newChapterNo]
-            );
-          }
+          setChapters(chapters => {
+            if (!chapters.includes(newChapterNo)) {
+              if (delta === 1 && hasNext.current) {
+                return [...chapters, newChapterNo];
+              } else if (newChapterNo >= 1) {
+                // return [newChapterNo, ...chapters];
+              }
+            }
+            return chapters;
+          });
 
           const newTarget = document.querySelector<HTMLDivElement>(
             `#chapter-${newChapterNo}`
           );
+
+          // if (delta === -1) {
+          //   const newScroll = scroller.scrollHeight - scroller.offsetHeight;
+          //   scroller.scrollTop = curScrollPos + newScroll - oldScroll;
+          // }
 
           if (newTarget) {
             target = newTarget;
@@ -93,53 +125,69 @@ export function ClientBookChapter({
     }
   }, [bookID, bookName, initialChapter, initialChapterNo]);
 
+  // const chapterName = data[currentChapter]?.name || '';
+  const title = `${bookName} - 第${currentChapter}章`;
+  const header = (
+    <ClientHeader
+      title={title}
+      left={
+        <GoBackButton targetPath={['/', '/explore', `/book/${bookName}`]} />
+      }
+      right={[
+        <ClientPreferences key="0" />,
+        bookID && (
+          <ChpaterListButton
+            key="1"
+            icon="properties"
+            content="章節目錄"
+            bookID={bookID}
+            bookName={bookName}
+            chapterNo={initialChapterNo}
+            minimal
+          />
+        )
+      ]}
+    />
+  );
+
+  const content: ReactNode[] = [];
+  const onLoaded = (chapter: Schema$Chapter) => {
+    if (hasNext.current === true) {
+      hasNext.current = chapter.hasNext;
+    }
+    loaded.current[chapter.number] = true;
+
+    setData(data => ({ ...data, [chapter.number]: chapter }));
+
+    // trigger checking after loaded
+    // for small content or large screen
+    scrollerRef.current?.dispatchEvent(new Event('scroll'));
+  };
+
+  if (bookID) {
+    for (const chapterNo of chapters) {
+      content.push(
+        <div
+          key={chapterNo}
+          className={classes['content']}
+          id={`chapter-${chapterNo}`}
+        >
+          <ClientBookChapterContent
+            bookID={bookID}
+            chapterNo={chapterNo}
+            onLoaded={onLoaded}
+            defaultChapter={data[chapterNo]}
+          />
+        </div>
+      );
+    }
+  }
+
   return (
     <>
-      <ClientHeader
-        title={`第${currentChapter}章 ${
-          data[currentChapter]?.name || ''
-        }`.trim()}
-        left={
-          <GoBackButton targetPath={['/', '/explore', `/book/${bookName}`]} />
-        }
-        right={[
-          <ClientPreferences key="0" />,
-          bookID && (
-            <ChpaterListButton
-              key="1"
-              icon="properties"
-              content="章節目錄"
-              bookID={bookID}
-              bookName={bookName}
-              chapterNo={initialChapterNo}
-              minimal
-            />
-          )
-        ]}
-      />
-      <div className={classes['chapters']} ref={ref}>
-        {bookID &&
-          chapters.map(chapterNo => (
-            <div
-              key={chapterNo}
-              className={classes['content']}
-              id={`chapter-${chapterNo}`}
-            >
-              <ClientBookChapterContent
-                bookID={bookID}
-                chapterNo={chapterNo}
-                defaultChapter={data[chapterNo]}
-                onLoaded={chapter => {
-                  if (hasNext.current === true) {
-                    hasNext.current = chapter.hasNext;
-                  }
-                  loaded.current[chapter.number] = true;
-                  ref.current?.dispatchEvent(new Event('scroll'));
-                  setData(data => ({ ...data, [chapter.number]: chapter }));
-                }}
-              />
-            </div>
-          ))}
+      {header}
+      <div className={classes['chapters']} ref={scrollerRef}>
+        {content}
       </div>
     </>
   );
