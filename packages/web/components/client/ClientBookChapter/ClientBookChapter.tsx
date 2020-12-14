@@ -29,18 +29,6 @@ export interface ClientBookChapterProps extends ClientBookChapterData {}
 
 const ChpaterListButton = withChaptersListDrawer(ButtonPopover);
 
-// function getDirection(prev: number, next: number) {
-//   const delta = next - prev;
-//   switch (true) {
-//     case delta > 0:
-//       return 'down';
-//     case delta < 0:
-//       return 'up';
-//     default:
-//       return 'equal';
-//   }
-// }
-
 export function ClientBookChapter({
   bookID,
   bookName,
@@ -90,28 +78,18 @@ export function ClientBookChapter({
         )
         .subscribe(delta => {
           const newChapterNo = chapterNo + delta;
-          // const curScrollPos = scroller.scrollTop;
-          // const oldScroll = scroller.scrollHeight - scroller.offsetHeight;
 
-          setChapters(chapters => {
-            if (!chapters.includes(newChapterNo)) {
-              if (delta === 1 && hasNext.current) {
-                return [...chapters, newChapterNo];
-              } else if (newChapterNo >= 1) {
-                // return [newChapterNo, ...chapters];
-              }
-            }
-            return chapters;
-          });
+          if (delta === 1 && hasNext.current) {
+            setChapters(chapters => {
+              return chapters.includes(newChapterNo)
+                ? chapters
+                : [...chapters, newChapterNo];
+            });
+          }
 
           const newTarget = document.querySelector<HTMLDivElement>(
             `#chapter-${newChapterNo}`
           );
-
-          // if (delta === -1) {
-          //   const newScroll = scroller.scrollHeight - scroller.offsetHeight;
-          //   scroller.scrollTop = curScrollPos + newScroll - oldScroll;
-          // }
 
           if (newTarget) {
             target = newTarget;
@@ -125,8 +103,7 @@ export function ClientBookChapter({
     }
   }, [bookID, bookName, initialChapter, initialChapterNo]);
 
-  // const chapterName = data[currentChapter]?.name || '';
-  const title = `${bookName} - 第${currentChapter}章`;
+  const title = `第${currentChapter}章 - ${bookName}`;
   const header = (
     <ClientHeader
       title={title}

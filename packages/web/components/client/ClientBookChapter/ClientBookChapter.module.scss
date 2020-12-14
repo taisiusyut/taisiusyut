@@ -15,9 +15,15 @@
 }
 
 .content {
-  padding-top: 40px;
-  margin-bottom: 40px; // this make sure content scrollable
+  @include flex($flex-direction: column);
   min-height: 100%;
+  margin-bottom: 40px; // this make sure content scrollable
+  padding-top: 40px;
+  overflow: hidden;
+
+  // + .content {
+  //   @include fake-border(top);
+  // }
 
   // &:nth-child(odd) {
   //   background-color: red;
@@ -27,9 +33,40 @@
   // }
 }
 
+.chapter-name {
+  font-weight: 500;
+  font-size: 1.4em;
+  line-height: 1.5em;
+  margin-bottom: 1.5em;
+}
+
 .paramgraph {
   white-space: pre-wrap;
   + .paramgraph {
     margin-top: 1em;
+  }
+}
+
+.loading,
+.error {
+  @include flex(center, center);
+  flex: 1 1 auto;
+}
+
+.loading {
+  font-size: 1.5em;
+  letter-spacing: 0.1em;
+}
+
+.error {
+  text-align: center;
+
+  div {
+    margin-bottom: 10px;
+  }
+
+  button {
+    margin-top: 20px;
+    min-width: 100px;
   }
 }
