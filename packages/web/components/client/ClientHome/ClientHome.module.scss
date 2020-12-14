@@ -24,7 +24,7 @@
 
   :global(.layout-body:not(.fix-width)) & {
     @media (min-width: 1280px) {
-      grid-template-columns: repeat(3, minmax(300px, 1fr));
+      grid-template-columns: repeat(3, auto);
     }
   }
 }
