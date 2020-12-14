@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "license": "MIT",
   "author": "Pong <samfunghp@gmail.com>",
+  "repository": {
+    "url": "https://github.com/Pong420/fullstack"
+  },
   "scripts": {
     "start": "yarn web start",
     "server": "yarn workspace @fullstack/server",

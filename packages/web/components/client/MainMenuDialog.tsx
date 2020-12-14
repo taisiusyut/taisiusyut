@@ -17,11 +17,13 @@ import {
   ClientPreferencesDialogIcon,
   ClientPreferencesDialogTitle
 } from '@/components/client/ClientPreferences';
+import { ButtonPopover, ButtonPopoverProps } from '@/components/ButtonPopover';
+import { Github } from '@/components/Github';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
-import { withAuthRequired } from './withAuthRequired';
-import { ButtonPopover, ButtonPopoverProps } from '../ButtonPopover';
 import { useBoolean } from '@/hooks/useBoolean';
+import { withAuthRequired } from './withAuthRequired';
+import pkg from '../../package.json';
 
 interface MainMenuDialogProps extends ListViewDialogProps {}
 
@@ -68,10 +70,20 @@ export function MainMenuDialog(props: MainMenuDialogProps) {
         {ClientPreferencesDialogTitle}
       </ListItem>
 
-      <ListSpacer />
-
-      <ListItem icon="info-sign" rightElement={chevron}>
+      <ListItem icon="help" rightElement={chevron}>
         常見問題
+      </ListItem>
+
+      <ListItem
+        icon={<Github />}
+        rightElement={chevron}
+        onClick={() => window.open(`https://github.com/Pong420/fullstack`)}
+      >
+        Github
+      </ListItem>
+
+      <ListItem icon="code" rightElement={pkg.version}>
+        Version
       </ListItem>
 
       <ListViewDialogFooter onClose={props.onClose}></ListViewDialogFooter>

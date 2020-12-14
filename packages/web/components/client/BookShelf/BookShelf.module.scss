@@ -93,6 +93,10 @@ $min-height: 1em;
 
 .book-shelf-empty {
   @include sq-dimen(100%);
+
+  button {
+    width: 80px;
+  }
 }
 
 .book-shelf-item-drawer {

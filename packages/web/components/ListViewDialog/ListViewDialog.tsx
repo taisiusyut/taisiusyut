@@ -3,8 +3,8 @@ import {
   Button,
   Dialog,
   IDialogProps,
-  IconName,
-  Icon
+  Icon,
+  IIconProps
 } from '@blueprintjs/core';
 import classes from './ListViewDialog.module.scss';
 
@@ -19,7 +19,7 @@ export interface ListViewDialogProps extends IDialogProps {
 
 export interface ListItemProps extends DivProps {
   rightElement?: ReactNode;
-  icon?: IconName;
+  icon?: IIconProps['icon'];
 }
 
 export interface ListSpacerProps extends DivProps {}
