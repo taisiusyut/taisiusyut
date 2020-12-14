@@ -10,9 +10,10 @@ import {
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { withModifyPassword } from '@/components/client/withModifyPassword';
 import { withUpdateProfile } from '@/components/client/withUpdateProfile';
-import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { UserRole } from '@/typings';
+import { AuthState, AuthActions } from '@/hooks/useAuth';
+import { createOpenOverlay } from '@/utils/openOverlay';
 import dayjs from 'dayjs';
 
 const handleClick = () => void 0;
@@ -22,9 +23,18 @@ const chevron = <Icon icon="chevron-right" />;
 const ModifyPassword = withModifyPassword(ListItem);
 const UpdateProfile = withUpdateProfile(ListItem);
 
-export function ClientProfileDialog(props: ListViewDialogProps) {
-  const [auth, { logout }] = useAuth();
+export interface ClientProfileDialogProps extends ListViewDialogProps {
+  auth: AuthState;
+  actions: AuthActions;
+}
 
+const openClientProfileDialog = createOpenOverlay(ClientProfileDialog);
+
+export function ClientProfileDialog({
+  auth,
+  actions,
+  ...props
+}: ClientProfileDialogProps) {
   if (auth.loginStatus !== 'loggedIn') {
     return null;
   }
@@ -43,9 +53,13 @@ export function ClientProfileDialog(props: ListViewDialogProps) {
 
       <ListSpacer />
 
-      <ModifyPassword rightElement={chevron}>更改密碼</ModifyPassword>
+      <ModifyPassword logout={actions.logout} rightElement={chevron}>
+        更改密碼
+      </ModifyPassword>
 
-      <UpdateProfile rightElement={chevron}>更改帳號資料</UpdateProfile>
+      <UpdateProfile auth={auth} actions={actions} rightElement={chevron}>
+        更改帳號資料
+      </UpdateProfile>
 
       <ListSpacer />
 
@@ -63,13 +77,13 @@ export function ClientProfileDialog(props: ListViewDialogProps) {
         </>
       )}
 
-      <ListViewDialogFooter>
+      <ListViewDialogFooter onClose={props.onClose}>
         <Button
           fill
           text="登出"
           intent="danger"
           onClick={(event: SyntheticEvent<HTMLElement>) => {
-            logout();
+            actions.logout();
             props.onClose && props.onClose(event);
           }}
         />
@@ -81,11 +95,15 @@ export function ClientProfileDialog(props: ListViewDialogProps) {
 const ClientProfileButton = withAuthRequired(Button);
 
 export function ClientProfile(props: IButtonProps) {
-  const [isOpen, open, close] = useBoolean();
+  const [auth, actions] = useAuth();
   return (
     <>
-      <ClientProfileButton {...props} minimal icon="user" onClick={open} />
-      <ClientProfileDialog isOpen={isOpen} onClose={close} />
+      <ClientProfileButton
+        {...props}
+        minimal
+        icon="user"
+        onClick={() => openClientProfileDialog({ auth, actions })}
+      />
     </>
   );
 }

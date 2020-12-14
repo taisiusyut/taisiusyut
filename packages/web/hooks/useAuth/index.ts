@@ -21,4 +21,5 @@ export function useAuth() {
   return [useAuthState(), useAuthActions()] as const;
 }
 
-export { AuthProvider } from './authProvider';
+export * from './authProvider';
+export * from './authReducer';

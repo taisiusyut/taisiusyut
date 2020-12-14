@@ -13,9 +13,9 @@ export interface NotLoggedIn {
   user: null;
 }
 
-export type State = LoggedIn | NotLoggedIn;
+export type AuthState = LoggedIn | NotLoggedIn;
 
-export type Actions =
+export type AuthActionsTypes =
   | { type: 'AUTHENTICATE' }
   | { type: 'AUTHENTICATE_SUCCESS'; payload: LoggedIn['user'] }
   | { type: 'AUTHENTICATE_FAILURE' }
@@ -26,12 +26,15 @@ export interface LogoutOptions {
   slient?: boolean;
 }
 
-export const initialState: State = {
+export const initialState: AuthState = {
   loginStatus: 'unknown',
   user: null
 };
 
-export const authReducer: Reducer<State, Actions> = (prevState, action) => {
+export const authReducer: Reducer<AuthState, AuthActionsTypes> = (
+  prevState,
+  action
+) => {
   switch (action.type) {
     case 'AUTHENTICATE':
       return {

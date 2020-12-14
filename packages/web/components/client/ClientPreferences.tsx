@@ -1,4 +1,5 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { fromEvent } from 'rxjs';
 import {
   Button,
   HTMLSelect,
@@ -15,13 +16,19 @@ import {
 } from '@/components/ListViewDialog';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { NumericInput } from '@/components/Input';
-import { useBoolean } from '@/hooks/useBoolean';
 import {
   defaultPreferences,
   Preferences,
+  PreferencesActions,
   useClientPreferences
 } from '@/hooks/useClientPreferences';
 import { createForm, FormItemProps, ControlProps } from '@/utils/form';
+import { createOpenOverlay } from '@/utils/openOverlay';
+
+interface ClientPreferencesDialogProps extends ListViewDialogProps {
+  preferences: Preferences;
+  onUpdate: PreferencesActions['update'];
+}
 
 const title = '設定';
 const icon = 'settings';
@@ -54,15 +61,31 @@ function ThemeSelector({ value, onChange }: ControlProps<Theme>) {
   );
 }
 
-export function ClientPreferencesDialog(props: ListViewDialogProps) {
-  const [preferences, { update }] = useClientPreferences();
+const getScreenWidth =
+  typeof window !== 'undefined' ? window.screen.width : 1440;
+
+export const openClientPreferences = createOpenOverlay(ClientPreferencesDialog);
+
+export function ClientPreferencesDialog({
+  preferences,
+  onUpdate,
+  ...props
+}: ClientPreferencesDialogProps) {
   const [form] = useForm();
+  const [screenWidth, setScreenWidth] = useState(getScreenWidth);
+
+  useEffect(() => {
+    const subscription = fromEvent(window, 'orientationchange').subscribe(() =>
+      setScreenWidth(getScreenWidth)
+    );
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <Form
       form={form}
       initialValues={preferences}
-      onValuesChange={update}
+      onValuesChange={onUpdate}
       hidden
     >
       <ListViewDialog {...props} icon={icon} title={title}>
@@ -78,13 +101,17 @@ export function ClientPreferencesDialog(props: ListViewDialogProps) {
           黑夜模式
         </ListItem>
 
-        <ListItem rightElement={<Switch name="pagingDisplay" />}>
-          分頁顯示
-        </ListItem>
+        {screenWidth > 640 && (
+          <ListItem rightElement={<Switch name="pagingDisplay" />}>
+            分頁顯示
+          </ListItem>
+        )}
 
-        <ListItem rightElement={<Switch name="fixWidth" />}>
-          固定頁面寬度
-        </ListItem>
+        {screenWidth > 1280 && (
+          <ListItem rightElement={<Switch name="fixWidth" />}>
+            固定頁面寬度
+          </ListItem>
+        )}
 
         <ListSpacer>章節內容</ListSpacer>
 
@@ -126,17 +153,17 @@ export function ClientPreferencesDialog(props: ListViewDialogProps) {
         </ListItem>
 
         <ListItem rightElement={<Switch name="autoFetchNextChapter" />}>
-          自動加載下一章
+          自動載入下一章
         </ListItem>
 
-        <ListViewDialogFooter>
+        <ListViewDialogFooter onClose={props.onClose}>
           <Button
             fill
             text="恢復預設"
             intent="danger"
             onClick={() => {
               form.setFieldsValue(defaultPreferences);
-              update(defaultPreferences);
+              onUpdate(defaultPreferences);
             }}
           />
         </ListViewDialogFooter>
@@ -146,17 +173,14 @@ export function ClientPreferencesDialog(props: ListViewDialogProps) {
 }
 
 export function ClientPreferences(props: IButtonProps) {
-  const [isOpen, open, close] = useBoolean();
+  const [preferences, { update }] = useClientPreferences();
   return (
-    <>
-      <ButtonPopover
-        {...props}
-        minimal
-        icon={icon}
-        content={title}
-        onClick={open}
-      />
-      <ClientPreferencesDialog isOpen={isOpen} onClose={close} />
-    </>
+    <ButtonPopover
+      {...props}
+      minimal
+      icon={icon}
+      content={title}
+      onClick={() => openClientPreferences({ preferences, onUpdate: update })}
+    />
   );
 }

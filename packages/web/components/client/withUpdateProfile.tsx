@@ -2,12 +2,17 @@ import React, { MouseEvent } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { createUserForm } from '@/components/UserForm';
-import { useAuth } from '@/hooks/useAuth';
 import { Toaster } from '@/utils/toaster';
 import { getProfile, updateProfile as updateProfileAPI } from '@/service';
+import { AuthState, AuthActions } from '@/hooks/useAuth';
 
 export interface OnClick {
   onClick?: (event: MouseEvent<any>) => void;
+}
+
+interface Props {
+  auth: AuthState;
+  actions: AuthActions;
 }
 
 const { Form, Nickname, Email, useForm } = createUserForm();
@@ -19,9 +24,8 @@ const onFailure = Toaster.apiError.bind(Toaster, `Update profile failure`);
 export function withUpdateProfile<P extends OnClick>(
   Component: React.ComponentType<P>
 ) {
-  return function WithUpdateProfile(props: P) {
+  return function WithUpdateProfile({ auth, actions, ...props }: P & Props) {
     const [form] = useForm();
-    const [auth, actions] = useAuth();
 
     useRxAsync(getProfile, {
       defer: !!auth.user?.email,
@@ -72,7 +76,7 @@ export function withUpdateProfile<P extends OnClick>(
     }
 
     return (
-      <Component {...props} onClick={handleClick}>
+      <Component {...((props as unknown) as P)} onClick={handleClick}>
         {title}
       </Component>
     );

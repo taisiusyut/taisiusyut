@@ -1,12 +1,16 @@
 import React, { MouseEvent } from 'react';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { createUserForm, ModifyPasswordForm } from '@/components/UserForm';
-import { useAuthActions } from '@/hooks/useAuth';
 import { modifyPassword } from '@/service';
 import { Toaster } from '@/utils/toaster';
+import { AuthActions } from '@/hooks/useAuth';
 
 export interface OnClick {
   onClick?: (event: MouseEvent<any>) => void;
+}
+
+interface Props {
+  logout: AuthActions['logout'];
 }
 
 const { useForm } = createUserForm();
@@ -16,9 +20,8 @@ const title = '更改密碼';
 export function withModifyPassword<P extends OnClick>(
   Component: React.ComponentType<P>
 ) {
-  return function WithModifyPassword(props: P) {
+  return function WithModifyPassword({ logout, ...props }: P & Props) {
     const [form] = useForm();
-    const { logout } = useAuthActions();
 
     async function onConfirm() {
       const payload = await form.validateFields();
@@ -46,7 +49,7 @@ export function withModifyPassword<P extends OnClick>(
     }
 
     return (
-      <Component {...props} onClick={handleClick}>
+      <Component {...((props as unknown) as P)} onClick={handleClick}>
         {title}
       </Component>
     );

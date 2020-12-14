@@ -9,7 +9,12 @@ import {
 } from '@/typings';
 import { clearJwtToken, logout, registration, getJwtToken$ } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import { State, LogoutOptions, authReducer, initialState } from './authReducer';
+import {
+  AuthState,
+  LogoutOptions,
+  authReducer,
+  initialState
+} from './authReducer';
 
 type AuthenticatePayload = Param$Login | Param$CreateUser;
 
@@ -21,7 +26,9 @@ export type AuthActions = {
   updateProfile: (payload: Partial<Schema$User>) => void;
 };
 
-export const StateContext = React.createContext<State | undefined>(undefined);
+export const StateContext = React.createContext<AuthState | undefined>(
+  undefined
+);
 export const ActionContext = React.createContext<AuthActions | undefined>(
   undefined
 );

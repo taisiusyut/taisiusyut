@@ -15,7 +15,7 @@ export interface Preferences {
   autoFetchNextChapter: boolean;
 }
 
-interface PreferencesActions {
+export interface PreferencesActions {
   update: (payload: Partial<Preferences>) => void;
 }
 

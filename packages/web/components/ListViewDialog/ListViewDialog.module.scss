@@ -47,4 +47,8 @@ $padding-x: 15px;
 .footer {
   @include margin-x(20px);
   margin-top: 25px;
+
+  button + button {
+    margin-top: 10px;
+  }
 }

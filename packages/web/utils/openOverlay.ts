@@ -9,15 +9,17 @@ interface OverlayProps extends IOverlayProps {
 export function createOpenOverlay<T extends Partial<OverlayProps>>(
   OverlayComponent: ComponentType<T>
 ) {
-  return function openOverlay(config: Partial<T>) {
+  return function openOverlay(
+    config: Omit<T, keyof OverlayProps> & Partial<OverlayProps>
+  ) {
     const div = document.createElement('div');
     document.body.appendChild(div);
     // eslint-disable-next-line no-use-before-define
-    let currentConfig: Partial<T> = {
+    let currentConfig: Omit<T, keyof OverlayProps> & Partial<OverlayProps> = {
       ...config,
       onClose: close,
       onClosed: (...args) => {
-        config.onClosed && config.onClosed(...args);
+        config?.onClosed && config.onClosed(...args);
         destroy();
       },
       isOpen: true
