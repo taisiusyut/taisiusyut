@@ -11,8 +11,8 @@ import {
 } from '@/components/UserForm';
 import { useAuth } from '@/hooks/useAuth';
 
-export interface OnClick<E extends HTMLElement = HTMLElement> {
-  onClick?: (event: MouseEvent<E>) => void;
+export interface OnClick {
+  onClick?: (event: MouseEvent<any>) => void;
 }
 
 const { useForm } = createUserForm();

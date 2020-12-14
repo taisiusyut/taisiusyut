@@ -1,5 +1,11 @@
 import React, { ReactNode, SyntheticEvent } from 'react';
-import { Button, Dialog, IDialogProps } from '@blueprintjs/core';
+import {
+  Button,
+  Dialog,
+  IDialogProps,
+  IconName,
+  Icon
+} from '@blueprintjs/core';
 import classes from './ListViewDialog.module.scss';
 
 type DivProps = React.DetailedHTMLProps<
@@ -13,6 +19,7 @@ export interface ListViewDialogProps extends IDialogProps {
 
 export interface ListItemProps extends DivProps {
   rightElement?: ReactNode;
+  icon?: IconName;
 }
 
 export interface ListSpacerProps extends DivProps {}
@@ -25,7 +32,12 @@ export function ListViewDialog(props: ListViewDialogProps) {
   return <Dialog {...props}>{props.children}</Dialog>;
 }
 
-export function ListItem({ rightElement, children, ...props }: ListItemProps) {
+export function ListItem({
+  rightElement,
+  children,
+  icon,
+  ...props
+}: ListItemProps) {
   return (
     <div
       {...props}
@@ -33,6 +45,7 @@ export function ListItem({ rightElement, children, ...props }: ListItemProps) {
         .join(' ')
         .trim()}
     >
+      {icon && <Icon icon={icon} />}
       <div className={classes['item-left']}>{children}</div>
       <div className={classes['item-right']}>{rightElement}</div>
     </div>

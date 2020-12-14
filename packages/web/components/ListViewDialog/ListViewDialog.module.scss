@@ -14,12 +14,18 @@ $padding-x: 15px;
     margin-top: -1px;
   }
 
+  > :global(.#{$ns}-icon) {
+    margin-right: 0.7em;
+  }
+
   .item-left {
     flex: 1 0 auto;
   }
 
   .item-right {
     flex: 0 0 auto;
+    font-size: 0.9em;
+    color: var(--text-light-color);
   }
 }
 

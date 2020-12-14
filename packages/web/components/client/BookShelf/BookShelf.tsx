@@ -1,6 +1,6 @@
 import React from 'react';
 import { ClientHeader } from '@/components/client/ClientHeader';
-import { ClientProfile } from '@/components/client/ClientProfile';
+import { MainMenuButton } from '@/components/client/MainMenuDialog';
 import { useBookShelfState, useGetBookShelf } from '@/hooks/useBookShelf';
 import { BookShelfItem } from './BookShelfItem';
 import { BookShelfEmpty } from './BookShelfEmpty';
@@ -13,7 +13,7 @@ export function BookShelf() {
 
   return (
     <div className={classes['book-shelf']}>
-      <ClientHeader title="書架" left={<ClientProfile />} />
+      <ClientHeader title="書架" left={<MainMenuButton />} />
       <div className={classes['book-shelf-content']}>
         {books.length ? (
           books.map(data => <BookShelfItem key={data.bookID} data={data} />)

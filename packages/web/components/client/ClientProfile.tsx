@@ -28,7 +28,10 @@ export interface ClientProfileDialogProps extends ListViewDialogProps {
   actions: AuthActions;
 }
 
-const openClientProfileDialog = createOpenOverlay(ClientProfileDialog);
+export const openClientProfileDialog = createOpenOverlay(ClientProfileDialog);
+
+export const ClientProfileDialogIcon = 'user';
+export const ClientProfileDialogTitle = '帳號';
 
 export function ClientProfileDialog({
   auth,
@@ -40,7 +43,11 @@ export function ClientProfileDialog({
   }
 
   return (
-    <ListViewDialog {...props} icon="user" title="帳號">
+    <ListViewDialog
+      {...props}
+      icon={ClientProfileDialogIcon}
+      title={ClientProfileDialogTitle}
+    >
       <ListSpacer />
 
       <ListItem rightElement={auth.user.nickname}>暱稱</ListItem>

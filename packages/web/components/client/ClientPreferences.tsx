@@ -30,9 +30,6 @@ interface ClientPreferencesDialogProps extends ListViewDialogProps {
   onUpdate: PreferencesActions['update'];
 }
 
-const title = '設定';
-const icon = 'settings';
-
 const { Form, FormItem, useForm } = createForm<Preferences>({ noStyle: true });
 
 const switchProps: ISwitchProps = { large: true, alignIndicator: 'right' };
@@ -66,6 +63,9 @@ const getScreenWidth =
 
 export const openClientPreferences = createOpenOverlay(ClientPreferencesDialog);
 
+export const ClientPreferencesDialogIcon = 'settings';
+export const ClientPreferencesDialogTitle = '設定';
+
 export function ClientPreferencesDialog({
   preferences,
   onUpdate,
@@ -88,7 +88,11 @@ export function ClientPreferencesDialog({
       onValuesChange={onUpdate}
       hidden
     >
-      <ListViewDialog {...props} icon={icon} title={title}>
+      <ListViewDialog
+        {...props}
+        icon={ClientPreferencesDialogIcon}
+        title={ClientPreferencesDialogTitle}
+      >
         <ListSpacer>外觀</ListSpacer>
 
         <ListItem
@@ -178,8 +182,8 @@ export function ClientPreferences(props: IButtonProps) {
     <ButtonPopover
       {...props}
       minimal
-      icon={icon}
-      content={title}
+      icon={ClientPreferencesDialogIcon}
+      content={ClientPreferencesDialogTitle}
       onClick={() => openClientPreferences({ preferences, onUpdate: update })}
     />
   );

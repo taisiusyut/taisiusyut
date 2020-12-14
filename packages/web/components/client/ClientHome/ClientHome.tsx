@@ -1,7 +1,6 @@
 import React from 'react';
 import { ControlGroup, Button } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
-import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { SearchInput } from '@/components/Input';
 import { Schema$Book } from '@/typings';
 import { ClientHomeSection } from './ClientHomeSection';
@@ -19,7 +18,7 @@ export interface ClientHomeProps {
 export function ClientHome({ data }: ClientHomeProps) {
   return (
     <>
-      <ClientHeader right={<ClientPreferences />} />
+      <ClientHeader />
       <div
         style={{ padding: 25, maxWidth: 768, margin: 'auto', width: '100%' }}
       >
