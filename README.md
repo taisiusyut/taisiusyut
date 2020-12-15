@@ -4,17 +4,12 @@ A project for learning full-stack development
 
 ## Goal
 
-- **Server:**
-  - [NestJS](https://nestjs.com/)
-  - Fastify
-  - MongoDB
-- **Admin**: [WIP] [[Preview](https://taisiusyut-demo.herokuapp.com/)] - login as `guest123` and `a12345678`
-  - [NextJS](https://nextjs.org/)
-  - [Blueprintjs](https://blueprintjs.com/docs/) - styles components
-- **Web**:
-  - [NextJS](https://nextjs.org/)
-- **App**:
-  - React Native
+| Status | Platform | Plan                                            | -                                                                                                                    |
+| :----: | -------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+|  WIP   | Server   | [NestJS](https://nestjs.com/), Fastify, MongoDB |
+|  WIP   | Admin    | [NextJS](https://nextjs.org/)                   | [Preview](https://taisiusyut-demo.herokuapp.com/admin/)<br />guest username and password: `guest123` and `a12345678` |
+|  WIP   | Web      | [NextJS](https://nextjs.org/)                   | [Preview](https://taisiusyut-demo.herokuapp.com/)                                                                    |
+|   -    | App      | React Native, Expo                              |
 
 ## Development
 
