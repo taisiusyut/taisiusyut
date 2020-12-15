@@ -1,8 +1,6 @@
 import { Aggregate, Document, FilterQuery, PaginateModel } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { from, of } from 'rxjs';
-import { mergeMap, zipAll } from 'rxjs/operators';
 import {
   BookStatus,
   JWTSignPayload,
@@ -16,6 +14,7 @@ import { Book } from './schemas/book.schema';
 const allBookStatus = Object.values(BookStatus).filter(
   (v): v is BookStatus => typeof v === 'number'
 );
+
 @Injectable()
 export class BookService extends MongooseCRUDService<Book> {
   readonly bookStatus = allBookStatus.map(status => ({ status }));
@@ -76,17 +75,14 @@ export class BookService extends MongooseCRUDService<Book> {
         pool.push(rand);
       }
     }
-    return from(pool)
-      .pipe(
-        mergeMap(idx => {
-          const promise = (this.bookModel
-            .findOne(query)
-            .skip(idx) as unknown) as Promise<Book>;
-          return of(promise);
-        }, 2),
-        zipAll()
-      )
-      .toPromise();
+
+    const books: Book[] = [];
+    for (const idx of pool) {
+      const book = await this.bookModel.findOne(query).skip(idx);
+      books.push(book as Book);
+    }
+
+    return books;
   }
 
   getRoleBasedQuery(

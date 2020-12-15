@@ -51,7 +51,7 @@ jobs:
 
       - name: Build project
         run: |
-          export MONGODB_URI=${{ secrets.MONGODB_URI }}
+          export MONGODB_URI="${{ secrets.MONGODB_URI }}"
           export NEXT_PUBLIC_ORIGIN=https://taisiusyut-demo
           yarn build
 

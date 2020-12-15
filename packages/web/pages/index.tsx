@@ -3,7 +3,7 @@ import { GetStaticProps } from 'next';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import { ClientHome, ClientHomeProps } from '@/components/client/ClientHome';
 import { Meta } from '@/components/Meta';
-import { getBookService, serializer } from '@/service/server';
+import { getBookService, serialize } from '@/service/server';
 import { Schema$Book, Order, BookStatus } from '@/typings';
 
 interface Props extends Pick<ClientHomeProps, 'data'> {}
@@ -20,14 +20,11 @@ async function getClientHomePageData(): Promise<ClientHomeProps['data']> {
       limit
     })
   ]);
+
   const [mostvisited, clientSuggested, adminSuggested, finished] = response.map(
-    books =>
-      books.map(
-        doc =>
-          serializer.transformToPlain(doc, {
-            excludePrefixes: ['_']
-          }) as Schema$Book
-      )
+    books => {
+      return books.map(doc => serialize<Schema$Book>(doc));
+    }
   );
 
   return {
