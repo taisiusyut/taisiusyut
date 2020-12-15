@@ -14,40 +14,37 @@ interface Props {
   children?: ReactNode;
 }
 
+const breakPoint = 768;
+
 function ClientLayoutContent({ children }: Props) {
   const { pagingDisplay } = useClientPreferencesState();
   const { asPath } = useRouter();
   const [singlePage, setSinglePage] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const handler = () => {
-      setSinglePage(!pagingDisplay || window.innerWidth <= 768);
-    };
-
     const subscription = fromEvent(window, 'resize')
       .pipe(startWith(null))
-      .subscribe(handler);
-
-    setMounted(true);
+      .subscribe(() => {
+        setSinglePage(!pagingDisplay || window.innerWidth <= breakPoint);
+      });
 
     return () => subscription.unsubscribe();
   }, [pagingDisplay]);
 
   return (
-    <div className="layout">
-      {/* TODO: check mounted for server side */}
-      {mounted && (
-        <BreakPointsProvider>
-          <div className="layout-body">
-            {(!singlePage || asPath === '/') && <BookShelf />}
-            {(!singlePage || asPath !== '/') && (
-              <div className="layout-content">{children}</div>
-            )}
-          </div>
-        </BreakPointsProvider>
-      )}
-
+    <div className={`layout ${asPath === '/' ? 'home' : ''}`.trim()}>
+      <BreakPointsProvider>
+        <div className="layout-body">
+          {(!singlePage || asPath === '/') && (
+            <div className="book-shelf">
+              <BookShelf />
+            </div>
+          )}
+          {(!singlePage || asPath !== '/') && (
+            <div className="layout-content">{children}</div>
+          )}
+        </div>
+      </BreakPointsProvider>
       <style jsx>
         {`
           .layout {
@@ -76,6 +73,23 @@ function ClientLayoutContent({ children }: Props) {
             @include shadow-border();
             flex: 1 1 auto;
             overflow: hidden;
+          }
+
+          .book-shelf {
+            flex: 1 1 auto;
+            min-width: 300px;
+          }
+
+          @media (max-width: ${breakPoint}px) {
+            .layout {
+              &.home .book-shelf ~ * {
+                display: none;
+              }
+
+              &:not(.home) .book-shelf {
+                display: none;
+              }
+            }
           }
         `}
       </style>

@@ -3,10 +3,9 @@
 .book-shelf {
   @include flex($flex-direction: column);
   @include relative();
+  @include sq-dimen(100%);
   @include shadow-border();
   background-color: var(--primary-color);
-  min-width: 300px;
-  flex: 1 1 auto;
 }
 
 .book-shelf-content {

@@ -16,7 +16,7 @@ interface PreferencesActions {
 
 export const adminPreferencesStorage = createAdminStorage<Preferences>(
   'preferences',
-  { theme: 'light', accentColor: 'blue' }
+  { theme: 'dark', accentColor: 'blue' }
 );
 
 const StateContext = React.createContext<Preferences | undefined>(undefined);

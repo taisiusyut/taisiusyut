@@ -16,7 +16,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html data-theme="light">
+      <Html>
         <Head>
           <link rel="icon" type="image/x-icon" href="/favicon.ico" />
           <link rel="preload" href="/preload.js" as="script" />

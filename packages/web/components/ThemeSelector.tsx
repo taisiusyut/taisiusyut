@@ -3,16 +3,17 @@ import { Control } from '@/utils/form';
 
 export function ThemeSelector({ value, onChange }: Control<Theme>) {
   const handleChange = onChange || (() => void 0);
+
+  const createOption = (theme: Theme) => (
+    <div className={`theme ${theme} ${value === theme ? 'active' : ''}`.trim()}>
+      <div onClick={() => handleChange(theme)} />
+    </div>
+  );
+
   return (
     <div className="theme-selector">
-      <div
-        className={`theme light ${value === 'light' ? 'active' : ''}`.trim()}
-      >
-        <div onClick={() => handleChange('light')} />
-      </div>
-      <div className={`theme dark ${value === 'dark' ? 'active' : ''}`.trim()}>
-        <div onClick={() => handleChange('dark')} />
-      </div>
+      {createOption('light')}
+      {createOption('dark')}
       <style jsx>{`
         .theme-selector {
           @include flex(center);

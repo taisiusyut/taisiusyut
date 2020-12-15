@@ -43,9 +43,7 @@ const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
 const [crudActions] = getCRUDActionsCreator<BookShelf, 'bookID'>()();
 
 export function BookShelfProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState, state =>
-    reducer(state, { type: 'LIST', payload: shelfStorage.get() })
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [actions] = useState({
     dispatch,
     ...bindDispatch(crudActions, dispatch)

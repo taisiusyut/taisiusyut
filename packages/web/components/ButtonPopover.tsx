@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Popover,
@@ -15,11 +15,16 @@ export interface ButtonPopoverProps
 
 export const ButtonPopover = React.forwardRef<any, ButtonPopoverProps>(
   ({ popoverProps, content, position, disabled, ...props }, ref) => {
-    const button = <Button disabled={disabled} {...props} ref={ref} />;
+    const [disablePopover, setDisablePopover] = useState(false);
+    const button = <Button ref={ref} disabled={disabled} {...props} />;
+
+    useEffect(() => {
+      setDisablePopover(isTouchable);
+    }, []);
 
     return (
       <>
-        {content && !isTouchable ? (
+        {content && !disablePopover ? (
           <Popover
             popoverClassName={'button-popover'}
             interactionKind="hover-target"
