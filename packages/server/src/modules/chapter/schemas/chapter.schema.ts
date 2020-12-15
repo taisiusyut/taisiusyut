@@ -82,4 +82,4 @@ export class Chapter implements Schema$Chapter {
 
 export const ChapterSchema = SchemaFactory.createForClass(Chapter);
 
-ChapterSchema.index({ name: 1, book: 1 }, { unique: true });
+ChapterSchema.index({ name: 1, book: 1, number: 1 }, { unique: true });

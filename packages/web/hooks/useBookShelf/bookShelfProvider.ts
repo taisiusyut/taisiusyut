@@ -52,7 +52,11 @@ export function BookShelfProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    shelfStorage.save(state.list);
+    if (state.list.length === 0) {
+      shelfStorage.clear();
+    } else {
+      shelfStorage.save(state.list);
+    }
   }, [state]);
 
   return React.createElement(

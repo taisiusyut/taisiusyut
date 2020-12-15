@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { AutoSizer } from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -24,11 +24,13 @@ export function ChapterListDrawer({
   bookID,
   bookName,
   chapterNo,
+  isOpen,
   ...props
 }: ChapterListDrawerProps) {
   const [chapters, setChapters] = useState<Partial<Schema$Chapter>[]>(
     Array.from({ length: 30 }, () => ({}))
   );
+  const [loaded, setLoaded] = useState(false);
 
   const rowCount = chapters.length;
 
@@ -60,18 +62,25 @@ export function ChapterListDrawer({
         }),
       onSuccess: (payload: PaginateResult<Schema$Chapter>) => {
         setChapters(payload.data);
+        setLoaded(true);
       }
     };
   });
 
-  const [{ loading }] = useRxAsync(request, {
-    defer: !props.isOpen,
+  const [{ loading }, { fetch }] = useRxAsync(request, {
+    defer: true,
     onSuccess,
     onFailure
   });
 
+  useEffect(() => {
+    if (isOpen && !loaded) {
+      fetch();
+    }
+  }, [loaded, isOpen, fetch]);
+
   return (
-    <Drawer {...props} size="auto">
+    <Drawer {...props} isOpen={isOpen} size="auto">
       <div className={classes['header']}>
         <div className={classes['header-title']}>章節目錄</div>
         <ButtonPopover

@@ -5,7 +5,10 @@ import { createFilter } from '@/components/Filter';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { ChapterStatusSelect, ChapterTypeSelect } from '@/components/Select';
 import { useAuthState } from '@/hooks/useAuth';
-import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+import {
+  createUsePaginationLocal,
+  DefaultCRUDActionTypes
+} from '@/hooks/usePaginationLocal';
 import { UserRole, Schema$Book, Param$GetChapters } from '@/typings';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
@@ -37,8 +40,19 @@ const gotoChapter = (bookID: string, chapterID?: string) => {
 export function BookDetails({ book, onUpdate }: Props) {
   const { user } = useAuthState();
   const [useChapters] = useState(() =>
-    createUsePaginationLocal('id', (params?: Param$GetChapters) =>
-      getChapters({ ...params, bookID: book.id, timestamp: true })
+    createUsePaginationLocal(
+      'id',
+      (params?: Param$GetChapters) =>
+        getChapters({ ...params, bookID: book.id, timestamp: true }),
+      {
+        initializer: (state, reducer) =>
+          reducer(state, {
+            type: DefaultCRUDActionTypes.PAGINATE,
+            payload: Array.from({ length: 10 }).map(() => ({
+              id: String(Math.random())
+            }))
+          })
+      }
     )
   );
 

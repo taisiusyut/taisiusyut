@@ -64,6 +64,8 @@ export function AdminPreferencesProvider({ children }: Props) {
             window.__setAccentColor(changes.accentColor);
           }
 
+          adminPreferencesStorage.save(preferences);
+
           return preferences;
         })
     }),

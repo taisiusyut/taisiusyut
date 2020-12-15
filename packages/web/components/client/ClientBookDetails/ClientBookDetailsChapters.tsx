@@ -9,10 +9,9 @@ import {
 import { Card, Classes, Divider, Tag } from '@blueprintjs/core';
 import { Pagination } from '@/components/Pagination';
 import {
-  createCRUDReducer,
+  createUsePaginationLocal,
   DefaultCRUDActionTypes
-} from '@/hooks/crud-reducer';
-import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+} from '@/hooks/usePaginationLocal';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
 
@@ -33,13 +32,12 @@ export function ClientBookDetailsChapters({
   chapters: initialChapters
 }: Props) {
   const [useChapters] = useState(() => {
-    const [, reducer] = createCRUDReducer<Schema$Chapter, 'id'>('id');
     const request = (params?: Param$GetChapters) =>
       getChapters({ ...params, bookID, sort: { createdAt: Order.ASC } });
 
     return createUsePaginationLocal('id', request, {
       defaultState: { pageSize: initialChapters?.pageSize },
-      initializer: state => ({
+      initializer: (state, reducer) => ({
         ...reducer(state, {
           type: DefaultCRUDActionTypes.PAGINATE,
           payload: initialChapters

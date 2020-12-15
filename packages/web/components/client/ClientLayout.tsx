@@ -51,7 +51,7 @@ function ClientLayoutContent({ children }: Props) {
       <style jsx>
         {`
           .layout {
-            @include sq-dimen(100%);
+            @include dimen(100%, 100vh);
             background-color: var(--secondary-color);
             min-height: 100%;
           }

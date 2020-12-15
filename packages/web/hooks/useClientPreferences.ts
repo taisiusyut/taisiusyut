@@ -23,7 +23,7 @@ export const defaultPreferences: Preferences = {
   theme: 'dark',
   accentColor: 'blue',
   pagingDisplay: true,
-  fixWidth: false,
+  fixWidth: true,
   fontSize: 18,
   lineHeight: '1.5em',
   autoFetchNextChapter: true

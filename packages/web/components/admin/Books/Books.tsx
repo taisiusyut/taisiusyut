@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import router from 'next/router';
 import { Card } from '@blueprintjs/core';
 import { useAuthState } from '@/hooks/useAuth';
-import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+import {
+  createUsePaginationLocal,
+  DefaultCRUDActionTypes
+} from '@/hooks/usePaginationLocal';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { createFilter } from '@/components/Filter';
 import { BookStatusSelect, CategorySelect } from '@/components/Select';
@@ -26,11 +29,22 @@ export function Books() {
   const { user } = useAuthState();
 
   const [useBooks] = useState(() =>
-    createUsePaginationLocal('id', (params?: Param$GetBooks) =>
-      getBooks({
-        ...params,
-        author: user?.role === UserRole.Author ? user.user_id : undefined
-      })
+    createUsePaginationLocal(
+      'id',
+      (params?: Param$GetBooks) =>
+        getBooks({
+          ...params,
+          author: user?.role === UserRole.Author ? user.user_id : undefined
+        }),
+      {
+        initializer: (state, reducer) =>
+          reducer(state, {
+            type: DefaultCRUDActionTypes.PAGINATE,
+            payload: Array.from({ length: 10 }).map(() => ({
+              id: String(Math.random())
+            }))
+          })
+      }
     )
   );
 
@@ -79,7 +93,9 @@ export function Books() {
         pagination={pagination}
         isAuthor={user?.role === UserRole.Author}
         onRowClick={row =>
-          row.original.id && router.push(`/admin/book/${row.original.id}`)
+          row.original.id &&
+          row.original.name && // true is not placeholder
+          router.push(`/admin/book/${row.original.id}`)
         }
       />
     </Card>
