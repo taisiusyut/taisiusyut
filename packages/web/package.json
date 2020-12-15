@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true yarn build",
     "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
@@ -12,11 +13,13 @@
     "@blueprintjs/datetime": "^3.19.3",
     "@fullstack/server": "1.0.0",
     "@fullstack/style": "1.0.0",
+    "@next/bundle-analyzer": "^10.0.3",
     "axios": "^0.21.0",
     "cross-env": "^7.0.2",
     "dayjs": "^1.9.6",
     "draft-js": "^0.11.7",
     "next": "10.0.2",
+    "next-compose-plugins": "^2.2.1",
     "next-pwa": "^5.0.0",
     "node-sass-package-importer": "^5.3.2",
     "rc-field-form": "^1.15.1",
