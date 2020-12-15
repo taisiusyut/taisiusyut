@@ -1,0 +1,47 @@
+:root {
+  --primary-color: #fff;
+  --secondary-color: #f6f6f6;
+  --text-color: #202124;
+  --text-light-color: #999;
+  --icon-color: #{lighten(#000, 30%)};
+  --divider-color: #{$pt-divider-black};
+  --shadow-color: #ccc;
+  --placeholder-color: #e0e0e0;
+
+  --logo-shadow: 2px 4px 6px #ccc;
+
+  --book-model-left-color: #eee;
+  --book-model-front-bottom-color: #ccc;
+  --book-model-shadow-color: #666;
+
+  --item-hover-color: rgba(0, 0, 0, 0.04);
+  --item-active-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme^='dark'] {
+  --primary-color: #{lighten(#222, 5%)};
+  --secondary-color: #{lighten(#222, 1%)};
+  --text-color: #dfdedb;
+  --text-light-color: #a09c97;
+  --icon-color: #{darken(#dfdedb, 30%)};
+  --divider-color: #{$pt-dark-divider-black};
+  --shadow-color: #191919;
+  --placeholder-color: #888;
+
+  --logo-shadow: 2px 4px 6px #111;
+
+  --book-model-left-color: #fff;
+  --book-model-front-bottom-color: #ccc;
+  --book-model-shadow-color: #000;
+
+  --item-hover-color: #393939;
+  --item-active-color: #555;
+}
+
+@each $name, $color in $base-colors {
+  [data-accent-color^='#{"" + $name}'] {
+    --accent-color: #{get-color($name)};
+    --accent-color-hover: #{get-color($name, hover)};
+    --accent-color-active: #{get-color($name, active)};
+  }
+}
