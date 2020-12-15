@@ -27,7 +27,7 @@
     "rxjs": "^6.6.3",
     "sass": "^1.29.0",
     "typeface-muli": "^1.1.13",
-    "use-rx-hooks": "^1.6.1"
+    "use-rx-hooks": "^1.6.2"
   },
   "devDependencies": {
     "@types/draft-js": "^0.10.44",

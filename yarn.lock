@@ -14921,10 +14921,10 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-use-rx-hooks@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/use-rx-hooks/-/use-rx-hooks-1.6.1.tgz#ac79e5d0ef8856cf7067ef03c705b9d3d9016ff5"
-  integrity sha512-ZyLIM4UBqIoXJE4obGoj/+2LLd66NY2ZGycKf825zEjmPdRA+ZjAB+982YPzBIawgq5HVSqFiEAvn60Z7ZkBEQ==
+use-rx-hooks@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.npmjs.org/use-rx-hooks/-/use-rx-hooks-1.6.2.tgz#a28f16a3aa448662c3b950d19fe9eb5eb3b5a28c"
+  integrity sha512-+QPNuMvCKFcKcpaOuYyPrUKbk5GIScZacpt+787NNp5Z7MV8U2tRglRxXkS69kMD7ZszCu7M3SVgGt3qHoftOA==
 
 use-subscription@1.5.1:
   version "1.5.1"
