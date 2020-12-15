@@ -12,7 +12,7 @@
     "dist",
     "src"
   ],
-  "devDependencies": {
+  "dependencies": {
     "@blueprintjs/source": "https://github.com/palantir/blueprint.git#9dac93e5ff90545765b73065a9c1f14b7ccd926d",
     "@blueprintjs/core": "3.35.0",
     "node-sass": "^5.0.0",
