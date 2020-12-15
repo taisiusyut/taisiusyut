@@ -47,7 +47,7 @@ export function UpdateUser({
 
   function handleClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
     openConfirmDialog({
-      icon: 'person',
+      icon: 'edit',
       title,
       children,
       onConfirm,

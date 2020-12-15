@@ -1,3 +1,4 @@
+const path = require('path');
 const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
@@ -10,6 +11,16 @@ module.exports = withPlugins(
     [withBundleAnalyzer]
   ],
   withPWA({
+    webpack: (config, { webpack }) => {
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /.*\/generated\/iconSvgPaths.*/,
+          path.resolve(__dirname, 'iconSvgPaths.js')
+        )
+      );
+
+      return config;
+    },
     // Do not enable strict mode globally.
     // Since @blueprintjs is violate the strict mode ...
     reactStrictMode: false,
