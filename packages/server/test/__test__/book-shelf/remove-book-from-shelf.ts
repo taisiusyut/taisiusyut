@@ -10,20 +10,20 @@ import { getUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 
 export function testRemoveBookFromShelf() {
-  let books: Schema$Book[] = [];
+  const length = 1;
+  const books: Schema$Book[] = [];
 
   const users = ['root', 'admin', 'author', 'client'];
 
   beforeAll(async () => {
     await setupUsers();
-    books = await Promise.all(
-      Array.from({ length: 1 }).map(async () => {
-        const response = await createBook(author.token);
-        const book = response.body;
-        await publicBook(author.token, book.id);
-        return book;
-      })
-    );
+
+    for (let i = 0; i < length; i++) {
+      const response = await createBook(author.token);
+      const book = response.body;
+      await publicBook(author.token, book.id);
+      books.push(book);
+    }
 
     await app.get(BookShelfService).clear();
 

@@ -33,17 +33,16 @@ function createGetBookTest(getBook: GetBook) {
         role: UserRole.Author
       });
       mockAuthor = response.body;
-      await Promise.all(
-        bookStatus.map(async status => {
-          let response = await createBook(mockAuthor.token);
-          let book = response.body;
-          if (status !== BookStatus.Private) {
-            response = await updateBook(root.token, book.id, { status });
-            book = response.body;
-          }
-          books.push(book);
-        })
-      );
+
+      for (const status of bookStatus) {
+        let response = await createBook(mockAuthor.token);
+        let book = response.body;
+        if (status !== BookStatus.Private) {
+          response = await updateBook(root.token, book.id, { status });
+          book = response.body;
+        }
+        books.push(book);
+      }
     });
 
     test.each(['root', 'admin', 'author', 'client'])(

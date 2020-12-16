@@ -9,25 +9,23 @@ import { createChapter, publicChapter } from '../../service/chapter';
 export function testAddBookToShelf() {
   const length = 3;
 
-  let books: Schema$Book[] = [];
-  let chapters: Schema$Chapter[] = [];
+  const books: Schema$Book[] = [];
+  const chapters: Schema$Chapter[] = [];
 
   beforeAll(async () => {
     await setupUsers();
 
-    books = await Promise.all(
-      Array.from({ length }).map(() =>
-        createBook(author.token).then(response => response.body)
-      )
-    );
+    for (let i = 0; i < length; i++) {
+      const response = await createBook(author.token);
+      books.push(response.body);
+    }
     await publicBook(author.token, books[1].id);
     await publicBook(author.token, books[2].id);
 
-    chapters = await Promise.all(
-      books.map(book =>
-        createChapter(author.token, book.id).then(response => response.body)
-      )
-    );
+    for (const book of books) {
+      const response = await createChapter(author.token, book.id);
+      chapters.push(response.body);
+    }
 
     chapters[2] = await publicChapter(
       author.token,

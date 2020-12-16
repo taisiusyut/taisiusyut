@@ -90,9 +90,10 @@ export function testModifyPassword() {
       }
     ];
 
-    const responses = await Promise.all(
-      payload.map(params => modifyPassword(root.token, params))
-    );
+    const responses = [];
+    for (const params of payload) {
+      responses.push(await modifyPassword(root.token, params));
+    }
 
     expect(responses).toSatisfyAll(
       response => response.status === HttpStatus.BAD_REQUEST

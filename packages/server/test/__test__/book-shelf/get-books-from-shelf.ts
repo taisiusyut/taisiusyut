@@ -6,20 +6,19 @@ import { getUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 
 export function testGetBooksFromShelf() {
-  let books: Schema$Book[] = [];
+  const books: Schema$Book[] = [];
   const length = 3;
   const users = ['root', 'admin', 'author', 'client'];
 
   beforeAll(async () => {
     await setupUsers();
-    books = await Promise.all(
-      Array.from({ length }).map(async () => {
-        const response = await createBook(author.token);
-        const book = response.body;
-        await publicBook(author.token, book.id);
-        return book;
-      })
-    );
+
+    for (let i = 0; i < length; i++) {
+      const response = await createBook(author.token);
+      const book = response.body;
+      await publicBook(author.token, book.id);
+      books.push(book);
+    }
 
     await app.get(BookShelfService).clear();
 

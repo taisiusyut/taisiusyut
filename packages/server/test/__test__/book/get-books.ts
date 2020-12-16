@@ -94,12 +94,11 @@ export function testGetBooks() {
       for (const key in author.books.stats) {
         const status = BookStatus[key as keyof BooksStats];
         const length = author.books.stats[key as keyof BooksStats];
-        await Promise.all(
-          Array.from({ length }, async () => {
-            const book = await setupBooks(author.auth.token, status);
-            author.books.data.push(book);
-          })
-        );
+
+        for (let i = 0; i < length; i++) {
+          const book = await setupBooks(author.auth.token, status);
+          author.books.data.push(book);
+        }
       }
     }
   });
