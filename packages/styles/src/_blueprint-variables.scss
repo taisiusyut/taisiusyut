@@ -7,6 +7,11 @@ $pt-intent-primary: #4285f4;
 // Buttons
 $pt-button-height: 34px;
 $pt-button-height-small: 26px;
+$dark-button-background-color: #{lighten(#333, 5%)};
+$dark-button-background-color-hover: #{lighten(#333, 10%)};
+$dark-button-background-color-active: #{lighten(#333, 15%)};
+$dark-button-background-color-disabled: #333;
+$dark-button-background-color-active-disabled: darken(#333, 20%);
 
 // Inputs
 $pt-input-height: $pt-button-height;

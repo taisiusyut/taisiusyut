@@ -4,7 +4,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Button, Card, Icon } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { GoBackButton } from '@/components/GoBackButton';
-import { ClientPreferences } from '@/components/client/ClientPreferences';
+import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
 import { useBreakPoints } from '@/hooks/useBreakPoints';
 import { Toaster } from '@/utils/toaster';
@@ -13,7 +13,6 @@ import { getBookByName } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
 import { ClientBookDetailsChapters } from './ClientBookDetailsChapters';
 import classes from './ClientBookDetails.module.scss';
-import { BookShelfToggle } from '../BookShelf/BookShelfToggle';
 
 export interface ClientBookDetailsData {
   bookName: string;
@@ -92,10 +91,7 @@ export function ClientBookDetails({
       <>
         <ClientHeader
           {...headerProps}
-          right={[
-            <BookShelfToggle key="0" bookID={book.id} icon minimal />,
-            <ClientPreferences key="1" />
-          ]}
+          right={[<BookShelfToggle key="0" bookID={book.id} icon minimal />]}
         />
         <div className={classes['content']}>
           <Card>

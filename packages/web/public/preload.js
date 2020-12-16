@@ -46,7 +46,7 @@
     window.__setAccentColor(preferences['accentColor'] || 'blue');
     window.__setFixWidth(
       typeof preferences['fixWidth'] === 'undefined'
-        ? false
+        ? true
         : preferences['fixWidth']
     );
   } catch (error) {

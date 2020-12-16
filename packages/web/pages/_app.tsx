@@ -55,7 +55,7 @@ function AppContent(props: ExtendAppProps) {
     );
   }
 
-  if (loginStatus === 'unknown' || loginStatus === 'loading') {
+  if (loginStatus === 'loading') {
     return null;
   }
 

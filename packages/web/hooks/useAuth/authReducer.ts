@@ -1,7 +1,7 @@
 import { Reducer } from 'react';
 import { JWTSignPayload, Schema$User } from '@/typings';
 
-export type LoginStatus = 'unknown' | 'loading' | 'loggedIn' | 'required';
+export type LoginStatus = 'loading' | 'loggedIn' | 'required';
 
 export interface LoggedIn {
   loginStatus: 'loggedIn';
@@ -27,7 +27,7 @@ export interface LogoutOptions {
 }
 
 export const initialState: AuthState = {
-  loginStatus: 'unknown',
+  loginStatus: 'required',
   user: null
 };
 

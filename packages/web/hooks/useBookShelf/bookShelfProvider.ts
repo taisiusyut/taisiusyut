@@ -7,7 +7,8 @@ import {
   createCRUDReducer,
   CRUDActionCreators,
   CRUDState,
-  Dispatched
+  Dispatched,
+  DefaultCRUDActionTypes
 } from '../crud-reducer';
 
 export type BookShelf = (Schema$BookShelf | Partial<Schema$BookShelf>) & {
@@ -43,7 +44,9 @@ const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
 const [crudActions] = getCRUDActionsCreator<BookShelf, 'bookID'>()();
 
 export function BookShelfProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState, state =>
+    reducer(state, { type: DefaultCRUDActionTypes.LIST, payload: placeholder })
+  );
   const [actions] = useState({
     dispatch,
     ...bindDispatch(crudActions, dispatch)
