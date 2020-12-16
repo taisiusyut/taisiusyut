@@ -13,7 +13,7 @@ export function BookShelfEmpty() {
   const router = useRouter();
   const auth = useAuthState();
 
-  if (auth.loginStatus === 'loading' || auth.loginStatus === 'unknown') {
+  if (auth.loginStatus === 'loading') {
     return null;
   }
 

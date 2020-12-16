@@ -13,8 +13,8 @@ export function useGetBookShelf() {
 
   useEffect(() => {
     switch (auth.loginStatus) {
-      case 'unknown':
       case 'loading':
+      case 'loggedIn':
         actions.list(shelfStorage.get());
         break;
       case 'required': // for logout
