@@ -50,8 +50,8 @@ export async function createUserAndLogin(
     : login(user);
 }
 
-export function refreshToken(token: string) {
-  return request.post(routes.refresh_token).set('Cookie', [token]).send();
+export function refreshToken(cookie: string) {
+  return request.post(routes.refresh_token).set('Cookie', [cookie]).send();
 }
 
 export function logout() {
@@ -125,3 +125,18 @@ export function updateProfile(
 }
 
 export const getUser = (user: unknown) => global[user as 'root'];
+
+export function getLoginRecords(token: string) {
+  return request
+    .get(routes.get_login_records)
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
+export function logoutOthers(token: string, cookie: string) {
+  return request
+    .post(routes.logout_others)
+    .set('Cookie', [cookie])
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}

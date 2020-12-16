@@ -26,9 +26,16 @@ export interface Param$UpdateRefreshToken {
   refreshToken: string;
 }
 
+export interface Schema$LoginRecord extends Timestamp {
+  id: string;
+  current?: boolean;
+  userAgent?: string;
+}
+
 export interface Schema$RefreshToken
   extends Param$CreateRefreshToken,
-    Timestamp {
+    Timestamp,
+    Schema$LoginRecord {
   id: string;
 }
 

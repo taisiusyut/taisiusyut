@@ -29,6 +29,10 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     await this.model.deleteOne(query);
   }
 
+  async deleteMany(query: FilterQuery<D>): Promise<void> {
+    await this.model.deleteMany(query);
+  }
+
   async findOneAndUpdate(
     query: FilterQuery<D>,
     changes: UpdateQuery<D>,

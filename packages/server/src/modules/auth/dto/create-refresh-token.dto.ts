@@ -17,6 +17,12 @@ class Excluded implements Partial<Schema$RefreshToken> {
   id?: string;
 
   @Exclude()
+  current?: undefined;
+
+  @Exclude()
+  userAgent?: undefined;
+
+  @Exclude()
   createdAt?: undefined;
 
   @Exclude()

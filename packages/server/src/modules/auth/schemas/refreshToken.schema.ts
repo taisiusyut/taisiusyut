@@ -11,13 +11,13 @@ import { Transform } from 'class-transformer';
 export class RefreshToken implements Schema$RefreshToken {
   id: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, trim: true })
   user_id: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, trim: true })
   username: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, trim: true })
   nickname: string;
 
   @Prop({ type: String, required: true, enum: Object.values(UserRole) })
@@ -25,6 +25,9 @@ export class RefreshToken implements Schema$RefreshToken {
 
   @Prop({ type: String, required: true, unique: true })
   refreshToken: string;
+
+  @Prop({ type: String, trim: true })
+  userAgent?: string;
 
   @Transform(Number)
   createdAt: number;

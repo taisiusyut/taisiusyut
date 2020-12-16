@@ -20,7 +20,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { isMongoId } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants/routes';
-import { Schema$Authenticated, UserRole } from '@/typings';
+import { Schema$Authenticated, Schema$LoginRecord, UserRole } from '@/typings';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/schemas/user.schema';
@@ -53,7 +53,7 @@ export class AuthController {
   @Post(routes.auth.login)
   @UseGuards(AuthGuard('local'))
   async login(
-    @Req() { user }: FastifyRequest,
+    @Req() { user, headers }: FastifyRequest,
     @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
     if (!user) throw new InternalServerErrorException(`user is ${user}`);
@@ -62,11 +62,12 @@ export class AuthController {
     const refreshToken = uuidv4();
 
     try {
-      await this.refreshTokenService.findOneAndUpdate(
-        { user_id: user.user_id },
-        { ...signResult.user, refreshToken },
-        { upsert: true }
-      );
+      await this.refreshTokenService.create({
+        ...signResult.user,
+        refreshToken,
+        userAgent: headers['user-agent'],
+        user_id: user.user_id
+      });
     } catch (error) {
       throwMongoError(error);
     }
@@ -242,5 +243,38 @@ export class AuthController {
     }
 
     return user;
+  }
+
+  @Access('Auth')
+  @HttpCode(HttpStatus.OK)
+  @Get(routes.auth.get_login_records)
+  async loginRecords(@Req() req: FastifyRequest) {
+    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+
+    const tokens = await this.refreshTokenService.findAll({
+      user_id: req.user?.user_id
+    });
+
+    return tokens.map<Schema$LoginRecord>(data => ({
+      id: data.id,
+      userAgent: data.userAgent,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      current: data.refreshToken === tokenFromCookies
+    }));
+  }
+
+  @Access('Auth')
+  @HttpCode(HttpStatus.OK)
+  @Post(routes.auth.logout_others)
+  async logoutOthers(@Req() req: FastifyRequest) {
+    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+
+    await this.refreshTokenService.deleteMany({
+      user_id: req.user?.user_id,
+      refreshToken: {
+        $ne: tokenFromCookies
+      }
+    });
   }
 }

@@ -9,7 +9,9 @@ export const Routes = {
     modify_password: '/modify-password',
     delete_account: '/delete-account',
     cloudinary_sign: '/cloudinary/sign',
-    profile: '/profile'
+    profile: '/profile',
+    get_login_records: '/login-records',
+    logout_others: '/logout-others'
   },
   user: {
     prefix: '/user',
