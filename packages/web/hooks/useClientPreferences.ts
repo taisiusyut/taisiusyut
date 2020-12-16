@@ -1,4 +1,10 @@
-import React, { ReactNode, useMemo, useState, useContext } from 'react';
+import React, {
+  ReactNode,
+  useMemo,
+  useState,
+  useContext,
+  useEffect
+} from 'react';
 import { createClientStorage } from '@/utils/storage';
 
 interface Props {
@@ -64,7 +70,7 @@ export function useClientPreferences() {
 }
 
 export function ClientPreferencesProvider({ children }: Props) {
-  const [state, setState] = useState(clientPreferencesStorage.get());
+  const [state, setState] = useState(defaultPreferences);
   const actions = useMemo<PreferencesActions>(
     () => ({
       update: changes =>
@@ -90,6 +96,10 @@ export function ClientPreferencesProvider({ children }: Props) {
     }),
     []
   );
+
+  useEffect(() => {
+    setState(clientPreferencesStorage.get());
+  }, []);
 
   return React.createElement(
     ActionContext.Provider,

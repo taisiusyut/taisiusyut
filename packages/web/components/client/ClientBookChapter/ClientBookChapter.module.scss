@@ -36,12 +36,15 @@
 .chapter-name {
   font-weight: 500;
   font-size: 1.4em;
-  line-height: 1.5em;
+  line-height: inherit;
   margin-bottom: 1.5em;
 }
 
-.paramgraph {
+.paragraph {
   white-space: pre-wrap;
+  font-size: 1em;
+  line-height: inherit;
+
   + .paramgraph {
     margin-top: 1em;
   }

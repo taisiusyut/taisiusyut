@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { useClientPreferencesState } from '@/hooks/useClientPreferences';
+import { Button, Icon } from '@blueprintjs/core';
 import { getChapterByNo, getErrorMessage } from '@/service';
 import { Schema$Chapter } from '@/typings';
 import classes from './ClientBookChapter.module.scss';
-import { Button, Icon } from '@blueprintjs/core';
+
 export interface Props {
   bookID: string;
   chapterNo: number;
@@ -18,12 +18,9 @@ export function ClientBookChapterContent({
   onLoaded,
   defaultChapter
 }: Props) {
-  const { fontSize, lineHeight } = useClientPreferencesState();
   const [{ request, onSuccess }] = useState(() => {
     return {
-      onSuccess: (chapter: Schema$Chapter) => {
-        onLoaded(chapter);
-      },
+      onSuccess: onLoaded,
       request: () => getChapterByNo({ bookID, chapterNo })
     };
   });
@@ -48,11 +45,7 @@ export function ClientBookChapterContent({
         </div>
         <div>
           {chapter.content.split('\n').map((paramgraph, idx) => (
-            <p
-              key={idx}
-              className={classes['paramgraph']}
-              style={{ fontSize, lineHeight }}
-            >
+            <p key={idx} className={classes['paragraph']}>
               {paramgraph}
             </p>
           ))}

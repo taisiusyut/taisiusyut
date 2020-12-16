@@ -50,7 +50,11 @@ export function ClientBookChapter({
     [initialChapterNo]: !!initialChapter
   });
 
-  const { autoFetchNextChapter } = useClientPreferencesState();
+  const {
+    autoFetchNextChapter,
+    fontSize,
+    lineHeight
+  } = useClientPreferencesState();
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -190,8 +194,9 @@ export function ClientBookChapter({
       content.push(
         <div
           key={chapterNo}
-          className={classes['content']}
           id={`chapter-${chapterNo}`}
+          className={classes['content']}
+          style={{ fontSize, lineHeight }}
         >
           <ClientBookChapterContent
             bookID={bookID}

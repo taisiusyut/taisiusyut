@@ -1,4 +1,10 @@
-import React, { ReactNode, useMemo, useState, useContext } from 'react';
+import React, {
+  ReactNode,
+  useMemo,
+  useState,
+  useContext,
+  useEffect
+} from 'react';
 import { createAdminStorage } from '@/utils/storage';
 
 interface Props {
@@ -14,9 +20,11 @@ interface PreferencesActions {
   update: (payload: Partial<Preferences>) => void;
 }
 
+const defaultPreferences: Preferences = { theme: 'dark', accentColor: 'blue' };
+
 export const adminPreferencesStorage = createAdminStorage<Preferences>(
   'preferences',
-  { theme: 'dark', accentColor: 'blue' }
+  defaultPreferences
 );
 
 const StateContext = React.createContext<Preferences | undefined>(undefined);
@@ -49,7 +57,7 @@ export function useAdminPreferences() {
 }
 
 export function AdminPreferencesProvider({ children }: Props) {
-  const [state, setState] = useState(adminPreferencesStorage.get());
+  const [state, setState] = useState(defaultPreferences);
   const actions = useMemo<PreferencesActions>(
     () => ({
       update: changes =>
@@ -71,6 +79,10 @@ export function AdminPreferencesProvider({ children }: Props) {
     }),
     []
   );
+
+  useEffect(() => {
+    setState(adminPreferencesStorage.get());
+  }, []);
 
   return React.createElement(
     ActionContext.Provider,
