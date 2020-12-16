@@ -8,17 +8,16 @@ import React, {
 import router from 'next/router';
 import { fromEvent } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { Button } from '@blueprintjs/core';
 import { Schema$Chapter } from '@/typings';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
-// import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
+import { useClientPreferencesState } from '@/hooks/useClientPreferences';
 import { ClientBookChapterContent } from './ClientBookChapterContent';
 import classes from './ClientBookChapter.module.scss';
-import { useClientPreferencesState } from '@/hooks/useClientPreferences';
-import { Button } from '@blueprintjs/core';
 
 export interface ClientBookChapterData {
   bookID?: string;
@@ -30,6 +29,9 @@ export interface ClientBookChapterData {
 export interface ClientBookChapterProps extends ClientBookChapterData {}
 
 const ChpaterListButton = withChaptersListDrawer(ButtonPopover);
+
+const getTarget = (chapterNo: number) =>
+  document.querySelector<HTMLDivElement>(`#chapter-${chapterNo}`);
 
 export function ClientBookChapter({
   bookID,
@@ -51,21 +53,49 @@ export function ClientBookChapter({
   const { autoFetchNextChapter } = useClientPreferencesState();
 
   useEffect(() => {
-    if (!autoFetchNextChapter) {
-      return;
-    }
-
     const scroller = scrollerRef.current;
     let chapterNo = initialChapterNo;
-    let target = document.querySelector<HTMLDivElement>(
-      `#chapter-${chapterNo}`
-    );
-    if (scroller && bookID) {
+
+    if (!scroller) {
+      throw new Error(`scroller is not defined`);
+    }
+
+    const scrollToTarget = () => {
+      const offsetTop = getTarget(initialChapterNo)?.offsetTop;
+      if (typeof offsetTop === 'number') {
+        scroller.scrollTop = offsetTop - scroller.offsetTop;
+      }
+    };
+
+    setCurrentChapter(initialChapterNo);
+
+    setChapters(chapters => {
+      if (chapters.includes(initialChapterNo)) {
+        scrollToTarget();
+        return chapters;
+      }
+
+      if (initialChapterNo === chapters[0] - 1) {
+        return [initialChapterNo, ...chapters];
+      }
+
+      if (initialChapterNo === chapters[chapters.length - 1] + 1) {
+        setTimeout(scrollToTarget, 0);
+        return [...chapters, initialChapterNo];
+      }
+
+      scroller.scrollTop = 0;
+      return [initialChapterNo];
+    });
+
+    if (bookID && autoFetchNextChapter) {
       const subscription = fromEvent<SyntheticEvent>(scroller, 'scroll')
         .pipe(
           map(() => scroller.scrollTop),
           distinctUntilChanged(),
           map<number, -1 | 1 | undefined>(scrollTop => {
+            const target = getTarget(chapterNo);
+
             if (target && loaded.current[chapterNo]) {
               const pos =
                 scrollTop + scroller.offsetHeight + scroller.offsetTop;
@@ -95,14 +125,16 @@ export function ClientBookChapter({
             });
           }
 
-          const newTarget = document.querySelector<HTMLDivElement>(
-            `#chapter-${newChapterNo}`
-          );
+          const newTarget = getTarget(newChapterNo);
 
           if (newTarget) {
-            target = newTarget;
             chapterNo = newChapterNo;
             setCurrentChapter(chapterNo);
+            router.replace(
+              `/book/${bookName}/chapter/${chapterNo}`,
+              undefined,
+              { shallow: true }
+            );
           }
         });
       return () => subscription.unsubscribe();
@@ -115,14 +147,7 @@ export function ClientBookChapter({
     autoFetchNextChapter
   ]);
 
-  useEffect(() => {
-    if (initialChapterNo !== currentChapter) {
-      const url = `/book/${bookName}/chapter/${currentChapter}`;
-      router.replace(url, url, { shallow: true });
-    }
-  }, [bookName, initialChapterNo, currentChapter]);
-
-  const title = `第${currentChapter}章 - ${bookName}`;
+  const title = `第${currentChapter}章`;
   const header = (
     <ClientHeader
       title={title}
@@ -138,7 +163,7 @@ export function ClientBookChapter({
             content="章節目錄"
             bookID={bookID}
             bookName={bookName}
-            chapterNo={initialChapterNo}
+            chapterNo={currentChapter}
             minimal
           />
         )

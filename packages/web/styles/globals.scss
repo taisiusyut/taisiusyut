@@ -12,17 +12,6 @@
   box-sizing: border-box;
 }
 
-// html {
-//   overscroll-behavior: none;
-//   overflow: auto;
-// }
-
-// html,
-// body,
-// #__next {
-//   min-height: 100vh;
-// }
-
 html {
   overscroll-behavior: none;
   overflow: hidden;
@@ -43,7 +32,7 @@ body {
   color: var(--text-color);
   margin: 0;
   padding: 0;
-  font-weight: 300;
+  font-weight: 400;
   font-family: 'Muli', #{$pt-font-family};
 
   @media (min-width: 641px) {
