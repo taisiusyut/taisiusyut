@@ -10,8 +10,10 @@ export function useContextMenu<T extends HTMLElement>(
   useEffect(() => {
     const el = ref.current;
     if (el) {
+      const opts = { passive: true };
+
       // for iPhone safari
-      const longPress$ = fromEvent<TouchEvent<T>>(el, 'touchstart').pipe(
+      const longPress$ = fromEvent<TouchEvent<T>>(el, 'touchstart', opts).pipe(
         switchMap(event => {
           return of(event).pipe(
             delay(400),
@@ -26,9 +28,9 @@ export function useContextMenu<T extends HTMLElement>(
             }),
             takeUntil(
               merge(
-                fromEvent<TouchEvent<T>>(el, 'touchmove'),
-                fromEvent<TouchEvent<T>>(el, 'touchend'),
-                fromEvent<TouchEvent<T>>(el, 'touchcancel')
+                fromEvent<TouchEvent<T>>(el, 'touchmove', opts),
+                fromEvent<TouchEvent<T>>(el, 'touchend', opts),
+                fromEvent<TouchEvent<T>>(el, 'touchcancel', opts)
               )
             )
           );

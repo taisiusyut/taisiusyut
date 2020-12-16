@@ -16,7 +16,14 @@ export function Logo({ imageSize = 100 }: Props) {
         filter: `drop-shadow(var(--logo-shadow))`
       }}
     >
-      <Image src="/logo.png" width={imageSize} height={imageSize} />
+      <Image
+        src="/logo.png"
+        alt="logo"
+        width={imageSize}
+        height={imageSize}
+        priority
+        unoptimized
+      />
       <H5
         style={{
           marginTop: -imageSize * 0.225,

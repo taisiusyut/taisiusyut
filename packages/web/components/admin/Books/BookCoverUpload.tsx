@@ -54,7 +54,7 @@ export function BookCoverUpload(
       {value && (
         <Image
           src={typeof value === 'string' ? value : value.url}
-          alt="Cover"
+          alt="book cover"
           layout="fill"
           unoptimized
         />

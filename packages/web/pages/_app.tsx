@@ -1,9 +1,8 @@
 import React, { ReactNode, useEffect } from 'react';
-import Head from 'next/head';
 import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
-import { useRxAsync } from 'use-rx-hooks';
-import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { CommonMeta } from '@/components/Meta';
+import { AuthProvider, useAuthState } from '@/hooks/useAuth';
 import { GoBackProvider } from '@/hooks/useGoBack';
 import { UserRole } from '@/typings';
 import { Toaster } from '@/utils/toaster';
@@ -40,14 +39,12 @@ function Unthorized({
 
 function AppContent(props: ExtendAppProps) {
   const { Component, pageProps } = props;
-  const [{ loginStatus, user }, actions] = useAuth();
+  const { loginStatus, user } = useAuthState();
   const access = Component.access;
 
   if (access && process.env.NEXT_PUBLIC_GUEST) {
     access.push(process.env.NEXT_PUBLIC_GUEST as UserRole);
   }
-
-  useRxAsync(actions.authenticate);
 
   if (!access || (user && access.includes(user.role))) {
     const Layout = Component.layout || React.Fragment;
@@ -69,9 +66,7 @@ function App(props: ExtendAppProps) {
   return (
     <GoBackProvider>
       <AuthProvider>
-        <Head>
-          <title>睇小說</title>
-        </Head>
+        <CommonMeta />
         <AppContent {...props} />
       </AuthProvider>
     </GoBackProvider>

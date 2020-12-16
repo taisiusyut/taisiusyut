@@ -13,7 +13,7 @@ export function AdminSidebarHeader({ user }: Props) {
   return (
     <div className={classNames.header}>
       <div className={classNames.logo}>
-        <Image src="/logo.png" layout="fill" priority unoptimized />
+        <Image src="/logo.png" alt="logo" layout="fill" priority unoptimized />
       </div>
       <div className={classNames['header-content']}>
         <Popover position="bottom" content={<AdminSideBarHeaderMenu />}>

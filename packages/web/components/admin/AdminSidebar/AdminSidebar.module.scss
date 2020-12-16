@@ -16,6 +16,7 @@
 }
 
 .inner {
+  @include fixed();
   @include flex($flex-direction: column);
   background-color: var(--primary-color);
   box-shadow: 1px 0 0 var(--divider-color);
@@ -23,7 +24,6 @@
 
   @media (min-width: $break-point + 1) {
     @include dimen(1000px + $sidebar-width);
-    @include fixed();
     overflow-y: auto;
     margin-left: -1000px;
     padding-left: 1000px + $sidebar-padding-x;

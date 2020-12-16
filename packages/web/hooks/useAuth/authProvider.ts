@@ -106,6 +106,19 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const subscription = authActions.authenticate().subscribe(
+      () => void 0,
+      () => {
+        if (process.env.NODE_ENV === 'production') {
+          // eslint-disable-next-line
+          console.clear();
+        }
+      }
+    );
+    return () => subscription.unsubscribe();
+  }, [authActions]);
+
+  useEffect(() => {
     // logout current page when user is logout at other tab/page or clear all storage
     const subscription = fromEvent<StorageEvent>(window, 'storage').subscribe(
       event => {

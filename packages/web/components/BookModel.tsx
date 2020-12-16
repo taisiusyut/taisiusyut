@@ -9,8 +9,6 @@ interface Props {
   flatten?: boolean;
 }
 
-const cover_1x1 = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGM6AwAA0gDPuMu6oQAAAABJRU5ErkJggg==`;
-
 export function BookModel({
   cover,
   className = '',
@@ -29,13 +27,16 @@ export function BookModel({
           .trim()}
       >
         <div className="front">
-          <Image
-            layout="fixed"
-            src={cover || cover_1x1}
-            width={width}
-            height={(width * 4) / 3}
-            draggable={false}
-          />
+          {cover && (
+            <Image
+              layout="fixed"
+              alt="book cover"
+              src={cover}
+              width={width}
+              height={(width * 4) / 3}
+              draggable={false}
+            />
+          )}
         </div>
         <div className="back" />
         <div className="right" />

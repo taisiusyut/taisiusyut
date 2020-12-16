@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { AdminPreferencesProvider } from '@/hooks/useAdminPreferences';
 import { AdminSidebar } from './AdminSidebar';
+import { Meta } from '../Meta';
 
 interface Props {
   children?: ReactNode;
@@ -10,6 +11,7 @@ export function AdminLayout({ children }: Props) {
   return (
     <AdminPreferencesProvider>
       <div className="layout">
+        <Meta robots="none" />
         <div className="layout-body">
           <AdminSidebar />
           <div className="layout-content">{children}</div>
