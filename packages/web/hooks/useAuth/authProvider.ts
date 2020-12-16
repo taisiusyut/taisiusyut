@@ -33,7 +33,14 @@ export const ActionContext = React.createContext<AuthActions | undefined>(
   undefined
 );
 
-const LOGOUT = 'logout';
+const LOGGED_IN = 'LOGGED_IN';
+
+const shouldRefershToken = () => {
+  try {
+    return !!localStorage.getItem(LOGGED_IN);
+  } catch (error) {}
+  return false;
+};
 
 function authenticate$(
   payload?: AuthenticatePayload
@@ -79,7 +86,7 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
           dispatch({ type: 'LOGOUT' });
 
           try {
-            localStorage.removeItem(LOGOUT);
+            localStorage.removeItem(LOGGED_IN);
           } catch {}
         } catch (error) {
           Toaster.apiError('Logout failure', error);
@@ -91,7 +98,7 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
         return authenticate$(payload).pipe(
           tap(auth => {
             try {
-              localStorage.setItem(LOGOUT, String(+new Date()));
+              localStorage.setItem(LOGGED_IN, String(+new Date()));
             } catch {}
 
             dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: auth.user });
@@ -106,23 +113,25 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const subscription = authActions.authenticate().subscribe(
-      () => void 0,
-      () => {
-        if (process.env.NODE_ENV === 'production') {
-          // eslint-disable-next-line
-          console.clear();
+    if (shouldRefershToken()) {
+      const subscription = authActions.authenticate().subscribe(
+        () => void 0,
+        () => {
+          if (process.env.NODE_ENV === 'production') {
+            // eslint-disable-next-line
+            console.clear();
+          }
         }
-      }
-    );
-    return () => subscription.unsubscribe();
+      );
+      return () => subscription.unsubscribe();
+    }
   }, [authActions]);
 
   useEffect(() => {
     // logout current page when user is logout at other tab/page or clear all storage
     const subscription = fromEvent<StorageEvent>(window, 'storage').subscribe(
       event => {
-        if (event.key === LOGOUT && event.newValue === null) {
+        if (event.key === LOGGED_IN && event.newValue === null) {
           authActions.logout({ slient: true });
         }
       }
