@@ -19,6 +19,7 @@ import {
 } from '@/components/client/ClientPreferences';
 import { ButtonPopover, ButtonPopoverProps } from '@/components/ButtonPopover';
 import { Github } from '@/components/Github';
+import { widthAddtoHomeScreen } from '@/components/widthAddtoHomeScreen';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
 import { useBoolean } from '@/hooks/useBoolean';
@@ -28,6 +29,17 @@ import pkg from '../../package.json';
 interface MainMenuDialogProps extends ListViewDialogProps {}
 
 const AuthrizedListItem = withAuthRequired(ListItem);
+
+const AddtoHomeScreen = widthAddtoHomeScreen(function ({ onClick }) {
+  return (
+    <>
+      <ListSpacer />
+      <ListItem icon="plus" rightElement={chevron} onClick={onClick}>
+        加至主畫面
+      </ListItem>
+    </>
+  );
+});
 
 const chevron = <Icon icon="chevron-right" />;
 
@@ -81,6 +93,8 @@ export function MainMenuDialog(props: MainMenuDialogProps) {
       >
         Github
       </ListItem>
+
+      <AddtoHomeScreen />
 
       <ListItem icon="code" rightElement={pkg.version}>
         Version
