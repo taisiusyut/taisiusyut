@@ -53,21 +53,26 @@ export class AuthController {
   @Post(routes.auth.login)
   @UseGuards(AuthGuard('local'))
   async login(
-    @Req() { user, headers }: FastifyRequest,
+    @Req() { user, headers, cookies }: FastifyRequest,
     @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
     if (!user) throw new InternalServerErrorException(`user is ${user}`);
 
     const signResult = this.authService.signJwt(user);
-    const refreshToken = uuidv4();
+    const tokenFromCookies = cookies[REFRESH_TOKEN_COOKIES];
+    const refreshToken = tokenFromCookies || uuidv4();
 
     try {
-      await this.refreshTokenService.create({
-        ...signResult.user,
-        refreshToken,
-        userAgent: headers['user-agent'],
-        user_id: user.user_id
-      });
+      await this.refreshTokenService.findOneAndUpdate(
+        { refreshToken },
+        {
+          ...signResult.user,
+          refreshToken,
+          userAgent: headers['user-agent'],
+          user_id: user.user_id
+        },
+        { upsert: true }
+      );
     } catch (error) {
       throwMongoError(error);
     }
