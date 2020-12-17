@@ -5,7 +5,8 @@ import type {
   Param$ModifyPassword,
   Param$UpdateUser,
   Schema$Authenticated,
-  Schema$User
+  Schema$User,
+  Schema$LoginRecord
 } from '@/typings';
 import { routes } from '@/constants';
 import { api } from './api';
@@ -31,3 +32,8 @@ export const getProfile = () => api.get<Schema$User>(routes.profile);
 
 export const updateProfile = (payload: Param$UpdateUser) =>
   api.patch<Schema$User>(routes.profile, payload);
+
+export const getLoginRecords = () =>
+  api.get<Schema$LoginRecord[]>(routes.get_login_records);
+
+export const logoutOthers = () => api.post<void>(routes.logout_others);

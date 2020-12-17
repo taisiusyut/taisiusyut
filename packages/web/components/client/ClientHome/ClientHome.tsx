@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { Order, Schema$Book } from '@/typings';
-import { ClientHomeSection, Book } from './ClientHomeSection';
-import { useRxAsync } from 'use-rx-hooks';
 import { getBooks } from '@/service';
+import { ClientHomeSection, Book } from './ClientHomeSection';
 import classes from './ClientHome.module.scss';
 
 export interface ClientHomeProps {

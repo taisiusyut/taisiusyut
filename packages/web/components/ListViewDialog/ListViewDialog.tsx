@@ -6,6 +6,7 @@ import {
   Icon,
   IIconProps
 } from '@blueprintjs/core';
+import { createOpenOverlay } from '@/utils/openOverlay';
 import classes from './ListViewDialog.module.scss';
 
 type DivProps = React.DetailedHTMLProps<
@@ -13,7 +14,8 @@ type DivProps = React.DetailedHTMLProps<
   HTMLDivElement
 >;
 
-export interface ListViewDialogProps extends IDialogProps {
+export interface ListViewDialogProps extends Omit<IDialogProps, 'onClose'> {
+  onClose: () => void;
   children?: ReactNode;
 }
 
@@ -27,6 +29,10 @@ export interface ListSpacerProps extends DivProps {}
 export interface ListFooterProps extends DivProps {
   onClose?: (event: SyntheticEvent<HTMLElement>) => void;
 }
+
+export const openListViewDialog = createOpenOverlay<ListViewDialogProps>(
+  ListViewDialog
+);
 
 export function ListViewDialog(props: ListViewDialogProps) {
   return <Dialog {...props}>{props.children}</Dialog>;

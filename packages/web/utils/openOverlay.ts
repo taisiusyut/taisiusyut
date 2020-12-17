@@ -10,7 +10,7 @@ export function createOpenOverlay<T extends Partial<OverlayProps>>(
   OverlayComponent: ComponentType<T>
 ) {
   return function openOverlay(
-    config: Omit<T, keyof OverlayProps> & Partial<OverlayProps>
+    config = {} as Omit<T, keyof OverlayProps> & Partial<OverlayProps>
   ) {
     const div = document.createElement('div');
     document.body.appendChild(div);

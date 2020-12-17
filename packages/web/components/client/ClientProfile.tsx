@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import { Button, IButtonProps, Icon } from '@blueprintjs/core';
 import {
   ListViewDialog,
@@ -10,6 +10,7 @@ import {
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { withModifyPassword } from '@/components/client/withModifyPassword';
 import { withUpdateProfile } from '@/components/client/withUpdateProfile';
+import { openLoginRecordsDialog } from '@/components/client/LoginRecordsDialog';
 import { useAuth } from '@/hooks/useAuth';
 import { UserRole } from '@/typings';
 import { AuthState, AuthActions } from '@/hooks/useAuth';
@@ -68,6 +69,13 @@ export function ClientProfileDialog({
         更改帳號資料
       </UpdateProfile>
 
+      <ListItem
+        rightElement={chevron}
+        onClick={() => openLoginRecordsDialog({})}
+      >
+        已登入裝置
+      </ListItem>
+
       <ListSpacer />
 
       <ListItem onClick={handleClick} rightElement={chevron}>
@@ -89,9 +97,9 @@ export function ClientProfileDialog({
           fill
           text="登出"
           intent="danger"
-          onClick={(event: SyntheticEvent<HTMLElement>) => {
+          onClick={() => {
             actions.logout();
-            props.onClose && props.onClose(event);
+            props.onClose && props.onClose();
           }}
         />
       </ListViewDialogFooter>

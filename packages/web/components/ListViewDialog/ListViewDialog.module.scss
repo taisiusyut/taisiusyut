@@ -5,6 +5,7 @@ $padding-x: 15px;
 .item {
   @include flex(center);
   @include padding-x($padding-x);
+  @include padding-y(10px);
   @include shadow-border();
   background-color: var(--primary-color);
   margin: 1px 0px;
