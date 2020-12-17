@@ -8,12 +8,12 @@ import {
   Switch as BP3Swtich
 } from '@blueprintjs/core';
 import {
-  ListViewDialog,
-  ListViewDialogProps,
+  ListViewOverlay,
+  ListViewOverlayProps,
   ListItem,
   ListSpacer,
-  ListViewDialogFooter
-} from '@/components/ListViewDialog';
+  ListViewFooter
+} from '@/components/ListViewOverlay';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { NumericInput } from '@/components/Input';
 import {
@@ -25,7 +25,7 @@ import {
 import { createForm, FormItemProps, ControlProps } from '@/utils/form';
 import { createOpenOverlay } from '@/utils/openOverlay';
 
-interface ClientPreferencesDialogProps extends ListViewDialogProps {
+interface ClientPreferencesDialogProps extends ListViewOverlayProps {
   preferences: Preferences;
   onUpdate: PreferencesActions['update'];
 }
@@ -88,7 +88,7 @@ export function ClientPreferencesDialog({
       onValuesChange={onUpdate}
       hidden
     >
-      <ListViewDialog
+      <ListViewOverlay
         {...props}
         icon={ClientPreferencesDialogIcon}
         title={ClientPreferencesDialogTitle}
@@ -160,7 +160,7 @@ export function ClientPreferencesDialog({
           自動載入下一章
         </ListItem>
 
-        <ListViewDialogFooter onClose={props.onClose}>
+        <ListViewFooter onClose={props.onClose}>
           <Button
             fill
             text="恢復預設"
@@ -170,8 +170,8 @@ export function ClientPreferencesDialog({
               onUpdate(defaultPreferences);
             }}
           />
-        </ListViewDialogFooter>
-      </ListViewDialog>
+        </ListViewFooter>
+      </ListViewOverlay>
     </Form>
   );
 }

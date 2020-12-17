@@ -3,10 +3,10 @@ import { Icon } from '@blueprintjs/core';
 import {
   ListItem,
   ListSpacer,
-  ListViewDialog,
-  ListViewDialogFooter,
-  ListViewDialogProps
-} from '@/components/ListViewDialog';
+  ListViewFooter,
+  ListViewDialogProps,
+  ListViewOverlay
+} from '@/components/ListViewOverlay';
 import {
   openClientProfileDialog,
   ClientProfileDialogIcon,
@@ -51,7 +51,7 @@ export function MainMenuDialog(props: MainMenuDialogProps) {
   const [preferences, preferncesActions] = useClientPreferences();
 
   return (
-    <ListViewDialog {...props} icon="menu" title="主選單">
+    <ListViewOverlay {...props} icon="menu" title="主選單">
       <ListSpacer />
 
       <AuthrizedListItem
@@ -100,8 +100,8 @@ export function MainMenuDialog(props: MainMenuDialogProps) {
         Version
       </ListItem>
 
-      <ListViewDialogFooter onClose={props.onClose}></ListViewDialogFooter>
-    </ListViewDialog>
+      <ListViewFooter onClose={props.onClose}></ListViewFooter>
+    </ListViewOverlay>
   );
 }
 

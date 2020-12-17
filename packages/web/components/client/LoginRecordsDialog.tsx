@@ -4,10 +4,10 @@ import { Button } from '@blueprintjs/core';
 import {
   ListViewDialog,
   ListViewDialogProps,
-  ListViewDialogFooter,
+  ListViewFooter,
   ListItem,
   ListSpacer
-} from '@/components/ListViewDialog';
+} from '@/components/ListViewOverlay';
 import { getLoginRecords, logoutOthers } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { createOpenOverlay } from '@/utils/openOverlay';
@@ -95,11 +95,11 @@ export function LoginRecordsDialog(props: Props) {
         </React.Fragment>
       ))}
 
-      <ListViewDialogFooter onClose={props.onClose}>
+      <ListViewFooter onClose={props.onClose}>
         {!loading && records.length > 1 && (
           <LogoutOther onClose={props.onClose} />
         )}
-      </ListViewDialogFooter>
+      </ListViewFooter>
     </ListViewDialog>
   );
 }

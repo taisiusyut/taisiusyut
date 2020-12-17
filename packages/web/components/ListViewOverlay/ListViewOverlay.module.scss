@@ -59,3 +59,30 @@ $padding-x: 15px;
     margin-top: 10px;
   }
 }
+
+.drawer {
+  .drawer-content {
+    @include flex($flex-direction: column);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    flex: 1 1 auto;
+  }
+
+  .footer {
+    margin-top: auto;
+    margin-bottom: 25px;
+  }
+}
+
+.drawer-header {
+  @include flex(center, space-between);
+  @include padding-x(15px 10px);
+  background-color: var(--primary-color);
+  min-height: 50px;
+
+  .heading {
+    font-size: 16px;
+    flex: 1 1 auto;
+    text-align: left;
+    margin-left: 10px;
+  }
+}

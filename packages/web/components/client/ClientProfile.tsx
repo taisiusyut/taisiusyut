@@ -1,12 +1,12 @@
 import React from 'react';
 import { Button, IButtonProps, Icon } from '@blueprintjs/core';
 import {
-  ListViewDialog,
-  ListViewDialogProps,
+  ListViewOverlay,
+  ListViewOverlayProps,
   ListItem,
   ListSpacer,
-  ListViewDialogFooter
-} from '@/components/ListViewDialog';
+  ListViewFooter
+} from '@/components/ListViewOverlay';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { withModifyPassword } from '@/components/client/withModifyPassword';
 import { withUpdateProfile } from '@/components/client/withUpdateProfile';
@@ -24,7 +24,7 @@ const chevron = <Icon icon="chevron-right" />;
 const ModifyPassword = withModifyPassword(ListItem);
 const UpdateProfile = withUpdateProfile(ListItem);
 
-export interface ClientProfileDialogProps extends ListViewDialogProps {
+export interface ClientProfileDialogProps extends ListViewOverlayProps {
   auth: AuthState;
   actions: AuthActions;
 }
@@ -44,7 +44,7 @@ export function ClientProfileDialog({
   }
 
   return (
-    <ListViewDialog
+    <ListViewOverlay
       {...props}
       icon={ClientProfileDialogIcon}
       title={ClientProfileDialogTitle}
@@ -92,7 +92,7 @@ export function ClientProfileDialog({
         </>
       )}
 
-      <ListViewDialogFooter onClose={props.onClose}>
+      <ListViewFooter onClose={props.onClose}>
         <Button
           fill
           text="登出"
@@ -102,8 +102,8 @@ export function ClientProfileDialog({
             props.onClose && props.onClose();
           }}
         />
-      </ListViewDialogFooter>
-    </ListViewDialog>
+      </ListViewFooter>
+    </ListViewOverlay>
   );
 }
 

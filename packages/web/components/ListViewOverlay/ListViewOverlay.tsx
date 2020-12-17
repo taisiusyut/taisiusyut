@@ -4,10 +4,12 @@ import {
   Dialog,
   IDialogProps,
   Icon,
-  IIconProps
+  IIconProps,
+  Drawer,
+  IDrawerProps
 } from '@blueprintjs/core';
 import { createOpenOverlay } from '@/utils/openOverlay';
-import classes from './ListViewDialog.module.scss';
+import classes from './ListViewOverlay.module.scss';
 
 type DivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -30,9 +32,19 @@ export interface ListFooterProps extends DivProps {
   onClose?: (event: SyntheticEvent<HTMLElement>) => void;
 }
 
-export const openListViewDialog = createOpenOverlay<ListViewDialogProps>(
-  ListViewDialog
-);
+export interface ListViewDrawerProps extends IDrawerProps {
+  title?: string;
+  icon?: IIconProps['icon'];
+  children?: ReactNode;
+}
+
+export type ListViewOverlayProps = ListViewDialogProps & ListViewDrawerProps;
+
+export const openListViewDialog = createOpenOverlay(ListViewDialog);
+
+export const openListViewDrawer = createOpenOverlay(ListViewDrawer);
+
+export const openListViewOverlay = createOpenOverlay(ListViewOverlay);
 
 export function ListViewDialog(props: ListViewDialogProps) {
   return <Dialog {...props}>{props.children}</Dialog>;
@@ -62,7 +74,7 @@ export function ListSpacer(props: ListSpacerProps) {
   return <div {...props} className={classes.spacer}></div>;
 }
 
-export function ListViewDialogFooter({
+export function ListViewFooter({
   onClose,
   children,
   ...props
@@ -73,4 +85,35 @@ export function ListViewDialogFooter({
       {onClose && <Button fill text="關閉" onClick={onClose} />}
     </div>
   );
+}
+
+export function ListViewDrawer({
+  icon,
+  title,
+  children,
+  ...props
+}: ListViewDrawerProps) {
+  return (
+    <Drawer
+      size="100%"
+      transitionDuration={300}
+      {...props}
+      className={classes['drawer']}
+    >
+      <div className={classes['drawer-header']}>
+        <Icon icon={icon} />
+        <span className={classes['heading']}>{title}</span>
+        <Button minimal icon="cross" onClick={props.onClose} />
+      </div>
+      <div className={classes['drawer-content']}>{children}</div>
+    </Drawer>
+  );
+}
+
+export function ListViewOverlay(props: ListViewOverlayProps) {
+  const Component =
+    typeof window !== 'undefined' && window.screen.width <= 480
+      ? ListViewDrawer
+      : ListViewDialog;
+  return <Component {...props} />;
 }
