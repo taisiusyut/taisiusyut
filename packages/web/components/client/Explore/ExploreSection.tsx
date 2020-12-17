@@ -4,7 +4,7 @@ import { Card, H5 } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Schema$Book, Category } from '@/typings';
 import { useBoolean } from '@/hooks/useBoolean';
-import classes from './ClientHome.module.scss';
+import classes from './Explore.module.scss';
 
 export type Book =
   | Schema$Book
@@ -41,7 +41,7 @@ function SectionItem({ book }: { book: Book }) {
   );
 }
 
-export function ClientHomeSection({ title, books }: Props) {
+export function ExploreSection({ title, books }: Props) {
   if (books.length === 0) {
     return null;
   }

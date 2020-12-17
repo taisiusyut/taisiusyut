@@ -31,20 +31,17 @@ module.exports = withPlugins(
       dest: 'public',
       disable: process.env.NODE_ENV !== 'production'
     },
-    exportPathMap: function () {
-      return {
-        '/explore': { page: '/' }
-      };
-    },
     async rewrites() {
-      return process.env.NODE_ENV === 'production'
-        ? []
-        : [
-            {
-              source: '/api/:path*',
-              destination: 'http://localhost:5000/api/:path*'
-            }
-          ];
+      const payload = [];
+
+      if (process.env.NODE_ENV === 'development') {
+        payload.push({
+          source: '/api/:path*',
+          destination: 'http://localhost:5000/api/:path*'
+        });
+      }
+
+      return payload;
     }
   })
 );

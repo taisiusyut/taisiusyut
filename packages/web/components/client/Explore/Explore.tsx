@@ -3,10 +3,10 @@ import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader } from '@/components/client/ClientHeader';
 import { Order, Schema$Book } from '@/typings';
 import { getBooks } from '@/service';
-import { ClientHomeSection, Book } from './ClientHomeSection';
-import classes from './ClientHome.module.scss';
+import { ExploreSection, Book } from './ExploreSection';
+import classes from './Explore.module.scss';
 
-export interface ClientHomeProps {
+export interface ExploreProps {
   data: {
     mostvisited: Schema$Book[];
     adminSuggested: Schema$Book[];
@@ -15,7 +15,7 @@ export interface ClientHomeProps {
   };
 }
 
-export function ClientHome({ data }: ClientHomeProps) {
+export function Explore({ data }: ExploreProps) {
   const [request] = useState(() => () => {
     return getBooks({
       sort: { updatedAt: Order.DESC },
@@ -34,11 +34,11 @@ export function ClientHome({ data }: ClientHomeProps) {
     <>
       <ClientHeader />
       <div className={classes.content}>
-        <ClientHomeSection title="最近更新" books={books} />
-        <ClientHomeSection title="最多瀏覽" books={data.mostvisited} />
-        <ClientHomeSection title="讀者推薦" books={data.clientSuggested} />
-        <ClientHomeSection title="編輯推薦" books={data.adminSuggested} />
-        <ClientHomeSection title="已完結" books={data.finished} />
+        <ExploreSection title="最近更新" books={books} />
+        <ExploreSection title="最多瀏覽" books={data.mostvisited} />
+        <ExploreSection title="讀者推薦" books={data.clientSuggested} />
+        <ExploreSection title="編輯推薦" books={data.adminSuggested} />
+        <ExploreSection title="已完結" books={data.finished} />
       </div>
     </>
   );
