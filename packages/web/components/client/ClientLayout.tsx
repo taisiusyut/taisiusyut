@@ -9,7 +9,7 @@ import {
   useClientPreferencesState
 } from '@/hooks/useClientPreferences';
 import { BookShelf } from './BookShelf';
-
+import { BottomNavigation } from './BottomNavigation';
 interface Props {
   children?: ReactNode;
 }
@@ -45,6 +45,9 @@ function ClientLayoutContent({ children }: Props) {
           )}
         </div>
       </BreakPointsProvider>
+      <div className="bottom">
+        <BottomNavigation />
+      </div>
       <style jsx>
         {`
           :global(body) {
@@ -61,7 +64,6 @@ function ClientLayoutContent({ children }: Props) {
             @include sq-dimen(100%);
             @include margin-x(auto);
             @include flex();
-            min-height: 100%;
 
             :global([data-width='fixed']) & {
               $target-width: 1280px;
@@ -76,12 +78,16 @@ function ClientLayoutContent({ children }: Props) {
             @include flex($flex-direction: column);
             @include shadow-border();
             flex: 1 1 auto;
-            overflow: hidden;
           }
 
           .book-shelf {
             flex: 1 1 auto;
             min-width: 300px;
+          }
+
+          .bottom {
+            display: none;
+            flex: 0 0 auto;
           }
 
           @media (max-width: ${breakPoint}px) {
@@ -92,6 +98,19 @@ function ClientLayoutContent({ children }: Props) {
 
               &:not(.home) .book-shelf {
                 display: none;
+              }
+            }
+
+            .layout {
+              @include flex($flex-direction: column);
+
+              .layout-body {
+                flex: 1 1 auto;
+                overflow: hidden;
+              }
+
+              .bottom {
+                display: block;
               }
             }
           }
