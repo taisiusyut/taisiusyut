@@ -40,6 +40,10 @@
   &.active {
     background-color: var(--item-active-color);
   }
+
+  &:last-child {
+    margin-bottom: env(safe-area-inset-bottom, 0);
+  }
 }
 
 .action-button {
@@ -113,6 +117,8 @@ $min-height: 1em;
 }
 
 .book-shelf-item-drawer {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+
   .drawer-header {
     @include flex(center);
     font-size: 14px;

@@ -47,6 +47,10 @@ function ClientLayoutContent({ children }: Props) {
       </BreakPointsProvider>
       <style jsx>
         {`
+          :global(body) {
+            overflow: hidden;
+          }
+
           .layout {
             @include sq-dimen(100%);
             background-color: var(--secondary-color);

@@ -16,6 +16,10 @@
   @include dimen(320px, 100%);
   max-width: calc(100vw - 70px);
   overflow: hidden;
+
+  :global(.ReactVirtualized__List) {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
 }
 
 .list-item {
