@@ -2,8 +2,12 @@ import { MouseEvent, TouchEvent, useRef, useEffect } from 'react';
 import { EMPTY, fromEvent, merge, of } from 'rxjs';
 import { delay, expand, switchMap, takeUntil, tap } from 'rxjs/operators';
 
+export type UseContextMenuEvent<T extends HTMLElement> =
+  | MouseEvent<T>
+  | TouchEvent<T>;
+
 export function useContextMenu<T extends HTMLElement>(
-  callback: (event: MouseEvent<T> | TouchEvent<T>) => void
+  callback: (event: UseContextMenuEvent<T>) => void
 ) {
   const ref = useRef<T>(null);
 
@@ -37,19 +41,13 @@ export function useContextMenu<T extends HTMLElement>(
         })
       );
 
-      const contextmenu$ = fromEvent<MouseEvent<T>>(el, 'contextmenu');
-
-      const subscription = merge(contextmenu$, longPress$)
-        .pipe(
-          tap(event => {
-            event.preventDefault();
-          })
-        )
-        .subscribe(event => {
+      const contextmenu$ = fromEvent<MouseEvent<T>>(el, 'contextmenu').pipe(
+        tap(event => {
           event.preventDefault();
-          callback(event);
-          el.blur();
-        });
+        })
+      );
+
+      const subscription = merge(contextmenu$, longPress$).subscribe(callback);
 
       return () => subscription.unsubscribe();
     }

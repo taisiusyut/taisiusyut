@@ -15,12 +15,10 @@
 
 .book-shelf-item {
   @include flex();
-  @include padding-y(15px);
   @include relative();
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  padding: 20px 30px;
 
   + .list-item {
     &:before {
@@ -34,6 +32,9 @@
 
   &:hover {
     background-color: var(--item-hover-color);
+    .action-button {
+      visibility: visible;
+    }
   }
 
   &.active {
@@ -41,19 +42,31 @@
   }
 }
 
+.action-button {
+  visibility: hidden;
+  margin-top: 15px;
+  margin-right: 10px;
+}
+
+.book-shelf-item-body {
+  @include flex();
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding: 20px 5px 20px 30px;
+}
+
 .book-shelf-item-content {
   flex: 1 1 auto;
   overflow: hidden;
 }
 
-$line-height: 1.765em;
+$line-height: 1.4em;
 $min-height: 1em;
 
 .book-name,
 .book-author,
 .book-latest-chapter {
   @include dimen(100%);
-  @include text-overflow-ellipsis();
   clear: both;
   float: left;
   line-height: $line-height;
@@ -88,6 +101,7 @@ $min-height: 1em;
 .book-latest-chapter {
   color: var(--text-light-color);
   font-size: 0.85em;
+  margin-top: 0.35em;
 }
 
 .book-shelf-empty {
