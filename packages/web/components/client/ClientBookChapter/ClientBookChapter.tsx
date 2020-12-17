@@ -80,6 +80,7 @@ export function ClientBookChapter({
       }
 
       if (initialChapterNo === chapters[0] - 1) {
+        setTimeout(scrollToTarget, 0);
         return [initialChapterNo, ...chapters];
       }
 
@@ -92,7 +93,7 @@ export function ClientBookChapter({
       return [initialChapterNo];
     });
 
-    if (bookID && autoFetchNextChapter) {
+    if (bookID) {
       const subscription = fromEvent<SyntheticEvent>(scroller, 'scroll')
         .pipe(
           map(() => scroller.scrollTop),
@@ -100,7 +101,7 @@ export function ClientBookChapter({
           map<number, -1 | 1 | undefined>(scrollTop => {
             const target = getTarget(chapterNo);
 
-            if (target && loaded.current[chapterNo]) {
+            if (target) {
               const pos =
                 scrollTop + scroller.offsetHeight + scroller.offsetTop;
 
@@ -121,7 +122,12 @@ export function ClientBookChapter({
         .subscribe(delta => {
           const newChapterNo = chapterNo + delta;
 
-          if (delta === 1 && hasNext.current) {
+          if (
+            delta === 1 &&
+            hasNext.current &&
+            autoFetchNextChapter &&
+            loaded.current[chapterNo]
+          ) {
             setChapters(chapters => {
               return chapters.includes(newChapterNo)
                 ? chapters
@@ -175,11 +181,13 @@ export function ClientBookChapter({
     />
   );
 
+  useEffect(() => {
+    hasNext.current = data[currentChapter]?.hasNext;
+  }, [data, currentChapter]);
+
   const content: ReactNode[] = [];
   const onLoaded = (chapter: Schema$Chapter) => {
-    if (hasNext.current === true) {
-      hasNext.current = chapter.hasNext;
-    }
+    hasNext.current = chapter.hasNext;
     loaded.current[chapter.number] = true;
 
     setData(data => ({ ...data, [chapter.number]: chapter }));
