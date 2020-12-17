@@ -20,13 +20,12 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 
-  + .list-item {
+  + .book-shelf-item {
     &:before {
       @include absolute(0, null, 5%);
-      @include sq-dimen(90%);
+      @include dimen(90%);
       border-top: 1px solid var(--divider-color);
       content: '';
-      display: block;
     }
   }
 
@@ -40,19 +39,22 @@
   &.active {
     background-color: var(--item-active-color);
   }
+
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 
 .action-button {
+  @include absolute(10px, null, null, 10px);
   visibility: hidden;
-  margin-top: 15px;
-  margin-right: 10px;
 }
 
 .book-shelf-item-body {
   @include flex();
   flex: 1 1 auto;
   overflow: hidden;
-  padding: 20px 5px 20px 30px;
+  padding: 20px 35px 20px 30px;
 }
 
 .book-shelf-item-content {
