@@ -4,12 +4,12 @@ A project for learning full-stack development
 
 ## Goal
 
-| Status | Platform | Plan                                            | -                                                                                                                    |
-| :----: | -------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-|  WIP   | Server   | [NestJS](https://nestjs.com/), Fastify, MongoDB |
-|  WIP   | Admin    | [NextJS](https://nextjs.org/)                   | [Preview](https://taisiusyut-demo.herokuapp.com/admin/)<br />guest username and password: `guest123` and `a12345678` |
-|  WIP   | Web      | [NextJS](https://nextjs.org/)                   | [Preview](https://taisiusyut-demo.herokuapp.com/)                                                                    |
-|   -    | App      | React Native, Expo                              |
+| Status |      -      | Tech                                            | Link                                                    | Description                         |
+| :----: | :---------: | ----------------------------------------------- | ------------------------------------------------------- | ----------------------------------- |
+|  WIP   |   Server    | [NestJS](https://nestjs.com/), Fastify, MongoDB | -                                                       |
+|  WIP   | Admin Panel | [NextJS](https://nextjs.org/)                   | [Preview](https://taisiusyut-demo.herokuapp.com/admin/) | login as `guest123` and `a12345678` |
+|  WIP   | Web Client  | [NextJS](https://nextjs.org/), PWA              | [Preview](https://taisiusyut-demo.herokuapp.com/)       |                                     |
+|   -    |     App     | React Native, Expo                              | -                                                       |
 
 ## Development
 
