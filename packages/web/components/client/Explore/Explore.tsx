@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { ClientHeader } from '@/components/client/ClientHeader';
+import { ClientHeader } from '@/components/client/ClientLayout';
 import { Order, Schema$Book } from '@/typings';
 import { getBooks } from '@/service';
 import { ExploreSection, Book } from './ExploreSection';

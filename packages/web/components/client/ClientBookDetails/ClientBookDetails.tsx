@@ -2,7 +2,7 @@ import React, { ComponentProps, ReactNode, useState } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button, Card, Icon } from '@blueprintjs/core';
-import { ClientHeader } from '@/components/client/ClientHeader';
+import { ClientHeader } from '@/components/client/ClientLayout';
 import { GoBackButton } from '@/components/GoBackButton';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
@@ -44,7 +44,7 @@ export function ClientBookDetails({
   chapters: initialChapters
 }: ClientBookDetailsProps) {
   const book = useBook(bookName, initialBook);
-  const breakPoint = useBreakPoints();
+  const [breakPoint, mounted] = useBreakPoints();
   const headerProps: ComponentProps<typeof ClientHeader> = {
     title: '書籍詳情',
     left: <GoBackButton targetPath={['/', '/explore']} />
@@ -53,38 +53,40 @@ export function ClientBookDetails({
   if (book) {
     let chapters: ReactNode = null;
 
-    if (breakPoint > 640) {
-      chapters = (
-        <ClientBookDetailsChapters
-          bookID={book.id}
-          bookName={book.name}
-          chapters={initialChapters}
-        />
-      );
-    } else {
-      chapters = (
-        <div className={classes['chapters-content']}>
-          <ChaptersListDrawerCard
-            interactive
-            chapterNo={0}
+    if (mounted) {
+      if (breakPoint > 640) {
+        chapters = (
+          <ClientBookDetailsChapters
             bookID={book.id}
             bookName={book.name}
-            className={classes['chapters-list-trigger']}
-          >
-            <div className={classes['chapter-head']}>章節目錄</div>
-            <Icon icon="chevron-right" />
-          </ChaptersListDrawerCard>
-          <div className={classes['button-group']}>
-            <Button
-              fill
-              intent="primary"
-              text="第一章"
-              onClick={() => router.push(`/book/${bookName}/chapter/1`)}
-            />
-            <BookShelfToggle bookID={book.id} fill />
+            chapters={initialChapters}
+          />
+        );
+      } else {
+        chapters = (
+          <div className={classes['chapters-content']}>
+            <ChaptersListDrawerCard
+              interactive
+              chapterNo={0}
+              bookID={book.id}
+              bookName={book.name}
+              className={classes['chapters-list-trigger']}
+            >
+              <div className={classes['chapter-head']}>章節目錄</div>
+              <Icon icon="chevron-right" />
+            </ChaptersListDrawerCard>
+            <div className={classes['button-group']}>
+              <Button
+                fill
+                intent="primary"
+                text="第一章"
+                onClick={() => router.push(`/book/${bookName}/chapter/1`)}
+              />
+              <BookShelfToggle bookID={book.id} fill />
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
 
     return (

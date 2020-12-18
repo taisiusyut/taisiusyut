@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { IResizeEntry, ResizeSensor } from '@blueprintjs/core';
 
 type Point = typeof breakPoints[number];
@@ -18,10 +18,14 @@ function getBreakPoint(width: number): Point {
 
 export function useBreakPoints() {
   const context = React.useContext(Context);
+  const [mounted, setMounted] = useState(false);
   if (context === undefined) {
     throw new Error('useBreakPoints must be used within a BreakPointsProvider');
   }
-  return context;
+  useEffect(() => {
+    setMounted(true);
+  }, [setMounted]);
+  return [context, mounted] as const;
 }
 
 export function BreakPointsProvider({ children }: { children: ReactElement }) {

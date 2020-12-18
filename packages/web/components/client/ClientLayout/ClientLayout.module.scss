@@ -1,0 +1,108 @@
+@import '~styles/utils';
+
+.header {
+  @include dimen(100%, $header-height);
+  @include flex(center, center);
+  @include padding-x(15px);
+  border-bottom: 1px solid var(--divider-color);
+  background-color: var(--primary-color);
+  flex: 0 0 auto;
+
+  .left,
+  .right {
+    flex: 0 0 auto;
+  }
+}
+
+.header-title {
+  @include text-overflow-ellipsis();
+  @include padding-x(10px);
+  flex: 1 1 auto;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.layout {
+  @include sq-dimen(100%);
+  @include flex($flex-direction: column);
+  min-height: 100vh;
+  overflow: hidden;
+
+  :global([data-width='fixed']) & {
+    $target-width: 1280px;
+    @media (min-width: $target-width) {
+      @include shadow-border();
+      max-width: $target-width;
+      margin: auto;
+    }
+  }
+}
+
+.layout-content {
+  @include flex();
+  @include sq-dimen(100%);
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.left-panel {
+  @include relative(); // for shadow-border
+  @include shadow-border();
+  flex: 1 0 300px;
+  max-width: 300px;
+  overflow: auto;
+}
+
+.right-panel {
+  @include dimen(100%, 100vh);
+  @include flex($flex-direction: column);
+  @include shadow-border();
+  background-color: var(--secondary-color);
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bottom-navigation {
+  display: none;
+}
+
+@media (max-width: $break-point) {
+  .layout {
+    &.home .right-panel {
+      display: none;
+    }
+
+    &:not(.home) .left-panel {
+      display: none;
+    }
+
+    .header {
+      @include fixed(0, null, 0);
+      z-index: 10;
+    }
+
+    .left-panel {
+      max-width: none;
+    }
+
+    .left-panel,
+    .right-panel {
+      padding-top: $header-height;
+    }
+
+    .bottom-navigation {
+      display: block;
+
+      &:not(:empty) {
+        @include dimen(100%, $bottom-navigation-height);
+      }
+
+      > * {
+        @include fixed(null, 0, 0);
+      }
+    }
+  }
+}

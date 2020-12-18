@@ -40,16 +40,14 @@ const MainMenuTrigger = withMainMenuOverLay(Item);
 export function BottomNavigation() {
   return (
     <div className={classes['bottom-navigation']}>
-      <div className={classes['content']}>
-        <NavItem icon="book" path="/">
-          書架
-        </NavItem>
-        <NavItem icon="star" path="/explore">
-          精選
-        </NavItem>
-        <Item icon="search">搜索</Item>
-        <MainMenuTrigger icon="menu">選項</MainMenuTrigger>
-      </div>
+      <NavItem icon="book" path="/">
+        書架
+      </NavItem>
+      <NavItem icon="star" path="/explore">
+        精選
+      </NavItem>
+      <Item icon="search">搜索</Item>
+      <MainMenuTrigger icon="menu">選項</MainMenuTrigger>
     </div>
   );
 }

@@ -1,23 +1,20 @@
 @import '~styles/utils';
 
 .bottom-navigation {
-  @include dimen(100%);
-  @include relative();
+  @include dimen(100%, $bottom-navigation-height);
+  @include flex(stretch, space-between);
+  @include padding-x(5%);
   box-shadow: 0px 0px 8px -2px var(--book-model-shadow-color);
   background-color: var(--secondary-color);
   padding-bottom: env(safe-area-inset-bottom, 10px);
 }
 
-.content {
-  @include flex(stretch, space-between);
-  @include padding-y(10px 7.5px);
-  @include padding-x(5%);
-}
-
 .item {
   @include dimen(60px, 100%);
+  @include flex(center, center, column);
   font-size: 12px;
   text-align: center;
+  user-select: none;
 
   .text {
     margin-top: 5px;

@@ -12,7 +12,7 @@ import { Button } from '@blueprintjs/core';
 import { Schema$Chapter } from '@/typings';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ButtonPopover } from '@/components/ButtonPopover';
-import { ClientHeader } from '@/components/client/ClientHeader';
+import { ClientHeader } from '@/components/client/ClientLayout';
 import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { useClientPreferencesState } from '@/hooks/useClientPreferences';

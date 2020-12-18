@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClientHeader } from '@/components/client/ClientHeader';
+import { ClientHeader } from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import {
   withMainMenuOverLay,

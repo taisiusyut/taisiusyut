@@ -12,16 +12,6 @@
   box-sizing: border-box;
 }
 
-html {
-  overscroll-behavior: none;
-  overflow: hidden;
-  height: 100%;
-}
-
-body {
-  height: 100%;
-}
-
 #__next {
   @include sq-dimen(100%);
 }
@@ -34,13 +24,15 @@ body {
   margin: 0;
   padding: 0;
 
-  @media (min-width: 641px) {
+  @media (min-width: $break-point + 1) {
     font-size: $pt-font-size;
+    overflow: hidden;
+    height: 100vh;
   }
 
-  // https://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone
-  // Disable Auto Zoom in Input “Text” tag - Safari on iPhone
-  @media (max-width: 640px) {
+  @media (max-width: $break-point) {
+    // https://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone
+    // Disable Auto Zoom in Input “Text” tag - Safari on iPhone
     font-size: 16px;
   }
 }

@@ -52,18 +52,14 @@ function ClientLayoutContent({ children }: Props) {
       </div>
       <style jsx>
         {`
-          :global(body) {
-            overflow: hidden;
-          }
-
           .layout {
-            @include sq-dimen(100%);
+            @include dimen(100%);
             background-color: var(--secondary-color);
             min-height: 100%;
           }
 
           .layout-body {
-            @include sq-dimen(100%);
+            @include dimen(100%);
             @include margin-x(auto);
             @include flex();
 
@@ -88,6 +84,8 @@ function ClientLayoutContent({ children }: Props) {
           }
 
           .bottom {
+            @include fixed(null, 0, 0);
+            @include dimen(100%);
             display: none;
             flex: 0 0 auto;
           }
