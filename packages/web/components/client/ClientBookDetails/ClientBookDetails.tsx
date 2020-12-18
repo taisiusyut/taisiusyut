@@ -47,7 +47,7 @@ export function ClientBookDetails({
   const breakPoint = useBreakPoints();
   const headerProps: ComponentProps<typeof ClientHeader> = {
     title: '書籍詳情',
-    left: <GoBackButton targetPath="/" />
+    left: <GoBackButton targetPath={['/', '/explore']} />
   };
 
   if (book) {
