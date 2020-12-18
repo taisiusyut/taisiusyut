@@ -46,7 +46,9 @@ function ClientLayoutContent({ children }: Props) {
         </div>
       </BreakPointsProvider>
       <div className="bottom">
-        <BottomNavigation />
+        {(asPath === '/' || asPath === '/explore' || asPath === '/search') && (
+          <BottomNavigation />
+        )}
       </div>
       <style jsx>
         {`

@@ -20,7 +20,14 @@
   text-align: center;
 
   .text {
-    color: var(--text-light-color);
     margin-top: 5px;
+  }
+
+  &:not(.active) .text {
+    color: var(--text-light-color);
+  }
+
+  &.active {
+    color: var(--accent-color);
   }
 }

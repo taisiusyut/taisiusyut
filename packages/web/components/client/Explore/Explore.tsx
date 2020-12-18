@@ -16,12 +16,14 @@ export interface ExploreProps {
 }
 
 export function Explore({ data }: ExploreProps) {
-  const [request] = useState(() => () => {
-    return getBooks({
+  const [request] = useState(() => async () => {
+    const response = await getBooks({
       sort: { updatedAt: Order.DESC },
       pageSize: data.mostvisited.length
-    }).then(response => response.data);
+    });
+    return response.data;
   });
+
   const [books, setBooks] = useState<Book[]>(() =>
     Array.from({ length: data.mostvisited.length }).map(() => ({
       id: String(Math.random())
