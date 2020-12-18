@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react';
-import { IMenuItemProps } from '@blueprintjs/core';
+import { IMenuItemProps, IOverlayProps } from '@blueprintjs/core';
 import { BookShelfState, BookShelfActions } from '@/hooks/useBookShelf';
 import { withGroupBookInShelf } from './withGroupBookInShelf';
 import { withPinBookInShelf } from './withPinBookInShelf';
@@ -19,6 +19,12 @@ export interface RequiredProps {
 export interface Offset {
   top: number;
   left: number;
+}
+
+export interface BookShelfItemActionsProps
+  extends Partial<IOverlayProps>,
+    RequiredProps {
+  offset?: Offset;
 }
 
 export function createBookShelfItemActions<P extends Create>(

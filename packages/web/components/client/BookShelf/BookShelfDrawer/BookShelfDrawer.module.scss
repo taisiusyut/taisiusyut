@@ -1,0 +1,60 @@
+@import '~styles/utils';
+
+.drawer {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.drawer-header {
+  @include flex(center);
+  font-size: 14px;
+  padding: 20px 15px 20px 25px;
+
+  &:hover {
+    background-color: var(--item-hover-color);
+  }
+
+  > div:last-child {
+    @include flex(center);
+    margin-left: auto;
+    margin-right: 0;
+  }
+}
+
+.book-name,
+.book-author {
+  line-height: 1.4em;
+}
+
+.book-author {
+  color: var(--text-light-color);
+  font-size: 0.85em;
+  margin-top: 0.35em;
+}
+
+.drawer-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--divider-color);
+}
+
+.grid {
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  padding: 15px;
+
+  &:hover {
+    background-color: var(--item-hover-color);
+  }
+
+  :global(.#{$ns}-icon) {
+    svg {
+      font-size: 1em;
+    }
+  }
+}
+
+.grid-text {
+  font-size: 0.8em;
+  margin-top: 0.7em;
+}

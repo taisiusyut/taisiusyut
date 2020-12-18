@@ -2,13 +2,13 @@ import React from 'react';
 import { Drawer, Icon } from '@blueprintjs/core';
 import { Schema$BookShelf } from '@/typings';
 import { BookModel } from '@/components/BookModel';
-import { withBookDetails } from './withBookDetails';
-import { BookShelfItemActionsProps } from './openBookShelfItemActions';
 import {
+  withBookDetails,
   Create,
-  createBookShelfItemActions
-} from './createBookShelfItemActions';
-import classes from '../BookShelf.module.scss';
+  createBookShelfItemActions,
+  BookShelfItemActionsProps
+} from '../BookShelfItemActions';
+import classes from './BookShelfDrawer.module.scss';
 
 type DivProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -57,7 +57,7 @@ function Grid({ text, icon, ...props }: GridProps) {
   );
 }
 
-export function BookShelfItemDrawer({
+export function BookShelfDrawer({
   bookID,
   shelf,
   actions,
@@ -79,7 +79,7 @@ export function BookShelfItemDrawer({
       size="auto"
       position="bottom"
       portalClassName={classes['portal']}
-      className={classes['book-shelf-item-drawer']}
+      className={classes['drawer']}
     >
       <div onClick={props.onClose}>
         <GotoBookDetails {...itemProps} book={book} />

@@ -1,14 +1,11 @@
 import { IOverlayProps } from '@blueprintjs/core';
 import { createOpenOverlay } from '@/utils/openOverlay';
 import { isTouchable } from '@/constants';
-import { RequiredProps } from './createBookShelfItemActions';
-import { BookShelfItemDrawer } from './BookShelfItemDrawer';
-import { BookShelfItemContextMenu } from './BookShelfItemMenu';
+import { RequiredProps, Offset } from './BookShelfItemActions';
+import { BookShelfDrawer } from './BookShelfDrawer';
+import { BookShelfContextMenu } from './BookShelfContextMenu';
 
-export interface Offset {
-  top: number;
-  left: number;
-}
+export type { Offset } from './BookShelfItemActions';
 
 export interface BookShelfItemActionsProps
   extends Partial<IOverlayProps>,
@@ -16,12 +13,10 @@ export interface BookShelfItemActionsProps
   offset?: Offset;
 }
 
-const openDrawer = createOpenOverlay<BookShelfItemActionsProps>(
-  BookShelfItemDrawer
-);
+const openDrawer = createOpenOverlay(BookShelfDrawer);
 
 const openMenu = createOpenOverlay<BookShelfItemActionsProps>(
-  BookShelfItemContextMenu
+  BookShelfContextMenu
 );
 
 export const openBookShelfItemActions = (props: BookShelfItemActionsProps) => {

@@ -6,8 +6,8 @@ import { BookModel } from '@/components/BookModel';
 import { BookShelf, useBookShelf } from '@/hooks/useBookShelf';
 import { useContextMenu, UseContextMenuEvent } from '@/hooks/useContextMenu';
 import { isTouchable } from '@/constants';
-import { openBookShelfItemActions, Offset } from './BookShelfItemActions';
-import classes from './BookShelf.module.scss';
+import { openBookShelfItemActions, Offset } from '../openBookShelfItemActions';
+import classes from './BookShelfItem.module.scss';
 
 interface Props {
   data: BookShelf;
@@ -26,7 +26,7 @@ function getOffset<T extends HTMLElement>(
   }
 }
 
-function ActionsButton(props: IButtonProps) {
+function ActionButton(props: IButtonProps) {
   const [render, setRender] = useState(false);
   useEffect(() => setRender(!isTouchable), []);
   return render ? (
@@ -41,7 +41,7 @@ export function BookShelfItem({
 }: Props) {
   const { asPath } = useRouter();
 
-  const className = [classes['book-shelf-item']];
+  const className = [classes['item']];
 
   const [shelf, actions] = useBookShelf();
 
@@ -57,9 +57,9 @@ export function BookShelfItem({
   const [ref] = useContextMenu<HTMLDivElement>(openActions);
 
   const content = (flatten: boolean) => (
-    <div className={classes['book-shelf-item-body']}>
+    <div className={classes['item-body']}>
       <BookModel width={55} flatten={flatten} />
-      <div className={classes['book-shelf-item-content']}>
+      <div className={classes['item-content']}>
         <div className={classes['book-name']}>{book?.name}</div>
         <div className={classes['book-author']}>
           {book?.author && `${book.author.nickname} 著`}
@@ -86,7 +86,7 @@ export function BookShelfItem({
           {/* Should not use <a /> since it have conflict with context menu in In iPhone safari */}
           {content(active)}
         </Link>
-        <ActionsButton onClick={openActions} />
+        <ActionButton onClick={openActions} />
       </div>
     );
   }
