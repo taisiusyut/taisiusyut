@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState
 } from 'react';
-import router from 'next/router';
 import { fromEvent } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { Button } from '@blueprintjs/core';
@@ -13,7 +12,10 @@ import { Schema$Chapter } from '@/typings';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { ClientHeader } from '@/components/client/ClientLayout';
-import { withChaptersListDrawer } from '@/components/client/ChapterListDrawer';
+import {
+  gotoChapter,
+  withChaptersListDrawer
+} from '@/components/client/ChapterListDrawer';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { useClientPreferencesState } from '@/hooks/useClientPreferences';
 import { ClientBookChapterContent } from './ClientBookChapterContent';
@@ -140,11 +142,7 @@ export function ClientBookChapter({
           if (newTarget) {
             chapterNo = newChapterNo;
             setCurrentChapter(chapterNo);
-            router.replace(
-              `/book/${bookName}/chapter/${chapterNo}`,
-              undefined,
-              { shallow: true }
-            );
+            gotoChapter({ bookName, chapterNo, shallow: true });
           }
         });
       return () => subscription.unsubscribe();

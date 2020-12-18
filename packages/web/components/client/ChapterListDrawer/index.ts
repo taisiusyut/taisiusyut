@@ -1,2 +1,2 @@
-export * from './ChapterListDrawer';
+export * from './ChapterListDrawerContent';
 export * from './withChaptersListDrawer';
