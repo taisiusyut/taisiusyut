@@ -12,3 +12,11 @@
   @include sq-dimen(100%);
   overflow: auto;
 }
+
+.book-shelf-empty {
+  @include sq-dimen(100%);
+
+  button {
+    width: 80px;
+  }
+}
