@@ -1,14 +1,14 @@
 import React from 'react';
 import { GetStaticProps } from 'next';
 import { ClientLayout } from '@/components/client/ClientLayout';
-import { Explore, ExploreProps } from '@/components/client/Explore';
+import { Featured, FeaturedProps } from '@/components/client/Featured';
 import { Meta } from '@/components/Meta';
 import { getBookService, serialize } from '@/service/server';
 import { Schema$Book, Order, BookStatus } from '@/typings';
 
-interface Props extends Pick<ExploreProps, 'data'> {}
+interface Props extends Pick<FeaturedProps, 'data'> {}
 
-async function getClientExplorePageData(): Promise<ExploreProps['data']> {
+async function getClientFeaturedPageData(): Promise<FeaturedProps['data']> {
   const bookService = await getBookService();
   const limit = 6;
   const response = await Promise.all([
@@ -36,7 +36,7 @@ async function getClientExplorePageData(): Promise<ExploreProps['data']> {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const data = await getClientExplorePageData();
+  const data = await getClientFeaturedPageData();
   return {
     revalidate: 60 * 60,
     props: {
@@ -45,15 +45,15 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   };
 };
 
-export function ExplorePage({ data }: Props) {
+export function FeaturedPage({ data }: Props) {
   return (
     <>
       <Meta />
-      <Explore data={data} />
+      <Featured data={data} />
     </>
   );
 }
 
-export default ExplorePage;
+export default FeaturedPage;
 
-ExplorePage.layout = ClientLayout;
+FeaturedPage.layout = ClientLayout;

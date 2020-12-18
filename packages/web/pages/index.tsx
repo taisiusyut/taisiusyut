@@ -1,1 +1,1 @@
-export { ExplorePage as default, getStaticProps } from './explore';
+export { FeaturedPage as default, getStaticProps } from './featured';

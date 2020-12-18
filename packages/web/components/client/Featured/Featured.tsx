@@ -3,10 +3,10 @@ import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { Order, Schema$Book } from '@/typings';
 import { getBooks } from '@/service';
-import { ExploreSection, Book } from './ExploreSection';
-import classes from './Explore.module.scss';
+import { FeaturedSection, Book } from './FeaturedSection';
+import classes from './Featured.module.scss';
 
-export interface ExploreProps {
+export interface FeaturedProps {
   data: {
     mostvisited: Schema$Book[];
     adminSuggested: Schema$Book[];
@@ -15,7 +15,7 @@ export interface ExploreProps {
   };
 }
 
-export function Explore({ data }: ExploreProps) {
+export function Featured({ data }: FeaturedProps) {
   const [request] = useState(() => async () => {
     const response = await getBooks({
       sort: { updatedAt: Order.DESC },
@@ -36,11 +36,11 @@ export function Explore({ data }: ExploreProps) {
     <>
       <ClientHeader />
       <div className={classes.content}>
-        <ExploreSection title="最近更新" books={books} />
-        <ExploreSection title="最多瀏覽" books={data.mostvisited} />
-        <ExploreSection title="讀者推薦" books={data.clientSuggested} />
-        <ExploreSection title="編輯推薦" books={data.adminSuggested} />
-        <ExploreSection title="已完結" books={data.finished} />
+        <FeaturedSection title="最近更新" books={books} />
+        <FeaturedSection title="最多瀏覽" books={data.mostvisited} />
+        <FeaturedSection title="讀者推薦" books={data.clientSuggested} />
+        <FeaturedSection title="編輯推薦" books={data.adminSuggested} />
+        <FeaturedSection title="已完結" books={data.finished} />
       </div>
     </>
   );

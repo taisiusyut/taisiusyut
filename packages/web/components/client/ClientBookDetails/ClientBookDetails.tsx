@@ -41,7 +41,7 @@ export function ClientBookDetails({
   const book = useBook(bookName, initialBook);
   const headerProps: ComponentProps<typeof ClientHeader> = {
     title: '書籍詳情',
-    left: <GoBackButton targetPath={['/', '/explore']} />
+    left: <GoBackButton targetPath={['/', '/featured']} />
   };
 
   if (book) {

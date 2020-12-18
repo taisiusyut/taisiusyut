@@ -43,7 +43,7 @@ export function BottomNavigation() {
       <NavItem icon="book" path="/">
         書架
       </NavItem>
-      <NavItem icon="star" path="/explore">
+      <NavItem icon="star" path="/featured">
         精選
       </NavItem>
       <Item icon="search">搜索</Item>

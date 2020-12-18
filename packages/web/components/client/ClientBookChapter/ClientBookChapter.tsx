@@ -162,7 +162,7 @@ export function ClientBookChapter({
     <ClientHeader
       title={title}
       left={
-        <GoBackButton targetPath={['/', '/explore', `/book/${bookName}`]} />
+        <GoBackButton targetPath={['/', '/featured', `/book/${bookName}`]} />
       }
       right={[
         <ClientPreferences key="0" />,
