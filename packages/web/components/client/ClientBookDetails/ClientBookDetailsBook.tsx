@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Tags } from '@/components/Tags';
 import { BookStatus, Schema$Book } from '@/typings';
@@ -10,7 +11,7 @@ interface Props {
 
 export function ClientBookDetailsBook({ book }: Props) {
   return (
-    <div className={classes['book']}>
+    <Card className={classes['book']}>
       <BookModel
         flatten
         width={80}
@@ -37,6 +38,6 @@ export function ClientBookDetailsBook({ book }: Props) {
       </div>
 
       <div className={classes.description}>{book.description}</div>
-    </div>
+    </Card>
   );
 }

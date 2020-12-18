@@ -14,8 +14,8 @@ import {
 } from '@/hooks/usePaginationLocal';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
+import classes from './ClientBookChaptersGrid.module.scss';
 
-import classes from './ClientBookDetails.module.scss';
 interface Props {
   bookID: string;
   bookName: string;
@@ -26,7 +26,7 @@ interface Props {
 
 const onFailure = Toaster.apiError.bind(Toaster, `Get chapters failure`);
 
-export function ClientBookDetailsChapters({
+export function ClientBookChaptersGrid({
   bookID,
   bookName,
   chapters: initialChapters
@@ -49,8 +49,8 @@ export function ClientBookDetailsChapters({
   const maxLength = String(chapters.slice(-1)[0]?.number || '').length;
 
   return (
-    <Card className={classes['chapters-grid']}>
-      <div className={classes['chapter-grid-head']}>章節目錄</div>
+    <Card className={classes['grid-container']}>
+      <div className={classes['head']}>章節目錄</div>
       <div className={classes['grid']}>
         {chapters.map(chapter => {
           return (

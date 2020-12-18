@@ -1,0 +1,24 @@
+@import '~styles/utils';
+
+.content {
+  @media (min-width: $break-point+1) {
+    display: none;
+  }
+
+  @media (max-width: $break-point) {
+    @include sq-dimen(100%);
+    @include flex(stretch, space-between, column);
+    padding-top: 20px;
+  }
+}
+
+.button-group {
+  margin-top: 20px;
+  button + button {
+    margin-top: 10px;
+  }
+}
+
+.trigger {
+  @include flex(center, space-between);
+}

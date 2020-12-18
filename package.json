@@ -12,6 +12,7 @@
     "server": "yarn workspace @fullstack/server",
     "style": "yarn workspace @fullstack/style",
     "web": "yarn workspace @fullstack/web",
+    "component": "node ./scripts/component.js",
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build --stream",
     "postinstall": "lerna run postinstall --stream --parallel",
