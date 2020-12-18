@@ -17,16 +17,19 @@ import {
   ClientPreferencesDialogIcon,
   ClientPreferencesDialogTitle
 } from '@/components/client/ClientPreferences';
-import { ButtonPopover, ButtonPopoverProps } from '@/components/ButtonPopover';
 import { Github } from '@/components/Github';
 import { widthAddtoHomeScreen } from '@/components/widthAddtoHomeScreen';
+import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
-import { useBoolean } from '@/hooks/useBoolean';
 import { withAuthRequired } from './withAuthRequired';
 import pkg from '../../package.json';
 
 interface MainMenuDialogProps extends ListViewDialogProps {}
+
+interface OnClick {
+  onClick?: (event: React.MouseEvent<any>) => void;
+}
 
 const AuthrizedListItem = withAuthRequired(ListItem);
 
@@ -43,15 +46,19 @@ const AddtoHomeScreen = widthAddtoHomeScreen(function ({ onClick }) {
 
 const chevron = <Icon icon="chevron-right" />;
 
-const icon = 'menu';
-const title = '主選單';
+export const MainMenuOverlayIcon = 'menu';
+export const MainMenuOverlayTitle = '主選單';
 
-export function MainMenuDialog(props: MainMenuDialogProps) {
+export function MainMenuOverlay(props: MainMenuDialogProps) {
   const [auth, authActions] = useAuth();
   const [preferences, preferncesActions] = useClientPreferences();
 
   return (
-    <ListViewOverlay {...props} icon="menu" title="主選單">
+    <ListViewOverlay
+      {...props}
+      icon={MainMenuOverlayIcon}
+      title={MainMenuOverlayTitle}
+    >
       <ListSpacer />
 
       <AuthrizedListItem
@@ -105,18 +112,16 @@ export function MainMenuDialog(props: MainMenuDialogProps) {
   );
 }
 
-export function MainMenuButton(props: ButtonPopoverProps) {
-  const [isOpen, open, close] = useBoolean();
-  return (
-    <>
-      <ButtonPopover
-        {...props}
-        minimal
-        icon={icon}
-        content={title}
-        onClick={open}
-      />
-      <MainMenuDialog isOpen={isOpen} onClose={close} />
-    </>
-  );
+export function withMainMenuOverLay<P extends OnClick>(
+  Component: React.ComponentType<P>
+) {
+  return function WithMainMenuOverLay(props: P) {
+    const [isOpen, open, close] = useBoolean();
+    return (
+      <>
+        <Component {...props} onClick={open} />
+        <MainMenuOverlay isOpen={isOpen} onClose={close} />
+      </>
+    );
+  };
 }
