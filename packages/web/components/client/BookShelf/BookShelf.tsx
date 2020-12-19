@@ -1,4 +1,6 @@
 import React from 'react';
+import router from 'next/router';
+import { Button } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import {
@@ -29,8 +31,16 @@ export function BookShelf() {
             content={MainMenuOverlayTitle}
           />
         }
+        right={
+          <Button
+            minimal
+            icon="search"
+            onClick={() => router.push('/search', undefined, { shallow: true })}
+          />
+        }
       />
       <div className={classes['book-shelf-content']}>
+        <div className={classes['border']}></div>
         {books.length ? (
           books.map(data => <BookShelfItem key={data.bookID} data={data} />)
         ) : (

@@ -4,7 +4,7 @@
   @include dimen(100%, $header-height);
   @include flex(center, center);
   @include padding-x(15px);
-  border-bottom: 1px solid var(--divider-color);
+  @include shadow-border();
   background-color: var(--primary-color);
   flex: 0 0 auto;
 
@@ -58,6 +58,7 @@
 .right-panel {
   @include dimen(100%, 100vh);
   @include flex($flex-direction: column);
+  @include relative();
   @include shadow-border();
   background-color: var(--secondary-color);
   flex: 1 1 auto;
@@ -71,11 +72,11 @@
 
 @media (max-width: $break-point) {
   .layout {
-    &.home .right-panel {
+    &.show-left-panel .right-panel {
       display: none;
     }
 
-    &:not(.home) .left-panel {
+    &:not(.show-left-panel) .left-panel {
       display: none;
     }
 

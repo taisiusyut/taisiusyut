@@ -2,10 +2,15 @@
 
 .book-shelf {
   @include flex($flex-direction: column);
-  @include relative();
   @include sq-dimen(100%);
   @include shadow-border();
   background-color: var(--primary-color);
+}
+
+.border {
+  border-top: 1px solid var(--primary-color);
+  position: relative;
+  z-index: 11;
 }
 
 .book-shelf-content {
@@ -15,6 +20,7 @@
 
 .book-shelf-empty {
   @include sq-dimen(100%);
+  margin-top: -1px; // for border
 
   button {
     width: 80px;

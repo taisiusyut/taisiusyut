@@ -1,10 +1,11 @@
 @import '~styles/utils';
 
 .header {
-  @include dimen(100%, 50px);
+  @include dimen(100%, $header-height);
   @include flex(center, space-between);
   @include padding-x(15px);
   box-shadow: 0 5px 10px -5px var(--shadow-color);
+  flex: 0 0 auto;
 
   .header-title {
     font-size: 16px;

@@ -31,13 +31,14 @@ const index = `export * from './${componentName}';`;
 
 const reactComponent = `
 import React from 'react';
+import classes from './${componentName}.module.scss'
   
   export function ${componentName}() {
     return (
-      <div className="${componentName
+      <div className={classes['${componentName
         .split(/(?=[A-Z])/)
         .map(str => str.toLocaleLowerCase())
-        .join('-')}"></div>
+        .join('-')}']}></div>
     );
   }
   `;

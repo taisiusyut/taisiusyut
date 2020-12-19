@@ -34,7 +34,7 @@ export function Featured({ data }: FeaturedProps) {
 
   return (
     <>
-      <ClientHeader />
+      <ClientHeader title="精選" />
       <div className={classes.content}>
         <FeaturedSection title="最近更新" books={books} />
         <FeaturedSection title="最多瀏覽" books={data.mostvisited} />
