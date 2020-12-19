@@ -1,11 +1,5 @@
-import React, {
-  ReactNode,
-  SyntheticEvent,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
-import { fromEvent } from 'rxjs';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { fromEvent, merge } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { Button } from '@blueprintjs/core';
 import { Schema$Chapter } from '@/typings';
@@ -66,10 +60,20 @@ export function ClientBookChapter({
       throw new Error(`scroller is not defined`);
     }
 
+    const scrollTo = (x: number, y: number) => {
+      // true if not scrollable
+      if (scroller.scrollHeight === scroller.offsetHeight) {
+        window.scrollTo(x, y);
+      } else {
+        scroller.scrollLeft = x;
+        scroller.scrollTop = y;
+      }
+    };
+
     const scrollToTarget = () => {
       const offsetTop = getTarget(initialChapterNo)?.offsetTop;
       if (typeof offsetTop === 'number') {
-        scroller.scrollTop = offsetTop - scroller.offsetTop;
+        scrollTo(0, offsetTop - scroller.offsetTop);
       }
     };
 
@@ -91,28 +95,35 @@ export function ClientBookChapter({
         return [...chapters, initialChapterNo];
       }
 
-      scroller.scrollTop = 0;
+      scrollTo(0, 0);
+
       return [initialChapterNo];
     });
 
     if (bookID) {
-      const subscription = fromEvent<SyntheticEvent>(scroller, 'scroll')
+      const scroller$ = fromEvent(scroller, 'scroll').pipe(
+        map(
+          () =>
+            [
+              scroller.scrollTop,
+              scroller.offsetHeight + scroller.offsetTop
+            ] as const
+        )
+      );
+
+      // For iPhone safari, since the toolbar will be hidden if `window` is scrolling down
+      const windowScroll$ = fromEvent(window, 'scroll').pipe(
+        map(() => [window.scrollY, window.innerHeight] as const)
+      );
+
+      const subscription = merge(scroller$, windowScroll$)
         .pipe(
-          map(() => scroller.scrollTop),
-          distinctUntilChanged(),
-          map<number, -1 | 1 | undefined>(scrollTop => {
+          distinctUntilChanged(([x], [y]) => x === y),
+          map(([scrollTop, offsetHeight]): -1 | 1 | undefined => {
             const target = getTarget(chapterNo);
-
             if (target) {
-              const pos =
-                scrollTop + scroller.offsetHeight + scroller.offsetTop;
-
-              if (
-                scrollTop === 0 ||
-                pos <=
-                  target.offsetTop -
-                    (parseFloat(window.getComputedStyle(target).marginTop) || 0)
-              ) {
+              const pos = scrollTop + offsetHeight;
+              if (scrollTop === 0 || pos <= target.offsetTop) {
                 return -1;
               } else if (pos >= target.offsetTop + target.offsetHeight) {
                 return 1;
@@ -138,13 +149,13 @@ export function ClientBookChapter({
           }
 
           const newTarget = getTarget(newChapterNo);
-
           if (newTarget) {
             chapterNo = newChapterNo;
             setCurrentChapter(chapterNo);
             gotoChapter({ bookName, chapterNo, shallow: true });
           }
         });
+
       return () => subscription.unsubscribe();
     }
   }, [
@@ -193,6 +204,7 @@ export function ClientBookChapter({
     // trigger checking after loaded
     // for small content or large screen
     scrollerRef.current?.dispatchEvent(new Event('scroll'));
+    window.dispatchEvent(new Event('scroll'));
   };
 
   if (bookID) {
@@ -223,7 +235,7 @@ export function ClientBookChapter({
         {!autoFetchNextChapter &&
           hasNext.current &&
           loaded.current[currentChapter] && (
-            <div style={{ marginTop: 20, marginBottom: 20 }}>
+            <div className={classes['next-chapter']}>
               <Button
                 fill
                 text="下一章"

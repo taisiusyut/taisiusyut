@@ -56,7 +56,7 @@
 }
 
 .right-panel {
-  @include dimen(100%, 100vh);
+  @include dimen(100%);
   @include flex($flex-direction: column);
   @include relative();
   @include shadow-border();
