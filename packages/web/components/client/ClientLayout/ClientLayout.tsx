@@ -1,11 +1,12 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
 import { BreakPointsProvider } from '@/hooks/useBreakPoints';
 import { ClientPreferencesProvider } from '@/hooks/useClientPreferences';
 import { BookShelf } from '../BookShelf';
-import classes from './ClientLayout.module.scss';
+import { ClientSearch } from '../ClientSearch';
 import { BottomNavigation } from '../BottomNavigation';
+import classes from './ClientLayout.module.scss';
 
 interface Props {
   children?: ReactNode;
@@ -14,43 +15,58 @@ interface Props {
 const scrollRestoration: Record<string, number> = {};
 
 function ClientLayoutContent({ children }: Props) {
-  const router = useRouter();
+  const { asPath, events } = useRouter();
+  const [isSearch, setIsSearch] = useState(asPath.startsWith('/search'));
+  const isHome = /^\/(\?.*)?$/.test(asPath);
 
   // scroll restoration for mobile view
   useEffect(() => {
-    const routeChangeStart = () => {
-      scrollRestoration[router.asPath] = window.scrollY;
+    // check shallow for `ClientBookChapter.tsx`
+    const routeChangeStart = (_url: string, options: { shallow?: boolean }) => {
+      if (!options.shallow) {
+        scrollRestoration[asPath] = window.scrollY;
+      }
     };
-    const routeChangeComplete = (url: string) => {
-      window.scrollTo(0, scrollRestoration[url] || 0);
+    const routeChangeComplete = (
+      url: string,
+      options: { shallow?: boolean }
+    ) => {
+      if (!options.shallow) {
+        window.scrollTo(0, scrollRestoration[url] || 0);
+      }
     };
-    router.events.on('routeChangeStart', routeChangeStart);
-    router.events.on('routeChangeComplete', routeChangeComplete);
+    events.on('routeChangeStart', routeChangeStart);
+    events.on('routeChangeComplete', routeChangeComplete);
     return () => {
-      router.events.off('routeChangeStart', routeChangeStart);
-      router.events.off('routeChangeComplete', routeChangeComplete);
+      events.off('routeChangeStart', routeChangeStart);
+      events.off('routeChangeComplete', routeChangeComplete);
     };
-  }, [router]);
+  }, [asPath, events]);
+
+  useEffect(() => setIsSearch(asPath.startsWith('/search')), [asPath]);
 
   return (
     <div
       className={[
         classes['layout'],
-        router.asPath === '/' ? classes['home'] : ''
+        isHome || isSearch ? classes['show-left-panel'] : ''
       ]
         .join(' ')
         .trim()}
     >
       <div className={classes['layout-content']}>
-        <div className={classes['left-panel']}>
+        <div className={classes['left-panel']} hidden={isSearch}>
           <BookShelf />
         </div>
+        {isSearch && (
+          <div className={classes['left-panel']}>
+            <ClientSearch />
+          </div>
+        )}
         <div className={classes['right-panel']}>{children}</div>
       </div>
       <div className={classes['bottom-navigation']}>
-        {['/', '/featured', '/search'].includes(router.asPath) && (
-          <BottomNavigation />
-        )}
+        <BottomNavigation />
       </div>
     </div>
   );

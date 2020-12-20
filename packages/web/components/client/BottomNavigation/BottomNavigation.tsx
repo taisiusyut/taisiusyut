@@ -46,7 +46,9 @@ export function BottomNavigation() {
       <NavItem icon="star" path="/featured">
         精選
       </NavItem>
-      <Item icon="search">搜索</Item>
+      <NavItem icon="search" path="/search">
+        搜索
+      </NavItem>
       <MainMenuTrigger icon="menu">選項</MainMenuTrigger>
     </div>
   );

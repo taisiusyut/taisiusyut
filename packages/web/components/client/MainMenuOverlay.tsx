@@ -1,4 +1,5 @@
 import React from 'react';
+import router from 'next/router';
 import { Icon } from '@blueprintjs/core';
 import {
   ListItem,
@@ -88,6 +89,19 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       >
         {ClientPreferencesDialogTitle}
       </ListItem>
+
+      <ListItem
+        icon="search"
+        rightElement={chevron}
+        onClick={() => {
+          props.onClose();
+          router.push('/search');
+        }}
+      >
+        搜索書籍
+      </ListItem>
+
+      <ListSpacer />
 
       <ListItem icon="help" rightElement={chevron}>
         常見問題

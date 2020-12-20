@@ -1,6 +1,4 @@
 import React from 'react';
-import router from 'next/router';
-import { Button } from '@blueprintjs/core';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import {
@@ -29,13 +27,6 @@ export function BookShelf() {
             minimal
             icon={MainMenuOverlayIcon}
             content={MainMenuOverlayTitle}
-          />
-        }
-        right={
-          <Button
-            minimal
-            icon="search"
-            onClick={() => router.push('/search', undefined, { shallow: true })}
           />
         }
       />

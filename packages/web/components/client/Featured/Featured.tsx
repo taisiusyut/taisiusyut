@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
+import { ButtonPopover } from '@/components/ButtonPopover';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { Order, Schema$Book } from '@/typings';
 import { getBooks } from '@/service';
@@ -34,7 +36,17 @@ export function Featured({ data }: FeaturedProps) {
 
   return (
     <>
-      <ClientHeader title="精選" />
+      <ClientHeader
+        title="精選"
+        right={
+          <ButtonPopover
+            minimal
+            icon="search"
+            content="搜索書籍"
+            onClick={() => router.push('/search')}
+          />
+        }
+      />
       <div className={classes.content}>
         <FeaturedSection title="最近更新" books={books} />
         <FeaturedSection title="最多瀏覽" books={data.mostvisited} />
