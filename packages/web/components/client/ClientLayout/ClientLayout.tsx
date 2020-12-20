@@ -66,7 +66,7 @@ function ClientLayoutContent({ children }: Props) {
         <div className={classes['right-panel']}>{children}</div>
       </div>
       <div className={classes['bottom-navigation']}>
-        <BottomNavigation />
+        {['/', '/featured', '/search'].includes(asPath) && <BottomNavigation />}
       </div>
     </div>
   );

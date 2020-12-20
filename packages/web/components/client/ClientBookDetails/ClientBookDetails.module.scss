@@ -5,6 +5,7 @@
   @include sq-dimen(100%);
   overflow: auto;
   padding: 20px;
+  margin-bottom: env(safe-area-inset-bottom, 0);
 
   > :global(.#{$ns}-card) {
     + :global(.#{$ns}-card) {

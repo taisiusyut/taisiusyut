@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { defer } from 'rxjs';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import {
@@ -6,7 +7,10 @@ import {
   MainMenuOverlayIcon,
   MainMenuOverlayTitle
 } from '@/components/client/MainMenuOverlay';
-import { useBookShelfState, useGetBookShelf } from '@/hooks/useBookShelf';
+import { useBookShelf, placeholder } from '@/hooks/useBookShelf';
+import { useAuthState } from '@/hooks/useAuth';
+import { getBookShelf } from '@/service';
+import { Toaster } from '@/utils/toaster';
 import { BookShelfItem } from './BookShelfItem';
 import { BookShelfEmpty } from './BookShelfEmpty';
 import classes from './BookShelf.module.scss';
@@ -14,9 +18,34 @@ import classes from './BookShelf.module.scss';
 const MainMenuButton = withMainMenuOverLay(ButtonPopover);
 
 export function BookShelf() {
-  const { list: books } = useBookShelfState();
+  const [{ list: books }, actions] = useBookShelf();
+  const { loginStatus } = useAuthState();
 
-  useGetBookShelf();
+  useEffect(() => {
+    switch (loginStatus) {
+      case 'loading':
+        actions.list(placeholder);
+        break;
+      case 'required': // for logout
+        actions.list([]);
+        break;
+      case 'loggedIn':
+        const subscription = defer(() => getBookShelf()).subscribe(
+          books => {
+            const payload = books.map(data => ({
+              ...data,
+              bookID: data.book.id
+            }));
+            actions.list(payload);
+          },
+          error => {
+            actions.list([]);
+            Toaster.apiError(`Get book shelf failure`, error);
+          }
+        );
+        return () => subscription.unsubscribe();
+    }
+  }, [loginStatus, actions]);
 
   return (
     <div className={classes['book-shelf']}>

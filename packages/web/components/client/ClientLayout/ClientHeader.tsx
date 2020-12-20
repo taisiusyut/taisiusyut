@@ -43,8 +43,8 @@ export function ClientHeader({
       </div>
       <div className={classes['header-title']}>{title}</div>
       <div className={classes['right']}>
-        {right}
         {fillRight}
+        {right}
       </div>
     </div>
   );

@@ -1,14 +1,12 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useReducer } from 'react';
 import { Schema$BookShelf } from '@/typings';
-import { createClientStorage } from '@/utils/storage';
 import {
   bindDispatch,
   getCRUDActionsCreator,
   createCRUDReducer,
   CRUDActionCreators,
   CRUDState,
-  Dispatched,
-  DefaultCRUDActionTypes
+  Dispatched
 } from '../crud-reducer';
 
 export type BookShelf = (Schema$BookShelf | Partial<Schema$BookShelf>) & {
@@ -27,13 +25,11 @@ export const ActionContext = React.createContext<BookShelfActions | undefined>(
   undefined
 );
 
-const placeholder = Array.from<unknown, BookShelf>({ length: 10 }, () => ({
-  bookID: String(Math.random())
-}));
-
-export const shelfStorage = createClientStorage<BookShelf[]>(
-  'shelf',
-  placeholder
+export const placeholder = Array.from<unknown, BookShelf>(
+  { length: 10 },
+  () => ({
+    bookID: String(Math.random())
+  })
 );
 
 const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
@@ -44,21 +40,11 @@ const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
 const [crudActions] = getCRUDActionsCreator<BookShelf, 'bookID'>()();
 
 export function BookShelfProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState, state =>
-    reducer(state, { type: DefaultCRUDActionTypes.LIST, payload: placeholder })
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [actions] = useState({
     dispatch,
     ...bindDispatch(crudActions, dispatch)
   });
-
-  useEffect(() => {
-    if (state.list.length === 0) {
-      shelfStorage.clear();
-    } else {
-      shelfStorage.save(state.list);
-    }
-  }, [state]);
 
   return React.createElement(
     StateContext.Provider,
