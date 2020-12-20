@@ -77,7 +77,7 @@ $padding-x: 15px;
   @include flex(center, space-between);
   @include padding-x(15px 10px);
   background-color: var(--primary-color);
-  min-height: 50px;
+  min-height: $header-height;
 
   .heading {
     font-size: 16px;
