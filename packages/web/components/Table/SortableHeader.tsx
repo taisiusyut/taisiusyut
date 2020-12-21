@@ -35,7 +35,7 @@ export function SortableHeader({
         }))
       }
     >
-      <div className={classes.th}>
+      <div className={classes['th']}>
         {children}
         {
           <Icon

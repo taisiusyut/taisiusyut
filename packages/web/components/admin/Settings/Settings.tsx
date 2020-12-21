@@ -8,7 +8,7 @@ export interface Props {}
 
 export function Settings() {
   return (
-    <div className={classes.settings}>
+    <div className={classes['settings']}>
       <SettingsProfile />
       <SettingsPreferences />
       <SettingsDangerZone />

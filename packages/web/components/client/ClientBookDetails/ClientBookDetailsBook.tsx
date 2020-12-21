@@ -37,7 +37,7 @@ export function ClientBookDetailsBook({ book }: Props) {
         )}
       </div>
 
-      <div className={classes.description}>{book.description}</div>
+      <div className={classes['description']}>{book.description}</div>
     </Card>
   );
 }

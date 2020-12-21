@@ -63,14 +63,14 @@ export function BookDetails({ book, onUpdate }: Props) {
   return (
     <div>
       <BookDetailsHeader book={book} role={user?.role} onUpdate={onUpdate} />
-      <Card className={classes.chapters}>
+      <Card className={classes['chapters']}>
         <PageHeader title="Chapters">
           {isAuthor && (
             <Button minimal icon="plus" onClick={() => gotoChapter(book.id)} />
           )}
         </PageHeader>
 
-        <Filter initialValues={state.params} className={classes.filter}>
+        <Filter initialValues={state.params} className={classes['filter']}>
           <FilterInput name="id" label="Chapter ID" />
           <FilterInput name="name" label="Name" />
           <FormItem name="status" label="Status">

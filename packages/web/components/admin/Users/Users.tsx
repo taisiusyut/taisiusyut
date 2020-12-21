@@ -29,9 +29,9 @@ export function Users() {
   const { sort = { createdAt: Order.DESC } } = state.params;
 
   return (
-    <div className={classes.users}>
+    <div className={classes['users']}>
       <Card>
-        <div className={classes.header}>
+        <div className={classes['header']}>
           <H4>Users</H4>
           <div className={classes['button-group']}>
             <Button>Export</Button>
@@ -48,7 +48,7 @@ export function Users() {
           </div>
         </div>
 
-        <Filter initialValues={state.params} className={classes.fitler}>
+        <Filter initialValues={state.params} className={classes['fitler']}>
           <FilterInput name="id" label="User ID" />
           <FilterInput name="username" label="Username" />
           <FilterInput name="email" label="Email" />

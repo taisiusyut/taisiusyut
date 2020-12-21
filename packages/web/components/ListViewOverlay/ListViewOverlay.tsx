@@ -59,7 +59,7 @@ export function ListItem({
   return (
     <div
       {...props}
-      className={[classes.item, props.onClick ? classes.interactive : '']
+      className={[classes['item'], props.onClick ? classes['interactive'] : '']
         .join(' ')
         .trim()}
     >
@@ -71,7 +71,7 @@ export function ListItem({
 }
 
 export function ListSpacer(props: ListSpacerProps) {
-  return <div {...props} className={classes.spacer}></div>;
+  return <div {...props} className={classes['spacer']}></div>;
 }
 
 export function ListViewFooter({
@@ -80,7 +80,7 @@ export function ListViewFooter({
   ...props
 }: ListFooterProps) {
   return (
-    <div {...props} className={classes.footer}>
+    <div {...props} className={classes['footer']}>
       {children}
       {onClose && <Button fill text="關閉" onClick={onClose} />}
     </div>

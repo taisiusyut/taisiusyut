@@ -11,7 +11,7 @@ export function SettingsPreferences() {
   const [initialValues, actions] = useAdminPreferences();
 
   return (
-    <SettingsSection title="Preferences" className={classes.preferences}>
+    <SettingsSection title="Preferences" className={classes['preferences']}>
       <Form initialValues={initialValues} onValuesChange={actions.update}>
         <FormItem name="theme" label="Theme">
           <ThemeSelector />

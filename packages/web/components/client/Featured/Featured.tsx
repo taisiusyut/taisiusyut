@@ -47,7 +47,7 @@ export function Featured({ data }: FeaturedProps) {
           />
         }
       />
-      <div className={classes.content}>
+      <div className={classes['content']}>
         <FeaturedSection title="最近更新" books={books} />
         <FeaturedSection title="最多瀏覽" books={data.mostvisited} />
         <FeaturedSection title="讀者推薦" books={data.clientSuggested} />

@@ -32,7 +32,7 @@ export function withFinishBook<P extends OnClick>(
       openConfirmDialog({
         title: 'Finish Book',
         children: (
-          <div className={classes.dialog}>
+          <div className={classes['dialog']}>
             Finished book cannot publish pay chapter. Are you sure to finish the
             book?
           </div>

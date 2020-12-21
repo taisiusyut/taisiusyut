@@ -58,7 +58,7 @@ export function ChapterForm({ loading, wordCount, ...props }: Props) {
         <div hidden />
       </FormItem>
 
-      <div className={classes.footer}>
+      <div className={classes['footer']}>
         <Button
           disabled={loading}
           onClick={() => formRef.current?.resetFields()}

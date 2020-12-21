@@ -66,7 +66,7 @@ export function SettingsProfile() {
         {user?.role === UserRole.Author && (
           <>
             <FormItem label="Description" name="description">
-              <ContentEditor className={classes.description} />
+              <ContentEditor className={classes['description']} />
             </FormItem>
           </>
         )}

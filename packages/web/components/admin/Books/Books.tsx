@@ -70,7 +70,7 @@ export function Books() {
         </div>
       </PageHeader>
 
-      <Filter initialValues={state.params} className={classes.fitler}>
+      <Filter initialValues={state.params} className={classes['fitler']}>
         <FilterInput name="id" label="Book ID" />
         <FilterInput name="name" label="Name" />
         <FilterInput name="tag" label="Tag" />

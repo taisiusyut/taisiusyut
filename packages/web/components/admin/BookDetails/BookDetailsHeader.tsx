@@ -69,7 +69,7 @@ export function BookDetailsHeader({ book, role, onUpdate }: Props) {
         </PageHeader>
       </Card>
       <Card style={{ marginTop: 15 }}>
-        <div className={classes.header}>
+        <div className={classes['header']}>
           <BookModel
             flatten
             width={80}
@@ -83,7 +83,7 @@ export function BookDetailsHeader({ book, role, onUpdate }: Props) {
               <BookStatusTag status={book.status} />
             </div>
             <Tags tags={book.tags || []} />
-            <div className={classes.description}>{book.description}</div>
+            <div className={classes['description']}>{book.description}</div>
           </div>
         </div>
       </Card>

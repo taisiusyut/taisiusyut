@@ -32,7 +32,7 @@ export function withPublishBook<P extends OnClick>(
       openConfirmDialog({
         title: 'Publish Book',
         children: (
-          <div className={classes.dialog}>
+          <div className={classes['dialog']}>
             <p>
               Published book cannot set to private again. Are you sure to
               publish the book?

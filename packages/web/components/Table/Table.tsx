@@ -64,7 +64,7 @@ export function Table<T extends {}>({
   }, [setPageSize, pageSize]);
 
   return (
-    <div className={`${classes.table} ${className}`.trim()}>
+    <div className={`${classes['table']} ${className}`.trim()}>
       <div className={classes['table-content']}>
         <HTMLTable
           {...getTableProps()}
@@ -93,7 +93,7 @@ export function Table<T extends {}>({
                   onClick={event => onRowClick && onRowClick(row, event)}
                 >
                   {row.cells.map(cell => (
-                    <td {...cell.getCellProps()} className={classes.td}>
+                    <td {...cell.getCellProps()} className={classes['td']}>
                       {cell.render('Cell')}
                     </td>
                   ))}
@@ -108,7 +108,7 @@ export function Table<T extends {}>({
 
       {!!page.length && (
         <>
-          <Divider className={classes.divider} />
+          <Divider className={classes['divider']} />
 
           <Pagination
             total={data.length}

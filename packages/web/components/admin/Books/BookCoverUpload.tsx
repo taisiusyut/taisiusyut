@@ -48,7 +48,7 @@ export function BookCoverUpload(
 
   return (
     <div
-      className={`${classes.cover} ${!!value ? classes['uploaded'] : ''}`}
+      className={`${classes['cover']} ${!!value ? classes['uploaded'] : ''}`}
       onClick={() => fileInputRef.current?.click()}
     >
       {value && (

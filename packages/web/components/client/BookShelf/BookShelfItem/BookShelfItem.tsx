@@ -78,7 +78,7 @@ export function BookShelfItem({
     return (
       <div
         ref={ref}
-        className={[...className, active ? classes.active : '']
+        className={[...className, active ? classes['active'] : '']
           .join(' ')
           .trim()}
       >
@@ -92,7 +92,7 @@ export function BookShelfItem({
   }
 
   return (
-    <div className={[...className, classes.skeleton].join(' ').trim()}>
+    <div className={[...className, classes['skeleton']].join(' ').trim()}>
       {content(false)}
     </div>
   );

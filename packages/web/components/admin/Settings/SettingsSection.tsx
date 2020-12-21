@@ -14,7 +14,7 @@ export function SettingsSection({
   children
 }: SectionProps) {
   return (
-    <Card className={`${classes.section} ${className}`.trim()}>
+    <Card className={`${classes['section']} ${className}`.trim()}>
       <H4>{title}</H4>
       <Divider />
       <div className={classes['section-content']}>{children}</div>

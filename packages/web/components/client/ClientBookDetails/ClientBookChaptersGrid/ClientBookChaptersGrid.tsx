@@ -64,7 +64,7 @@ export function ClientBookChaptersGrid({
                   ' '
                 )}
               >
-                <Tag minimal className={classes.tag}>
+                <Tag minimal className={classes['tag']}>
                   {chapter.number &&
                     String(chapter.number).padStart(maxLength, '0')}
                 </Tag>
