@@ -24,14 +24,14 @@ export interface CreateUseCRUDReducerOps<I, Prefill extends boolean = true>
 export interface CreateUseCRUDReducer  {
   <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<false> & { prefill: false }): UseCRUDReducer<I, K, false>;
   <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<true>): UseCRUDReducer<I, K, true>;
-  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<boolean>): UseCRUDReducer<I, K, boolean>
+  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<boolean>): UseCRUDReducer<I, K, true>
 }
 
 export const createUseCRUDReducer: CreateUseCRUDReducer = <I, K extends Key<I>>(
   key: K,
   { initializer, ...options }: CreateUseCRUDReducerOps<any> = {}
 ): UseCRUDReducer<I, K, any> => {
-  const [initialState, reducer] = createCRUDReducer<I, K, any>(key, options);
+  const [initialState, reducer] = createCRUDReducer<I, K>(key, options);
 
   return function useCRUDReducer() {
     const [state, dispatch] = useReducer(reducer, initialState, state =>

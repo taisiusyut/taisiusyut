@@ -7,6 +7,7 @@ import { BookShelf } from '../BookShelf';
 import { ClientSearch } from '../ClientSearch';
 import { BottomNavigation } from '../BottomNavigation';
 import classes from './ClientLayout.module.scss';
+import { useGoBack } from '@/hooks/useGoBack';
 
 interface Props {
   children?: ReactNode;
@@ -18,6 +19,8 @@ function ClientLayoutContent({ children }: Props) {
   const { asPath, events } = useRouter();
   const [isSearch, setIsSearch] = useState(asPath.startsWith('/search'));
   const isHome = /^\/(\?.*)?$/.test(asPath);
+  const isFeatured = /^\/featured(\?.*)?$/.test(asPath);
+  const goback = useGoBack();
 
   // scroll restoration for mobile view
   useEffect(() => {
@@ -43,7 +46,15 @@ function ClientLayoutContent({ children }: Props) {
     };
   }, [asPath, events]);
 
-  useEffect(() => setIsSearch(asPath.startsWith('/search')), [asPath]);
+  useEffect(
+    () =>
+      setIsSearch(isSearch =>
+        window.innerWidth > 768
+          ? isSearch || asPath.startsWith('/search')
+          : asPath.startsWith('/search')
+      ),
+    [asPath]
+  );
 
   return (
     <div
@@ -60,13 +71,19 @@ function ClientLayoutContent({ children }: Props) {
         </div>
         {isSearch && (
           <div className={classes['left-panel']}>
-            <ClientSearch />
+            <ClientSearch
+              onLeave={() =>
+                goback({ targetPath: ['/', '/featured'] }).then(() =>
+                  setIsSearch(false)
+                )
+              }
+            />
           </div>
         )}
         <div className={classes['right-panel']}>{children}</div>
       </div>
       <div className={classes['bottom-navigation']}>
-        {['/', '/featured', '/search'].includes(asPath) && <BottomNavigation />}
+        {(isHome || isFeatured || isSearch) && <BottomNavigation />}
       </div>
     </div>
   );

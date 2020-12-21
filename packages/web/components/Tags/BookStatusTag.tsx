@@ -2,11 +2,11 @@ import React from 'react';
 import { ITagProps, Tag } from '@blueprintjs/core';
 import { BookStatus } from '@/typings';
 
-interface Props {
+interface Props extends ITagProps {
   status?: BookStatus;
 }
 
-function getTagPropsByStatus(status: BookStatus): ITagProps {
+export function getTagPropsByStatus(status?: BookStatus): ITagProps {
   switch (status) {
     case BookStatus.Public:
       return { intent: 'success' };

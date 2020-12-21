@@ -31,7 +31,11 @@ function Item({ icon, children, isActive, ...props }: ItemProps) {
 function NavItem({ path, ...props }: ItemProps & { path: string }) {
   const { asPath, push } = useRouter();
   return (
-    <Item {...props} isActive={asPath === path} onClick={() => push(path)} />
+    <Item
+      {...props}
+      isActive={new RegExp(`^${path}(\\?.*)?$`).test(asPath)}
+      onClick={() => push(path)}
+    />
   );
 }
 

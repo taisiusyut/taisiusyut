@@ -4,15 +4,23 @@ import { ButtonPopover, ButtonPopoverProps } from './ButtonPopover';
 
 interface GoBackButtonProps extends ButtonPopoverProps, GoBackOptions {}
 
-export function GoBackButton({ targetPath, ...props }: GoBackButtonProps) {
+export function GoBackButton({
+  targetPath,
+  onClick,
+  icon = 'arrow-left',
+  content = '返回',
+  ...props
+}: GoBackButtonProps) {
   const goBack = useGoBack();
   return (
     <ButtonPopover
       {...props}
       minimal
-      icon="arrow-left"
-      content="返回"
-      onClick={() => goBack({ targetPath })}
+      icon={icon}
+      content={content}
+      onClick={event => {
+        goBack({ targetPath }).then(() => onClick && onClick(event));
+      }}
     />
   );
 }

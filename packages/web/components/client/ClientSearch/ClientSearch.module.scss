@@ -14,11 +14,32 @@
 }
 
 .content {
+  @include flex($flex-direction: column);
   flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .search-field {
+  @extend .border;
   @include flex(center);
-  padding: 10px 15px 20px;
-  margin-top: -1px;
+  @include shadow-border();
+  flex: 0 0 auto;
+  padding: 10px 20px 15px;
+}
+
+.select {
+  flex: 0 0 auto;
+  margin-right: 10px;
+  select {
+    font-size: inherit;
+  }
+}
+
+.books {
+  height: 100%;
+  overflow: auto;
+}
+
+.not-found {
+  height: 80%;
 }

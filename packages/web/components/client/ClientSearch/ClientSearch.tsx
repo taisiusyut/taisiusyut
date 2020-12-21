@@ -1,34 +1,112 @@
-import React from 'react';
-import { Button, Tag } from '@blueprintjs/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import router from 'next/router';
+import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader } from '@/components/client/ClientLayout';
-import { GoBackButton } from '@/components/GoBackButton';
-import { Input } from '@/components/Input';
+import { ButtonPopover } from '@/components/ButtonPopover';
+import { createUseCRUDReducer } from '@/hooks/crud-reducer';
+import { Param$GetBooks } from '@/typings';
+import { getBooks } from '@/service';
+import { Toaster } from '@/utils/toaster';
+import {
+  ClientSearchInput,
+  useForm,
+  transoformInitialValues
+} from './ClientSearchInput';
+import { ClientSearchItem, Book } from './ClientSearchItem';
+import { ClientSearchNotFound } from './ClientSearchNotFound';
+import qs from 'qs';
 import classes from './ClientSearch.module.scss';
 
-export function ClientSearch() {
+interface Props {
+  onLeave: () => void;
+}
+
+const useBookReducer = createUseCRUDReducer<Book, 'id'>('id');
+
+const placeholder = Array.from<void, Book>({ length: 10 }, (_, idx) => ({
+  id: String(idx)
+}));
+
+const onFailure = Toaster.apiError.bind(Toaster, `Get books failure`);
+
+export function ClientSearch({ onLeave }: Props) {
+  const [query, setQuery] = useState<Record<string, any>>({});
+  const [state, actions] = useBookReducer();
+  const [, { fetch }] = useRxAsync(getBooks, {
+    defer: true,
+    onSuccess: actions.paginate,
+    onFailure
+  });
+  const [form] = useForm();
+  const { search, request } = useMemo(() => {
+    const search = transoformInitialValues(query);
+    const request = (params?: Param$GetBooks) => fetch({ ...params });
+    return {
+      search,
+      request
+    };
+  }, [fetch, query]);
+
+  useEffect(() => {
+    if (router.asPath.startsWith('/search')) {
+      setQuery(qs.parse(router.asPath.split('?')[1]));
+    }
+  }, []);
+
+  useEffect(() => {
+    form.setFieldsValue(search);
+
+    if (search.type && search.value?.trim()) {
+      actions.paginate(placeholder);
+      request({ pageNo: 1 });
+    } else {
+      actions.list([]);
+    }
+  }, [search, request, form, actions]);
+
   return (
     <div className={classes['search']}>
       <ClientHeader
         title="搜索書籍"
-        left={<GoBackButton targetPath={['/', '/featured']} />}
+        left={
+          <ButtonPopover
+            minimal
+            icon="cross"
+            content="取消搜索"
+            onClick={onLeave}
+          />
+        }
       />
       <div className={classes['content']}>
-        <div className={classes['border']} />
-        <form
-          className={classes['search-field']}
-          onSubmit={event => event.preventDefault()}
-        >
-          <Input
-            large
-            autoFocus
-            leftElement={
-              <Tag minimal rightIcon="chevron-down">
-                書名
-              </Tag>
+        <ClientSearchInput
+          form={form}
+          initialValues={query}
+          onFinish={({ ...payload }) => {
+            setQuery(payload);
+            for (const key in payload) {
+              if (!payload[key]) {
+                delete payload[key];
+              }
             }
-            rightElement={<Button icon="search" minimal />}
+            router.push({
+              pathname: '/search',
+              query: payload
+            });
+          }}
+        />
+        {state.list.length ? (
+          <div className={classes['books']}>
+            <div className={classes['border']} />
+            {state.list.map(book => (
+              <ClientSearchItem key={book.id} book={book} />
+            ))}
+          </div>
+        ) : Object.keys(query).length ? (
+          <ClientSearchNotFound
+            className={classes['not-found']}
+            searchType={search.type}
           />
-        </form>
+        ) : null}
       </div>
     </div>
   );
