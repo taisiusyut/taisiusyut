@@ -19,7 +19,7 @@ export const ButtonPopover = React.forwardRef<any, ButtonPopoverProps>(
     const button = <Button ref={ref} disabled={disabled} {...props} />;
 
     useEffect(() => {
-      setDisablePopover(isTouchable);
+      setDisablePopover(isTouchable());
     }, []);
 
     return (

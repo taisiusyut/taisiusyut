@@ -20,5 +20,5 @@ const openMenu = createOpenOverlay<BookShelfItemActionsProps>(
 );
 
 export const openBookShelfItemActions = (props: BookShelfItemActionsProps) => {
-  return isTouchable ? openDrawer(props) : openMenu(props);
+  return isTouchable() ? openDrawer(props) : openMenu(props);
 };

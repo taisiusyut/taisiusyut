@@ -1,7 +1,7 @@
 export * from '@fullstack/server/dist/constants';
 
 // https://stackoverflow.com/a/4819886
-export const isTouchable = (function () {
+export function isTouchable() {
   if (typeof window === 'undefined') {
     return false;
   }
@@ -18,4 +18,4 @@ export const isTouchable = (function () {
   const queries = prefixes.map(prefix => `(${prefix}touch-enabled)`);
 
   return window.matchMedia(queries.join(',')).matches;
-})();
+}

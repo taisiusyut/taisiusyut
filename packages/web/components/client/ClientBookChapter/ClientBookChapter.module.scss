@@ -18,6 +18,7 @@
   $margin-bottom: 40px;
   @include flex($flex-direction: column);
   min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
   margin-bottom: $margin-bottom; // this make sure content scrollable
   padding-top: 40px;
   overflow: hidden;
@@ -46,7 +47,7 @@
 
 .next-chapter {
   margin-top: 20px;
-  margin-bottom: calc(20px + env(safe-area-inset-bottom, 0));
+  margin-bottom: calc(40px + env(safe-area-inset-bottom, 0));
 }
 
 .loading,

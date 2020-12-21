@@ -242,7 +242,6 @@ export function ClientBookChapter({
                 intent="primary"
                 onClick={() => {
                   const nextChpaterNo = currentChapter + 1;
-                  setCurrentChapter(nextChpaterNo);
                   setChapters(chapters => [...chapters, nextChpaterNo]);
                 }}
               />

@@ -28,7 +28,7 @@ function getOffset<T extends HTMLElement>(
 
 function ActionButton(props: IButtonProps) {
   const [render, setRender] = useState(false);
-  useEffect(() => setRender(!isTouchable), []);
+  useEffect(() => setRender(!isTouchable()), []);
   return render ? (
     <div className={classes['action-button']}>
       <Button {...props} icon="more" minimal />

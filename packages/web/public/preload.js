@@ -52,4 +52,11 @@
   } catch (error) {
     console.log(error);
   }
+
+  function setViewHeightVariable() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+  setViewHeightVariable();
+  window.addEventListener('resize', setViewHeightVariable);
 })();
