@@ -39,7 +39,7 @@ class GetBooks
   tag?: string;
 
   @IsOptional()
-  @IsMongoId()
+  @IsString()
   author?: string;
 
   @IsOptional()

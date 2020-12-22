@@ -12,7 +12,6 @@ import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
   }
 })
 export class Chapter implements Schema$Chapter {
-  @Exclude()
   _id: string;
 
   id: string;

@@ -16,17 +16,21 @@ import {
 import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
-import { BookService } from './book.service';
+import { UserService } from '@/modules/user/user.service';
 import { ObjectId } from '@/decorators';
-import { BookStatus } from '@/typings';
-import { Condition } from '@/utils/mongoose';
+import { BookStatus, UserRole } from '@/typings';
 import { AccessPipe, Access } from '@/utils/access';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
+import { BookService } from './book.service';
 import { Book } from './schemas/book.schema';
+import { isMongoId } from 'class-validator';
 
 @Controller('book')
 export class BookController {
-  constructor(private readonly bookService: BookService) {}
+  constructor(
+    private readonly bookService: BookService,
+    private readonly userService: UserService
+  ) {}
 
   isPublicStatus(status: BookStatus) {
     return [BookStatus.Public, BookStatus.Finished].includes(status);
@@ -94,21 +98,29 @@ export class BookController {
 
   @Access('Optional')
   @Get(routes.book.get_books)
-  getBooks(
-    @Req() req: FastifyRequest,
-    @Query() { tag, ...query }: GetBooksDto
+  async getBooks(
+    @Req() { user }: FastifyRequest,
+    @Query() { tag, author, ...dto }: GetBooksDto
   ) {
-    const user = req.user;
-    const condition: Condition[] = [];
+    const query: FilterQuery<Book> = {
+      ...this.bookService.getRoleBasedQuery(user, dto)
+    };
 
     if (tag) {
-      condition.push({ tags: { $in: [tag] } });
+      query.tags = { $in: [tag] };
     }
 
-    return this.bookService.paginate({
-      ...(this.bookService.getRoleBasedQuery(user, query) as GetBooksDto),
-      condition
-    });
+    if (isMongoId(author)) {
+      query.author = author;
+    } else if (author) {
+      const result = await this.userService.findOne({
+        role: UserRole.Author,
+        nickname: author
+      });
+      query.author = String(result?._id);
+    }
+
+    return this.bookService.paginate(query as any);
   }
 
   @Access('book_public', 'book_finish')

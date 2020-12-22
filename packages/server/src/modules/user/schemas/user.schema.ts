@@ -1,3 +1,4 @@
+import { ObjectID } from 'mongodb';
 import { Exclude, Transform } from 'class-transformer';
 import { Prop, PropOptions, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { InsertedUserSchema, UserRole } from '@/typings';
@@ -15,6 +16,8 @@ function hashPassword(password: string) {
   }
 })
 export class User implements InsertedUserSchema {
+  _id: string | ObjectID;
+
   id: string;
 
   @Prop({ type: String, required: true, unique: true })

@@ -7,6 +7,7 @@ import {
   Document,
   MongooseFuzzySearchingField
 } from 'mongoose';
+import { UserModule } from '@/modules/user/user.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { fuzzySearch } from '@/utils/mongoose';
@@ -19,6 +20,7 @@ import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
+    UserModule,
     MongooseModule.forFeatureAsync([
       {
         imports: [CloudinaryModule],

@@ -62,7 +62,7 @@ export interface Param$GetBooks extends Pagination, Search {
   name?: string;
   category?: Category;
   status?: BookStatus;
-  author?: string; //ObjectId
+  author?: string; // ObjectId or author.nickname
   tag?: string;
   createdAt?: DateRange;
   updatedAt?: DateRange;
