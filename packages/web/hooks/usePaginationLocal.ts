@@ -83,9 +83,15 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   });
 
   return function usePaginationLocal(options?: Options) {
-    const [state, dispatch] = useReducer(reducer, initialState, state =>
-      initializer ? initializer(state, reducer) : state
-    );
+    const { asPath } = useRouter();
+
+    const [state, dispatch] = useReducer(reducer, initialState, state => {
+      const withParam = reducer(state, {
+        type: DefaultCRUDActionTypes.PARAMS,
+        payload: getParams(asPath)
+      });
+      return initializer ? initializer(withParam, reducer) : withParam;
+    });
 
     const [actions] = useState(() => {
       const [actions] = getCRUDActionsCreator<I, K>()();
@@ -101,14 +107,12 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
 
     const { hasData, list } = useMemo(() => paginateSelector(state), [state]);
 
-    const { asPath } = useRouter();
-
     useEffect(() => {
       actions.params(getParams(asPath));
     }, [actions, asPath]);
 
     useEffect(() => {
-      // async pageNo since it may change as CRUD actions
+      // sync pageNo since it may change as CRUD actions
       if (router.query.pageNo && Number(router.query.pageNo) !== pageNo) {
         setSearchParam(params => ({ ...params, pageNo }));
       }
