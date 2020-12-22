@@ -62,5 +62,6 @@ export const removeUnsedFuzzyElements = async <T extends Document>(
       new: true,
       strict: false
     });
+    await model.collection.dropIndexes();
   }
 };
