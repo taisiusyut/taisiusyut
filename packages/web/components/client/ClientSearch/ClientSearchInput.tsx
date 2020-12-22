@@ -7,14 +7,14 @@ import { createForm, FormProps } from '@/utils/form';
 import classes from './ClientSearch.module.scss';
 import { Param$GetBooks } from '@/typings';
 
+type Key = keyof Param$GetBooks;
+
 export interface Store {
-  type: string;
+  type: Key;
   value: string;
 }
 
 interface Props extends FormProps<Store> {}
-
-type Key = keyof Param$GetBooks;
 
 const options: { value: Key; label: string }[] = [
   { value: 'search', label: '全部' },
@@ -23,9 +23,7 @@ const options: { value: Key; label: string }[] = [
   { value: 'tag', label: '標籤' }
 ];
 
-export const transoform = (
-  query: Record<string, any>
-): { type: Key; value: string } => {
+export const transoform = (query: Record<string, any>): Store => {
   const types: Key[] = ['name', 'authorName', 'tag'];
   for (const type of types) {
     if (typeof query[type] === 'string') {

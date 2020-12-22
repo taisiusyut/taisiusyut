@@ -15,12 +15,7 @@ import { ButtonPopover } from '@/components/ButtonPopover';
 import { createUseCRUDReducer } from '@/hooks/crud-reducer';
 import { getBooks } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import {
-  useForm,
-  transoform,
-  ClientSearchInput,
-  Store
-} from './ClientSearchInput';
+import { useForm, transoform, ClientSearchInput } from './ClientSearchInput';
 import { ClientSearchItem, Book } from './ClientSearchItem';
 import { ClientSearchNotFound } from './ClientSearchNotFound';
 import classes from './ClientSearch.module.scss';
@@ -41,18 +36,23 @@ const placeholder = Array.from<void, Book>({ length: pageSize }, (_, idx) => ({
 
 const createId = (idx: number) => `search-result-${idx}`;
 
-const initialSearch: Store = { type: '', value: '' };
-
 export function ClientSearch({ onLeave }: Props) {
   const { asPath, query, push } = useRouter();
-  const [search, setSearch] = useState<Store>(initialSearch);
+  const [search, setSearch] = useState(() =>
+    transoform(asPath.startsWith('/search') ? query : {})
+  );
   const [state, actions] = useBookReducer();
   const [form] = useForm();
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (asPath.startsWith('/search')) {
-      setSearch(transoform(query));
+      setSearch(search => {
+        const newSearch = transoform(query);
+        const hasChange =
+          search.type !== newSearch.type || search.value !== newSearch.value;
+        return hasChange ? newSearch : search;
+      });
     }
   }, [asPath, query]);
 

@@ -33,7 +33,6 @@
 
 .item-body {
   @include flex();
-  flex: 1 1 auto;
   overflow: hidden;
   padding: 20px 15px 20px 30px;
 }
