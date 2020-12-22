@@ -5,8 +5,12 @@ import { Button } from '@blueprintjs/core';
 import { createUserForm } from '@/components/UserForm';
 import type { ContentEditorProps } from '@/components/admin/ContentEditor';
 import { useAuth, useAuthActions } from '@/hooks/useAuth';
-import { getProfile, updateProfile as updateProfileAPI } from '@/service';
-import { UserRole, Schema$User } from '@/typings';
+import {
+  clearJwtToken,
+  getProfile,
+  updateProfile as updateProfileAPI
+} from '@/service';
+import { UserRole, Schema$User, Param$UpdateUser } from '@/typings';
 import { SettingsSection } from './SettingsSection';
 import { Toaster } from '@/utils/toaster';
 import classes from './Settings.module.scss';
@@ -21,21 +25,28 @@ const ContentEditor = dynamic<ContentEditorProps>(
   { ssr: false }
 );
 
-const useUpdateUser = () => {
+const useUpdateProfile = () => {
   const { updateProfile } = useAuthActions();
-  const [{ onSuccess, onFailure }] = useState(() => ({
+  const [{ request, onSuccess, onFailure }] = useState(() => ({
+    request: async (payload: Param$UpdateUser) => {
+      const result = await updateProfileAPI(payload);
+      // clear the jwt token and so a new token will be return
+      // This make sure the checking of `nickname` in `routes.auth.profile` is correct
+      clearJwtToken();
+      return result;
+    },
     onSuccess: (user: Schema$User) => {
       updateProfile(user);
       Toaster.success({ message: `Update profile success` });
     },
     onFailure: Toaster.apiError.bind(Toaster, `Update profile failure`)
   }));
-  const [{ loading }, { fetch }] = useRxAsync(updateProfileAPI, {
+  const [{ loading }, { fetch }] = useRxAsync(request, {
     defer: true,
     onSuccess,
     onFailure
   });
-  return { loading, fetch };
+  return { loading, update: fetch };
 };
 
 const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
@@ -43,7 +54,7 @@ const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
 export function SettingsProfile() {
   const [form] = useForm();
   const [{ user }, { updateProfile }] = useAuth();
-  const updateUser = useUpdateUser();
+  const profile = useUpdateProfile();
 
   useRxAsync(getProfile, {
     onSuccess: updateProfile,
@@ -57,7 +68,7 @@ export function SettingsProfile() {
         key={JSON.stringify(user)}
         initialValues={user ? user : undefined}
         onFinish={payload =>
-          user && updateUser.fetch({ id: user.user_id, ...payload })
+          user && profile.update({ id: user.user_id, ...payload })
         }
       >
         <Nickname />
@@ -72,13 +83,10 @@ export function SettingsProfile() {
         )}
 
         <div className={classes['footer']}>
-          <Button
-            onClick={() => form.resetFields()}
-            disabled={updateUser.loading}
-          >
+          <Button onClick={() => form.resetFields()} disabled={profile.loading}>
             Reset
           </Button>
-          <Button type="submit" intent="primary" loading={updateUser.loading}>
+          <Button type="submit" intent="primary" loading={profile.loading}>
             Apply
           </Button>
         </div>

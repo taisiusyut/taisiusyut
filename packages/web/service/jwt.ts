@@ -1,7 +1,7 @@
 import type { Param$Login, Schema$Authenticated } from '@/typings';
 import { routes } from '@/constants';
 import { defer, Observable, of } from 'rxjs';
-import { shareReplay, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { api } from './api';
 import { login, refreshToken } from './auth';
 
@@ -12,7 +12,7 @@ export function clearJwtToken() {
 }
 
 const authenticate$ = (payload?: Param$Login) =>
-  defer(() => (payload ? login(payload) : refreshToken())).pipe(shareReplay(1));
+  defer(() => (payload ? login(payload) : refreshToken()));
 
 export function getJwtToken$(payload?: Param$Login) {
   return (jwtToken$ || authenticate$(payload)).pipe(
@@ -37,7 +37,7 @@ const authUrlRegex = new RegExp(
 const isAuthUrl = (url?: string) => url && authUrlRegex.test(url);
 
 api.interceptors.request.use(async config => {
-  if (!isAuthUrl(config.url) && jwtToken$) {
+  if (!isAuthUrl(config.url)) {
     const { token } = await getJwtToken$().toPromise();
     config.headers['Authorization'] = 'bearer ' + token;
   }
