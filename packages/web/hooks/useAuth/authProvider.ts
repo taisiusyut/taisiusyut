@@ -124,6 +124,9 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
         }
       );
       return () => subscription.unsubscribe();
+    } else {
+      // set loginStatus to 'required'
+      dispatch({ type: 'AUTHENTICATE_FAILURE' });
     }
   }, [authActions]);
 
