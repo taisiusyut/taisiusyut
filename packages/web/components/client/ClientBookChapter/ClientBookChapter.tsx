@@ -60,9 +60,11 @@ export function ClientBookChapter({
       throw new Error(`scroller is not defined`);
     }
 
+    const isWindowScrollable = () =>
+      scroller.scrollHeight === scroller.offsetHeight;
+
     const scrollTo = (x: number, y: number) => {
-      // true if not scrollable
-      if (scroller.scrollHeight === scroller.offsetHeight) {
+      if (isWindowScrollable()) {
         window.scrollTo(x, y);
       } else {
         scroller.scrollLeft = x;
@@ -123,7 +125,7 @@ export function ClientBookChapter({
             const target = getTarget(chapterNo);
             if (target) {
               const pos = scrollTop + offsetHeight;
-              if (scrollTop === 0 || pos <= target.offsetTop) {
+              if (pos <= target.offsetTop) {
                 return -1;
               } else if (pos >= target.offsetTop + target.offsetHeight) {
                 return 1;
@@ -201,10 +203,14 @@ export function ClientBookChapter({
 
     setData(data => ({ ...data, [chapter.number]: chapter }));
 
-    // trigger checking after loaded
-    // for small content or large screen
-    scrollerRef.current?.dispatchEvent(new Event('scroll'));
-    window.dispatchEvent(new Event('scroll'));
+    // trigger checking after loaded, for small content or large screen.
+    // should not dispatch both because one of the value of `scrollTop` must be 0
+    // and hence -1 may return and have conflict
+    if (window.scrollY) {
+      window.dispatchEvent(new Event('scroll'));
+    } else {
+      scrollerRef.current?.dispatchEvent(new Event('scroll'));
+    }
   };
 
   if (bookID) {
