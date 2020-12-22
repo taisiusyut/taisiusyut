@@ -76,10 +76,10 @@ export class BookService extends MongooseCRUDService<Book> {
       }
     }
 
-    const books: Book[] = [];
+    const books: (Book & Document)[] = [];
     for (const idx of pool) {
       const book = await this.bookModel.findOne(query).skip(idx);
-      books.push(book as Book);
+      book && books.push(book);
     }
 
     return books;
