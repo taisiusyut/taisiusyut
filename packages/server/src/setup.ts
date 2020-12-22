@@ -11,7 +11,7 @@ import helmet from 'fastify-helmet';
 import rateLimit from 'fastify-rate-limit';
 import compression from 'fastify-compress';
 import cookieParser from 'fastify-cookie';
-import qs from 'qs';
+import qs from 'querystring';
 
 export type { NestFastifyApplication };
 

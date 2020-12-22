@@ -6,7 +6,7 @@ import {
 import { routes } from '@/constants';
 import { ChapterType } from '@/typings';
 import { rid } from '@/utils/rid';
-import qs from 'qs';
+import qs from 'querystring';
 
 export function createChapterDto(
   payload?: Partial<CreateChapterDto>
@@ -81,7 +81,7 @@ export function getChapters(
   return request
     .get(routes.get_chapters.generatePath({ bookID }))
     .set('Authorization', `bearer ${token}`)
-    .query(qs.stringify(query));
+    .query(qs.stringify(query as qs.ParsedUrlQueryInput));
 }
 
 export function getChapter(token: string, bookID: string, chapterID: string) {

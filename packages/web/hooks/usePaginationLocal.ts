@@ -18,7 +18,7 @@ import {
 import { PaginateResult } from '@/typings';
 import { PaginationProps } from '@/components/Pagination';
 import { setSearchParam } from '@/utils/setSearchParam';
-import qs from 'qs';
+import qs from 'querystring';
 
 interface Options {
   onFailure?: (error: any) => void;

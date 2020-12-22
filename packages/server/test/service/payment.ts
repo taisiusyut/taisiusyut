@@ -1,6 +1,6 @@
 import { CreatePaymentDto, UpdatePaymentDto } from '@/modules/payment/dto';
 import { routes } from '@/constants/routes';
-import qs from 'qs';
+import qs from 'querystring';
 
 export { CreatePaymentDto, UpdatePaymentDto };
 

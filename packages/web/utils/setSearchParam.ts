@@ -1,25 +1,13 @@
 import router from 'next/router';
-import qs, { IParseOptions, IStringifyOptions } from 'qs';
+import qs from 'querystring';
 
-interface Options {
-  parseOptions?: IParseOptions;
-  stringifyOptions?: IStringifyOptions;
-}
-
-function createSetSearchParam({
-  parseOptions,
-  stringifyOptions
-}: Options = {}) {
+function createSetSearchParam() {
   return function setSearchParam<T extends Record<string, unknown>>(
     payload: Partial<T> | ((params: Partial<T>) => Partial<T>)
   ) {
     const newState =
       typeof payload === 'function'
-        ? payload(
-            qs.parse(router.asPath.split('?')[1] || '', {
-              ...parseOptions
-            }) as T
-          )
+        ? payload(qs.parse(router.asPath.split('?')[1]) as T)
         : payload;
 
     // remove value equals to undefined and ''
@@ -32,10 +20,7 @@ function createSetSearchParam({
     router.push(
       {
         pathname: router.asPath.split('?')[0], // seems required for dynamic route
-        search: qs.stringify(newState, {
-          encodeValuesOnly: true,
-          ...stringifyOptions
-        })
+        search: qs.stringify(newState as qs.ParsedUrlQueryInput)
       },
       undefined,
       { shallow: true }

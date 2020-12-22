@@ -2,7 +2,7 @@ import { CreateUserDto, UpdateUserDto } from '@/modules/user/dto';
 import { routes } from '@/constants/routes';
 import { rid } from '@/utils/rid';
 import { UserRole } from '@/typings';
-import qs from 'qs';
+import qs from 'querystring';
 
 export { CreateUserDto, UpdateUserDto };
 
