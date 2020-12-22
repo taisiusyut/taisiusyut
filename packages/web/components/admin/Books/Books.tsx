@@ -75,7 +75,10 @@ export function Books() {
         <FilterInput name="name" label="Name" />
         <FilterInput name="tag" label="Tag" />
         {user?.role !== UserRole.Author && (
-          <FilterInput name="author" label="Author" />
+          <>
+            <FilterInput name="author" label="Author ID" />
+            <FilterInput name="authorName" label="Author name" />
+          </>
         )}
         <FormItem name="category" label="Category">
           <CategorySelect />
