@@ -149,6 +149,7 @@ export function createFilter<T extends Record<string, any>>(
       <Form
         layout="inline"
         className={`${classes['filter']} ${className}`.trim()}
+        initialValues={initialValues}
         onFinish={({ search }) =>
           (router.query.search || search) &&
           setSearchParam(params => ({ ...params, search }))
