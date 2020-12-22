@@ -31,7 +31,7 @@ function SectionItem({ book }: { book: Book }) {
       <div className={classes['book-info']}>
         <div className={classes['book-name']}>{book.name}</div>
         <div className={classes['book-author']}>
-          {book?.author && `${book.author.nickname} 著`}
+          {book?.authorName && `${book.authorName} 著`}
         </div>
         <div className={classes['book-category']}>
           {book.category && Category[book.category]}

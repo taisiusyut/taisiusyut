@@ -62,7 +62,7 @@ export function BookShelfItem({
       <div className={classes['item-content']}>
         <div className={classes['book-name']}>{book?.name}</div>
         <div className={classes['book-author']}>
-          {book?.author && `${book.author.nickname} 著`}
+          {book?.authorName && `${book.authorName} 著`}
         </div>
         <div className={classes['book-latest-chapter']}>
           {latestChapter && `連載至 ${latestChapter.name}`}

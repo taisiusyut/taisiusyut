@@ -73,7 +73,7 @@ export default function ClientBookDetailsPage(props: Props) {
   if (book) {
     head = (
       <Meta
-        title={`${book.name} | ${book.author.nickname} | 睇小說`}
+        title={`${book.name} | ${book.authorName} | 睇小說`}
         keywords={book.name}
         description={book.description}
       />

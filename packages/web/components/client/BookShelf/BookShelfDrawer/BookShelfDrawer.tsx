@@ -38,7 +38,7 @@ function DrawerHeader({ book, ...props }: HeaderProps) {
       <BookModel width={40} />
       <div>
         <div className={classes['book-name']}>{book?.name}</div>
-        <div className={classes['book-author']}>{book?.author.nickname}</div>
+        <div className={classes['book-author']}>{book?.authorName}</div>
       </div>
       <div>
         書籍詳情

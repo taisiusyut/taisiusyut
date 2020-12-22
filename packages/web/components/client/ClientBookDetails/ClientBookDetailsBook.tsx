@@ -23,7 +23,7 @@ export function ClientBookDetailsBook({ book }: Props) {
       <div className={classes['book-content']}>
         <div className={classes['book-title']}>
           <span className={classes['name']}>{book.name}</span>
-          <span className={classes['author']}>{book.author?.nickname} 著</span>
+          <span className={classes['author']}>{book.authorName} 著</span>
         </div>
       </div>
 

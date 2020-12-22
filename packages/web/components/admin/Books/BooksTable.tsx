@@ -33,11 +33,9 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
     accessor: ({ status }) => <BookStatusTag status={status} />
   },
   {
-    id: 'author',
+    id: 'authorName',
     Header: 'Author',
-    accessor: book => {
-      return book.author?.nickname;
-    }
+    accessor: book => book.authorName
   },
   {
     id: 'category',
