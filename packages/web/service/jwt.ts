@@ -19,20 +19,10 @@ export async function getJwtToken(payload?: Param$Login) {
   return jwtToken;
 }
 
-const excludeAuthUrls = [
-  routes.login,
-  routes.refresh_token,
-  routes.registration
-];
-
-const authUrlRegex = new RegExp(
-  `(${excludeAuthUrls.join('|').replace(/\//g, '\\/')})$`
-);
-
-const isAuthUrl = (url?: string) => url && authUrlRegex.test(url);
+const excludeUrls = [routes.login, routes.refresh_token, routes.registration];
 
 api.interceptors.request.use(async config => {
-  if (!isAuthUrl(config.url)) {
+  if (config.url && !excludeUrls.includes(config.url) && jwtToken) {
     const { token } = await getJwtToken();
     config.headers['Authorization'] = 'bearer ' + token;
   }

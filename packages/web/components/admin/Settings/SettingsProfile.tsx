@@ -7,6 +7,7 @@ import type { ContentEditorProps } from '@/components/admin/ContentEditor';
 import { useAuth, useAuthActions } from '@/hooks/useAuth';
 import {
   clearJwtToken,
+  getJwtToken,
   getProfile,
   updateProfile as updateProfileAPI
 } from '@/service';
@@ -30,9 +31,10 @@ const useUpdateProfile = () => {
   const [{ request, onSuccess, onFailure }] = useState(() => ({
     request: async (payload: Param$UpdateUser) => {
       const result = await updateProfileAPI(payload);
-      // clear the jwt token and so a new token will be return
+      // clear and get the new token
       // This make sure the checking of `nickname` in `routes.auth.profile` is correct
       clearJwtToken();
+      await getJwtToken();
       return result;
     },
     onSuccess: (user: Schema$User) => {
