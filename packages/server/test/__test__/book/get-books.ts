@@ -186,16 +186,13 @@ export function testGetBooks() {
     }
   });
 
-  test(`client access books by author id/nickname`, async () => {
+  test(`client access books by author nickname`, async () => {
     for (const author of authors) {
-      const payload = [author.auth.user.user_id, author.auth.user.nickname];
-      for (const value of payload) {
-        const response = await getBooks(author.auth.token, {
-          pageSize: 1000,
-          author: value
-        });
-        expect(response.body.data).toHaveLength(author.books.total);
-      }
+      const response = await getBooks(author.auth.token, {
+        pageSize: 1000,
+        authorName: author.auth.user.nickname
+      });
+      expect(response.body.data).toHaveLength(author.books.total);
     }
   });
 }

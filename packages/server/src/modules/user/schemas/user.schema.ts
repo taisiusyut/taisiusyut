@@ -50,7 +50,7 @@ export class User implements InsertedUserSchema {
       return this.username;
     }
   })
-  nickname?: string;
+  nickname: string;
 
   description?: string;
 

@@ -36,7 +36,8 @@ export interface Schema$Book extends Timestamp {
   category: Category;
   tags: string[];
   cover?: string | null;
-  author: Schema$BookAuthor; //ObjectId
+  authorName: string;
+  author: Schema$BookAuthor | null;
   status?: BookStatus;
 }
 
@@ -62,7 +63,7 @@ export interface Param$GetBooks extends Pagination, Search {
   name?: string;
   category?: Category;
   status?: BookStatus;
-  author?: string; // ObjectId or author.nickname
+  authorName?: string;
   tag?: string;
   createdAt?: DateRange;
   updatedAt?: DateRange;

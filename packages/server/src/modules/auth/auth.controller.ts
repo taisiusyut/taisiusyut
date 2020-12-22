@@ -16,6 +16,7 @@ import {
   InternalServerErrorException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { isMongoId } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,6 +31,7 @@ import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { RefreshToken } from './schemas/refreshToken.schema';
 import { DeleteAccountDto, ModifyPasswordDto, UpdateProfileDto } from './dto';
+import { AuthorNameUpdateEvent } from './event';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
@@ -39,7 +41,8 @@ export class AuthController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
-    private readonly refreshTokenService: RefreshTokenService
+    private readonly refreshTokenService: RefreshTokenService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   @Post(routes.auth.registration)
@@ -224,30 +227,50 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Body(AccessPipe) updateProfileDto: UpdateProfileDto
   ) {
-    if (req.user?.role === UserRole.Guest) {
+    if (!req.user) {
+      throw new BadRequestException(`user not found`);
+    }
+
+    if (req.user.role === UserRole.Guest) {
       throw new ForbiddenException();
     }
 
     const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
 
-    const user = await this.userService.findOneAndUpdate(
+    const result = await this.userService.findOneAndUpdate(
       {
-        _id: req.user?.user_id,
-        role: req.user?.role // required for discrimination
+        _id: req.user.user_id,
+        role: req.user.role // required for discrimination
       },
       updateProfileDto
     );
 
-    const { nickname, email } = updateProfileDto;
+    if (!result) {
+      throw new BadRequestException(`user not found`);
+    }
 
-    if (nickname || email) {
+    const nicknameHasChanged =
+      updateProfileDto.nickname &&
+      updateProfileDto.nickname !== req.user.nickname;
+
+    if (nicknameHasChanged) {
+      if (req.user.role === UserRole.Author) {
+        this.eventEmitter.emit(
+          AuthorNameUpdateEvent.name,
+          new AuthorNameUpdateEvent({
+            authorId: req.user.user_id,
+            authorName: result.nickname
+          })
+        );
+      }
+
       await this.refreshTokenService.findOneAndUpdate(
         { refreshToken: tokenFromCookies },
-        { nickname, email }
+        { nickname: result.nickname }
       );
     }
 
-    return user;
+    return result;
   }
 
   @Access('Auth')

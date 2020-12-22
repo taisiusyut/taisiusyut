@@ -16,21 +16,16 @@ import {
 import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
-import { UserService } from '@/modules/user/user.service';
 import { ObjectId } from '@/decorators';
-import { BookStatus, UserRole } from '@/typings';
+import { BookStatus } from '@/typings';
 import { AccessPipe, Access } from '@/utils/access';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { BookService } from './book.service';
 import { Book } from './schemas/book.schema';
-import { isMongoId } from 'class-validator';
 
 @Controller('book')
 export class BookController {
-  constructor(
-    private readonly bookService: BookService,
-    private readonly userService: UserService
-  ) {}
+  constructor(private readonly bookService: BookService) {}
 
   isPublicStatus(status: BookStatus) {
     return [BookStatus.Public, BookStatus.Finished].includes(status);
@@ -41,6 +36,7 @@ export class BookController {
   create(@Req() req: FastifyRequest, @Body() createBookDto: CreateBookDto) {
     return this.bookService.create({
       ...createBookDto,
+      authorName: req.user?.nickname,
       author: req.user?.user_id
     });
   }
@@ -100,7 +96,7 @@ export class BookController {
   @Get(routes.book.get_books)
   async getBooks(
     @Req() { user }: FastifyRequest,
-    @Query() { tag, author, ...dto }: GetBooksDto
+    @Query() { tag, ...dto }: GetBooksDto
   ) {
     const query: FilterQuery<Book> = {
       ...this.bookService.getRoleBasedQuery(user, dto)
@@ -108,16 +104,6 @@ export class BookController {
 
     if (tag) {
       query.tags = { $in: [tag] };
-    }
-
-    if (isMongoId(author)) {
-      query.author = author;
-    } else if (author) {
-      const result = await this.userService.findOne({
-        role: UserRole.Author,
-        nickname: author
-      });
-      query.author = String(result?._id);
     }
 
     return this.bookService.paginate(query as any);
@@ -133,7 +119,7 @@ export class BookController {
       req.params.type === 'public' ? BookStatus.Private : BookStatus.Public;
 
     const book = await this.bookService.findOneAndUpdate(
-      { _id: id, author: req.user?.user_id, status: currStatus },
+      { _id: id, authorName: req.user?.nickname, status: currStatus },
       {
         status:
           currStatus === BookStatus.Private

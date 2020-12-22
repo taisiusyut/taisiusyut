@@ -12,6 +12,7 @@ type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
 export const bookSelect: {
   [X in Exclude<keyof Schema$Book, keyof ShelfBook>]: 0;
 } = {
+  author: 0,
   tags: 0,
   description: 0
 };
@@ -48,7 +49,7 @@ export class BookShelf
     ref: Book.name,
     required: true,
     autopopulate: {
-      maxDepth: 2, // for author
+      maxDepth: 1,
       select: bookSelect
     }
   })

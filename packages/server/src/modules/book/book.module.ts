@@ -7,7 +7,6 @@ import {
   Document,
   MongooseFuzzySearchingField
 } from 'mongoose';
-import { UserModule } from '@/modules/user/user.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { fuzzySearch } from '@/utils/mongoose';
@@ -15,12 +14,12 @@ import { Schema$Book } from '@/typings';
 import { Book, BookSchema } from './schemas/book.schema';
 import { BookService } from './book.service';
 import { BookController } from './book.controller';
+import { BookEventConsumer } from './book.event-consumer';
 import autopopulate from 'mongoose-autopopulate';
 import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
-    UserModule,
     MongooseModule.forFeatureAsync([
       {
         imports: [CloudinaryModule],
@@ -31,6 +30,7 @@ import paginate from 'mongoose-paginate-v2';
 
           const fields: MongooseFuzzySearchingField<Schema$Book>[] = [
             { name: 'name' },
+            { name: 'authorName' },
             'tags' // FIXME: wait for mongoose-fuzzy-searching
           ];
 
@@ -60,7 +60,7 @@ import paginate from 'mongoose-paginate-v2';
     ])
   ],
   controllers: [BookController],
-  providers: [BookService],
+  providers: [BookService, BookEventConsumer],
   exports: [BookService]
 })
 export class BookModule {}

@@ -39,8 +39,12 @@ class GetBooks
   tag?: string;
 
   @IsOptional()
-  @IsString()
+  @IsMongoId()
   author?: string;
+
+  @IsOptional()
+  @IsString()
+  authorName?: string;
 
   @IsOptional()
   @IsEnum(BookStatus)

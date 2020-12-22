@@ -42,6 +42,9 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Type(() => Author)
   author: Author | string;
 
+  @Prop({ type: String, required: true, trim: true })
+  authorName: string;
+
   @Prop({
     type: Number,
     default: BookStatus.Private,

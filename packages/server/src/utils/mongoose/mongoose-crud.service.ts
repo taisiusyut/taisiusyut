@@ -91,7 +91,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     query: FilterQuery<D>,
     options: QueryFindBaseOptions = {},
     projection: any = ''
-  ): Promise<T | null> {
+  ): Promise<D | null> {
     return this.model.findOne(query, projection, options);
   }
 
@@ -99,7 +99,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
     query: FilterQuery<D> = {},
     projection: any | null = null,
     options: QueryFindOptions = {}
-  ): Promise<T[]> {
+  ): Promise<D[]> {
     return this.model.find(query, projection, options);
   }
 

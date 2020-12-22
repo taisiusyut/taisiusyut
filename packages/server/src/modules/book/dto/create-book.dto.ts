@@ -11,6 +11,9 @@ class Excluded implements Partial<Schema$Book> {
   author?: undefined;
 
   @Exclude()
+  authorName?: undefined;
+
+  @Exclude()
   status?: undefined;
 
   @Exclude()
