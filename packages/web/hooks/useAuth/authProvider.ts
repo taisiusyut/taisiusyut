@@ -7,7 +7,7 @@ import {
   Schema$User,
   Schema$Authenticated
 } from '@/typings';
-import { clearJwtToken, logout, registration, getJwtToken$ } from '@/service';
+import { clearJwtToken, logout, registration, getJwtToken } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import {
   AuthState,
@@ -61,7 +61,7 @@ function authenticate$(
 
   // handle for login / referesh-token
   const isLogin = !!payload;
-  return getJwtToken$(payload).pipe(
+  return defer(() => getJwtToken(payload)).pipe(
     catchError(error => {
       isLogin && Toaster.apiError('Login failure', error);
       return throwError(error);

@@ -1,27 +1,22 @@
 import type { Param$Login, Schema$Authenticated } from '@/typings';
 import { routes } from '@/constants';
-import { defer, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { api } from './api';
 import { login, refreshToken } from './auth';
 
-let jwtToken$: Observable<Schema$Authenticated> | null = null;
+let jwtToken: Schema$Authenticated | null = null;
 
 export function clearJwtToken() {
-  jwtToken$ = null;
+  jwtToken = null;
 }
 
-const authenticate$ = (payload?: Param$Login) =>
-  defer(() => (payload ? login(payload) : refreshToken()));
+const isExpired = (jwtToken: Schema$Authenticated) =>
+  +new Date(jwtToken.expiry) - +new Date() <= 30 * 1000;
 
-export function getJwtToken$(payload?: Param$Login) {
-  return (jwtToken$ || authenticate$(payload)).pipe(
-    switchMap(payload => {
-      const expired = +new Date(payload.expiry) - +new Date() <= 30 * 1000;
-      jwtToken$ = expired ? authenticate$() : jwtToken$ || of(payload);
-      return jwtToken$;
-    })
-  );
+export async function getJwtToken(payload?: Param$Login) {
+  if (!jwtToken || isExpired(jwtToken)) {
+    jwtToken = await (payload ? login(payload) : refreshToken());
+  }
+  return jwtToken;
 }
 
 const excludeAuthUrls = [
@@ -38,7 +33,7 @@ const isAuthUrl = (url?: string) => url && authUrlRegex.test(url);
 
 api.interceptors.request.use(async config => {
   if (!isAuthUrl(config.url)) {
-    const { token } = await getJwtToken$().toPromise();
+    const { token } = await getJwtToken();
     config.headers['Authorization'] = 'bearer ' + token;
   }
   return config;
