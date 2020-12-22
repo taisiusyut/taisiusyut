@@ -66,20 +66,20 @@ function ClientLayoutContent({ children }: Props) {
         .trim()}
     >
       <div className={classes['layout-content']}>
+        {/* Should not unmount the left panel component. 
+            Because the first-time rendering and scroll position restoration not smooth */}
         <div className={classes['left-panel']} hidden={isSearch}>
           <BookShelf />
         </div>
-        {isSearch && (
-          <div className={classes['left-panel']}>
-            <ClientSearch
-              onLeave={() =>
-                goback({ targetPath: ['/', '/featured'] }).then(() =>
-                  setIsSearch(false)
-                )
-              }
-            />
-          </div>
-        )}
+        <div className={classes['left-panel']} hidden={!isSearch}>
+          <ClientSearch
+            onLeave={() =>
+              goback({ targetPath: ['/', '/featured'] }).then(() =>
+                setIsSearch(false)
+              )
+            }
+          />
+        </div>
         <div className={classes['right-panel']}>{children}</div>
       </div>
       <div className={classes['bottom-navigation']}>

@@ -17,14 +17,24 @@
   @include flex($flex-direction: column);
   flex: 1 1 auto;
   overflow: hidden;
+
+  @media (max-width: $break-point) {
+    padding-top: 59px;
+  }
 }
 
 .search-field {
-  @extend .border;
+  @include dimen(100%);
   @include flex(center);
-  @include shadow-border();
+  background-color: var(--primary-color);
+  border-bottom: 1px solid var(--divider-color);
   flex: 0 0 auto;
-  padding: 10px 20px 15px;
+  padding: 10px 15px 15px;
+
+  @media (max-width: $break-point) {
+    @include fixed($header-height, null, 0);
+    z-index: 10;
+  }
 }
 
 .select {

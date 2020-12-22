@@ -11,13 +11,14 @@ import dayjs from 'dayjs';
 export type Book = Partial<Schema$Book> & { id: string };
 
 interface Props {
+  className: string;
   book: Partial<Book>;
 }
 
-export function ClientSearchItem({ book }: Props) {
+export function ClientSearchItem({ book, className: id }: Props) {
   const { asPath } = useRouter();
 
-  const className = [classes['item']];
+  const className = [id, classes['item']];
 
   const content = (flatten: boolean) => (
     <div className={classes['item-body']}>

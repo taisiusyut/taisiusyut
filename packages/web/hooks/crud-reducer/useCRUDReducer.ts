@@ -22,15 +22,15 @@ export interface CreateUseCRUDReducerOps<I, Prefill extends boolean = true>
 
 // prettier-ignore
 export interface CreateUseCRUDReducer  {
-  <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<false> & { prefill: false }): UseCRUDReducer<I, K, false>;
-  <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<true>): UseCRUDReducer<I, K, true>;
-  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<boolean>): UseCRUDReducer<I, K, true>
+  <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<I, false> & { prefill: false }): UseCRUDReducer<I, K, false>;
+  <I, K extends Key<I>>(key: K, options: CreateUseCRUDReducerOps<I, true>): UseCRUDReducer<I, K, true>;
+  <I, K extends Key<I>>(key: K, options?: CreateUseCRUDReducerOps<I, boolean>): UseCRUDReducer<I, K, true>
 }
 
 export const createUseCRUDReducer: CreateUseCRUDReducer = <I, K extends Key<I>>(
   key: K,
-  { initializer, ...options }: CreateUseCRUDReducerOps<any> = {}
-): UseCRUDReducer<I, K, any> => {
+  { initializer, ...options }: CreateUseCRUDReducerOps<I, boolean> = {}
+): UseCRUDReducer<I, K, boolean> => {
   const [initialState, reducer] = createCRUDReducer<I, K>(key, options);
 
   return function useCRUDReducer() {
