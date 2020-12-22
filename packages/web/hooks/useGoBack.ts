@@ -51,7 +51,12 @@ export function GoBackProvider({ children }: Props) {
   }, []);
 
   useEffect(() => {
-    const handler = (url: string) => {
+    const handler = (url: string, options?: { shallow: boolean }) => {
+      // ignore shallow route
+      // use case: search books -> book details -> chapter -> navigate next few chapter -> go back
+      // expect return to book details
+      if (options?.shallow) return;
+
       const last = records.current.slice(-1)[0];
       const maxRecords = 5;
       const samePathname =
