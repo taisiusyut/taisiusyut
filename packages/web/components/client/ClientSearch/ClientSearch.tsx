@@ -108,7 +108,7 @@ export function ClientSearch({ onLeave }: Props) {
           }),
           mergeMap(pageNo => getBooks({ [search.type]: search.value, pageNo })),
           catchError((error: AxiosError) => {
-            if (error.config.params.pageNo === 1) {
+            if (error.config.params?.pageNo === 1) {
               actions.list([]);
             }
             Toaster.apiError(`Get books failure`, error);
