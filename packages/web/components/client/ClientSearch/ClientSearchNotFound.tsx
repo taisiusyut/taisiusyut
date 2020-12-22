@@ -9,7 +9,7 @@ function getErrorText(type?: string) {
   switch (type) {
     case 'name':
       return `書名`;
-    case 'author':
+    case 'authorName':
       return `作者名稱`;
     case 'tag':
       return `標籤`;

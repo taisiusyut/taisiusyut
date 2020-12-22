@@ -5,6 +5,7 @@ import { Button, HTMLSelect } from '@blueprintjs/core';
 import { Input } from '@/components/Input';
 import { createForm, FormProps } from '@/utils/form';
 import classes from './ClientSearch.module.scss';
+import { Param$GetBooks } from '@/typings';
 
 export interface Store {
   type: string;
@@ -13,15 +14,19 @@ export interface Store {
 
 interface Props extends FormProps<Store> {}
 
-const options = [
+type Key = keyof Param$GetBooks;
+
+const options: { value: Key; label: string }[] = [
   { value: 'search', label: '全部' },
   { value: 'name', label: '書名' },
-  { value: 'author', label: '作者' },
+  { value: 'authorName', label: '作者' },
   { value: 'tag', label: '標籤' }
 ];
 
-export const transoform = (query: Record<string, any>) => {
-  const types = ['name', 'author', 'tag'];
+export const transoform = (
+  query: Record<string, any>
+): { type: Key; value: string } => {
+  const types: Key[] = ['name', 'authorName', 'tag'];
   for (const type of types) {
     if (typeof query[type] === 'string') {
       return { type, value: query[type] };
