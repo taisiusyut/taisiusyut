@@ -52,7 +52,6 @@
   @include relative(); // for shadow-border
   @include shadow-border();
   flex: 1 0 300px;
-  max-width: 300px;
   overflow: auto;
 }
 
