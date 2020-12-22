@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import { AxiosError } from 'axios';
 import { EMPTY, fromEvent, merge } from 'rxjs';
 import {
@@ -23,7 +23,6 @@ import {
 } from './ClientSearchInput';
 import { ClientSearchItem, Book } from './ClientSearchItem';
 import { ClientSearchNotFound } from './ClientSearchNotFound';
-import qs from 'qs';
 import classes from './ClientSearch.module.scss';
 
 interface Props {
@@ -42,18 +41,20 @@ const placeholder = Array.from<void, Book>({ length: pageSize }, (_, idx) => ({
 
 const createId = (idx: number) => `search-result-${idx}`;
 
+const initialSearch: Store = { type: '', value: '' };
+
 export function ClientSearch({ onLeave }: Props) {
-  const [search, setSearch] = useState<Store>({ type: '', value: '' });
+  const { asPath, query, push } = useRouter();
+  const [search, setSearch] = useState<Store>(initialSearch);
   const [state, actions] = useBookReducer();
   const [form] = useForm();
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (router.asPath.startsWith('/search')) {
-      const query = qs.parse(router.asPath.split('?')[1]);
+    if (asPath.startsWith('/search')) {
       setSearch(transoform(query));
     }
-  }, []);
+  }, [asPath, query]);
 
   useEffect(() => {
     form.setFieldsValue(search);
@@ -142,7 +143,7 @@ export function ClientSearch({ onLeave }: Props) {
           form={form}
           onFinish={search => {
             setSearch(search);
-            router.push(
+            push(
               {
                 pathname: '/search',
                 query: search.value
@@ -155,7 +156,7 @@ export function ClientSearch({ onLeave }: Props) {
           }}
         />
         <div className={classes['books']} ref={scrollerRef}>
-          {state.list.length ? (
+          {
             <>
               <div className={classes['border']} />
               {state.list.map((book, idx) => (
@@ -166,13 +167,14 @@ export function ClientSearch({ onLeave }: Props) {
                 />
               ))}
             </>
-          ) : search.value?.trim() ? (
-            <ClientSearchNotFound
-              className={classes['not-found']}
-              searchType={search.type}
-            />
-          ) : null}
+          }
         </div>
+        {state.list.length === 0 && search.value?.trim() && (
+          <ClientSearchNotFound
+            className={classes['not-found']}
+            searchType={search.type}
+          />
+        )}
       </div>
     </div>
   );

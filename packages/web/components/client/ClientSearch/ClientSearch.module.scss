@@ -46,10 +46,9 @@
 }
 
 .books {
-  height: 100%;
   overflow: auto;
 }
 
 .not-found {
-  height: 80%;
+  flex: 1 1 auto;
 }

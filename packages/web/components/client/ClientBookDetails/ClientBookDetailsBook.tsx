@@ -1,7 +1,8 @@
 import React from 'react';
+import router from 'next/router';
 import { Card } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
-import { Tags } from '@/components/Tags';
+import { Tags, Tag } from '@/components/Tags';
 import { BookStatus, Schema$Book } from '@/typings';
 import classes from './ClientBookDetails.module.scss';
 
@@ -29,11 +30,15 @@ export function ClientBookDetailsBook({ book }: Props) {
       <div className={classes['tags']}>
         {book.status && (
           <Tags
-            tags={[
-              book.status === BookStatus.Finished ? '已完結' : '連載中',
-              ...(book.tags || [])
-            ]}
-          />
+            tags={book.tags}
+            onTagClick={tag =>
+              router.replace({ pathname: '/search', query: { tag } })
+            }
+          >
+            <Tag>
+              {book.status === BookStatus.Finished ? '已完結' : '連載中'}
+            </Tag>
+          </Tags>
         )}
       </div>
 

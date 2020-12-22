@@ -8,9 +8,11 @@ interface Props extends INonIdealStateProps {
 function getErrorText(type?: string) {
   switch (type) {
     case 'name':
-      return `請檢查書名是否正確及完整`;
+      return `書名`;
     case 'author':
-      return `請檢查作者名稱是否正確及完整`;
+      return `作者名稱`;
+    case 'tag':
+      return `標籤`;
     default:
       return '';
   }
@@ -25,7 +27,12 @@ export function ClientSearchNotFound(props: Props) {
       description={
         <>
           <div>找不到相關結果</div>
-          {text && <div>{text}</div>}
+          {text && (
+            <>
+              <div>請檢查「{text}」否正確</div>
+              <div>或選擇「全部」並重新搜索</div>
+            </>
+          )}
         </>
       }
     />
