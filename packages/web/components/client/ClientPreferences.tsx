@@ -121,13 +121,13 @@ export function ClientPreferencesDialog({
 
         <ListItem
           rightElement={
-            <div>
+            <div className="numeric-input">
               <FormItem name="fontSize">
                 <NumericInput fill minorStepSize={1} />
               </FormItem>
               <style jsx>
                 {`
-                  :global(.#{$ns}-input-group) {
+                  .numeric-input :global(.#{$ns}-input-group) {
                     width: 50px;
                     :global(input) {
                       text-align: center;
