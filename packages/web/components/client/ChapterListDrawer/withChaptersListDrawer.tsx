@@ -79,7 +79,7 @@ export function withChaptersListDrawer<P extends OnClick>(
     });
 
     const [{ loading }] = useRxAsync(request, {
-      defer: loaded,
+      defer: !isOpen || loaded,
       onSuccess,
       onFailure
     });
