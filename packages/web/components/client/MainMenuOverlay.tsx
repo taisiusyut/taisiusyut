@@ -19,7 +19,6 @@ import {
   ClientPreferencesDialogTitle
 } from '@/components/client/ClientPreferences';
 import { Github } from '@/components/Github';
-import { widthAddtoHomeScreen } from '@/components/widthAddtoHomeScreen';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
@@ -33,17 +32,6 @@ interface OnClick {
 }
 
 const AuthrizedListItem = withAuthRequired(ListItem);
-
-const AddtoHomeScreen = widthAddtoHomeScreen(function ({ onClick }) {
-  return (
-    <>
-      <ListSpacer />
-      <ListItem icon="plus" rightElement={chevron} onClick={onClick}>
-        加至主畫面
-      </ListItem>
-    </>
-  );
-});
 
 const chevron = <Icon icon="chevron-right" />;
 
@@ -103,7 +91,14 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
 
       <ListSpacer />
 
-      <ListItem icon="help" rightElement={chevron}>
+      <ListItem
+        icon="help"
+        rightElement={chevron}
+        onClick={() => {
+          props.onClose();
+          router.push('/faq');
+        }}
+      >
         常見問題
       </ListItem>
 
@@ -114,8 +109,6 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       >
         Github
       </ListItem>
-
-      <AddtoHomeScreen />
 
       <ListItem icon="code" rightElement={pkg.version}>
         Version

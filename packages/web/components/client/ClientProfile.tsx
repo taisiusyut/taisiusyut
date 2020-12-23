@@ -12,12 +12,9 @@ import { withModifyPassword } from '@/components/client/withModifyPassword';
 import { withUpdateProfile } from '@/components/client/withUpdateProfile';
 import { openLoginRecordsDialog } from '@/components/client/LoginRecordsDialog';
 import { useAuth } from '@/hooks/useAuth';
-import { UserRole } from '@/typings';
 import { AuthState, AuthActions } from '@/hooks/useAuth';
 import { createOpenOverlay } from '@/utils/openOverlay';
 import dayjs from 'dayjs';
-
-const handleClick = () => void 0;
 
 const chevron = <Icon icon="chevron-right" />;
 
@@ -75,22 +72,6 @@ export function ClientProfileDialog({
       >
         已登入裝置
       </ListItem>
-
-      <ListSpacer />
-
-      <ListItem onClick={handleClick} rightElement={chevron}>
-        付費記錄
-      </ListItem>
-
-      {auth.user.role === UserRole.Client && (
-        <>
-          <ListSpacer />
-
-          <ListItem onClick={handleClick} rightElement={chevron}>
-            我要做作者
-          </ListItem>
-        </>
-      )}
 
       <ListViewFooter onClose={props.onClose}>
         <Button

@@ -5,8 +5,6 @@ import { useAuthState } from '@/hooks/useAuth';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import classes from './BookShelf.module.scss';
 
-const searchURL = '/';
-
 const LoginButton = withAuthRequired(Button);
 
 export function BookShelfEmpty() {
@@ -21,13 +19,11 @@ export function BookShelfEmpty() {
     <NonIdealState
       description="尚未加入書籍📚"
       action={
-        router.pathname === searchURL ? undefined : (
-          <Button
-            text="搜索書籍"
-            intent="primary"
-            onClick={() => router.push(searchURL)}
-          />
-        )
+        <Button
+          text="搜索書籍"
+          intent="primary"
+          onClick={() => router.push(`/search`)}
+        />
       }
     />
   );
@@ -36,13 +32,7 @@ export function BookShelfEmpty() {
     content = (
       <NonIdealState
         description="請先登入"
-        action={
-          <LoginButton
-            text="登入"
-            intent="primary"
-            onClick={() => router.push(searchURL)}
-          />
-        }
+        action={<LoginButton text="登入" intent="primary" />}
       />
     );
   }
