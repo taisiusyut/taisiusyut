@@ -63,7 +63,7 @@ export function BookShelf() {
         <div className={classes['border']}></div>
         {books.length ? (
           books.map(data => <BookShelfItem key={data.bookID} data={data} />)
-        ) : (
+        ) : loginStatus === 'unknown' ? null : (
           <BookShelfEmpty />
         )}
       </div>
