@@ -115,7 +115,6 @@ export function ClientBookChapter({
         )
       );
 
-      // For iPhone safari, since the toolbar will be hidden if `window` is scrolling down
       const windowScroll$ = fromEvent(window, 'scroll').pipe(
         map(() => [window.scrollY, window.innerHeight] as const)
       );
@@ -127,7 +126,8 @@ export function ClientBookChapter({
             const target = getTarget(chapterNo);
             if (target) {
               const pos = scrollTop + offsetHeight;
-              if (pos <= target.offsetTop) {
+              // Note: should not use both <= and >= for checking
+              if (pos < target.offsetTop) {
                 return -1;
               } else if (pos >= target.offsetTop + target.offsetHeight) {
                 return 1;
@@ -158,7 +158,9 @@ export function ClientBookChapter({
             setCurrentChapter(chapterNo);
             gotoChapter({ bookName, chapterNo, shallow: true }).then(() => {
               // remove the record so goback will be correctly
-              setRecords(records => records.slice(0, records.length - 1));
+              setRecords(records => {
+                return records.slice(0, records.length - 1);
+              });
             });
           }
         });
@@ -210,8 +212,8 @@ export function ClientBookChapter({
     setData(data => ({ ...data, [chapter.number]: chapter }));
 
     // trigger checking after loaded, for small content or large screen.
-    // should not dispatch both because one of the value of `scrollTop` must be 0
-    // and hence -1 may return and have conflict
+    // should not dispatch both at the same time because one of the value of `scrollTop` must be 0
+    // and hence -1 may return and cause conflict
     if (window.scrollY) {
       window.dispatchEvent(new Event('scroll'));
     } else {
