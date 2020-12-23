@@ -18,22 +18,52 @@
   flex: 1 1 auto;
   overflow: hidden;
 
-  @media (max-width: $break-point) {
+  @mixin single-page {
     padding-top: 59px;
+  }
+
+  :global([data-display='single']) & {
+    @include single-page;
+  }
+
+  @media (max-width: $break-point) {
+    :global(:not(html[data-display='single'])) {
+      @include single-page;
+    }
   }
 }
 
 .search-field {
   @include dimen(100%);
   @include flex(center);
+  @include relative(); // block the header border
   background-color: var(--primary-color);
   border-bottom: 1px solid var(--divider-color);
   flex: 0 0 auto;
   padding: 10px 15px 15px;
 
-  @media (max-width: $break-point) {
+  :global([data-width='fixed']) & {
+    @media (min-width: $fix-width) {
+      @include margin-x(auto);
+      max-width: $fix-width;
+      width: 100%;
+      right: 0;
+    }
+  }
+
+  @mixin single-page {
     @include fixed($header-height, null, 0);
     z-index: 10;
+  }
+
+  :global([data-display='single']) & {
+    @include single-page;
+  }
+
+  @media (max-width: $break-point) {
+    :global(:not(html[data-display='single'])) {
+      @include single-page;
+    }
   }
 }
 

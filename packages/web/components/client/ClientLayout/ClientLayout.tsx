@@ -1,7 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { fromEvent } from 'rxjs';
-import { startWith } from 'rxjs/operators';
 import { useGoBack } from '@/hooks/useGoBack';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
 import { BreakPointsProvider } from '@/hooks/useBreakPoints';
@@ -25,25 +23,25 @@ const breakPoint = 768;
 function ClientLayoutContent({ children }: Props) {
   const { asPath, events } = useRouter();
   const { pagingDisplay } = useClientPreferencesState();
+  const { goBack } = useGoBack();
+
   const [isSearching, setIsSearching] = useState(asPath.startsWith('/search'));
-  const [singlePage, setSinglePage] = useState(false);
 
   const isHome = /^\/(\?.*)?$/.test(asPath);
   const isFeatured = /^\/featured(\?.*)?$/.test(asPath);
   const isSearch = asPath.startsWith('/search');
-  const { goBack } = useGoBack();
 
-  useEffect(() => {
-    const subscription = fromEvent(window, 'resize')
-      .pipe(startWith(null))
-      .subscribe(() => {
-        setSinglePage(!pagingDisplay || window.innerWidth <= breakPoint);
-      });
+  const hideBookShelf = (!pagingDisplay && !isHome) || isSearching;
+  const hideSearchPanel = (!pagingDisplay && !isSearch) || !isSearching;
+  const showRightPanel = pagingDisplay || (!isHome && !isSearch);
+  const mountBottomNav = isHome || isFeatured || isSearch;
 
-    return () => subscription.unsubscribe();
-  }, [pagingDisplay]);
+  const leaveSearchPanel = () =>
+    goBack({ targetPath: ['/', '/featured'] }).then(() =>
+      setIsSearching(false)
+    );
 
-  // scroll restoration for mobile view
+  // scroll restoration for single page display
   useEffect(() => {
     // check shallow for `ClientBookChapter.tsx`
     const routeChangeStart = (_url: string, options: { shallow?: boolean }) => {
@@ -85,32 +83,20 @@ function ClientLayoutContent({ children }: Props) {
         .trim()}
     >
       <div className={classes['layout-content']}>
-        {/* Should not unmount the left panel component. 
-            Because the first-time rendering and scroll position restoration not smooth */}
-        <div
-          className={classes['left-panel']}
-          hidden={(singlePage && !isHome) || isSearching}
-        >
+        {/* should not unmount the left panel component. 
+            because the first-time rendering and scroll position restoration will not smooth */}
+        <div className={classes['left-panel']} hidden={hideBookShelf}>
           <BookShelf />
         </div>
-        <div
-          className={classes['left-panel']}
-          hidden={(singlePage && !isSearch) || !isSearching}
-        >
-          <ClientSearch
-            onLeave={() =>
-              goBack({ targetPath: ['/', '/featured'] }).then(() =>
-                setIsSearching(false)
-              )
-            }
-          />
+        <div className={classes['left-panel']} hidden={hideSearchPanel}>
+          <ClientSearch onLeave={leaveSearchPanel} />
         </div>
-        {(!singlePage || (!isHome && !isSearch)) && (
+        {showRightPanel && (
           <div className={classes['right-panel']}>{children}</div>
         )}
       </div>
       <div className={classes['bottom-navigation']}>
-        {(isHome || isFeatured || isSearch) && <BottomNavigation />}
+        {mountBottomNav && <BottomNavigation />}
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 @import '~normalize.css';
 @import '~@fullstack/style/dist/blueprint.css';
 @import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
-// @import '~@blueprintjs/datetime/lib/css/blueprint-datetime.css';
 @import './utils';
 @import './variables';
 @import './form';
@@ -23,6 +22,8 @@ body {
   font-family: 'Muli', #{$pt-font-family};
   margin: 0;
   padding: 0;
+
+  // this disable scroll bouncing on some brwoser
   overscroll-behavior: none;
 
   @media (min-width: $break-point + 1) {

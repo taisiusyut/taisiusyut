@@ -1,7 +1,5 @@
 @import '~styles/utils';
 
-$fix-width: 1280px;
-
 .header {
   @include dimen(100%, $header-height);
   @include flex(center, center);
@@ -41,8 +39,8 @@ $fix-width: 1280px;
       margin: auto;
 
       .header {
+        @include margin-x(auto);
         max-width: $fix-width;
-        margin: auto;
         right: 0;
       }
     }
@@ -108,7 +106,7 @@ $fix-width: 1280px;
 }
 
 @media (max-width: $break-point) {
-  :global(html:not([data-display='single'])) {
+  :global(:not([data-display='single'])) {
     @include single-page;
   }
 
