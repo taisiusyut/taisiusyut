@@ -27,7 +27,7 @@
   }
 
   @media (max-width: $break-point) {
-    :global(:not(html[data-display='single'])) {
+    :global(html:not([data-display='single'])) & {
       @include single-page;
     }
   }
@@ -36,7 +36,7 @@
 .search-field {
   @include dimen(100%);
   @include flex(center);
-  @include relative(); // block the header border
+  @include relative(); // block the header's shadow border
   background-color: var(--primary-color);
   border-bottom: 1px solid var(--divider-color);
   flex: 0 0 auto;
@@ -61,7 +61,7 @@
   }
 
   @media (max-width: $break-point) {
-    :global(:not(html[data-display='single'])) {
+    :global(html:not([data-display='single'])) & {
       @include single-page;
     }
   }

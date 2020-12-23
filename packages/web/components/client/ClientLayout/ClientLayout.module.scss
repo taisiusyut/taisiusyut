@@ -106,7 +106,7 @@
 }
 
 @media (max-width: $break-point) {
-  :global(:not([data-display='single'])) {
+  :global(html:not([data-display='single'])) {
     @include single-page;
   }
 

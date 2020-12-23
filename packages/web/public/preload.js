@@ -35,6 +35,9 @@
     );
   };
 
+  /** @type {Preferences}} */
+  var preferences = {};
+
   try {
     var keys = {
       root: 'taisiusyut',
@@ -52,23 +55,23 @@
     var storage = rootStorage[storageKey] || {};
 
     /** @type {Preferences}} */
-    var preferences = storage['preferences'] || {};
-
-    window.__setTheme(preferences['theme'] || 'dark');
-    window.__setAccentColor(preferences['accentColor'] || 'blue');
-    window.__setFixWidth(
-      typeof preferences['fixWidth'] === 'undefined'
-        ? true
-        : preferences['fixWidth']
-    );
-    window.__setPagingDisplay(
-      typeof preferences['pagingDisplay'] === 'undefined'
-        ? true
-        : preferences['pagingDisplay']
-    );
+    preferences = storage['preferences'] || {};
   } catch (error) {
     console.log(error);
   }
+
+  window.__setTheme(preferences['theme'] || 'dark');
+  window.__setAccentColor(preferences['accentColor'] || 'blue');
+  window.__setFixWidth(
+    typeof preferences['fixWidth'] === 'undefined'
+      ? true
+      : preferences['fixWidth']
+  );
+  window.__setPagingDisplay(
+    typeof preferences['pagingDisplay'] === 'undefined'
+      ? true
+      : preferences['pagingDisplay']
+  );
 
   function setViewHeightVariable() {
     const vh = window.innerHeight * 0.01;

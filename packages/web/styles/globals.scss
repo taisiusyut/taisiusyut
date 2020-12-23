@@ -29,7 +29,7 @@ body {
   @media (min-width: $break-point + 1) {
     font-size: $pt-font-size;
 
-    :not([data-display='single']) & {
+    html:not([data-display='single']) & {
       overflow: hidden;
       height: 100vh;
     }
