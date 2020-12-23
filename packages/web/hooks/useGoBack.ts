@@ -1,12 +1,8 @@
-/**
- * Anims to preserve search params in previous url
- */
-
 import React, {
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef
 } from 'react';
 import router from 'next/router';
@@ -20,8 +16,14 @@ export interface GoBackOptions {
 }
 
 type GoBack = (options: GoBackOptions) => Promise<void>;
+type SetRecords = (handler: (records: string[]) => string[]) => void;
 
-const ActionContext = React.createContext<GoBack | undefined>(undefined);
+export interface GoBackActions {
+  goBack: GoBack;
+  setRecords: SetRecords;
+}
+
+const ActionContext = React.createContext<GoBackActions | undefined>(undefined);
 
 export function useGoBack() {
   const context = useContext(ActionContext);
@@ -33,30 +35,36 @@ export function useGoBack() {
 
 export function GoBackProvider({ children }: Props) {
   const records = useRef<string[]>([]);
-  const goBack = useCallback<GoBack>(async ({ targetPath }) => {
-    const previous = records.current[records.current.length - 2];
-    const paths = Array.isArray(targetPath) ? targetPath : [targetPath];
-
-    if (
-      paths.some(
-        path =>
-          previous && decodeURIComponent(previous).replace(/\?.*/, '') === path
-      )
-    ) {
-      await router.push(previous);
-    } else {
-      await router.push(paths[0]);
-    }
-    records.current = records.current.slice(0, -2);
+  const actions = useMemo<GoBackActions>(() => {
+    return {
+      goBack: async ({ targetPath }) => {
+        const previous = records.current[records.current.length - 2];
+        const paths = Array.isArray(targetPath) ? targetPath : [targetPath];
+        if (
+          paths.some(
+            path =>
+              previous &&
+              decodeURIComponent(previous).replace(/\?.*/, '') === path
+          )
+        ) {
+          await router.push(previous);
+        } else {
+          await router.push(paths[0]);
+        }
+        records.current = records.current.slice(0, -2);
+      },
+      setRecords: handler => {
+        records.current = handler(records.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    const handler = (url: string, options?: { shallow: boolean }) => {
-      // ignore shallow route
-      // use case: search books -> book details -> chapter -> navigate next few chapter -> go back
-      // expect return to book details
-      if (options?.shallow) return;
-
+    const handler = (url: string) => {
+      // Note:
+      // should not return/skip if shallow is false,
+      // because the purpose of this function is to preserve search params
+      // but search params always set shallow to true
       const last = records.current.slice(-1)[0];
       const maxRecords = 5;
       const samePathname =
@@ -72,7 +80,7 @@ export function GoBackProvider({ children }: Props) {
 
   return React.createElement(
     ActionContext.Provider,
-    { value: goBack },
+    { value: actions },
     children
   );
 }

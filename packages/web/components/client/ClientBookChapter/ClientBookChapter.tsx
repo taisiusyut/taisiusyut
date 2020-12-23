@@ -12,6 +12,7 @@ import {
 } from '@/components/client/ChapterListDrawer';
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { useClientPreferencesState } from '@/hooks/useClientPreferences';
+import { useGoBack } from '@/hooks/useGoBack';
 import { ClientBookChapterContent } from './ClientBookChapterContent';
 import classes from './ClientBookChapter.module.scss';
 
@@ -45,6 +46,7 @@ export function ClientBookChapter({
   const loaded = useRef<Record<string, boolean>>({
     [initialChapterNo]: !!initialChapter
   });
+  const { setRecords } = useGoBack();
 
   const {
     autoFetchNextChapter,
@@ -154,7 +156,10 @@ export function ClientBookChapter({
           if (newTarget) {
             chapterNo = newChapterNo;
             setCurrentChapter(chapterNo);
-            gotoChapter({ bookName, chapterNo, shallow: true });
+            gotoChapter({ bookName, chapterNo, shallow: true }).then(() => {
+              // remove the record so goback will be correctly
+              setRecords(records => records.slice(0, records.length - 1));
+            });
           }
         });
 
@@ -165,7 +170,8 @@ export function ClientBookChapter({
     bookName,
     initialChapter,
     initialChapterNo,
-    autoFetchNextChapter
+    autoFetchNextChapter,
+    setRecords
   ]);
 
   const title = `第${currentChapter}章`;

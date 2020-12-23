@@ -44,7 +44,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
   );
 
-  const goBack = useGoBack();
+  const { goBack } = useGoBack();
 
   const [saved, setSaved] = useState<Partial<ChapterState> | null>();
   const [wordCount, setWordCount] = useState<number | null>(null);

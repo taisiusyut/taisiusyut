@@ -31,7 +31,7 @@ function ClientLayoutContent({ children }: Props) {
   const isHome = /^\/(\?.*)?$/.test(asPath);
   const isFeatured = /^\/featured(\?.*)?$/.test(asPath);
   const isSearch = asPath.startsWith('/search');
-  const goback = useGoBack();
+  const { goBack } = useGoBack();
 
   useEffect(() => {
     const subscription = fromEvent(window, 'resize')
@@ -99,7 +99,7 @@ function ClientLayoutContent({ children }: Props) {
         >
           <ClientSearch
             onLeave={() =>
-              goback({ targetPath: ['/', '/featured'] }).then(() =>
+              goBack({ targetPath: ['/', '/featured'] }).then(() =>
                 setIsSearching(false)
               )
             }

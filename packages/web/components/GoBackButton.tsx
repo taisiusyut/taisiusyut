@@ -11,7 +11,7 @@ export function GoBackButton({
   content = '返回',
   ...props
 }: GoBackButtonProps) {
-  const goBack = useGoBack();
+  const { goBack } = useGoBack();
   return (
     <ButtonPopover
       {...props}
