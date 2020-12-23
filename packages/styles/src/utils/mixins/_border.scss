@@ -18,10 +18,10 @@
   background-repeat: no-repeat;
 }
 
-@mixin shadow-border {
+@mixin shadow-border($x: 0, $y: 0, $b: 0, $s: 1px) {
   // prettier-ignore
   box-shadow: 
-    0 0 0 1px var(--divider-color), 
+    $x $y $b $s var(--divider-color), 
     0 0 0 rgba(#000, 0),
     0 0 0 rgba(#000, 0);
 }

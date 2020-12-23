@@ -77,16 +77,20 @@ export function ClientPreferencesProvider({ children }: Props) {
         setState(curr => {
           const preferences = { ...curr, ...changes };
 
-          if (changes.theme) {
+          if (typeof changes.theme !== 'undefined') {
             window.__setTheme(changes.theme);
           }
 
-          if (changes.accentColor) {
+          if (typeof changes.accentColor !== 'undefined') {
             window.__setAccentColor(changes.accentColor);
           }
 
           if (typeof changes.fixWidth !== 'undefined') {
             window.__setFixWidth(changes.fixWidth);
+          }
+
+          if (typeof changes.pagingDisplay !== 'undefined') {
+            window.__setPagingDisplay(changes.pagingDisplay);
           }
 
           clientPreferencesStorage.save(preferences);

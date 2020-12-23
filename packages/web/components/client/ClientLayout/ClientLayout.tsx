@@ -79,7 +79,7 @@ function ClientLayoutContent({ children }: Props) {
     <div
       className={[
         classes['layout'],
-        isHome || isSearching ? classes['show-left-panel'] : ''
+        isHome || isSearch ? classes['show-left-panel'] : ''
       ]
         .join(' ')
         .trim()}
@@ -110,7 +110,7 @@ function ClientLayoutContent({ children }: Props) {
         )}
       </div>
       <div className={classes['bottom-navigation']}>
-        {(isHome || isFeatured || isSearching) && <BottomNavigation />}
+        {(isHome || isFeatured || isSearch) && <BottomNavigation />}
       </div>
     </div>
   );

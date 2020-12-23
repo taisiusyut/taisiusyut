@@ -1,10 +1,13 @@
 @import '~styles/utils';
 
+$fix-width: 1280px;
+
 .header {
   @include dimen(100%, $header-height);
   @include flex(center, center);
   @include padding-x(15px);
-  @include shadow-border();
+  @include relative(); // prevent shadow-border blocked by others
+  @include shadow-border(0, 2px, 0, -1px);
   background-color: var(--primary-color);
   flex: 0 0 auto;
 
@@ -32,11 +35,16 @@
   overflow: hidden;
 
   :global([data-width='fixed']) & {
-    $target-width: 1280px;
-    @media (min-width: $target-width) {
+    @media (min-width: $fix-width) {
       @include shadow-border();
-      max-width: $target-width;
+      max-width: $fix-width;
       margin: auto;
+
+      .header {
+        max-width: $fix-width;
+        margin: auto;
+        right: 0;
+      }
     }
   }
 }
@@ -69,7 +77,7 @@
   display: none;
 }
 
-@media (max-width: $break-point) {
+@mixin single-page {
   .layout {
     &.show-left-panel .right-panel {
       display: none;
@@ -92,17 +100,27 @@
     .right-panel {
       padding-top: $header-height;
     }
+  }
+}
 
-    .bottom-navigation {
-      display: block;
+:global([data-display='single']) {
+  @include single-page;
+}
 
-      &:not(:empty) {
-        @include dimen(100%, $bottom-navigation-height);
-      }
+@media (max-width: $break-point) {
+  :global(html:not([data-display='single'])) {
+    @include single-page;
+  }
 
-      > * {
-        @include fixed(null, 0, 0);
-      }
+  .bottom-navigation {
+    display: block;
+
+    &:not(:empty) {
+      @include dimen(100%, $bottom-navigation-height);
+    }
+
+    > * {
+      @include fixed(null, 0, 0);
     }
   }
 }

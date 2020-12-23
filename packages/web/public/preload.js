@@ -1,7 +1,12 @@
 // @ts-check
 
 /**
- * @typedef {{ theme?: Theme, accentColor?: AccentColor, fixWidth?: boolean }} Preferences
+ * @typedef {{
+ *  theme?: Theme,
+ *  accentColor?: AccentColor,
+ *  fixWidth?: boolean,
+ *  pagingDisplay?: boolean
+ * }} Preferences
  */
 
 (function () {
@@ -20,6 +25,13 @@
     document.documentElement.setAttribute(
       'data-width',
       flag ? 'fixed' : 'stretch'
+    );
+  };
+
+  window.__setPagingDisplay = function (flag) {
+    document.documentElement.setAttribute(
+      'data-display',
+      flag ? 'paging' : 'single'
     );
   };
 
@@ -48,6 +60,11 @@
       typeof preferences['fixWidth'] === 'undefined'
         ? true
         : preferences['fixWidth']
+    );
+    window.__setPagingDisplay(
+      typeof preferences['pagingDisplay'] === 'undefined'
+        ? true
+        : preferences['pagingDisplay']
     );
   } catch (error) {
     console.log(error);

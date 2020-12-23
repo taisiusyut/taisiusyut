@@ -23,11 +23,15 @@ body {
   font-family: 'Muli', #{$pt-font-family};
   margin: 0;
   padding: 0;
+  overscroll-behavior: none;
 
   @media (min-width: $break-point + 1) {
     font-size: $pt-font-size;
-    overflow: hidden;
-    height: 100vh;
+
+    :not([data-display='single']) & {
+      overflow: hidden;
+      height: 100vh;
+    }
   }
 
   @media (max-width: $break-point) {
