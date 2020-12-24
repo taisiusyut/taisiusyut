@@ -3,7 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Button, Icon } from '@blueprintjs/core';
 import { getChapterByNo, getErrorMessage } from '@/service';
 import { Schema$Chapter } from '@/typings';
-import classes from './ClientBookChapter.module.scss';
+import classes from './ClientChapterContent.module.scss';
 
 export interface Props {
   bookID: string;
@@ -12,7 +12,7 @@ export interface Props {
   onLoaded: (chapter: Schema$Chapter) => void;
 }
 
-export const ClientBookChapterContent = React.memo(
+export const ClientChapterContent = React.memo(
   ({ bookID, chapterNo, onLoaded, defaultChapter }: Props) => {
     const [request] = useState(() => () =>
       getChapterByNo({ bookID, chapterNo })

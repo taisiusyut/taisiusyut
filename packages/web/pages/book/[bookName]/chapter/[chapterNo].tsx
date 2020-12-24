@@ -3,9 +3,9 @@ import { GetServerSideProps } from 'next';
 import { Meta } from '@/components/Meta';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import {
-  ClientBookChapter,
-  ClientBookChapterData
-} from '@/components/client/ClientBookChapter';
+  ClientChapter,
+  ClientChapterData
+} from '@/components/client/ClientChapter';
 import {
   getBookController,
   getChpaterController,
@@ -13,7 +13,7 @@ import {
 } from '@/service/server';
 import { Schema$Book, Schema$Chapter } from '@/typings';
 
-interface Props extends ClientBookChapterData {}
+interface Props extends ClientChapterData {}
 
 type Params = {
   bookName: string;
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps<
   };
 };
 
-export default function ClientBookChapterPage(props: Props) {
+export default function ClientChapterPage(props: Props) {
   const { bookName, chapter } = props;
   let head: React.ReactNode = null;
 
@@ -71,9 +71,9 @@ export default function ClientBookChapterPage(props: Props) {
   return (
     <>
       {head}
-      <ClientBookChapter {...props} key={bookName} />
+      <ClientChapter {...props} key={bookName} />
     </>
   );
 }
 
-ClientBookChapterPage.layout = ClientLayout;
+ClientChapterPage.layout = ClientLayout;

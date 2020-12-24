@@ -1,0 +1,42 @@
+@import '~styles/utils';
+
+.chapter-name {
+  font-weight: 500;
+  font-size: 1.4em;
+  line-height: 1.2em;
+  margin-bottom: 1.5em;
+}
+
+.paragraph {
+  white-space: pre-wrap;
+  font-size: 1em;
+  line-height: inherit;
+
+  + .paragraph {
+    margin-top: 1.5em;
+  }
+}
+
+.loading,
+.error {
+  @include flex(center, center);
+  flex: 1 1 auto;
+}
+
+.loading {
+  font-size: 1.5em;
+  letter-spacing: 0.1em;
+}
+
+.error {
+  text-align: center;
+
+  div {
+    margin-bottom: 10px;
+  }
+
+  button {
+    margin-top: 20px;
+    min-width: 100px;
+  }
+}

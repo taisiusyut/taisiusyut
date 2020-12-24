@@ -14,17 +14,17 @@ import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { useClientPreferencesState } from '@/hooks/useClientPreferences';
 import { useGoBack } from '@/hooks/useGoBack';
 import { FixedChapterName } from './FixedChapterName';
-import { ClientBookChapterContent } from './ClientBookChapterContent';
-import classes from './ClientBookChapter.module.scss';
+import { ClientChapterContent } from './ClientChapterContent';
+import classes from './ClientChapter.module.scss';
 
-export interface ClientBookChapterData {
+export interface ClientChapterData {
   bookID?: string;
   bookName: string;
   chapterNo: number;
   chapter: Schema$Chapter | null;
 }
 
-export interface ClientBookChapterProps extends ClientBookChapterData {}
+export interface ClientChapterProps extends ClientChapterData {}
 
 type ScrollDirection = 'up' | 'down' | 'unknown';
 
@@ -33,12 +33,12 @@ const ChpaterListButton = withChaptersListDrawer(ButtonPopover);
 const getTarget = (chapterNo: number) =>
   document.querySelector<HTMLDivElement>(`#chapter-${chapterNo}`);
 
-export function ClientBookChapter({
+export function ClientChapter({
   bookID,
   bookName,
   chapter: initialChapter,
   chapterNo: initialChapterNo
-}: ClientBookChapterProps) {
+}: ClientChapterProps) {
   const [chapters, setChapters] = useState([initialChapterNo]);
   const [currentChapter, setCurrentChapter] = useState(initialChapterNo);
   const [data, setData] = useState<Record<number, Schema$Chapter>>(
@@ -210,14 +210,19 @@ export function ClientBookChapter({
     setRecords
   ]);
 
-  const title = `第${currentChapter}章 ${data[currentChapter]?.name || ''}`;
+  const chapterName = data[currentChapter]?.name || '';
+  const title = `第${currentChapter}章 ${chapterName}`;
   const header = (
     <ClientHeader
       className={classes['header']}
       title={title}
-      left={
-        <GoBackButton targetPath={['/', '/featured', `/book/${bookName}`]} />
-      }
+      left={[
+        <GoBackButton
+          key="0"
+          targetPath={['/', '/featured', `/book/${bookName}`]}
+        />,
+        <span key="1" />
+      ]}
       right={[
         <ClientPreferences key="0" />,
         bookID && (
@@ -265,7 +270,7 @@ export function ClientBookChapter({
           className={classes['content']}
           style={{ fontSize, lineHeight }}
         >
-          <ClientBookChapterContent
+          <ClientChapterContent
             bookID={bookID}
             chapterNo={chapterNo}
             onLoaded={onLoaded}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withBreakPoint } from '@/hooks/useBreakPoints';
-import classes from './ClientBookChapter.module.scss';
+import classes from './ClientChapter.module.scss';
 
 interface Props {
   title: string;
