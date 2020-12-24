@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Button, IButtonProps } from '@blueprintjs/core';
+import { Button, Popover } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { BookShelf, useBookShelf } from '@/hooks/useBookShelf';
 import { useContextMenu, UseContextMenuEvent } from '@/hooks/useContextMenu';
 import { isTouchable } from '@/constants';
 import { openBookShelfItemActions, Offset } from '../openBookShelfItemActions';
+import { RequiredProps } from '../BookShelfItemActions';
+import { BookShelfMenu } from '../BookShelfContextMenu';
 import classes from './BookShelfItem.module.scss';
 
 interface Props {
@@ -26,12 +28,14 @@ function getOffset<T extends HTMLElement>(
   }
 }
 
-function ActionButton(props: IButtonProps) {
+function ActionButton(props: RequiredProps) {
   const [render, setRender] = useState(false);
   useEffect(() => setRender(!isTouchable()), []);
   return render ? (
     <div className={classes['action-button']}>
-      <Button {...props} icon="more" minimal />
+      <Popover position="bottom" content={<BookShelfMenu {...props} />}>
+        <Button minimal icon="more" />
+      </Popover>
     </div>
   ) : null;
 }
@@ -45,16 +49,16 @@ export function BookShelfItem({
 
   const [shelf, actions] = useBookShelf();
 
-  const openActions = (event: UseContextMenuEvent<HTMLElement>) =>
-    book &&
-    openBookShelfItemActions({
-      bookID: book.id,
-      shelf,
-      actions,
-      offset: getOffset(event)
-    });
-
-  const [ref] = useContextMenu<HTMLDivElement>(openActions);
+  const [ref] = useContextMenu<HTMLDivElement>(
+    event =>
+      book &&
+      openBookShelfItemActions({
+        bookID: book.id,
+        shelf,
+        actions,
+        offset: getOffset(event)
+      })
+  );
 
   const content = (flatten: boolean) => (
     <div className={classes['item-body']}>
@@ -86,7 +90,7 @@ export function BookShelfItem({
           {/* Should not use <a /> since it have conflict with context menu in In iPhone safari */}
           {content(active)}
         </Link>
-        <ActionButton onClick={openActions} />
+        <ActionButton bookID={book.id} shelf={shelf} actions={actions} />
       </div>
     );
   }

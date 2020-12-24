@@ -19,7 +19,9 @@
   &:hover {
     background-color: var(--item-hover-color);
     .action-button {
-      visibility: visible;
+      button {
+        visibility: visible;
+      }
     }
   }
 
@@ -34,7 +36,9 @@
 
 .action-button {
   @include absolute(10px, null, null, 10px);
-  visibility: hidden;
+  button:not(:global(.bp3-active)) {
+    visibility: hidden;
+  }
 }
 
 .item-body {

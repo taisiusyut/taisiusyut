@@ -14,7 +14,7 @@ import {
   BookShelfItemActionsProps
 } from './BookShelfItemActions';
 
-interface Props extends IMenuProps, RequiredProps {}
+export interface BookShelfMenuProps extends IMenuProps, RequiredProps {}
 
 const GotoBookDetails = withBookDetails(MenuItem);
 
@@ -27,7 +27,12 @@ const {
   MenuItem as ComponentType<Partial<IMenuItemProps>>
 );
 
-export function BookShelfMenu({ bookID, shelf, actions, ...props }: Props) {
+export function BookShelfMenu({
+  bookID,
+  shelf,
+  actions,
+  ...props
+}: BookShelfMenuProps) {
   const itemProps = { bookID, shelf, actions };
   return (
     <Menu {...props}>
