@@ -8,6 +8,7 @@ import { UserRole } from '@/typings';
 import { Toaster } from '@/utils/toaster';
 import '@/styles/globals.scss';
 import 'typeface-muli';
+import { usePageView } from '@/hooks/gtm';
 
 interface ExtendAppProps extends AppProps {
   Component: AppProps['Component'] & {
@@ -41,6 +42,8 @@ function AppContent(props: ExtendAppProps) {
   const { Component, pageProps } = props;
   const { loginStatus, user } = useAuthState();
   const access = Component.access;
+
+  usePageView();
 
   if (access && process.env.NEXT_PUBLIC_GUEST) {
     access.push(process.env.NEXT_PUBLIC_GUEST as UserRole);
