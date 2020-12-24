@@ -14,6 +14,7 @@ import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { useClientPreferencesState } from '@/hooks/useClientPreferences';
 import { useGoBack } from '@/hooks/useGoBack';
 import { FixedChapterName } from './FixedChapterName';
+import { ClientChapterOverlay } from './ClientChapterOverlay';
 import { ClientChapterContent } from './ClientChapterContent';
 import classes from './ClientChapter.module.scss';
 
@@ -53,7 +54,7 @@ export function ClientChapter({
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(
     'unknown'
   );
-  const [showMenu, setShowMenu] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const {
     autoFetchNextChapter,
@@ -146,7 +147,7 @@ export function ClientChapter({
           map((delta): ScrollDirection => (delta > 0 ? 'down' : 'up'))
         )
         .subscribe(direction => {
-          setShowMenu(false);
+          setShowOverlay(false);
           setScrollDirection(direction);
         });
 
@@ -212,6 +213,17 @@ export function ClientChapter({
 
   const chapterName = data[currentChapter]?.name || '';
   const title = `第${currentChapter}章 ${chapterName}`;
+  const chapterListButton = bookID && (
+    <ChpaterListButton
+      key="1"
+      icon="properties"
+      content="章節目錄"
+      bookID={bookID}
+      bookName={bookName}
+      chapterNo={currentChapter}
+      minimal
+    />
+  );
   const header = (
     <ClientHeader
       className={classes['header']}
@@ -223,20 +235,7 @@ export function ClientChapter({
         />,
         <span key="1" />
       ]}
-      right={[
-        <ClientPreferences key="0" />,
-        bookID && (
-          <ChpaterListButton
-            key="1"
-            icon="properties"
-            content="章節目錄"
-            bookID={bookID}
-            bookName={bookName}
-            chapterNo={currentChapter}
-            minimal
-          />
-        )
-      ]}
+      right={[<ClientPreferences key="0" />, chapterListButton]}
     />
   );
 
@@ -283,18 +282,14 @@ export function ClientChapter({
 
   return (
     <div
-      className={[
-        classes['container'],
-        showMenu ? classes['menu'] : '',
-        classes[scrollDirection]
-      ]
+      className={[classes['container'], classes[scrollDirection]]
         .join(' ')
         .trim()}
     >
       <FixedChapterName title={title} />
       {header}
       <div ref={scrollerRef} className={classes['scroller']}>
-        <div onClick={() => setShowMenu(flag => !flag)}>{content}</div>
+        <div onClick={() => setShowOverlay(true)}>{content}</div>
         {!autoFetchNextChapter &&
           hasNext.current &&
           loaded.current[currentChapter] && (
@@ -311,6 +306,11 @@ export function ClientChapter({
             </div>
           )}
       </div>
+      <ClientChapterOverlay
+        hasBackdrop={false}
+        isOpen={showOverlay}
+        onClose={() => setShowOverlay(false)}
+      />
     </div>
   );
 }

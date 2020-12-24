@@ -1,0 +1,55 @@
+@import '~styles/utils';
+
+.content {
+  @include sq-dimen(100%);
+  @include flex(stretch, space-between, column);
+}
+
+.top {
+  @include animate(transform);
+  @include dimen(100%, $header-height);
+  @include flex(center);
+  @include padding-x(15px);
+  background-color: var(--secondary-color);
+  transform: translateY(-100%);
+
+  :global(.bp3-overlay-open) & {
+    transform: translateY(0);
+  }
+}
+
+.bottom {
+  @include animate(transform);
+  background-color: var(--secondary-color);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  transform: translateY(100%);
+
+  :global(.bp3-overlay-open) & {
+    transform: translateY(0);
+  }
+}
+
+.bottom-head {
+  @include flex(center, space-between);
+  @include padding-x(25px);
+  @include padding-y(15px);
+  font-size: 14px;
+}
+
+.bottom-content {
+  @include dimen(100%);
+  @include flex(center, space-between);
+  @include padding-x(15px);
+  @include padding-y(10px 15px);
+}
+
+.item {
+  @include dimen(60px, 100%);
+  font-size: 12px;
+  text-align: center;
+  user-select: none;
+
+  .text {
+    margin-top: 5px;
+  }
+}

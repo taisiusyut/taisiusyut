@@ -29,19 +29,12 @@ $fixed-chapter-name-height: $fixed-chapter-name-padding-y * 2 +
         transform: translateY(0);
       }
     }
-
-    &.menu {
-      .header {
-        transform: translateY(0);
-      }
-    }
   }
 }
 
 .header {
   @media (max-width: $break-point) {
-    @include animate(transform, 0.3s, linear);
-    transform: translateY(-105%);
+    display: none;
   }
 }
 
