@@ -1,10 +1,6 @@
 import React, { ReactNode, useState } from 'react';
-import { Button } from '@blueprintjs/core';
+import { BlankButton } from '@/components/BlankButton';
 import classes from './ClientLayout.module.scss';
-
-export const Blank = () => (
-  <Button minimal icon="blank" style={{ visibility: 'hidden' }} />
-);
 
 export interface HeaderProps {
   title?: ReactNode;
@@ -20,9 +16,7 @@ function getLength(payload: unknown) {
 function createSpacer(self: unknown, target: unknown) {
   return Array.from(
     { length: Math.max(0, getLength(target) - getLength(self)) },
-    (_, idx) => (
-      <Button key={idx} minimal icon="blank" style={{ visibility: 'hidden' }} />
-    )
+    (_, idx) => <BlankButton key={idx} />
   );
 }
 

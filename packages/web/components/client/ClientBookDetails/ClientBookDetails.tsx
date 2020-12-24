@@ -2,6 +2,7 @@ import React, { ComponentProps, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { GoBackButton } from '@/components/GoBackButton';
+import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { Toaster } from '@/utils/toaster';
 import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
@@ -33,6 +34,8 @@ function useBook(
   return initialData || data || null;
 }
 
+const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
+
 export function ClientBookDetails({
   bookName,
   book: initialBook,
@@ -49,7 +52,9 @@ export function ClientBookDetails({
       <>
         <ClientHeader
           {...headerProps}
-          right={[<BookShelfToggle key="0" bookID={book.id} icon minimal />]}
+          right={[
+            <DesktopBookShelfToggle key="0" icon minimal bookID={book.id} />
+          ]}
         />
         <div className={classes['content']}>
           <ClientBookDetailsBook book={book} />

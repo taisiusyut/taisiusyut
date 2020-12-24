@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
-import { useSearchResult } from './useSearchResult';
+import { withDesktopHeaderBtn } from '@/components/BlankButton';
+import { useSearchResult, createId } from './useSearchResult';
 import {
   useForm,
   transoform,
@@ -17,7 +18,7 @@ interface Props {
   onLeave: () => void;
 }
 
-const createId = (idx: number) => `search-result-${idx}`;
+const SearchButton = withDesktopHeaderBtn(ButtonPopover);
 
 export function ClientSearch({ onLeave }: Props) {
   const router = useRouter();
@@ -41,7 +42,7 @@ export function ClientSearch({ onLeave }: Props) {
   };
 
   const searchButton = (
-    <ButtonPopover minimal icon="cross" content="取消搜索" onClick={onLeave} />
+    <SearchButton minimal icon="cross" content="取消搜索" onClick={onLeave} />
   );
 
   const items = state.list.map((book, idx) => (

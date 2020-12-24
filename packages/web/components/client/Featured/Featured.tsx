@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { ButtonPopover } from '@/components/ButtonPopover';
+import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { Order, Schema$Book } from '@/typings';
 import { getBooks } from '@/service';
@@ -16,6 +17,8 @@ export interface FeaturedProps {
     finished: Schema$Book[];
   };
 }
+
+const SearchButton = withDesktopHeaderBtn(ButtonPopover);
 
 export function Featured({ data }: FeaturedProps) {
   const [request] = useState(() => async () => {
@@ -39,7 +42,7 @@ export function Featured({ data }: FeaturedProps) {
       <ClientHeader
         title="精選"
         right={
-          <ButtonPopover
+          <SearchButton
             minimal
             icon="search"
             content="搜索書籍"

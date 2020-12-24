@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { defer } from 'rxjs';
 import { ClientHeader } from '@/components/client/ClientLayout';
+import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import {
   withMainMenuOverLay,
@@ -16,6 +17,7 @@ import { BookShelfEmpty } from './BookShelfEmpty';
 import classes from './BookShelf.module.scss';
 
 const MainMenuButton = withMainMenuOverLay(ButtonPopover);
+const DeskstopMainMenuButton = withDesktopHeaderBtn(MainMenuButton);
 
 export function BookShelf() {
   const [{ list: books }, actions] = useBookShelf();
@@ -52,7 +54,7 @@ export function BookShelf() {
       <ClientHeader
         title="書架"
         left={
-          <MainMenuButton
+          <DeskstopMainMenuButton
             minimal
             icon={MainMenuOverlayIcon}
             content={MainMenuOverlayTitle}

@@ -1,13 +1,18 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IResizeEntry, ResizeSensor } from '@blueprintjs/core';
 
-type Point = typeof breakPoints[number];
+type BreakPoint = typeof breakPoints[number];
+
+interface WithBreakPointOps {
+  validate: (breakPoint: BreakPoint) => boolean;
+  fallback?: React.ReactElement | null;
+}
 
 const breakPoints = [480, 640, 768, 1280] as const;
 
-const Context = React.createContext<Point | undefined>(undefined);
+const Context = React.createContext<BreakPoint | undefined>(undefined);
 
-function getBreakPoint(width: number): Point {
+function getBreakPoint(width: number): BreakPoint {
   for (const breakPoint of breakPoints) {
     if (width <= breakPoint) {
       return breakPoint;
@@ -28,8 +33,25 @@ export function useBreakPoints() {
   return [context, mounted] as const;
 }
 
-export function BreakPointsProvider({ children }: { children: ReactElement }) {
-  const [breakPoint, setBreakPoint] = useState<Point>(
+export function withBreakPoint<P extends {}>(
+  Component: React.ComponentType<P>,
+  { validate, fallback = null }: WithBreakPointOps
+) {
+  return function WithBreakPoint(props: P) {
+    const [breakPoint, mounted] = useBreakPoints();
+    if (mounted && validate(breakPoint)) {
+      return React.createElement<P>(Component, props);
+    }
+    return fallback;
+  };
+}
+
+export function BreakPointsProvider({
+  children
+}: {
+  children: React.ReactElement;
+}) {
+  const [breakPoint, setBreakPoint] = useState<BreakPoint>(
     typeof window !== 'undefined' ? getBreakPoint(window.innerWidth) : 1280
   );
   const [onResize] = useState(() => ([entry]: IResizeEntry[]) => {
