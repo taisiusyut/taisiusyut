@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { fromEvent, merge } from 'rxjs';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pairwise } from 'rxjs/operators';
 import { Button } from '@blueprintjs/core';
 import { Schema$Chapter } from '@/typings';
 import { GoBackButton } from '@/components/GoBackButton';
@@ -13,6 +13,7 @@ import {
 import { ClientPreferences } from '@/components/client/ClientPreferences';
 import { useClientPreferencesState } from '@/hooks/useClientPreferences';
 import { useGoBack } from '@/hooks/useGoBack';
+import { FixedChapterName } from './FixedChapterName';
 import { ClientBookChapterContent } from './ClientBookChapterContent';
 import classes from './ClientBookChapter.module.scss';
 
@@ -24,6 +25,8 @@ export interface ClientBookChapterData {
 }
 
 export interface ClientBookChapterProps extends ClientBookChapterData {}
+
+type ScrollDirection = 'up' | 'down' | 'unknown';
 
 const ChpaterListButton = withChaptersListDrawer(ButtonPopover);
 
@@ -47,6 +50,10 @@ export function ClientBookChapter({
     [initialChapterNo]: !!initialChapter
   });
   const { setRecords } = useGoBack();
+  const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(
+    'unknown'
+  );
+  const [showMenu, setShowMenu] = useState(false);
 
   const {
     autoFetchNextChapter,
@@ -104,22 +111,46 @@ export function ClientBookChapter({
       return [initialChapterNo];
     });
 
+    const scroller$ = fromEvent(scroller, 'scroll').pipe(
+      map(
+        () =>
+          [
+            scroller.scrollTop,
+            scroller.offsetHeight + scroller.offsetTop
+          ] as const
+      )
+    );
+
+    const windowScroll$ = fromEvent(window, 'scroll').pipe(
+      map(
+        () =>
+          [
+            Math.min(
+              Math.max(0, window.scrollY),
+              document.documentElement.offsetHeight
+            ), // Math min/max for safari
+            window.innerHeight
+          ] as const
+      )
+    );
+
     if (bookID) {
-      const scroller$ = fromEvent(scroller, 'scroll').pipe(
-        map(
-          () =>
-            [
-              scroller.scrollTop,
-              scroller.offsetHeight + scroller.offsetTop
-            ] as const
+      const source$ = merge(scroller$, windowScroll$);
+
+      const scrollDirSubscription = source$
+        .pipe(
+          map(([scrollTop]) => scrollTop),
+          pairwise(),
+          map(([prev, curr]) => curr - prev),
+          filter(delta => delta !== 0),
+          map((delta): ScrollDirection => (delta > 0 ? 'down' : 'up'))
         )
-      );
+        .subscribe(direction => {
+          setShowMenu(false);
+          setScrollDirection(direction);
+        });
 
-      const windowScroll$ = fromEvent(window, 'scroll').pipe(
-        map(() => [window.scrollY, window.innerHeight] as const)
-      );
-
-      const subscription = merge(scroller$, windowScroll$)
+      const chapterUpdateSubscription = source$
         .pipe(
           distinctUntilChanged(([x], [y]) => x === y),
           map(([scrollTop, offsetHeight]): -1 | 1 | undefined => {
@@ -165,7 +196,10 @@ export function ClientBookChapter({
           }
         });
 
-      return () => subscription.unsubscribe();
+      return () => {
+        scrollDirSubscription.unsubscribe();
+        chapterUpdateSubscription.unsubscribe();
+      };
     }
   }, [
     bookID,
@@ -176,9 +210,10 @@ export function ClientBookChapter({
     setRecords
   ]);
 
-  const title = `第${currentChapter}章`;
+  const title = `第${currentChapter}章 ${data[currentChapter]?.name || ''}`;
   const header = (
     <ClientHeader
+      className={classes['header']}
       title={title}
       left={
         <GoBackButton targetPath={['/', '/featured', `/book/${bookName}`]} />
@@ -242,10 +277,19 @@ export function ClientBookChapter({
   }
 
   return (
-    <>
+    <div
+      className={[
+        classes['container'],
+        showMenu ? classes['menu'] : '',
+        classes[scrollDirection]
+      ]
+        .join(' ')
+        .trim()}
+    >
+      <FixedChapterName title={title} />
       {header}
-      <div className={classes['chapters']} ref={scrollerRef}>
-        {content}
+      <div ref={scrollerRef} className={classes['scroller']}>
+        <div onClick={() => setShowMenu(flag => !flag)}>{content}</div>
         {!autoFetchNextChapter &&
           hasNext.current &&
           loaded.current[currentChapter] && (
@@ -262,6 +306,6 @@ export function ClientBookChapter({
             </div>
           )}
       </div>
-    </>
+    </div>
   );
 }

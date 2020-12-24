@@ -1,10 +1,11 @@
 @import '~styles/utils';
 
-.chapters {
-  @include sq-dimen(100%);
-  overflow: auto;
-  -webkit-overflow-scrolling: auto;
+$fixed-chapter-name-font: 12px;
+$fixed-chapter-name-padding-y: 10px;
+$fixed-chapter-name-height: $fixed-chapter-name-padding-y * 2 +
+  $fixed-chapter-name-font;
 
+@mixin paragraph-padding-x {
   @media (max-width: 480px) {
     @include padding-x(20px);
   }
@@ -12,6 +13,44 @@
   @media (min-width: 481px) {
     @include padding-x(40px);
   }
+}
+
+.container {
+  @media (max-width: $break-point +1) {
+    @include flex($flex-direction: column);
+    overflow: hidden;
+  }
+
+  @media (max-width: $break-point) {
+    margin-top: -$header-height;
+
+    &.down {
+      .fixed-chapter-name {
+        transform: translateY(0);
+      }
+    }
+
+    &.menu {
+      .header {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+.header {
+  text-align: left;
+
+  @media (max-width: $break-point) {
+    @include animate(transform, 0.3s, linear);
+    transform: translateY(-105%);
+  }
+}
+
+.scroller {
+  @include sq-dimen(100%);
+  @include paragraph-padding-x;
+  overflow: auto;
 }
 
 .content {
@@ -46,6 +85,7 @@
 }
 
 .next-chapter {
+  @include paragraph-padding-x;
   margin-top: 20px;
   margin-bottom: calc(40px + env(safe-area-inset-bottom, 0));
 }
@@ -72,4 +112,17 @@
     margin-top: 20px;
     min-width: 100px;
   }
+}
+
+.fixed-chapter-name {
+  @include animate(transform);
+  @include dimen(100%);
+  @include fixed(0, null, 0);
+  @include padding-y(10px);
+  @include paragraph-padding-x;
+  background-color: var(--secondary-color);
+  color: var(--text-light-color);
+  font-size: $fixed-chapter-name-font;
+  line-height: 1em;
+  transform: translateY(-100%);
 }

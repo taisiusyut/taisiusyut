@@ -3,6 +3,7 @@ import { BlankButton } from '@/components/BlankButton';
 import classes from './ClientLayout.module.scss';
 
 export interface HeaderProps {
+  className?: string;
   title?: ReactNode;
   left?: ReactNode | ReactNode[];
   right?: ReactNode | ReactNode[];
@@ -21,6 +22,7 @@ function createSpacer(self: unknown, target: unknown) {
 }
 
 export function ClientHeader({
+  className = '',
   title,
   children,
   left,
@@ -30,7 +32,7 @@ export function ClientHeader({
   const [fillRight] = useState(createSpacer(right, left));
 
   return (
-    <div className={classes['header']}>
+    <div className={`${classes['header']} ${className}`.trim()}>
       <div className={classes['left']}>
         {left}
         {fillLeft}

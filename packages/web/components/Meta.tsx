@@ -53,7 +53,7 @@ export function CommonMeta() {
       <Head>
         <meta
           name="viewport"
-          content="initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no, user-scalable=yes, width=device-width, viewport-fit=cover"
+          content="initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no, user-scalable=no, width=device-width, viewport-fit=cover"
         />
 
         <meta name="google" content="notranslate" />
