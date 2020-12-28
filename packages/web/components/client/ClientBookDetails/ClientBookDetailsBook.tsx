@@ -32,7 +32,11 @@ export function ClientBookDetailsBook({ book }: Props) {
           <Tags
             tags={book.tags}
             onTagClick={tag =>
-              router.replace({ pathname: '/search', query: { tag } })
+              router.replace(
+                { pathname: '/search', query: { tag } },
+                undefined,
+                { shallow: true }
+              )
             }
           >
             <Tag>

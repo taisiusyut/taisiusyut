@@ -12,15 +12,19 @@ import { ClientSearch } from '../ClientSearch';
 import { BottomNavigation } from '../BottomNavigation';
 import classes from './ClientLayout.module.scss';
 
-interface Props {
+export interface ClientLayoutProps {
   children?: ReactNode;
+  disableScrollRestoration?: boolean;
 }
 
 const scrollRestoration: Record<string, number> = {};
 
 const breakPoint = 768;
 
-function ClientLayoutContent({ children }: Props) {
+function ClientLayoutContent({
+  children,
+  disableScrollRestoration = false
+}: ClientLayoutProps) {
   const { asPath, events } = useRouter();
   const { pagingDisplay } = useClientPreferencesState();
   const { goBack } = useGoBack();
@@ -43,27 +47,32 @@ function ClientLayoutContent({ children }: Props) {
 
   // scroll restoration for single page display
   useEffect(() => {
-    // check shallow for `ClientBookChapter.tsx`
-    const routeChangeStart = (_url: string, options: { shallow?: boolean }) => {
-      if (!options.shallow) {
-        scrollRestoration[asPath] = window.scrollY;
-      }
-    };
-    const routeChangeComplete = (
-      url: string,
-      options: { shallow?: boolean }
-    ) => {
-      if (!options.shallow) {
-        window.scrollTo(0, scrollRestoration[url] || 0);
-      }
-    };
-    events.on('routeChangeStart', routeChangeStart);
-    events.on('routeChangeComplete', routeChangeComplete);
-    return () => {
-      events.off('routeChangeStart', routeChangeStart);
-      events.off('routeChangeComplete', routeChangeComplete);
-    };
-  }, [asPath, events]);
+    if (!disableScrollRestoration) {
+      // check shallow for `ClientBookChapter.tsx`
+      const routeChangeStart = (
+        _url: string,
+        options: { shallow?: boolean }
+      ) => {
+        if (!options.shallow) {
+          scrollRestoration[asPath] = window.scrollY;
+        }
+      };
+      const routeChangeComplete = (
+        url: string,
+        options: { shallow?: boolean }
+      ) => {
+        if (!options.shallow) {
+          window.scrollTo(0, scrollRestoration[url] || 0);
+        }
+      };
+      events.on('routeChangeStart', routeChangeStart);
+      events.on('routeChangeComplete', routeChangeComplete);
+      return () => {
+        events.off('routeChangeStart', routeChangeStart);
+        events.off('routeChangeComplete', routeChangeComplete);
+      };
+    }
+  }, [asPath, events, disableScrollRestoration]);
 
   useEffect(
     () =>
@@ -102,7 +111,7 @@ function ClientLayoutContent({ children }: Props) {
   );
 }
 
-export function ClientLayout(props: Props) {
+export function ClientLayout(props: ClientLayoutProps) {
   return (
     <ClientPreferencesProvider>
       <BookShelfProvider>

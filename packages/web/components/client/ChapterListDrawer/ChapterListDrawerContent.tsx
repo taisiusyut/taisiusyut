@@ -8,16 +8,14 @@ import classes from './ChapterListDrawer.module.scss';
 import 'react-virtualized/styles.css';
 
 export interface ChapterListDrawerContentProps {
-  bookID: string;
-  chapterNo: number;
+  chapterNo?: number;
   loading?: boolean;
   chapters: Partial<Schema$Chapter>[];
-  onReverse: () => void;
+  onReverse: (chapters: Partial<Schema$Chapter>[]) => void;
   onItemClick: (chapter: Partial<Schema$Chapter>) => void;
 }
 
 export function ChapterListDrawerContent({
-  bookID,
   chapterNo,
   chapters,
   loading,
@@ -36,7 +34,9 @@ export function ChapterListDrawerContent({
         style={style}
         chapter={chapter}
         onClick={() => onItemClick(chapter)}
-        isActive={chapter.number === chapterNo}
+        isActive={
+          chapter.number === chapterNo && typeof chapterNo !== 'undefined'
+        }
       />
     );
   };
@@ -50,7 +50,7 @@ export function ChapterListDrawerContent({
           content="切換順序"
           icon="swap-vertical"
           onClick={() => {
-            onReverse();
+            onReverse(chapters);
             listRef.current?.scrollToPosition(0);
           }}
         />
@@ -67,7 +67,9 @@ export function ChapterListDrawerContent({
               rowCount={rowCount}
               rowRenderer={rowRenderer}
               noRowsRenderer={loading ? undefined : () => <div>empty</div>}
-              scrollToIndex={chapterNo - 2}
+              scrollToIndex={
+                typeof chapterNo === 'number' ? chapterNo - 2 : undefined
+              }
               scrollToAlignment="start"
             />
           )}

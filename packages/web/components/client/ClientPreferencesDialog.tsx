@@ -3,7 +3,6 @@ import { fromEvent } from 'rxjs';
 import {
   Button,
   HTMLSelect,
-  IButtonProps,
   ISwitchProps,
   Switch as BP3Swtich
 } from '@blueprintjs/core';
@@ -14,13 +13,11 @@ import {
   ListSpacer,
   ListViewFooter
 } from '@/components/ListViewOverlay';
-import { ButtonPopover } from '@/components/ButtonPopover';
 import { NumericInput } from '@/components/Input';
 import {
   defaultPreferences,
   Preferences,
-  PreferencesActions,
-  useClientPreferences
+  PreferencesActions
 } from '@/hooks/useClientPreferences';
 import { createForm, FormItemProps, ControlProps } from '@/utils/form';
 import { createOpenOverlay } from '@/utils/openOverlay';
@@ -173,18 +170,5 @@ export function ClientPreferencesDialog({
         </ListViewFooter>
       </ListViewOverlay>
     </Form>
-  );
-}
-
-export function ClientPreferences(props: IButtonProps) {
-  const [preferences, { update }] = useClientPreferences();
-  return (
-    <ButtonPopover
-      {...props}
-      minimal
-      icon={ClientPreferencesDialogIcon}
-      content={ClientPreferencesDialogTitle}
-      onClick={() => openClientPreferences({ preferences, onUpdate: update })}
-    />
   );
 }

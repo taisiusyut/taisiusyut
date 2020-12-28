@@ -1,7 +1,10 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { Meta } from '@/components/Meta';
-import { ClientLayout } from '@/components/client/ClientLayout';
+import {
+  ClientLayout,
+  ClientLayoutProps
+} from '@/components/client/ClientLayout';
 import {
   ClientChapter,
   ClientChapterData
@@ -77,3 +80,6 @@ export default function ClientChapterPage(props: Props) {
 }
 
 ClientChapterPage.layout = ClientLayout;
+ClientChapterPage.layoutProps = {
+  disableScrollRestoration: true
+} as ClientLayoutProps;

@@ -6,15 +6,21 @@ import { AuthProvider, useAuthState } from '@/hooks/useAuth';
 import { GoBackProvider } from '@/hooks/useGoBack';
 import { UserRole } from '@/typings';
 import { Toaster } from '@/utils/toaster';
+import { usePageView } from '@/hooks/gtm';
 import '@/styles/globals.scss';
 import 'typeface-muli';
-import { usePageView } from '@/hooks/gtm';
+
+interface LayoutProps {
+  children?: ReactNode;
+  disableScrollRestoration?: boolean;
+}
 
 interface ExtendAppProps extends AppProps {
   Component: AppProps['Component'] & {
     access?: UserRole[];
     redirect?: string;
-    layout?: React.ComponentType<{ children?: ReactNode }>;
+    layoutProps?: Omit<LayoutProps, 'children'>;
+    layout?: React.ComponentType<LayoutProps>;
   };
 }
 
@@ -52,7 +58,7 @@ function AppContent(props: ExtendAppProps) {
   if (!access || (user && access.includes(user.role))) {
     const Layout = Component.layout || React.Fragment;
     return (
-      <Layout>
+      <Layout {...Component.layoutProps}>
         <Component {...pageProps} />
       </Layout>
     );

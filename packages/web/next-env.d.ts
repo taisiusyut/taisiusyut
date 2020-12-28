@@ -8,6 +8,8 @@ type AccentColor = 'red' | 'blue' | 'amber' | 'green' | 'purple' | 'grey';
 
 declare interface Window {
   dataLayer: any;
+  requestIdleCallback?: any;
+  cancelIdleCallback?: any;
 
   // defeind in ./public/preload.js
   __setTheme: (theme: Theme) => void;

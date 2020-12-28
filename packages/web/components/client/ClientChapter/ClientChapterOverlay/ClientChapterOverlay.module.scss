@@ -1,38 +1,55 @@
 @import '~styles/utils';
 
+$transition: 0.3s;
+$easing: linear;
+
+@mixin side-anim($name, $factor: 1) {
+  @keyframes #{$name} {
+    from {
+      transform: translateY(100% * $factor);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  transform: translateY(100% * $factor);
+  animation: #{$name} $transition $easing;
+}
+
 .content {
   @include sq-dimen(100%);
   @include flex(stretch, space-between, column);
+  background-color: rgba(16, 22, 26, 0.7);
+}
+
+.top,
+.bottom {
+  @include animate(transform, $transition, $easing);
+  background-color: var(--secondary-color);
+  flex: 0 0 auto;
+
+  :global(.bp3-overlay-open) & {
+    transform: translateY(0);
+  }
 }
 
 .top {
-  @include animate(transform);
+  @include side-anim(side-down, -1);
   @include dimen(100%, $header-height);
   @include flex(center);
   @include padding-x(15px);
-  background-color: var(--secondary-color);
-  transform: translateY(-100%);
-
-  :global(.bp3-overlay-open) & {
-    transform: translateY(0);
-  }
 }
 
 .bottom {
-  @include animate(transform);
-  background-color: var(--secondary-color);
+  @include side-anim(side-up, 1);
   padding-bottom: env(safe-area-inset-bottom, 0);
-  transform: translateY(100%);
-
-  :global(.bp3-overlay-open) & {
-    transform: translateY(0);
-  }
 }
 
 .bottom-head {
+  @include dimen(100%, auto);
   @include flex(center, space-between);
-  @include padding-x(25px);
-  @include padding-y(15px);
+  @include padding-x(15px);
+  @include padding-y(10px);
   font-size: 14px;
 }
 

@@ -47,7 +47,7 @@ export function createOpenOverlay<T extends Partial<OverlayProps>>(
       render(currentConfig);
     }
 
-    function update(newConfig: T) {
+    function update(newConfig: Partial<T>) {
       currentConfig = {
         ...currentConfig,
         ...newConfig

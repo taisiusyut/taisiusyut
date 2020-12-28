@@ -1,12 +1,25 @@
 import React from 'react';
-import { Icon, IIconProps, IOverlayProps, Overlay } from '@blueprintjs/core';
-import { GoBackButton } from '@/components/GoBackButton';
+import router from 'next/router';
+import {
+  Button,
+  Icon,
+  IIconProps,
+  IOverlayProps,
+  Overlay
+} from '@blueprintjs/core';
+import {
+  ClientPreferencesDialogIcon,
+  ClientPreferencesDialogTitle
+} from '@/components/client/ClientPreferencesDialog';
 import { withBreakPoint } from '@/hooks/useBreakPoints';
-import { createOpenOverlay } from '@/utils/openOverlay';
 import classes from './ClientChapterOverlay.module.scss';
 
 interface Props extends IOverlayProps {
-  bookName?: string;
+  bookName: string;
+  goBackButton: React.ReactElement;
+  navigateChapter: (factor: 1 | -1) => void;
+  openClientPreferences?: () => void;
+  openChapterListDrawer?: () => void;
 }
 
 type DivProps = React.DetailedHTMLProps<
@@ -33,23 +46,43 @@ function Item({ icon, children, isActive, ...props }: ItemProps) {
   );
 }
 
-function ClientChapterOverlayBase({ bookName = '', ...props }: Props) {
+function ClientChapterOverlayBase({
+  bookName,
+  goBackButton,
+  navigateChapter,
+  openClientPreferences,
+  openChapterListDrawer,
+  ...props
+}: Props) {
   return (
-    <Overlay {...props}>
+    <Overlay {...props} hasBackdrop={false}>
       <div className={classes['content']} onClick={props.onClose}>
-        <div className={classes['top']}>
-          <GoBackButton targetPath={['/', `/book/${bookName}`, '/featured']} />
-        </div>
+        <div className={classes['top']}>{goBackButton}</div>
         <div className={classes['bottom']}>
           <div className={classes['bottom-head']}>
-            <div>上一章</div>
-            <div>下一章</div>
+            <Button minimal onClick={() => navigateChapter(-1)}>
+              上一章
+            </Button>
+            <Button minimal onClick={() => navigateChapter(1)}>
+              下一章
+            </Button>
           </div>
           <div className={classes['bottom-content']}>
-            <Item icon="home">書架</Item>
-            <Item icon="book">詳情</Item>
-            <Item icon="settings">設定</Item>
-            <Item icon="properties">目錄</Item>
+            <Item icon="home" onClick={() => router.push(`/`)}>
+              書架
+            </Item>
+            <Item icon="book" onClick={() => router.push(`/book/${bookName}`)}>
+              詳情
+            </Item>
+            <Item
+              icon={ClientPreferencesDialogIcon}
+              onClick={openClientPreferences}
+            >
+              {ClientPreferencesDialogTitle}
+            </Item>
+            <Item icon="properties" onClick={openChapterListDrawer}>
+              目錄
+            </Item>
           </div>
         </div>
       </div>
@@ -60,5 +93,3 @@ function ClientChapterOverlayBase({ bookName = '', ...props }: Props) {
 export const ClientChapterOverlay = withBreakPoint(ClientChapterOverlayBase, {
   validate: breakPoint => breakPoint <= 768
 });
-
-export const openClientChapterOverlay = createOpenOverlay(ClientChapterOverlay);

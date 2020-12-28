@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button, Icon } from '@blueprintjs/core';
 import { getChapterByNo, getErrorMessage } from '@/service';
@@ -14,9 +14,10 @@ export interface Props {
 
 export const ClientChapterContent = React.memo(
   ({ bookID, chapterNo, onLoaded, defaultChapter }: Props) => {
-    const [request] = useState(() => () =>
-      getChapterByNo({ bookID, chapterNo })
-    );
+    const request = useCallback(() => getChapterByNo({ bookID, chapterNo }), [
+      bookID,
+      chapterNo
+    ]);
 
     const [
       { data: chapter = defaultChapter, loading, error },
