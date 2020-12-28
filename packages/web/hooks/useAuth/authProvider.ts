@@ -101,6 +101,10 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
               localStorage.setItem(LOGGED_IN, String(+new Date()));
             } catch {}
 
+            window.dataLayer.push({
+              user_id: auth.user.user_id
+            });
+
             dispatch({ type: 'AUTHENTICATE_SUCCESS', payload: auth.user });
           }),
           catchError(error => {
