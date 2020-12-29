@@ -50,18 +50,27 @@ export function FeaturedSection({ title, books }: Props) {
     <div className={classes['section']}>
       <H5>{title}</H5>
       <div className={classes['section-content']}>
-        {books.map(book =>
-          book.name ? (
-            <Link key={book.id} href={`/book/${book.name}`}>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <a>
-                <SectionItem book={book} />
-              </a>
-            </Link>
-          ) : (
-            <SectionItem key={book.id} book={book} />
-          )
-        )}
+        {books.map(book => {
+          if (book.name) {
+            const handleClick = () =>
+              window.dataLayer.push({
+                event: 'view_book',
+                content_type: 'featured',
+                item_id: book.name
+              });
+
+            return (
+              <Link key={book.id} href={`/book/${book.name}`}>
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a onClick={handleClick}>
+                  <SectionItem book={book} />
+                </a>
+              </Link>
+            );
+          }
+
+          return <SectionItem key={book.id} book={book} />;
+        })}
       </div>
     </div>
   );

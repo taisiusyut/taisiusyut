@@ -55,8 +55,15 @@ export function ClientSearchItem({ book, className: id }: Props) {
   if (book && book.name) {
     const basePath = `/book/${book.name}`;
     const active = decodeURIComponent(asPath).startsWith(basePath);
+    const handleClick = () =>
+      window.dataLayer.push({
+        event: 'view_book',
+        content_type: 'search',
+        item_id: book.name
+      });
     return (
       <div
+        onClick={handleClick}
         className={[...className, active ? classes['active'] : '']
           .join(' ')
           .trim()}
