@@ -28,7 +28,7 @@ const ActionContext = React.createContext<GoBackActions | undefined>(undefined);
 export function useGoBack() {
   const context = useContext(ActionContext);
   if (context === undefined) {
-    throw new Error('useHistoryActions must be used within a HistoryProvider');
+    throw new Error('useGoBack must be used within a GoBackProvider');
   }
   return context;
 }
@@ -39,9 +39,12 @@ export function GoBackProvider({ children }: Props) {
     return {
       goBack: async ({ targetPath }) => {
         const previous = records.current[records.current.length - 2];
-        const paths = Array.isArray(targetPath) ? targetPath : [targetPath];
+        const targetPaths = Array.isArray(targetPath)
+          ? targetPath
+          : [targetPath];
+
         if (
-          paths.some(
+          targetPaths.some(
             path =>
               previous &&
               decodeURIComponent(previous).replace(/\?.*/, '') === path
@@ -49,7 +52,7 @@ export function GoBackProvider({ children }: Props) {
         ) {
           await router.push(previous);
         } else {
-          await router.push(paths[0]);
+          await router.push(targetPaths[0]);
         }
         records.current = records.current.slice(0, -2);
       },
