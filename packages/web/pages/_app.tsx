@@ -6,7 +6,6 @@ import { AuthProvider, useAuthState } from '@/hooks/useAuth';
 import { GoBackProvider } from '@/hooks/useGoBack';
 import { UserRole } from '@/typings';
 import { Toaster } from '@/utils/toaster';
-import { usePageView } from '@/hooks/gtm';
 import '@/styles/globals.scss';
 import 'typeface-muli';
 
@@ -36,7 +35,7 @@ function Unthorized({
     const pathname = redirect || isAdminPage ? '/admin/login' : '/';
 
     if (isAdminPage && role === UserRole.Client) {
-      Toaster.failure({ message: 'Permission denied ' });
+      Toaster.failure({ message: 'Permission denied' });
     }
 
     router.push({ pathname, query: { from: router.asPath } }, pathname);
@@ -49,7 +48,11 @@ function AppContent(props: ExtendAppProps) {
   const { loginStatus, user } = useAuthState();
   const access = Component.access;
 
-  usePageView();
+  useEffect(() => {
+    if (!window.dataLayer) {
+      window.dataLayer = [];
+    }
+  }, []);
 
   if (access && process.env.NEXT_PUBLIC_GUEST) {
     access.push(process.env.NEXT_PUBLIC_GUEST as UserRole);

@@ -7,7 +7,6 @@ type Theme = 'light' | 'dark';
 type AccentColor = 'red' | 'blue' | 'amber' | 'green' | 'purple' | 'grey';
 
 declare interface Window {
-  dataLayer: any;
   requestIdleCallback?: any;
   cancelIdleCallback?: any;
 

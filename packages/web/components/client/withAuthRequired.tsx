@@ -30,7 +30,14 @@ export function withAuthRequired<P extends OnClick>(
 
     async function handleConfirm() {
       const payload = await form.validateFields();
-      await authenticate(payload).toPromise();
+      const auth = await authenticate(payload).toPromise();
+      const isLogin = !('email' in payload);
+
+      window.dataLayer.push({
+        event: isLogin ? 'login' : 'sign_up',
+        method: 'username',
+        user_id: auth.user.user_id
+      });
     }
 
     function handleRegistration() {

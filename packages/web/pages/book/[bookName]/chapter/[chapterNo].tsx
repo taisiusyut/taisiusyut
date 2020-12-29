@@ -6,6 +6,7 @@ import {
   ClientLayoutProps
 } from '@/components/client/ClientLayout';
 import {
+  getChapterTitle,
   ClientChapter,
   ClientChapterData
 } from '@/components/client/ClientChapter';
@@ -64,8 +65,8 @@ export default function ClientChapterPage(props: Props) {
   if (chapter) {
     head = (
       <Meta
-        title={`${chapter.name} | ${bookName} | 睇小說`}
         keywords={bookName}
+        title={getChapterTitle(chapter.name, bookName)}
         description={chapter.content.trim().slice(0, 100)}
       />
     );

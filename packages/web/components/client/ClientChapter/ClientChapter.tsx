@@ -41,6 +41,9 @@ async function gotoChapter(
 const getTarget = (chapterNo: number) =>
   document.querySelector<HTMLDivElement>(`#chapter-${chapterNo}`);
 
+export const getChapterTitle = (chapterName: string, bookName: string) =>
+  `${chapterName} | ${bookName} | 睇小說`;
+
 export function ClientChapter({
   bookID,
   bookName,
@@ -261,9 +264,22 @@ export function ClientChapter({
     hasNext.current = data[currentChapter]?.hasNext;
   }, [data, currentChapter]);
 
+  const chapterName =
+    data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
+
+  useEffect(() => {
+    if (chapterName) {
+      const handler = (url: string) => {
+        if (decodeURI(url).indexOf(bookName) !== -1) {
+          document.title = getChapterTitle(chapterName, bookName);
+        }
+      };
+      router.events.on('routeChangeComplete', handler);
+      return () => router.events.off('routeChangeComplete', handler);
+    }
+  }, [chapterName, bookName]);
+
   if (bookID) {
-    const chapterName =
-      data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
     const title = `第${currentChapter}章 ${chapterName}`;
     const content = chapterNums.map(chapterNo => (
       <div
