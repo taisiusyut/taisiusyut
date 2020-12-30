@@ -1,14 +1,9 @@
-import React, {
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef
-} from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import router from 'next/router';
+import { createSessionStorage } from '@/utils/storage';
 
 interface Props {
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export interface GoBackOptions {
@@ -17,6 +12,8 @@ export interface GoBackOptions {
 
 type GoBack = (options: GoBackOptions) => Promise<void>;
 type SetRecords = (handler: (records: string[]) => string[]) => void;
+
+const goBackStorage = createSessionStorage<string[]>('goBackRecords', []);
 
 export interface GoBackActions {
   goBack: GoBack;
@@ -44,10 +41,9 @@ export function GoBackProvider({ children }: Props) {
           : [targetPath];
 
         if (
+          previous &&
           targetPaths.some(
-            path =>
-              previous &&
-              decodeURIComponent(previous).replace(/\?.*/, '') === path
+            path => decodeURIComponent(previous).replace(/\?.*/, '') === path
           )
         ) {
           await router.push(previous);
@@ -63,11 +59,21 @@ export function GoBackProvider({ children }: Props) {
   }, []);
 
   useEffect(() => {
+    records.current = goBackStorage.get();
+
+    const handler = () => {
+      goBackStorage.save(records.current);
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, []);
+
+  useEffect(() => {
     const handler = (url: string) => {
       // Note:
       // should not return/skip if shallow is false,
       // because the purpose of this function is to preserve search params
-      // but search params always set shallow to true
+      // but update search params always set shallow to true
       const last = records.current.slice(-1)[0];
       const maxRecords = 5;
       const samePathname =
@@ -77,7 +83,6 @@ export function GoBackProvider({ children }: Props) {
         : [...records.current.slice(-maxRecords), url];
     };
     router.events.on('routeChangeComplete', handler);
-    handler(window.location.pathname + window.location.search);
     return () => router.events.off('routeChangeComplete', handler);
   }, []);
 
