@@ -1,20 +1,26 @@
 import React from 'react';
 import { ITagProps, Tag } from '@blueprintjs/core';
 
-interface Props
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
-  tags?: string[];
+type DivProps = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>;
+
+interface TagOption {
+  value: string;
+  clickable?: boolean;
+}
+
+interface Props extends Omit<DivProps, 'children'> {
+  tags?: (TagOption | string)[];
   tagProps?: ITagProps;
-  onTagClick?: (tag: string, index: number) => void;
+  onTagClick?: (tag: TagOption, index: number) => void;
 }
 
 const getStyle = (space: number) =>
   [
     { marginTop: -space, marginLeft: -space },
-    { marginTop: space, marginLeft: space }
+    { marginTop: space, marginRight: space }
   ] as const;
 
 const [tagsStyle, tagStyle] = getStyle(5);
@@ -24,23 +30,27 @@ export function Tags({
   tags = [],
   tagProps,
   onTagClick,
-  children,
   ...props
 }: Props) {
   return (
     <div {...props} className={`tags ${className}`.trim()} style={tagsStyle}>
-      {children}
-      {tags.map((tag, idx) => (
-        <Tag
-          {...tagProps}
-          style={tagStyle}
-          key={`${tag}-${idx}`}
-          interactive={!!onTagClick}
-          onClick={() => onTagClick && onTagClick(tag, idx)}
-        >
-          {tag}
-        </Tag>
-      ))}
+      {tags.map((_tag, idx) => {
+        const tag =
+          typeof _tag === 'string' ? { value: _tag, clickable: true } : _tag;
+        const interactive = !!(tag.clickable && onTagClick);
+
+        return (
+          <Tag
+            {...tagProps}
+            key={`${tag}-${idx}`}
+            style={tagStyle}
+            interactive={interactive}
+            onClick={onTagClick && (() => onTagClick(tag, idx))}
+          >
+            {tag.value}
+          </Tag>
+        );
+      })}
     </div>
   );
 }
