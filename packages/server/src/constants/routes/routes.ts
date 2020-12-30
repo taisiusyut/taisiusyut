@@ -53,5 +53,12 @@ export const Routes = {
     add_book_to_shelf: '/:bookID',
     remove_book_from_shelf: '/:bookID',
     update_book_in_shelf: '/:bookID'
+  },
+  bug_report: {
+    prefix: '/bug-report',
+    create_bug_report: '',
+    get_bug_reports: '',
+    get_bug_report: '/:id',
+    update_bug_report: '/:id'
   }
 };

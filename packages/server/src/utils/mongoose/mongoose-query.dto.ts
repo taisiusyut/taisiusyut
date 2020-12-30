@@ -1,4 +1,3 @@
-import { ObjectID } from 'mongodb';
 import {
   IsNumber,
   IsOptional,
@@ -15,14 +14,9 @@ type QuerySchema = {
   [K in keyof (Pagination & Search & Timestamp)]?: unknown;
 };
 
-interface MongoDateRange {
-  $gte: string;
-  $lte: string;
-}
-
 class Base implements QuerySchema {
   // for typings
-  _id?: string | ObjectID;
+  _id?: any;
 
   @IsNumber()
   @IsOptional()
@@ -55,12 +49,12 @@ class Base implements QuerySchema {
   @IsOptional()
   @ValidateNested()
   @DateRange()
-  createdAt?: number | MongoDateRange;
+  createdAt?: any;
 
   @IsOptional()
   @ValidateNested()
   @DateRange()
-  updatedAt?: number | MongoDateRange;
+  updatedAt?: any;
 }
 
 export class QueryDto

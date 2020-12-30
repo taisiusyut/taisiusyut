@@ -18,7 +18,11 @@ import { QueryDto } from './mongoose-query.dto';
 export const TEXT_SCORE = 'TEXT_SCORE';
 
 export class MongooseCRUDService<T, D extends T & Document = T & Document> {
-  constructor(private model: PaginateModel<D>) {}
+  private model: PaginateModel<D>;
+
+  constructor(model: PaginateModel<D>) {
+    this.model = model;
+  }
 
   async create(createDto: unknown): Promise<D> {
     const created = new this.model(createDto);
@@ -104,7 +108,7 @@ export class MongooseCRUDService<T, D extends T & Document = T & Document> {
   }
 
   async paginate(
-    query: FilterQuery<Omit<D, 'createdAt' | 'updatedAt'>> & QueryDto = {},
+    query: FilterQuery<D> & QueryDto = {},
     { projection, ...options }: PaginateOptions = {}
   ) {
     const {

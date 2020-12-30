@@ -12,6 +12,7 @@ import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { PaymentModule } from '@/modules/payment/payment.module';
 import { BookShelfModule } from './modules/book-shelf/book-shelf.module';
+import { BugReportModule } from './modules/bug-report/bug-report.module';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
@@ -28,6 +29,7 @@ interface Configs {
     CloudinaryModule,
     PaymentModule,
     BookShelfModule,
+    BugReportModule,
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,

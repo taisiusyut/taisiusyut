@@ -1,0 +1,85 @@
+import { FastifyRequest } from 'fastify';
+import {
+  Controller,
+  Req,
+  Body,
+  Get,
+  Post,
+  Patch,
+  Query,
+  NotFoundException
+} from '@nestjs/common';
+import { routes } from '@/constants';
+import { ObjectId } from '@/decorators';
+import { Access } from '@/utils/access';
+import { BugReportService } from './bug-report.service';
+import {
+  CreateBugReportDto,
+  GetBugReportsDto,
+  UpdateBugReportDto
+} from './dto';
+
+@Controller(routes.bug_report.prefix)
+export class BugReportController {
+  constructor(private readonly bugReportService: BugReportService) {}
+
+  @Post(routes.bug_report.create_bug_report)
+  create(
+    @Req() req: FastifyRequest,
+    @Body() createBookDto: CreateBugReportDto
+  ) {
+    return this.bugReportService.create({
+      ...createBookDto,
+      user: req.user?.user_id
+    });
+  }
+
+  @Access('Auth')
+  @Patch(routes.bug_report.update_bug_report)
+  async update(
+    @Req() { user }: FastifyRequest,
+    @ObjectId('id') id: string,
+    @Body() updateBugReportDto: UpdateBugReportDto
+  ) {
+    const query = this.bugReportService.getRoleBasedQuery(user, { _id: id });
+
+    const bugReport = await this.bugReportService.findOneAndUpdate(
+      query,
+      updateBugReportDto
+    );
+
+    if (!bugReport) {
+      throw new NotFoundException(`report not found`);
+    }
+
+    return bugReport;
+  }
+
+  @Access('Auth')
+  @Get(routes.bug_report.get_bug_reports)
+  async getAll(
+    @Req() { user }: FastifyRequest,
+    @Query() getBugReportsDto: GetBugReportsDto
+  ) {
+    const query = this.bugReportService.getRoleBasedQuery(
+      user,
+      getBugReportsDto
+    );
+
+    return this.bugReportService.paginate(query);
+  }
+
+  @Access('Auth')
+  @Get(routes.bug_report.get_bug_report)
+  async get(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+    const query = this.bugReportService.getRoleBasedQuery(user, { _id: id });
+
+    const bugReport = await this.bugReportService.findOne(query);
+
+    if (!bugReport) {
+      throw new NotFoundException(`report not found`);
+    }
+
+    return bugReport;
+  }
+}

@@ -133,7 +133,7 @@ export class ChapterController {
   ) {
     const chapterQuery = {
       ...query,
-      ...(this.chapterService.getRoleBasedQuery(user) as GetChaptersDto)
+      ...this.chapterService.getRoleBasedQuery(user)
     };
 
     // do not select these properties

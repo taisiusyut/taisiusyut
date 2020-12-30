@@ -27,10 +27,6 @@ import { Book } from './schemas/book.schema';
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
-  isPublicStatus(status: BookStatus) {
-    return [BookStatus.Public, BookStatus.Finished].includes(status);
-  }
-
   @Access('book_create')
   @Post(routes.book.create_book)
   create(@Req() req: FastifyRequest, @Body() createBookDto: CreateBookDto) {
@@ -98,15 +94,16 @@ export class BookController {
     @Req() { user }: FastifyRequest,
     @Query() { tag, ...dto }: GetBooksDto
   ) {
-    const query: FilterQuery<Book> = {
-      ...this.bookService.getRoleBasedQuery(user, dto)
-    };
+    const query: FilterQuery<Book> = this.bookService.getRoleBasedQuery(
+      user,
+      dto
+    );
 
     if (tag) {
       query.tags = { $in: [tag] };
     }
 
-    return this.bookService.paginate(query as any);
+    return this.bookService.paginate(query);
   }
 
   @Access('book_public', 'book_finish')

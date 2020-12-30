@@ -2,6 +2,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 
 export * from './auth';
 export * from './book';
+export * from './bug-report';
 export * from './chapter';
 export * from './cloudinary';
 export * from './user';
@@ -37,7 +38,12 @@ export interface Timestamp {
   updatedAt: number;
 }
 
-export type DateRange = [string, string];
+export type DateRange = [string | number, string | number];
+
+export type DateRangeQuery = {
+  createdAt?: DateRange;
+  updatedAt?: DateRange;
+};
 
 export enum Order {
   ASC = 1,
