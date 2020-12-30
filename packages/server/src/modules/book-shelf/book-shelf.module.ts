@@ -14,8 +14,7 @@ import autopopulate from 'mongoose-autopopulate';
       {
         name: BookShelf.name,
         useFactory: () => {
-          const schema = BookShelfSchema;
-          schema.plugin(autopopulate);
+          BookShelfSchema.plugin(autopopulate);
           return BookShelfSchema;
         }
       }

@@ -1,12 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  Model,
-  Query,
-  Schema,
-  Document,
-  MongooseFuzzySearchingField
-} from 'mongoose';
+import { Model, Query, Document, MongooseFuzzySearchingField } from 'mongoose';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { fuzzySearch } from '@/utils/mongoose';
@@ -26,17 +20,15 @@ import paginate from 'mongoose-paginate-v2';
         inject: [CloudinaryService],
         name: Book.name,
         useFactory: async (cloudinaryService: CloudinaryService) => {
-          const schema = BookSchema as Schema<Book>;
-
           const fields: MongooseFuzzySearchingField<Schema$Book>[] = [
             { name: 'name' },
             { name: 'authorName' },
             'tags' // FIXME: wait for mongoose-fuzzy-searching
           ];
 
-          schema.plugin(fuzzySearch, { fields });
-          schema.plugin(autopopulate);
-          schema.plugin(paginate);
+          BookSchema.plugin(fuzzySearch, { fields });
+          BookSchema.plugin(autopopulate);
+          BookSchema.plugin(paginate);
 
           async function removeImageFromCloudinary(this: Query<Book>) {
             const model: Model<Book & Document> = (this as any).model;
@@ -46,15 +38,18 @@ import paginate from 'mongoose-paginate-v2';
             }
           }
 
-          schema.pre('deleteOne', removeImageFromCloudinary);
-          schema.pre('findOneAndUpdate', async function (this: Query<Book>) {
-            const changes: Partial<Book> = this.getUpdate();
-            if (typeof changes !== 'undefined') {
-              await removeImageFromCloudinary.call(this);
+          BookSchema.pre('deleteOne', removeImageFromCloudinary);
+          BookSchema.pre(
+            'findOneAndUpdate',
+            async function (this: Query<Book>) {
+              const changes: Partial<Book> = this.getUpdate();
+              if (typeof changes !== 'undefined') {
+                await removeImageFromCloudinary.call(this);
+              }
             }
-          });
+          );
 
-          return schema;
+          return BookSchema;
         }
       }
     ])

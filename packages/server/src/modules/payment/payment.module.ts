@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BookModule } from '@/modules/book/book.module';
-import { Schema } from 'mongoose';
 import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { PaymentController } from './payment.controller';
 import { PaymentService } from './payment.service';
@@ -14,9 +13,8 @@ import paginate from 'mongoose-paginate-v2';
       {
         name: Payment.name,
         useFactory: async () => {
-          const schema = PaymentSchema as Schema<Payment>;
-          schema.plugin(paginate);
-          return schema;
+          PaymentSchema.plugin(paginate);
+          return PaymentSchema;
         }
       }
     ]),

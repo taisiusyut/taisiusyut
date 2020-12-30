@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
-import { Schema, MongooseFuzzySearchingField } from 'mongoose';
+import { MongooseFuzzySearchingField } from 'mongoose';
 import { fuzzySearch } from '@/utils/mongoose';
 import { Schema$User, UserRole } from '@/typings';
 import { UserController } from './user.controller';
@@ -28,19 +28,16 @@ import paginate from 'mongoose-paginate-v2';
           }
         ],
         useFactory: async () => {
-          const schema = UserSchema as Schema<User>;
-
           const fields: MongooseFuzzySearchingField<Schema$User>[] = [
             { name: 'username' },
             { name: 'nickname' },
             { name: 'email', escapeSpecialCharacters: false }
           ];
 
-          schema.plugin(fuzzySearch, { fields });
+          UserSchema.plugin(fuzzySearch, { fields });
+          UserSchema.plugin(paginate);
 
-          schema.plugin(paginate);
-
-          return schema;
+          return UserSchema;
         }
       }
     ])

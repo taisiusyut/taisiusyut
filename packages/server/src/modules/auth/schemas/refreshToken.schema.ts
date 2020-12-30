@@ -44,4 +44,6 @@ export class RefreshToken implements Schema$RefreshToken {
   }
 }
 
-export const RefreshTokenSchema = SchemaFactory.createForClass(RefreshToken);
+export const RefreshTokenSchema = SchemaFactory.createForClass<RefreshToken>(
+  RefreshToken
+);

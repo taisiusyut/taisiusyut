@@ -24,4 +24,6 @@ export class BookPayment implements Schema$BookPayment {
   }
 }
 
-export const BookPaymentSchema = SchemaFactory.createForClass(BookPayment);
+export const BookPaymentSchema = SchemaFactory.createForClass<BookPayment>(
+  BookPayment
+);

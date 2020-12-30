@@ -88,6 +88,8 @@ export class BookShelf
   }
 }
 
-export const BookShelfSchema = SchemaFactory.createForClass(BookShelf);
+export const BookShelfSchema = SchemaFactory.createForClass<BookShelf>(
+  BookShelf
+);
 
 BookShelfSchema.index({ user: 1, book: 1 }, { unique: true });

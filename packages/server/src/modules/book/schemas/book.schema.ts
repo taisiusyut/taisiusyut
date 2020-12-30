@@ -68,4 +68,4 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   }
 }
 
-export const BookSchema = SchemaFactory.createForClass(Book);
+export const BookSchema = SchemaFactory.createForClass<Book>(Book);

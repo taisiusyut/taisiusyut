@@ -8,4 +8,4 @@ export class Client extends OmitType(User, ['role']) {
   role: UserRole;
 }
 
-export const ClientSchema = SchemaFactory.createForClass(Client);
+export const ClientSchema = SchemaFactory.createForClass<Client>(Client);

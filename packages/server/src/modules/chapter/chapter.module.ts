@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Schema, MongooseFuzzySearchingField } from 'mongoose';
+import { MongooseFuzzySearchingField } from 'mongoose';
 import { fuzzySearch } from '@/utils/mongoose';
 import { Schema$Chapter } from '@/typings';
 import { BookModule } from '@/modules/book/book.module';
@@ -16,17 +16,15 @@ import paginate from 'mongoose-paginate-v2';
       {
         name: Chapter.name,
         useFactory: async () => {
-          const schema = ChapterSchema as Schema<Chapter>;
-
           const fields: MongooseFuzzySearchingField<Schema$Chapter>[] = [
             { name: 'name' }
           ];
 
-          schema.plugin(fuzzySearch, { fields });
+          ChapterSchema.plugin(fuzzySearch, { fields });
           // schema.plugin(autopopulate);
-          schema.plugin(paginate);
+          ChapterSchema.plugin(paginate);
 
-          return schema;
+          return ChapterSchema;
         }
       }
     ])

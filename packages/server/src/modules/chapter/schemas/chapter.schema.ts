@@ -79,7 +79,7 @@ export class Chapter implements Schema$Chapter {
   }
 }
 
-export const ChapterSchema = SchemaFactory.createForClass(Chapter);
+export const ChapterSchema = SchemaFactory.createForClass<Chapter>(Chapter);
 
 // chapter name cannot be duplicate per book
 ChapterSchema.index({ name: 1, book: 1 }, { unique: true });

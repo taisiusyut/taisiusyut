@@ -32,6 +32,6 @@ export class ChapterPayment implements Schema$ChapterPayment {
   }
 }
 
-export const ChapterPaymentSchema = SchemaFactory.createForClass(
+export const ChapterPaymentSchema = SchemaFactory.createForClass<ChapterPayment>(
   ChapterPayment
 );

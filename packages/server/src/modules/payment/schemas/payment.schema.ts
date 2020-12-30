@@ -21,7 +21,7 @@ export class PaymentDetails {
   type: PaymentType;
 }
 
-export const PaymentDetailsSchema = SchemaFactory.createForClass(
+export const PaymentDetailsSchema = SchemaFactory.createForClass<PaymentDetails>(
   PaymentDetails
 );
 
@@ -71,7 +71,7 @@ export class Payment implements Schema$Payment {
   }
 }
 
-export const PaymentSchema = SchemaFactory.createForClass(Payment);
+export const PaymentSchema = SchemaFactory.createForClass<Payment>(Payment);
 
 PaymentSchema.path('details').discriminator(
   (PaymentType.Book as unknown) as string,

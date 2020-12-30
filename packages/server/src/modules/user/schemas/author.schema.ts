@@ -11,4 +11,4 @@ export class Author extends OmitType(Client, ['role']) {
   description: string;
 }
 
-export const AuthorSchema = SchemaFactory.createForClass(Author);
+export const AuthorSchema = SchemaFactory.createForClass<Author>(Author);
