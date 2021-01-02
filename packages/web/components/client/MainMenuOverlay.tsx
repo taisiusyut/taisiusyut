@@ -89,8 +89,6 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         搜索書籍
       </ListItem>
 
-      <ListSpacer />
-
       <ListItem
         icon="help"
         rightElement={chevron}
@@ -109,6 +107,8 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       >
         Github
       </ListItem>
+
+      <ListSpacer />
 
       <ListItem icon="code" rightElement={pkg.version}>
         Version
