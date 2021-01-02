@@ -3,7 +3,6 @@ import { Exclude } from 'class-transformer';
 import {
   Schema$BugReport,
   Param$CreateBugReport,
-  BugReportStatus,
   BugReportType
 } from '@/typings';
 import { IsTitle, IsDescription } from './index';
@@ -14,6 +13,12 @@ class Excluded implements Partial<Schema$BugReport> {
 
   @Exclude()
   user?: undefined;
+
+  @Exclude()
+  version?: undefined;
+
+  @Exclude()
+  status?: undefined;
 
   @Exclude()
   createdAt?: undefined;
@@ -38,9 +43,6 @@ export class CreateBugReportDto
 
   @IsDescription()
   description: string;
-
-  @IsEnum(BugReportStatus)
-  status: BugReportStatus;
 
   @IsEnum(BugReportType)
   type: BugReportType;

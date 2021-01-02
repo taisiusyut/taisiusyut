@@ -2,6 +2,7 @@ import { Pagination, Timestamp, Search, DateRangeQuery } from './';
 
 export enum BugReportStatus {
   Open = 1,
+  ReOpen,
   Closed,
   Fixed,
   Invalid,
@@ -21,6 +22,7 @@ export interface Schema$BugReport extends Timestamp {
   id: string;
   title: string;
   description: string;
+  version?: string;
   status: BugReportStatus;
   type: BugReportType;
   user?: string;

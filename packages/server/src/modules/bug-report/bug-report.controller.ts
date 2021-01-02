@@ -11,18 +11,20 @@ import {
 } from '@nestjs/common';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
-import { Access } from '@/utils/access';
+import { Access, AccessPipe } from '@/utils/access';
 import { BugReportService } from './bug-report.service';
 import {
   CreateBugReportDto,
   GetBugReportsDto,
   UpdateBugReportDto
 } from './dto';
+import { BugReportStatus } from '@/typings';
 
 @Controller(routes.bug_report.prefix)
 export class BugReportController {
   constructor(private readonly bugReportService: BugReportService) {}
 
+  @Access('Optional')
   @Post(routes.bug_report.create_bug_report)
   create(
     @Req() req: FastifyRequest,
@@ -30,6 +32,7 @@ export class BugReportController {
   ) {
     return this.bugReportService.create({
       ...createBookDto,
+      status: BugReportStatus.Open,
       user: req.user?.user_id
     });
   }
@@ -59,7 +62,7 @@ export class BugReportController {
   @Get(routes.bug_report.get_bug_reports)
   async getAll(
     @Req() { user }: FastifyRequest,
-    @Query() getBugReportsDto: GetBugReportsDto
+    @Query(AccessPipe) getBugReportsDto: GetBugReportsDto
   ) {
     const query = this.bugReportService.getRoleBasedQuery(
       user,

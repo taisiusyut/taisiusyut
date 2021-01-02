@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import {
   Schema$BugReport,
@@ -7,6 +7,7 @@ import {
   BugReportType
 } from '@/typings';
 import { IsTitle, IsDescription } from './index';
+import { Group } from '@/utils/access';
 
 class Excluded implements Partial<Schema$BugReport> {
   @Exclude()
@@ -35,8 +36,14 @@ class UpdateBugReport
   @IsOptional()
   description?: string;
 
+  @IsOptional()
+  @IsString()
+  @Group(['Root', 'Admin'])
+  version?: string;
+
   @IsEnum(BugReportStatus)
   @IsOptional()
+  @Group(['Root', 'Admin'])
   status?: BugReportStatus;
 
   @IsEnum(BugReportType)

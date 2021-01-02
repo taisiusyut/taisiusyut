@@ -23,7 +23,7 @@ export class BugReportService extends MongooseCRUDService<BugReport> {
 
     if (!user) {
       delete query.user;
-    } else if (user.role === UserRole.Client) {
+    } else if (user.role === UserRole.Author || user.role === UserRole.Client) {
       query.user = user?.user_id;
     }
     return query;

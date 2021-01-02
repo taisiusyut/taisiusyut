@@ -13,6 +13,6 @@ export function IsDescription(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), MaxLength(MAXIMUM_BUG_REPORT_DESCRIPTION));
 }
 
-export * from './create-bug-report';
-export * from './update-bug-report';
-export * from './get-bug-reports';
+export * from './create-bug-report.dto';
+export * from './update-bug-report.dto';
+export * from './get-bug-reports.dto';

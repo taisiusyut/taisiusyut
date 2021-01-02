@@ -7,12 +7,13 @@ import {
   BugReportType
 } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
+import { Group } from '@/utils/access';
 
 class Excluded
   extends QueryDto
   implements Partial<Record<keyof Schema$BugReport, unknown>> {
   @Exclude()
-  description: undefined;
+  description?: undefined;
 }
 
 class GetBugReports
@@ -29,12 +30,19 @@ class GetBugReports
   title?: string;
 
   @IsOptional()
+  @IsString()
+  @Group(['Root', 'Admin'])
+  version?: string;
+
+  @IsOptional()
   @IsMongoId()
+  @Group(['Root', 'Admin'])
   user?: string;
 
   @IsOptional()
   @IsEnum(BugReportStatus)
   @Transform(value => value && Number(value))
+  @Group(['Root', 'Admin'])
   status?: BugReportStatus;
 
   @IsOptional()
