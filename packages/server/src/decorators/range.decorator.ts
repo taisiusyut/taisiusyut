@@ -1,14 +1,22 @@
 import { applyDecorators } from '@nestjs/common';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { IsNumber, IsOptional, ValidateNested } from 'class-validator';
 import { DateRange as IDateRange } from '@/typings';
 
-export interface MongoDateRange {
+export class MongoDateRange {
+  @IsNumber()
+  @IsOptional()
   $gte?: number;
+
+  @IsNumber()
+  @IsOptional()
   $lte?: number;
 }
 
 export function DateRange(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
+    ValidateNested(),
+    Type(() => MongoDateRange) as MethodDecorator,
     Transform(
       (payload: IDateRange): MongoDateRange => {
         if (Array.isArray(payload)) {

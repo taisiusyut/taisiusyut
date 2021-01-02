@@ -1,9 +1,4 @@
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested
-} from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { Transform, Exclude } from 'class-transformer';
 import { Pagination, Search, Order, Timestamp } from '@/typings';
 import { DateRange } from '@/decorators';
@@ -47,12 +42,10 @@ class Base implements QuerySchema {
   search?: string;
 
   @IsOptional()
-  @ValidateNested()
   @DateRange()
   createdAt?: any;
 
   @IsOptional()
-  @ValidateNested()
   @DateRange()
   updatedAt?: any;
 }
