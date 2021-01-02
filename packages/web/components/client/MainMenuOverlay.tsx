@@ -18,7 +18,7 @@ import {
   ClientPreferencesDialogIcon,
   ClientPreferencesDialogTitle
 } from '@/components/client/ClientPreferencesDialog';
-import { Github } from '@/components/Github';
+import { Github } from '@/components/Icon/Github';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';

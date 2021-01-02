@@ -9,8 +9,8 @@ import {
   IButtonProps
 } from '@blueprintjs/core';
 import { CopyButton } from '@/components/CopyButton';
-import { WhatsApp } from '@/components/WhatsApp';
-import { Telegram } from '@/components/Telegram';
+import { WhatsApp } from '@/components/Icon/WhatsApp';
+import { Telegram } from '@/components/Icon/Telegram';
 import { createOpenOverlay } from '@/utils/openOverlay';
 
 interface ShareDialogProps extends IDialogProps {
