@@ -1,6 +1,7 @@
 import React from 'react';
 import { Schema$User, UserRole, Order } from '@/typings';
 import { Table, TableProps, SortableHeader } from '@/components/Table';
+import { UserStatusTag } from '@/components/Tags';
 import dayjs from 'dayjs';
 
 type Props = TableProps<Partial<Schema$User>>;
@@ -14,6 +15,14 @@ const userColumns: Columns = [
     Cell: ({ value }: { value: number }) => (
       <div style={{ textAlign: 'center' }}>{value}</div>
     )
+  },
+  {
+    id: 'status',
+    accessor: 'status',
+    Header: 'Status',
+    Cell: ({ value: status }) => {
+      return status ? <UserStatusTag status={status} /> : null;
+    }
   },
   {
     id: 'username',

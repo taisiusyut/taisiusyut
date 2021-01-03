@@ -1,8 +1,11 @@
 import React from 'react';
 import { Button, Card, H4 } from '@blueprintjs/core';
-import { createUsePaginationLocal } from '@/hooks/usePaginationLocal';
+import {
+  createUsePaginationLocal,
+  DefaultCRUDActionTypes
+} from '@/hooks/usePaginationLocal';
 import { createFilter } from '@/components/Filter';
-import { UserRoleSelect } from '@/components/Select';
+import { UserRoleSelect, UserStatusSelect } from '@/components/Select';
 import { Schema$User, Param$GetUsers, Order } from '@/typings';
 import { getUsers } from '@/service';
 import { Toaster } from '@/utils/toaster';
@@ -20,7 +23,15 @@ const {
 
 const onFailure = Toaster.apiError.bind(Toaster, 'Get users failure');
 
-const useUserPagination = createUsePaginationLocal('id', getUsers);
+const useUserPagination = createUsePaginationLocal('id', getUsers, {
+  initializer: (state, reducer) =>
+    reducer(state, {
+      type: DefaultCRUDActionTypes.LIST,
+      payload: Array.from({ length: state.pageSize }).map((_, idx) => ({
+        id: String(idx)
+      }))
+    })
+});
 
 export function Users() {
   const { state, loading, pagination, actions } = useUserPagination({
@@ -56,6 +67,9 @@ export function Users() {
           <FormItem name="role" label="Role">
             <UserRoleSelect />
           </FormItem>
+          <FormItem name="status" label="Status">
+            <UserStatusSelect />
+          </FormItem>
           <FilterDateRange name="createdAt" label="Created At" />
           <FilterDateRange name="updatedAt" label="Updated At" />
         </Filter>
@@ -74,8 +88,7 @@ export function Users() {
                 offset: { top: event.pageY, left: event.pageX },
                 onClose: () => row.toggleRowSelected(),
                 user: row.original as Schema$User,
-                onUpdate: actions.update,
-                onDelete: actions.delete
+                onUpdate: actions.update
               });
             }
           }}

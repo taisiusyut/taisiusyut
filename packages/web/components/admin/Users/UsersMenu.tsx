@@ -8,12 +8,17 @@ import {
   IOverlayProps,
   MenuDivider
 } from '@blueprintjs/core';
-import { Schema$User } from '@/typings';
+import { Schema$User, UserStatus } from '@/typings';
 import { createOpenOverlay } from '@/utils/openOverlay';
-import { UpdateUser, OnUpdate } from './UpdateUser';
-import { DeleteUser, OnDelete } from './DeleteUser';
+import {
+  OnUpdate,
+  BlockUserItem,
+  DeleteUserItem,
+  UpdateUserItem,
+  RecoverUserItem
+} from './UserMenuItem';
 
-interface UsersMenuProps extends Partial<IOverlayProps>, OnUpdate, OnDelete {
+interface UsersMenuProps extends Partial<IOverlayProps>, OnUpdate {
   offset: { top: number; left: number };
   title?: string;
   user: Schema$User;
@@ -26,9 +31,10 @@ export function UsersMenu({
   user,
   onClose,
   onUpdate,
-  onDelete,
   ...props
 }: UsersMenuProps) {
+  const itemProps = { onUpdate, user };
+
   return (
     <Overlay {...props} onClose={onClose} hasBackdrop={false}>
       <div className={Classes.POPOVER} style={offset}>
@@ -43,12 +49,16 @@ export function UsersMenu({
             }}
           />
           <MenuDivider />
-          <UpdateUser onUpdate={onUpdate} user={user} />
-          <DeleteUser
-            id={user.id}
-            nickname={user.nickname}
-            onDelete={onDelete}
-          />
+          {[UserStatus.Blocked, UserStatus.Deleted].includes(user.status) ? (
+            <RecoverUserItem {...itemProps} />
+          ) : (
+            <>
+              <UpdateUserItem {...itemProps} />
+              <BlockUserItem {...itemProps} />
+              <DeleteUserItem {...itemProps} />
+            </>
+          )}
+
           <MenuDivider />
           <MenuItem icon="cross" text="Close" />
         </Menu>

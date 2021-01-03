@@ -45,7 +45,7 @@ export class UserController {
 
   @Access('user_get_all')
   @Get(routes.user.get_users)
-  getAll(@Query(AccessPipe) query: GetUsersDto, @Req() req: FastifyRequest) {
+  getAll(@Req() req: FastifyRequest, @Query(AccessPipe) query: GetUsersDto) {
     let condition: Condition[] = [];
 
     if (req.user) {

@@ -1,4 +1,5 @@
 export * from './Tags';
+export * from './UserStatusTag';
 export * from './BookStatusTag';
 export * from './ChapterStatusTag';
 
