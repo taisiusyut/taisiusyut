@@ -26,7 +26,7 @@ export class UserService extends MongooseCRUDService<User> {
   }
 
   create(payload: CreateUserDto) {
-    payload = { status: UserStatus.Active, role: UserRole.Client, ...payload };
+    payload = { role: UserRole.Client, ...payload, status: UserStatus.Active };
     return super.create(payload);
   }
 

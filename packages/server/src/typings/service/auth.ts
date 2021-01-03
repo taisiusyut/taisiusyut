@@ -46,7 +46,7 @@ export interface Param$Login {
 
 export interface Schema$Authenticated extends JWTSignResult {
   user: JWTSignPayload;
-  isDefaultAc: boolean;
+  isDefaultAc?: boolean;
 }
 
 export interface Param$DeleteAccount {

@@ -51,13 +51,12 @@ export class AuthController {
 
   @Access('Everyone')
   @Post(routes.auth.registration)
-  @HttpCode(HttpStatus.OK)
   registration(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create({ ...createUserDto, role: UserRole.Client });
   }
 
+  @Access('Everyone')
   @Post(routes.auth.login)
-  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('local'))
   async login(
     @Req() { user, headers, cookies }: FastifyRequest,
@@ -89,7 +88,7 @@ export class AuthController {
     };
 
     if (!isMongoId(user.user_id)) {
-      response['isDefaultAc'] = true;
+      response.isDefaultAc = true;
     }
 
     return reply
