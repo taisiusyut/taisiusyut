@@ -6,7 +6,7 @@ interface Props {
   status?: ChapterStatus;
 }
 
-function getTagPropsByStatus(status: ChapterStatus): ITagProps {
+function getTagPropsByChapterStatus(status: ChapterStatus): ITagProps {
   switch (status) {
     case ChapterStatus.Public:
       return { intent: 'success' };
@@ -19,5 +19,7 @@ export function ChapterStatusTag({ status }: Props) {
   if (!status) {
     return null;
   }
-  return <Tag {...getTagPropsByStatus(status)}>{ChapterStatus[status]}</Tag>;
+  return (
+    <Tag {...getTagPropsByChapterStatus(status)}>{ChapterStatus[status]}</Tag>
+  );
 }

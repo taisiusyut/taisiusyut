@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Tag } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
-import { getTagPropsByStatus } from '@/components/Tags';
+import { getTagPropsByBookStatus } from '@/components/Tags';
 import { BookStatus, Schema$Book } from '@/typings';
 import classes from './ClientSearchItem.module.scss';
 import dayjs from 'dayjs';
@@ -39,7 +39,7 @@ export function ClientSearchItem({ book, className: id }: Props) {
       </div>
       <div>
         <Tag
-          {...getTagPropsByStatus(book.status)}
+          {...getTagPropsByBookStatus(book.status)}
           className={classes['book-status']}
         >
           {book.status

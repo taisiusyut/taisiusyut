@@ -6,7 +6,7 @@ interface Props extends ITagProps {
   status?: BookStatus;
 }
 
-export function getTagPropsByStatus(status?: BookStatus): ITagProps {
+export function getTagPropsByBookStatus(status?: BookStatus): ITagProps {
   switch (status) {
     case BookStatus.Public:
       return { intent: 'success' };
@@ -19,5 +19,5 @@ export function BookStatusTag({ status }: Props) {
   if (!status) {
     return null;
   }
-  return <Tag {...getTagPropsByStatus(status)}>{BookStatus[status]}</Tag>;
+  return <Tag {...getTagPropsByBookStatus(status)}>{BookStatus[status]}</Tag>;
 }
