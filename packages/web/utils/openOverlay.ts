@@ -17,7 +17,10 @@ export function createOpenOverlay<T extends Partial<OverlayProps>>(
     // eslint-disable-next-line no-use-before-define
     let currentConfig: Omit<T, keyof OverlayProps> & Partial<OverlayProps> = {
       ...config,
-      onClose: close,
+      onClose: (...args) => {
+        config?.onClose && config.onClose(...args);
+        close();
+      },
       onClosed: (...args) => {
         config?.onClosed && config.onClosed(...args);
         destroy();
