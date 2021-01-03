@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { setupUsers, getUser, setupRoot } from '../../service/auth';
+import { setupUsers, getGlobalUser, setupRoot } from '../../service/auth';
 import { getUserProfile } from '../../service/auth';
 
 export function testGetProfile() {
@@ -11,7 +11,7 @@ export function testGetProfile() {
   test.each(['root', 'admin', 'author', 'client'])(
     `%s can access profile`,
     async user => {
-      const auth = getUser(user);
+      const auth = getGlobalUser(user);
       expect(auth).toBeDefined();
 
       const response = await getUserProfile(auth.token);

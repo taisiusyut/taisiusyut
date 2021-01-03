@@ -10,7 +10,11 @@ import {
   Schema$Payment,
   UserRole
 } from '@/typings';
-import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
+import {
+  createUserAndLogin,
+  getGlobalUser,
+  setupUsers
+} from '../../service/auth';
 import { createBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
 import {
@@ -80,18 +84,26 @@ export function testUpdatePayment() {
     '%s cannot update payment status',
     async user => {
       const payment = payments[0];
-      const response = await updatePayment(getUser(user).token, payment.id, {
-        status: PaymentStatus.Success
-      });
+      const response = await updatePayment(
+        getGlobalUser(user).token,
+        payment.id,
+        {
+          status: PaymentStatus.Success
+        }
+      );
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     }
   );
 
   test.each(['root', 'admin'])('%s can update payment status', async user => {
     const payment = payments[user === 'root' ? 0 : 1];
-    const response = await updatePayment(getUser(user).token, payment.id, {
-      status: PaymentStatus.Success
-    });
+    const response = await updatePayment(
+      getGlobalUser(user).token,
+      payment.id,
+      {
+        status: PaymentStatus.Success
+      }
+    );
     expect(response.status).toBe(HttpStatus.OK);
   });
 }

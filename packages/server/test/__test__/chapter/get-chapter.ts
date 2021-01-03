@@ -9,7 +9,11 @@ import {
 } from '@/typings';
 import { HttpStatus } from '@nestjs/common';
 import { Response } from 'supertest';
-import { createUserAndLogin, setupUsers, getUser } from '../../service/auth';
+import {
+  createUserAndLogin,
+  setupUsers,
+  getGlobalUser
+} from '../../service/auth';
 import { createBook } from '../../service/book';
 import {
   createChapter,
@@ -73,7 +77,7 @@ function createGetBookTest(getChapter: GetChapter) {
       async user => {
         for (const chapter of chapters) {
           const response = await getChapter(
-            getUser(user).token,
+            getGlobalUser(user).token,
             book.id,
             chapter
           );
@@ -88,7 +92,7 @@ function createGetBookTest(getChapter: GetChapter) {
       async user => {
         for (const chapter of chapters) {
           const response = await getChapter(
-            getUser(user).token,
+            getGlobalUser(user).token,
             book.id,
             chapter
           );

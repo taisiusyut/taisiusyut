@@ -4,7 +4,7 @@ import { rid } from '@/utils/rid';
 import { updateUser } from '../../service/user';
 import {
   createUsers,
-  getUser,
+  getGlobalUser,
   setupRoot,
   setupUsers
 } from '../../service/auth';
@@ -29,8 +29,8 @@ export function testUpdateUser() {
     async ({ executor, target }: Record<string, any>) => {
       await setupUsers();
       const newEmal = `${rid(8)}@gmail.com`;
-      const executeUser = getUser(executor);
-      const targetUser = getUser(target);
+      const executeUser = getGlobalUser(executor);
+      const targetUser = getGlobalUser(target);
       const userId =
         target === 'self' ? executeUser.user.user_id : targetUser.user.user_id;
 
@@ -76,8 +76,8 @@ export function testUpdateUser() {
       '$executor cannot update $target',
       async ({ executor, target, status }: Record<string, any>) => {
         await forbiddenUpdate(
-          getUser(executor),
-          target === 'root' ? getUser(target) : mock[target],
+          getGlobalUser(executor),
+          target === 'root' ? getGlobalUser(target) : mock[target],
           status
         );
       }
@@ -91,7 +91,7 @@ export function testUpdateUser() {
     `(
       '$executor cannot update other $target',
       async ({ executor, target, status }: Record<string, any>) => {
-        await forbiddenUpdate(getUser(executor), mock[target], status);
+        await forbiddenUpdate(getGlobalUser(executor), mock[target], status);
       }
     );
   });

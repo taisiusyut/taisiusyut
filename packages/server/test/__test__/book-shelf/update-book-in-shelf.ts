@@ -7,7 +7,7 @@ import {
   getBooksFromShelf,
   updateBookInShelf
 } from '../../service/book-shelf';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 
 export function testUpdateBookInShelf() {
@@ -29,16 +29,23 @@ export function testUpdateBookInShelf() {
     await app.get(BookShelfService).clear();
 
     for (const user of ['root', 'admin', 'author', 'client']) {
-      const response = await addBookToShelf(getUser(user).token, books[0].id);
+      const response = await addBookToShelf(
+        getGlobalUser(user).token,
+        books[0].id
+      );
       expect(response.status).toBe(HttpStatus.CREATED);
     }
   });
 
   test.each(users)(`%s can update book in shelf`, async user => {
-    const response = await updateBookInShelf(getUser(user).token, books[0].id, {
-      pin: true,
-      lastVisit: 1
-    });
+    const response = await updateBookInShelf(
+      getGlobalUser(user).token,
+      books[0].id,
+      {
+        pin: true,
+        lastVisit: 1
+      }
+    );
     expect(response.status).toBe(HttpStatus.OK);
   });
 
@@ -52,7 +59,7 @@ export function testUpdateBookInShelf() {
     async ({ property, value }: Record<string, string>) => {
       for (const user of ['root', 'admin', 'author', 'client']) {
         let response = await updateBookInShelf(
-          getUser(user).token,
+          getGlobalUser(user).token,
           books[0].id,
           {
             [property]: value
@@ -61,7 +68,7 @@ export function testUpdateBookInShelf() {
         expect(response.status).toBe(HttpStatus.OK);
         expect(response.body).not.toHaveProperty(property, value);
 
-        response = await getBooksFromShelf(getUser(user).token);
+        response = await getBooksFromShelf(getGlobalUser(user).token);
         expect(response.body[0]).not.toHaveProperty(property, value);
       }
     }

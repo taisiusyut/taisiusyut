@@ -13,7 +13,7 @@ import {
   createUserAndLogin,
   setupRoot,
   setupUsers,
-  getUser
+  getGlobalUser
 } from '../../service/auth';
 import { createBook, updateBook } from '../../service/book';
 import {
@@ -140,7 +140,7 @@ export function testGetChapters() {
     `global %s can access chapters correctly`,
     async user => {
       for (const { book, chapters, stats } of mocks.authors) {
-        const response = await getChapters(getUser(user).token, book.id, {
+        const response = await getChapters(getGlobalUser(user).token, book.id, {
           pageSize: 100
         });
 

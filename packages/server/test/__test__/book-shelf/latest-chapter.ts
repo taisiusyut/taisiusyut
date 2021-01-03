@@ -6,7 +6,7 @@ import {
   getBooksFromShelf,
   mapToLatestChapter
 } from '../../service/book-shelf';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
 
@@ -29,7 +29,10 @@ export function testLatestChapter() {
     await app.get(BookShelfService).clear();
 
     for (const user of users) {
-      const response = await addBookToShelf(getUser(user).token, books[0].id);
+      const response = await addBookToShelf(
+        getGlobalUser(user).token,
+        books[0].id
+      );
       expect(response.status).toBe(HttpStatus.CREATED);
     }
   });
@@ -42,7 +45,7 @@ export function testLatestChapter() {
     await publicChapter(author.token, books[0].id, chapter.id);
 
     for (const user of users) {
-      const response = await getBooksFromShelf(getUser(user).token);
+      const response = await getBooksFromShelf(getGlobalUser(user).token);
       expect(response.body[0].latestChapter).toBeDefined();
       expect(response.body[0].latestChapter).toEqual(
         mapToLatestChapter(chapter)

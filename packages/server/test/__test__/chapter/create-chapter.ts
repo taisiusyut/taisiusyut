@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
 import { BookStatus, ChapterStatus, ChapterType, Schema$Book } from '@/typings';
 import { createBook, updateBook } from '../../service/book';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import {
   createChapter,
   createChapterDto,
@@ -53,7 +53,7 @@ export function testCreateChapter() {
   test.each(['root', 'admin', 'client'])(
     `%s cannot create chapter`,
     async user => {
-      const response = await createChapter(getUser(user).token, book.id);
+      const response = await createChapter(getGlobalUser(user).token, book.id);
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     }
   );

@@ -6,7 +6,11 @@ import {
 } from '@/typings';
 import { HttpStatus } from '@nestjs/common';
 import { Response } from 'supertest';
-import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
+import {
+  createUserAndLogin,
+  getGlobalUser,
+  setupUsers
+} from '../../service/auth';
 import {
   createBook,
   getBook,
@@ -49,7 +53,7 @@ function createGetBookTest(getBook: GetBook) {
       '%s access book correctly',
       async user => {
         for (const book of books) {
-          const response = await getBook(getUser(user).token, book);
+          const response = await getBook(getGlobalUser(user).token, book);
           const noPermission = user === 'author' || user === 'client';
 
           if (

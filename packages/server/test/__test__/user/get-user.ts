@@ -1,7 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 import { Schema$Authenticated, UserRole } from '@/typings';
-import { setupUsers, getUser, createUserAndLogin } from '../../service/auth';
-import { getUser as getUserAPI } from '../../service/user';
+import {
+  setupUsers,
+  getGlobalUser,
+  createUserAndLogin
+} from '../../service/auth';
+import { getGlobalUser as getUserAPI } from '../../service/user';
 
 export function testGetUser() {
   beforeAll(async () => {
@@ -9,7 +13,7 @@ export function testGetUser() {
   });
 
   test.each(['root', 'admin'])(`global %s can access user`, async user => {
-    const auth = getUser(user);
+    const auth = getGlobalUser(user);
     const response = await getUserAPI(auth.token, auth.user.user_id);
     expect(response.status).toBe(HttpStatus.OK);
 
@@ -39,8 +43,8 @@ export function testGetUser() {
       for (const target of ['root', 'admin', 'author', 'client']) {
         if (target !== user) {
           const response = await getUserAPI(
-            getUser(user)?.token,
-            getUser(target).user.user_id
+            getGlobalUser(user)?.token,
+            getGlobalUser(target).user.user_id
           );
           expect(response.status).toBe(HttpStatus.FORBIDDEN);
         }

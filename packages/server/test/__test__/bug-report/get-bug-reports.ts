@@ -1,6 +1,6 @@
 import { BugReportService } from '@/modules/bug-report/bug-report.service';
 import { Schema$BugReport } from '@/typings';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import {
   createBugReport,
   createBugReportDto,
@@ -31,7 +31,7 @@ export function testGetBugReports() {
     ${'author'} | ${1}
     ${'client'} | ${1}
   `('$user get bug reports', async ({ user, length }) => {
-    const auth = getUser(user);
+    const auth = getGlobalUser(user);
     const response = await getBugReports(auth.token);
     expect(response.body.data).toHaveLength(length);
   });

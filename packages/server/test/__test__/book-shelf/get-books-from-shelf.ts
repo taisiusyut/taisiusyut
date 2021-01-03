@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
 import { Schema$Book } from '@/typings';
 import { addBookToShelf, getBooksFromShelf } from '../../service/book-shelf';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 
 export function testGetBooksFromShelf() {
@@ -24,14 +24,17 @@ export function testGetBooksFromShelf() {
 
     for (const user of users) {
       for (const book of books) {
-        const response = await addBookToShelf(getUser(user).token, book.id);
+        const response = await addBookToShelf(
+          getGlobalUser(user).token,
+          book.id
+        );
         expect(response.status).toBe(HttpStatus.CREATED);
       }
     }
   });
 
   test.each(users)(`%s can get books from shelf`, async user => {
-    const response = await getBooksFromShelf(getUser(user).token);
+    const response = await getBooksFromShelf(getGlobalUser(user).token);
     expect(response.body).toHaveLength(length);
     expect(response.body).not.toContain({
       book: {

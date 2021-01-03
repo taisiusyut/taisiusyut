@@ -124,7 +124,7 @@ export function updateProfile(
     .send(changes);
 }
 
-export const getUser = (user: string) => global[user as 'root'];
+export const getGlobalUser = (user: string) => global[user as 'root'];
 
 export function getLoginRecords(token: string) {
   return request

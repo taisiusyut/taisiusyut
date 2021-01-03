@@ -9,7 +9,11 @@ import {
   Schema$Chapter,
   UserRole
 } from '@/typings';
-import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
+import {
+  createUserAndLogin,
+  getGlobalUser,
+  setupUsers
+} from '../../service/auth';
 import { createBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
 import {
@@ -80,7 +84,7 @@ export function testCreatePayment() {
     async user => {
       const payload = getDefaultPayload();
       for (const [params] of payload) {
-        const response = await createPayment(getUser(user).token, params);
+        const response = await createPayment(getGlobalUser(user).token, params);
         expect(response.status).toBe(HttpStatus.FORBIDDEN);
       }
     }
@@ -91,7 +95,7 @@ export function testCreatePayment() {
     async user => {
       const payload = getDefaultPayload();
       for (const [params, price] of payload) {
-        const response = await createPayment(getUser(user).token, params);
+        const response = await createPayment(getGlobalUser(user).token, params);
         expect(response.status).toBe(HttpStatus.CREATED);
         expect(response.body).toEqual({
           ...params,

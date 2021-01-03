@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, deleteBook, getBooks } from '../../service/book';
 
 export function testDeleteBook() {
@@ -25,7 +25,7 @@ export function testDeleteBook() {
       response = await getBooks(root.token);
       expect(response.body.data).toHaveLength(1);
 
-      response = await deleteBook(getUser(user).token, book.id);
+      response = await deleteBook(getGlobalUser(user).token, book.id);
 
       expect(response.status).toBe(status);
 

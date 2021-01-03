@@ -2,7 +2,11 @@ import { HttpStatus } from '@nestjs/common';
 import { Schema$Book, Schema$Chapter, UserRole } from '@/typings';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
 import { addBookToShelf, mapToLatestChapter } from '../../service/book-shelf';
-import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
+import {
+  createUserAndLogin,
+  getGlobalUser,
+  setupUsers
+} from '../../service/auth';
 import { createBook, publicBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
 
@@ -39,7 +43,10 @@ export function testAddBookToShelf() {
     async user => {
       for (const [k, book] of Object.entries(books)) {
         const chapter = { ...chapters[Number(k)] };
-        const response = await addBookToShelf(getUser(user).token, book.id);
+        const response = await addBookToShelf(
+          getGlobalUser(user).token,
+          book.id
+        );
         expect(response.status).toBe(HttpStatus.CREATED);
         expect(response.body.latestChapter).toEqual(
           mapToLatestChapter(chapter)
@@ -79,13 +86,16 @@ export function testAddBookToShelf() {
     await app.get(BookShelfService).clear();
 
     for (const user of ['root', 'admin', 'author', 'client']) {
-      let response = await addBookToShelf(getUser(user).token, books[2].id);
+      let response = await addBookToShelf(
+        getGlobalUser(user).token,
+        books[2].id
+      );
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body.latestChapter).toEqual(
         mapToLatestChapter(chapters[2])
       );
 
-      response = await addBookToShelf(getUser(user).token, books[2].id);
+      response = await addBookToShelf(getGlobalUser(user).token, books[2].id);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
   });

@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { BugReportStatus, Schema$BugReport, UserRole } from '@/typings';
 import { rid } from '@/utils/rid';
 import { HttpStatus } from '@nestjs/common';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import {
   createBugReport,
   createBugReportDto,
@@ -25,7 +25,7 @@ export function testUpdateBugReport() {
   });
 
   test.each(['root', 'admin'])('%s can update bug report ', async user => {
-    const auth = getUser(user);
+    const auth = getGlobalUser(user);
     const isAdmin =
       auth?.user.role === UserRole.Root || auth?.user.role === UserRole.Admin;
 

@@ -6,7 +6,7 @@ import {
   getChapters,
   deleteChapter
 } from '../../service/chapter';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook } from '../../service/book';
 
 export function testDeleteChapter() {
@@ -35,7 +35,11 @@ export function testDeleteChapter() {
       response = await getChapters(root.token, book.id);
       expect(response.body.data).toHaveLength(1);
 
-      response = await deleteChapter(getUser(user).token, book.id, chapter.id);
+      response = await deleteChapter(
+        getGlobalUser(user).token,
+        book.id,
+        chapter.id
+      );
 
       expect(response.status).toBe(status);
 

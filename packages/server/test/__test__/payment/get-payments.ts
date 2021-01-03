@@ -9,7 +9,11 @@ import {
   UserRole
 } from '@/typings';
 import { PaymentService } from '@/modules/payment/payment.service';
-import { createUserAndLogin, getUser, setupUsers } from '../../service/auth';
+import {
+  createUserAndLogin,
+  getGlobalUser,
+  setupUsers
+} from '../../service/auth';
 import { createBook } from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
 import {
@@ -55,14 +59,14 @@ export function testGetPayments() {
 
       for (const user of ['author', 'client']) {
         if (i === numOfChapters) {
-          response = await createPayment(getUser(user).token, {
+          response = await createPayment(getGlobalUser(user).token, {
             details: { type: PaymentType.Book, book: book.id }
           });
           expect(response.status).toBe(HttpStatus.CREATED);
 
           payments[user].push(response.body);
         } else {
-          response = await createPayment(getUser(user).token, {
+          response = await createPayment(getGlobalUser(user).token, {
             details: {
               type: PaymentType.Chapter,
               book: book.id,
@@ -96,7 +100,7 @@ export function testGetPayments() {
     ${'author'} | ${numOfChapters}
     ${'client'} | ${numOfChapters}
   `(`$user get payments correct`, async ({ user, numOfChapters }) => {
-    const response = await getPayments(getUser(user).token);
+    const response = await getPayments(getGlobalUser(user).token);
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body.data).toHaveLength(numOfChapters);
     expect(response.body.total).toBe(numOfChapters);
@@ -112,7 +116,7 @@ export function testGetPayments() {
     ] as const;
 
     for (const [query, numOfChapters] of payload) {
-      const response = await getPayments(getUser(user).token, query);
+      const response = await getPayments(getGlobalUser(user).token, query);
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.data).toHaveLength(numOfChapters);
       expect(response.body.total).toBe(numOfChapters);
@@ -128,7 +132,7 @@ export function testGetPayments() {
     ] as const;
 
     for (const [query, numOfChapters] of payload) {
-      const response = await getPayments(getUser(user).token, query);
+      const response = await getPayments(getGlobalUser(user).token, query);
       expect(response.status).toBe(HttpStatus.OK);
       expect(response.body.data).toHaveLength(numOfChapters);
       expect(response.body.total).toBe(numOfChapters);

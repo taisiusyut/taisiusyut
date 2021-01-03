@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
 import { BookStatus, Category } from '@/typings';
 import { rid } from '@/utils/rid';
-import { getUser, setupUsers } from '../../service/auth';
+import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, createBookDto, getBook } from '../../service/book';
 
 const tags = () => [rid(5), rid(5)].map(s => s.toLowerCase());
@@ -43,7 +43,7 @@ export function testCreateBook() {
   test.each(['root', 'admin', 'client'])(
     `%s cannot create book`,
     async user => {
-      const response = await createBook(getUser(user).token);
+      const response = await createBook(getGlobalUser(user).token);
       expect(response.status).toBe(HttpStatus.FORBIDDEN);
     }
   );

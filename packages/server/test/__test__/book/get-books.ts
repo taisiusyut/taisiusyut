@@ -9,7 +9,7 @@ import {
   createUserAndLogin,
   setupRoot,
   setupUsers,
-  getUser
+  getGlobalUser
 } from '../../service/auth';
 import { createBook, getBooks, updateBook } from '../../service/book';
 
@@ -112,7 +112,9 @@ export function testGetBooks() {
   `(
     `global $user access books correctly`,
     async ({ user, length }: Record<string, any>) => {
-      const response = await getBooks(getUser(user).token, { pageSize: 100 });
+      const response = await getBooks(getGlobalUser(user).token, {
+        pageSize: 100
+      });
       expect(response.body.data).toHaveLength(length);
       expect(response.body.total).toBe(length);
 

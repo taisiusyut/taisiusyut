@@ -14,7 +14,7 @@ import { createBook, updateBook } from '../../service/book';
 import {
   createUserAndLogin,
   getToken,
-  getUser,
+  getGlobalUser,
   setupUsers
 } from '../../service/auth';
 import {
@@ -49,7 +49,7 @@ export function testUpdateChapter() {
 
       for (const payload of params) {
         const response = await updateChapter(
-          getUser(user).token,
+          getGlobalUser(user).token,
           book.id,
           chapter.id,
           payload
@@ -68,7 +68,7 @@ export function testUpdateChapter() {
 
   test.each(['client'])('%s cannot update chapter', async user => {
     const response = await updateChapter(
-      getUser(user).token,
+      getGlobalUser(user).token,
       book.id,
       chapter.id,
       createChapterDto()
