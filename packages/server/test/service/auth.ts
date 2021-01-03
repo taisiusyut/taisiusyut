@@ -163,7 +163,7 @@ export function validateCookies(response: Response) {
   expect(cookie).toBeDefined();
   expect(cookie.flag['Max-Age']).toBe(String(refreshTokenExpires));
   expect(cookie.flag['HttpOnly']).toBeTrue();
-  expect(cookie.value).not.toBeEmpty();
+  expect(cookie.value).toBeUUID();
 
   return cookie;
 }

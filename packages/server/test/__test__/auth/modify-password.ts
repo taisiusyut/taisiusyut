@@ -43,7 +43,7 @@ export function testModifyPassword() {
       auth[type] = response.body;
 
       const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
-      expect(cookie.value).not.toBeEmpty();
+      expect(cookie.value).toBeUUID();
 
       const newPassword = createUserDto().password;
       response = await modifyPassword(auth[type].token, {

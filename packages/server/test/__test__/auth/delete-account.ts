@@ -41,14 +41,14 @@ export function testDeleteAccount() {
     );
     auth[type] = response.body;
 
-    const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
-    expect(cookie.value).not.toBeEmpty();
+    let cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
+    expect(cookie.value).toBeUUID();
 
     response = await deleteAccount(auth[type].token, account);
+    cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
+
     expect(response.status).toBe(HttpStatus.OK);
-    expect(
-      extractCookies(response.header, REFRESH_TOKEN_COOKIES).value
-    ).toBeEmpty();
+    expect(cookie.value).toBeEmpty();
 
     response = await login(account);
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
