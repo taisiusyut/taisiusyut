@@ -58,8 +58,8 @@ export function testDeleteUser() {
   test.each`
     executor    | target      | status
     ${'root'}   | ${'self'}   | ${HttpStatus.BAD_REQUEST}
-    ${'admin'}  | ${'root'}   | ${HttpStatus.FORBIDDEN}
-    ${'admin'}  | ${'admin'}  | ${HttpStatus.FORBIDDEN}
+    ${'admin'}  | ${'root'}   | ${HttpStatus.NOT_FOUND}
+    ${'admin'}  | ${'admin'}  | ${HttpStatus.NOT_FOUND}
     ${'admin'}  | ${'self'}   | ${HttpStatus.BAD_REQUEST}
     ${'author'} | ${'root'}   | ${HttpStatus.FORBIDDEN}
     ${'author'} | ${'admin'}  | ${HttpStatus.FORBIDDEN}

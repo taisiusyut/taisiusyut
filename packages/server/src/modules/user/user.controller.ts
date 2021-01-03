@@ -63,12 +63,13 @@ export class UserController {
   @Access('user_get')
   @Get(routes.user.get_user)
   async get(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
-    const result = await this.userService.findOne({ _id: id });
+    const query = this.userService.getRoleBasedQuery(user, {
+      _id: id
+    });
 
-    if (
-      !result ||
-      (result.role === user?.role && String(result._id) !== user?.user_id)
-    ) {
+    const result = await this.userService.findOne(query);
+
+    if (!result) {
       throw new NotFoundException();
     }
 
@@ -112,8 +113,9 @@ export class UserController {
     );
 
     if (!result) {
-      throw new BadRequestException(`user not found`);
+      throw new NotFoundException();
     }
+
     return result;
   }
 
@@ -128,19 +130,8 @@ export class UserController {
       );
     }
 
-    const targetUser = await this.userService.findOne({ _id: id });
-    let error: string | undefined = undefined;
-    if (targetUser?.role === UserRole.Root) error = 'cannot delete root user';
-    if (targetUser?.role === UserRole.Admin && req.user?.role !== UserRole.Root)
-      error = 'admin user cannot delete by other admin';
-
-    if (error) {
-      throw new ForbiddenException(error);
-    }
-
-    return this.userService.updateOne(
-      { _id: id },
-      { status: UserStatus.Deleted }
-    );
+    return this.update(req, id, {
+      status: UserStatus.Deleted
+    } as UpdateUserDto);
   }
 }

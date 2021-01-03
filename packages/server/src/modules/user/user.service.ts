@@ -7,14 +7,19 @@ import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto';
 
 const roles = Object.values(UserRole);
+const filterRole = (predicate: (role: UserRole) => boolean) =>
+  roles.filter(predicate).map(role => ({ role }));
 
 @Injectable()
 export class UserService extends MongooseCRUDService<User> {
   roles = {
-    [UserRole.Root]: roles.map(role => ({ role })),
-    [UserRole.Admin]: roles
-      .filter(role => ![UserRole.Root, UserRole.Admin].includes(role))
-      .map(role => ({ role }))
+    // make sure root cannot access other root that status is `Deleted`
+    [UserRole.Root]: filterRole(role => role !== UserRole.Root),
+
+    // admin cannot access root or other admin
+    [UserRole.Admin]: filterRole(
+      role => ![UserRole.Root, UserRole.Admin].includes(role)
+    )
   };
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
@@ -34,7 +39,7 @@ export class UserService extends MongooseCRUDService<User> {
     const id = query._id;
 
     if (typeof id !== 'string') {
-      throw new Error(`id expect string`);
+      throw new Error(`id should be string`);
     }
 
     if (
@@ -44,6 +49,10 @@ export class UserService extends MongooseCRUDService<User> {
       user.role === UserRole.Guest
     ) {
       query = { _id: user?.user_id };
+      query.$nor = [
+        { status: UserStatus.Blocked },
+        { status: UserStatus.Deleted }
+      ];
     } else {
       query.$or = this.roles[user.role]?.map(value =>
         id === user.user_id ? { _id: id } : { _id: id, ...value }

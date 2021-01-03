@@ -65,7 +65,7 @@ export function testUpdateUser() {
 
     test.each`
       executor    | target      | status
-      ${'admin'}  | ${'root'}   | ${HttpStatus.BAD_REQUEST}
+      ${'admin'}  | ${'root'}   | ${HttpStatus.NOT_FOUND}
       ${'author'} | ${'root'}   | ${HttpStatus.FORBIDDEN}
       ${'author'} | ${'admin'}  | ${HttpStatus.FORBIDDEN}
       ${'author'} | ${'client'} | ${HttpStatus.FORBIDDEN}
@@ -85,7 +85,7 @@ export function testUpdateUser() {
 
     test.each`
       executor    | target      | status
-      ${'admin'}  | ${'admin'}  | ${HttpStatus.BAD_REQUEST}
+      ${'admin'}  | ${'admin'}  | ${HttpStatus.NOT_FOUND}
       ${'author'} | ${'author'} | ${HttpStatus.FORBIDDEN}
       ${'client'} | ${'client'} | ${HttpStatus.FORBIDDEN}
     `(
