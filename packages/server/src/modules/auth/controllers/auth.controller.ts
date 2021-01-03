@@ -18,7 +18,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { isMongoId } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
-import { routes, REFRESH_TOKEN_COOKIES } from '@/constants';
+import { routes } from '@/constants';
 import { Schema$Authenticated, UserRole, UserStatus } from '@/typings';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
@@ -54,7 +54,7 @@ export class AuthController {
     if (!user) throw new InternalServerErrorException(`user is ${user}`);
 
     const signResult = this.authService.signJwt(user);
-    const tokenFromCookies = cookies[REFRESH_TOKEN_COOKIES];
+    const tokenFromCookies = this.refreshTokenService.getCookie({ cookies });
     const refreshToken = tokenFromCookies || uuidv4();
 
     try {
@@ -80,12 +80,8 @@ export class AuthController {
       response.isDefaultAc = true;
     }
 
-    return reply
-      .setCookie(
-        REFRESH_TOKEN_COOKIES,
-        refreshToken,
-        this.refreshTokenService.getCookieOpts()
-      )
+    return this.refreshTokenService
+      .setCookie(reply, refreshToken)
       .status(HttpStatus.OK)
       .send(response);
   }
@@ -96,7 +92,7 @@ export class AuthController {
     @Req() req: FastifyRequest,
     @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+    const tokenFromCookies = this.refreshTokenService.getCookie(req);
 
     if (tokenFromCookies) {
       const newRefreshToken = uuidv4();
@@ -119,12 +115,8 @@ export class AuthController {
           isDefaultAc: !isMongoId(signResult.user.user_id)
         };
 
-        return reply
-          .setCookie(
-            REFRESH_TOKEN_COOKIES,
-            newRefreshToken,
-            this.refreshTokenService.getCookieOpts()
-          )
+        return this.refreshTokenService
+          .setCookie(reply, newRefreshToken)
           .status(HttpStatus.OK)
           .send(response);
       }
@@ -143,12 +135,12 @@ export class AuthController {
   @Post(routes.auth.logout)
   async logout(
     @Req() req: FastifyRequest,
-    @Res() res: FastifyReply
+    @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
-    await this.authService.logout(req.cookies[REFRESH_TOKEN_COOKIES]);
+    await this.refreshTokenService.deleteToken(req);
 
-    return res
-      .setCookie(REFRESH_TOKEN_COOKIES, '', {
+    return this.refreshTokenService
+      .setCookie(reply, '', {
         httpOnly: true,
         expires: new Date(0)
       })
@@ -168,7 +160,7 @@ export class AuthController {
   @Delete(routes.auth.delete_account)
   async deleteAccount(
     @Req() req: FastifyRequest,
-    @Res() res: FastifyReply,
+    @Res() reply: FastifyReply,
     @Body() { password }: DeleteAccountDto
   ) {
     if (!req.user)
@@ -181,7 +173,7 @@ export class AuthController {
       { status: UserStatus.Deleted }
     );
 
-    await this.logout(req, res);
+    await this.logout(req, reply);
   }
 
   @Access('modify-password')
@@ -189,7 +181,7 @@ export class AuthController {
   @Patch(routes.auth.modify_password)
   async modifyPassword(
     @Req() req: FastifyRequest,
-    @Res() res: FastifyReply,
+    @Res() reply: FastifyReply,
     @Body() { password, newPassword }: ModifyPasswordDto
   ) {
     if (!req.user)
@@ -202,6 +194,6 @@ export class AuthController {
       { password: newPassword }
     );
 
-    await this.logout(req, res);
+    await this.logout(req, reply);
   }
 }

@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { Schema$Authenticated, UserRole } from '@/typings';
-import { REFRESH_TOKEN_COOKIES } from '@/constants';
+import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import { UserService } from '@/modules/user/user.service';
 import {
   createUserAndLogin,

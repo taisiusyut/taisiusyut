@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FastifyRequest } from 'fastify';
-import { routes, REFRESH_TOKEN_COOKIES } from '@/constants';
+import { routes } from '@/constants';
 import { UserRole } from '@/typings';
 import { UserService } from '@/modules/user/user.service';
 import { Access, AccessPipe } from '@/utils/access';
@@ -44,8 +44,6 @@ export class AuthProfileController {
       throw new InternalServerErrorException(`user not found`);
     }
 
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
-
     const result = await this.userService.findOneAndUpdate(
       {
         _id: req.user.user_id,
@@ -62,16 +60,16 @@ export class AuthProfileController {
       updateProfileDto.nickname &&
       updateProfileDto.nickname !== req.user.nickname;
 
-    if (nicknameHasChanged) {
-      if (req.user.role === UserRole.Author) {
-        this.eventEmitter.emit(
-          AuthorNameUpdateEvent.name,
-          new AuthorNameUpdateEvent({
-            authorId: req.user.user_id,
-            authorName: result.nickname
-          })
-        );
-      }
+    if (nicknameHasChanged && req.user.role === UserRole.Author) {
+      const tokenFromCookies = this.refreshTokenService.getCookie(req);
+
+      this.eventEmitter.emit(
+        AuthorNameUpdateEvent.name,
+        new AuthorNameUpdateEvent({
+          authorId: req.user.user_id,
+          authorName: result.nickname
+        })
+      );
 
       await this.refreshTokenService.findOneAndUpdate(
         { refreshToken: tokenFromCookies },

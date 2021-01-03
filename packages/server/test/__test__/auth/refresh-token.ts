@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { REFRESH_TOKEN_COOKIES } from '@/constants';
+import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import { UserService } from '@/modules/user/user.service';
 import { Schema$Authenticated } from '@/typings';
 import {

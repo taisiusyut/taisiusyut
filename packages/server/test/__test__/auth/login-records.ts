@@ -1,6 +1,6 @@
 import { Response } from 'superagent';
 import { HttpStatus } from '@nestjs/common';
-import { REFRESH_TOKEN_COOKIES } from '@/constants';
+import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import { extractCookies } from '../../service/cookies';
 import {
   getLoginRecords,

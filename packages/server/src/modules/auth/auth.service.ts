@@ -55,7 +55,7 @@ export class AuthService {
     } else {
       const root = await this.userService.findOne({
         role: UserRole.Root,
-        status: { $not: { $eq: UserStatus.Deleted } }
+        status: { $ne: UserStatus.Deleted }
       });
 
       if (!root) {
@@ -97,9 +97,5 @@ export class AuthService {
 
   async login(user: JWTSignPayload): Promise<JWTSignResult> {
     return this.signJwt(user);
-  }
-
-  async logout(refreshToken: string): Promise<void> {
-    await this.refreshTokenService.delete({ refreshToken });
   }
 }

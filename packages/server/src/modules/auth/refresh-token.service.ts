@@ -1,9 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from 'fastify-cookie';
 import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { RefreshToken } from './schemas/refreshToken.schema';
+
+export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
 @Injectable()
 export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
@@ -47,7 +50,23 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
     return {
       maxAge: minutes * 60 * 1000,
       httpOnly: true,
-      secure: false
+      secure: process.env.NODE_ENV === 'production'
     };
+  }
+
+  getCookie(req: Pick<FastifyRequest, 'cookies'>) {
+    return req.cookies[REFRESH_TOKEN_COOKIES];
+  }
+
+  setCookie(
+    reply: FastifyReply,
+    token: string,
+    options: CookieSerializeOptions = this.getCookieOpts()
+  ) {
+    return reply.setCookie(REFRESH_TOKEN_COOKIES, token, options);
+  }
+
+  deleteToken(req: FastifyRequest) {
+    return this.delete({ refreshToken: req.cookies[REFRESH_TOKEN_COOKIES] });
   }
 }

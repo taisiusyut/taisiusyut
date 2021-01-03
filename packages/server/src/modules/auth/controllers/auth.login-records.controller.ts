@@ -7,7 +7,7 @@ import {
   HttpStatus
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
-import { routes, REFRESH_TOKEN_COOKIES } from '@/constants';
+import { routes } from '@/constants';
 import { Schema$LoginRecord } from '@/typings';
 import { Access } from '@/utils/access';
 import { RefreshTokenService } from '../refresh-token.service';
@@ -20,7 +20,7 @@ export class AuthLoginRecordsController {
   @HttpCode(HttpStatus.OK)
   @Get(routes.auth.get_login_records)
   async loginRecords(@Req() req: FastifyRequest) {
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+    const tokenFromCookies = this.refreshTokenService.getCookie(req);
 
     const tokens = await this.refreshTokenService.findAll({
       user_id: req.user?.user_id
@@ -39,7 +39,7 @@ export class AuthLoginRecordsController {
   @HttpCode(HttpStatus.OK)
   @Post(routes.auth.logout_others)
   async logoutOthers(@Req() req: FastifyRequest) {
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
+    const tokenFromCookies = this.refreshTokenService.getCookie(req);
 
     await this.refreshTokenService.deleteMany({
       user_id: req.user?.user_id,

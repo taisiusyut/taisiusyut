@@ -1,12 +1,18 @@
-import { Schema$Authenticated, Schema$User, UserRole } from '@/typings';
+import {
+  Schema$Authenticated,
+  Schema$User,
+  UserRole,
+  UserStatus
+} from '@/typings';
 import { rid } from '@/utils/rid';
-import { createUser, createUserDto } from '../../service/user';
+import { createUser, createUserDto, getUser } from '../../service/user';
 import {
   createUserAndLogin,
   getToken,
   login,
   setupRoot,
-  updateProfile
+  updateProfile,
+  getGlobalUser
 } from '../../service/auth';
 
 export function testUpdateProfile() {
@@ -58,23 +64,28 @@ export function testUpdateProfile() {
   });
 
   test.each`
-    property         | value            | suffix
-    ${'role'}        | ${UserRole.Root} | ${''}
-    ${'password'}    | ${rid(10)}       | ${''}
-    ${'description'} | ${rid(20)}       | ${'(author only)'}
+    property         | value                 | users
+    ${'role'}        | ${UserRole.Root}      | ${['root', 'admin', 'author', 'client']}
+    ${'status'}      | ${UserStatus.Deleted} | ${['root', 'admin', 'author', 'client']}
+    ${'password'}    | ${rid(10)}            | ${['root', 'admin', 'author', 'client']}
+    ${'description'} | ${rid(20)}            | ${['root', 'admin', 'client']}
   `(
-    '$property will not be update by client $suffix',
-    async ({ property, value }: Record<string, any>) => {
-      const response = await updateProfile(token, {
-        [property]: value
-      });
-      expect(response.error).toBeFalse();
-      expect(response.body).not.toHaveProperty('password');
-      if (property !== 'password') {
-        expect(response.body).toHaveProperty(
-          property,
-          user[property as keyof Schema$User]
-        );
+    '$property will not be update by $users',
+    async ({ property, value, users }: Record<string, any>) => {
+      for (const user of users) {
+        const auth = getGlobalUser(user);
+        const response = await updateProfile(auth.token, {
+          [property]: value
+        });
+        expect(response.body).not.toHaveProperty('password');
+
+        if (
+          property !== 'password' &&
+          !(property === 'role' && user === 'root')
+        ) {
+          const response = await getUser(root.token, auth.user.user_id);
+          expect(response.body).not.toHaveProperty(property, value);
+        }
       }
     }
   );
