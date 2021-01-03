@@ -12,7 +12,7 @@ export class CloudinaryController {
 
   @Post(routes.cloudinary_sign)
   @Access('cloudinary_sign')
-  cloudinarySign(@Body() dto: CloudinarySignDto) {
+  sign(@Body() dto: CloudinarySignDto) {
     return this.cloudinaryService.sign(dto);
   }
 }

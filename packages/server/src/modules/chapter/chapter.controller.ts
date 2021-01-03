@@ -126,7 +126,7 @@ export class ChapterController {
 
   @Access('Optional')
   @Get(routes.chapter.get_chapters)
-  getChapters(
+  getAll(
     @Req() { user }: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @Query(AccessPipe) { timestamp, ...query }: GetChaptersDto
@@ -180,7 +180,7 @@ export class ChapterController {
 
   @Access('Optional')
   @Get(routes.chapter.get_chapter)
-  async getChapter(
+  async get(
     @Req() req: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
@@ -190,7 +190,7 @@ export class ChapterController {
 
   @Access('Optional')
   @Get(routes.chapter.get_chapter_by_no)
-  async getChapterbyNo(
+  async getByNum(
     @Req() req: FastifyRequest,
     @ObjectId('bookID') bookID: string,
     @Param('chapterNo', ParseIntPipe) chapterNo: number

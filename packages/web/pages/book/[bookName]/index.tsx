@@ -43,12 +43,12 @@ export const getServerSideProps: GetServerSideProps<
   ]);
 
   const book = await bookController
-    .getBookByName(context.req as any, bookName)
+    .getByName(context.req as any, bookName)
     .then(book => book && serialize<Schema$Book | null>(book));
 
   const chapters = book
     ? await chapterController
-        .getChapters(context.req as any, book.id, {
+        .getAll(context.req as any, book.id, {
           pageSize: 30,
           status: ChapterStatus.Public,
           sort: { createdAt: Order.ASC },

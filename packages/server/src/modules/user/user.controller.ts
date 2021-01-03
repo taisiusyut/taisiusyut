@@ -43,7 +43,7 @@ export class UserController {
 
   @Access('user_get_all')
   @Get(routes.user.get_users)
-  getUsers(@Query(AccessPipe) query: GetUsersDto, @Req() req: FastifyRequest) {
+  getAll(@Query(AccessPipe) query: GetUsersDto, @Req() req: FastifyRequest) {
     let condition: Condition[] = [];
 
     if (req.user) {
@@ -62,7 +62,7 @@ export class UserController {
 
   @Access('user_get')
   @Get(routes.user.get_user)
-  async getUser(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+  async get(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
     const result = await this.userService.findOne({ _id: id });
 
     if (

@@ -73,14 +73,14 @@ export class BookController {
 
   @Access('Optional')
   @Get(routes.book.get_book)
-  async getBook(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+  async get(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
     const query = this.bookService.getRoleBasedQuery(user, { _id: id });
     return this.handleGetBook(query);
   }
 
   @Access('Optional')
   @Get(routes.book.get_book_by_name)
-  async getBookByName(
+  async getByName(
     @Req() { user }: FastifyRequest,
     @Param('name') name: string
   ) {
@@ -90,7 +90,7 @@ export class BookController {
 
   @Access('Optional')
   @Get(routes.book.get_books)
-  async getBooks(
+  async getAll(
     @Req() { user }: FastifyRequest,
     @Query() { tag, ...dto }: GetBooksDto
   ) {

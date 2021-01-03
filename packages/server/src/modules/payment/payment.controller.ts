@@ -88,7 +88,7 @@ export class PaymentController {
 
   @Access('Auth')
   @Get(routes.payment.get_payments)
-  findAll(
+  getAll(
     @Req() { user }: FastifyRequest,
     @Query(AccessPipe) query: GetPaymentsDto
   ) {

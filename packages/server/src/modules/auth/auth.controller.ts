@@ -40,7 +40,6 @@ import { AuthorNameUpdateEvent } from './event';
 
 export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
 
-@Access('Everyone')
 @Controller(routes.auth.prefix)
 export class AuthController {
   constructor(
@@ -50,15 +49,15 @@ export class AuthController {
     private readonly eventEmitter: EventEmitter2
   ) {}
 
+  @Access('Everyone')
   @Post(routes.auth.registration)
+  @HttpCode(HttpStatus.OK)
   registration(@Body() createUserDto: CreateUserDto): Promise<User> {
-    if (!createUserDto.role || createUserDto.role === UserRole.Client) {
-      return this.userService.create(createUserDto);
-    }
-    throw new BadRequestException(`"role" is not valid`);
+    return this.userService.create({ ...createUserDto, role: UserRole.Client });
   }
 
   @Post(routes.auth.login)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('local'))
   async login(
     @Req() { user, headers, cookies }: FastifyRequest,
@@ -86,9 +85,12 @@ export class AuthController {
     }
 
     const response: Schema$Authenticated = {
-      ...signResult,
-      isDefaultAc: !isMongoId(user.user_id)
+      ...signResult
     };
+
+    if (!isMongoId(user.user_id)) {
+      response['isDefaultAc'] = true;
+    }
 
     return reply
       .setCookie(
@@ -100,6 +102,7 @@ export class AuthController {
       .send(response);
   }
 
+  @Access('Everyone')
   @Post(routes.auth.refresh_token)
   async refreshToken(
     @Req() req: FastifyRequest,
@@ -148,6 +151,7 @@ export class AuthController {
       .send(new UnauthorizedException());
   }
 
+  @Access('Everyone')
   @Post(routes.auth.logout)
   async logout(
     @Req() req: FastifyRequest,

@@ -44,12 +44,12 @@ export const getServerSideProps: GetServerSideProps<
   ]);
 
   const book = await bookController
-    .getBookByName(context.req as any, bookName)
+    .getByName(context.req as any, bookName)
     .then(book => serialize<Schema$Book | null>(book));
 
   const chapter = book
     ? await chapterController
-        .getChapterbyNo(context.req as any, book.id, Number(chapterNo))
+        .getByNum(context.req as any, book.id, Number(chapterNo))
         .then(chapter => serialize<Schema$Chapter | null>(chapter))
     : null;
 
