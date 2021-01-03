@@ -70,6 +70,7 @@ export interface SharedUpdateUser {
   id: string;
   email?: string;
   nickname?: string;
+  status?: UserStatus;
 }
 
 export type Param$UpdateUser =
@@ -86,6 +87,7 @@ export interface Param$GetUsers extends Pagination, Search {
   username?: string;
   email?: string;
   role?: UserRole;
+  status?: UserStatus;
   createdAt?: DateRange;
   updatedAt?: DateRange;
   nickname?: string;

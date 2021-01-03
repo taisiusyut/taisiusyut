@@ -1,5 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { UserRole, UserStatus } from '@/typings';
 
 export function IsNickname(): ReturnType<typeof applyDecorators> {
@@ -11,11 +12,17 @@ export function IsDescription(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsUserRole(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsEnum(UserRole));
+  return applyDecorators(
+    IsEnum(UserRole),
+    Transform(Number) as MethodDecorator
+  );
 }
 
 export function IsUserStatus(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsEnum(UserStatus));
+  return applyDecorators(
+    IsEnum(UserStatus),
+    Transform(Number) as MethodDecorator
+  );
 }
 
 export * from './create-user.dto';
