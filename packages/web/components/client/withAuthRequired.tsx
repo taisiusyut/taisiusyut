@@ -1,4 +1,5 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
+import { Colors, Icon } from '@blueprintjs/core';
 import {
   openConfirmDialog,
   ConfirmDialogProps
@@ -12,7 +13,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 
 export interface OnClick {
-  onClick?: (event: MouseEvent<any>) => void;
+  onClick?: (event: React.MouseEvent<any>) => void;
 }
 
 const { useForm } = createUserForm();
@@ -20,6 +21,23 @@ const { useForm } = createUserForm();
 const dialogProps: Partial<ConfirmDialogProps> = {
   icon: 'user'
 };
+
+function Warning() {
+  return (
+    <div
+      style={{
+        width: 280,
+        lineHeight: '1.5em',
+        textAlign: 'center',
+        marginBottom: 30
+      }}
+    >
+      <Icon icon="warning-sign" intent="warning" iconSize={36} />
+      <div>網頁只為示範用途</div>
+      <b style={{ color: Colors.RED3 }}>請勿使用真實的帳號 / 密碼 / 電子郵件</b>
+    </div>
+  );
+}
 
 export function withAuthRequired<P extends OnClick>(
   Component: React.ComponentType<P>
@@ -48,8 +66,13 @@ export function withAuthRequired<P extends OnClick>(
         onConfirm: handleConfirm,
         title: '會員註冊',
         confirmText: '註冊',
-        cancelText: '登入',
-        children: <RegistrationForm form={form} head={<Logo />} />
+        cancelText: '已有帳號',
+        children: (
+          <RegistrationForm
+            form={form}
+            head={process.env.NEXT_PUBLIC_GUEST ? <Warning /> : <Logo />}
+          />
+        )
       });
     }
 
@@ -61,7 +84,7 @@ export function withAuthRequired<P extends OnClick>(
         onConfirm: handleConfirm,
         title: '會員登入',
         confirmText: '登入',
-        cancelText: '註冊',
+        cancelText: '註冊帳號',
         children: <LoginForm form={form} head={<Logo />} />
       });
     }
