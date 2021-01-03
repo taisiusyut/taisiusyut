@@ -1,13 +1,17 @@
 import { HttpStatus } from '@nestjs/common';
-import { Schema$Authenticated } from '@/typings';
+import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
+import { Schema$Authenticated, UserStatus } from '@/typings';
 import { rid } from '@/utils/rid';
 import { updateUser } from '../../service/user';
 import {
+  createUserAndLogin,
   createUsers,
   getGlobalUser,
+  refreshToken,
   setupRoot,
   setupUsers
 } from '../../service/auth';
+import { extractCookies } from '../../service/cookies';
 
 export function testUpdateUser() {
   beforeAll(async () => {
@@ -94,5 +98,27 @@ export function testUpdateUser() {
         await forbiddenUpdate(getGlobalUser(executor), mock[target], status);
       }
     );
+
+    test('update user status', async () => {
+      for (const status of [UserStatus.Blocked, UserStatus.Deleted]) {
+        let response = await createUserAndLogin(root.token);
+        const client: Schema$Authenticated = response.body;
+        const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
+
+        expect(response.body).not.toHaveProperty('status', status);
+        expect(cookie.value).toBeUUID();
+
+        response = await updateUser(root.token, client.user.user_id, {
+          status
+        });
+        expect(response.status).toBe(HttpStatus.OK);
+        expect(response.body).toHaveProperty('status', status);
+
+        response = await refreshToken(
+          `${REFRESH_TOKEN_COOKIES}=${cookie.value}`
+        );
+        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      }
+    });
   });
 }

@@ -9,10 +9,10 @@ class Excluded implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   id?: undefined;
 
   @Exclude()
-  username: undefined;
+  username?: undefined;
 
   @Exclude()
-  password: undefined;
+  password?: undefined;
 
   @Exclude()
   role?: undefined;

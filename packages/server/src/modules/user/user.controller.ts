@@ -118,10 +118,17 @@ export class UserController {
       throw new NotFoundException();
     }
 
+    if (
+      !!updateUserDto.status &&
+      [UserStatus.Blocked, UserStatus.Deleted].includes(updateUserDto.status)
+    ) {
+      await this.refreshTokenService.deleteMany({ user_id: id });
+    }
+
     return result;
   }
 
-  @Access('user_delete')
+  @Access('user_update')
   @Delete(routes.user.delete_user)
   async delete(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
     const self = id === req.user?.user_id;
@@ -132,12 +139,8 @@ export class UserController {
       );
     }
 
-    const result = await this.update(req, id, {
+    return this.update(req, id, {
       status: UserStatus.Deleted
-    } as UpdateUserDto);
-
-    await this.refreshTokenService.deleteMany({ user_id: id });
-
-    return result;
+    });
   }
 }
