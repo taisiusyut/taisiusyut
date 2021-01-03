@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseFuzzySearchingField } from 'mongoose';
+import { AuthModule } from '@/modules/auth/auth.module';
 import { fuzzySearch } from '@/utils/mongoose';
 import { Schema$User, UserRole } from '@/typings';
 import { UserController } from './user.controller';
@@ -14,6 +15,7 @@ import paginate from 'mongoose-paginate-v2';
 @Module({
   imports: [
     ConfigModule,
+    forwardRef(() => AuthModule),
     MongooseModule.forFeatureAsync([
       {
         name: User.name,

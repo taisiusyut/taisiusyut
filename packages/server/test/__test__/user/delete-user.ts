@@ -1,13 +1,16 @@
 import { HttpStatus } from '@nestjs/common';
 import { Schema$Authenticated, UserRole } from '@/typings';
+import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import {
   login,
   setupRoot,
   setupUsers,
   createUserAndLogin,
-  getGlobalUser
+  getGlobalUser,
+  refreshToken
 } from '../../service/auth';
 import { createUserDto, deleteUser } from '../../service/user';
+import { extractCookies } from '../../service/cookies';
 
 export function testDeleteUser() {
   beforeAll(async () => {
@@ -18,42 +21,36 @@ export function testDeleteUser() {
   test.each`
     executor   | target
     ${'root'}  | ${'admin'}
-    ${'root'}  | ${'client'}
     ${'root'}  | ${'author'}
+    ${'root'}  | ${'client'}
     ${'admin'} | ${'author'}
     ${'admin'} | ${'client'}
   `(
     '$executor can delete $target',
     async ({ executor, target }: Record<string, string>) => {
-      const executeUser: Schema$Authenticated = getGlobalUser(executor);
-
-      // const self = target === 'self';
-      const key = (target.slice(0, 1).toUpperCase() +
+      const role = (target.slice(0, 1).toUpperCase() +
         target.slice(1)) as keyof typeof UserRole;
 
-      const userDto = createUserDto({ role: UserRole[key] });
-      let response = await createUserAndLogin(root.token, {
-        role: UserRole[key]
-      });
+      const userDto = createUserDto({ role: UserRole[role] });
+      let response = await createUserAndLogin(root.token, userDto);
+      expect(response.status).toBe(HttpStatus.OK);
+
+      const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
+      expect(cookie.value).toBeUUID();
+
       const targetUser: Schema$Authenticated = response.body;
-      expect(response.error).toBeFalse();
+      const executeUser = getGlobalUser(executor);
 
       response = await deleteUser(executeUser.token, targetUser.user.user_id);
-      expect(response.error).toBeFalse();
+      expect(response.status).toBe(HttpStatus.OK);
+
+      response = await refreshToken(`${REFRESH_TOKEN_COOKIES}=${cookie.value}`);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
 
       response = await login(userDto);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
   );
-
-  async function cannotDelete(
-    executor: Schema$Authenticated,
-    target: Schema$Authenticated,
-    status: HttpStatus
-  ) {
-    const response = await deleteUser(executor.token, target.user.user_id);
-    expect(response.status).toBe(status);
-  }
 
   test.each`
     executor    | target      | status
@@ -72,8 +69,9 @@ export function testDeleteUser() {
   `(
     '$executor cannot delete $target',
     async ({ executor, target, status }: Record<string, any>) => {
-      let targetUser =
-        target === 'self' ? getGlobalUser(executor) : getGlobalUser(target);
+      const executeUser = getGlobalUser(executor);
+      let targetUser = target === 'self' ? executeUser : getGlobalUser(target);
+
       if (executor === 'admin' && target === 'admin') {
         const response = await createUserAndLogin(root.token, {
           role: UserRole.Admin
@@ -81,7 +79,11 @@ export function testDeleteUser() {
         targetUser = response.body;
       }
 
-      await cannotDelete(getGlobalUser(executor), targetUser, status);
+      const response = await deleteUser(
+        executeUser.token,
+        targetUser.user.user_id
+      );
+      expect(response.status).toBe(status);
     }
   );
 }

@@ -13,6 +13,7 @@ import {
   BadRequestException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { RefreshTokenService } from '@/modules/auth/refresh-token.service';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
 import { UserRole, UserStatus } from '@/typings';
@@ -27,7 +28,8 @@ export class UserController {
 
   constructor(
     private readonly userService: UserService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly refreshTokenService: RefreshTokenService
   ) {
     const _roles = Object.values(UserRole);
     this.roles = {
@@ -130,8 +132,12 @@ export class UserController {
       );
     }
 
-    return this.update(req, id, {
+    const result = await this.update(req, id, {
       status: UserStatus.Deleted
     } as UpdateUserDto);
+
+    await this.refreshTokenService.deleteMany({ user_id: id });
+
+    return result;
   }
 }
