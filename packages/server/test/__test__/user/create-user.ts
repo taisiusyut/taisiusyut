@@ -38,14 +38,16 @@ export function testCreateUser() {
     const mockUser = createUserDto();
     await createUser(root.token, mockUser);
 
-    const responses = await Promise.all([
-      createUser(root.token, mockUser),
-      createUser(root.token, { username: mockUser.username }),
-      createUser(root.token, { email: mockUser.email })
-    ]);
-    expect(responses).toSatisfyAll(
-      res => res.status === HttpStatus.BAD_REQUEST
-    );
+    const data = [
+      mockUser,
+      { username: mockUser.username },
+      { email: mockUser.email }
+    ];
+
+    for (const payload of data) {
+      const response = await createUser(root.token, payload);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    }
   });
 
   describe('Forbidden', () => {

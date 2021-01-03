@@ -33,7 +33,7 @@ export function getUsers(token: string, query: Record<string, any> = {}) {
     .query(qs.stringify(query));
 }
 
-export function getGlobalUser(token: string, id: string) {
+export function getUser(token: string, id: string) {
   return request
     .get(routes.get_user.generatePath({ id }))
     .set('Authorization', `bearer ${token}`)

@@ -1,6 +1,7 @@
 import { SuperAgentRequest, Response } from 'superagent';
 import { ConfigService } from '@nestjs/config';
 import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
+import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
 import { routes } from '@/constants/routes';
 import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
 import {
@@ -9,6 +10,7 @@ import {
   createUser,
   UpdateUserDto
 } from './user';
+import { extractCookies } from './cookies';
 
 export async function login(payload: Param$Login): Promise<Response> {
   return request.post(routes.login).send(payload);
@@ -27,8 +29,8 @@ export async function getToken(
   );
 }
 
-export function registration(dto: Partial<CreateUserDto>): SuperAgentRequest {
-  return request.post(routes.registration).send(createUserDto(dto));
+export function registration(dto: CreateUserDto): SuperAgentRequest {
+  return request.post(routes.registration).send(dto);
 }
 
 export function loginAsDefaultRoot(): Promise<Response> {
@@ -146,4 +148,22 @@ export function logoutOthers(token: string, cookie: string) {
     .set('Cookie', [cookie])
     .set('Authorization', `bearer ${token}`)
     .send();
+}
+
+const configService = app.get<ConfigService>(ConfigService);
+
+export const jwtExpires =
+  configService.get<number>('JWT_TOKEN_EXPIRES_IN_MINUTES', 1) * 60 * 1000;
+
+export const refreshTokenExpires =
+  configService.get<number>('REFRESH_TOKEN_EXPIRES_IN_MINUTES', 1) * 60 * 1000;
+
+export function validateCookies(response: Response) {
+  const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
+  expect(cookie).toBeDefined();
+  expect(cookie.flag['Max-Age']).toBe(String(refreshTokenExpires));
+  expect(cookie.flag['HttpOnly']).toBeTrue();
+  expect(cookie.value).not.toBeEmpty();
+
+  return cookie;
 }

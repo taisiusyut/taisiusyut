@@ -5,7 +5,7 @@ import {
   getGlobalUser,
   createUserAndLogin
 } from '../../service/auth';
-import { getGlobalUser as getUserAPI } from '../../service/user';
+import { getUser } from '../../service/user';
 
 export function testGetUser() {
   beforeAll(async () => {
@@ -14,7 +14,7 @@ export function testGetUser() {
 
   test.each(['root', 'admin'])(`global %s can access user`, async user => {
     const auth = getGlobalUser(user);
-    const response = await getUserAPI(auth.token, auth.user.user_id);
+    const response = await getUser(auth.token, auth.user.user_id);
     expect(response.status).toBe(HttpStatus.OK);
 
     expect(response.body).toMatchObject({
@@ -33,7 +33,7 @@ export function testGetUser() {
 
     expect(otherAdmin.user.role).toBe(UserRole.Admin);
 
-    response = await getUserAPI(admin.token, otherAdmin.user.user_id);
+    response = await getUser(admin.token, otherAdmin.user.user_id);
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });
 
@@ -42,7 +42,7 @@ export function testGetUser() {
     async user => {
       for (const target of ['root', 'admin', 'author', 'client']) {
         if (target !== user) {
-          const response = await getUserAPI(
+          const response = await getUser(
             getGlobalUser(user)?.token,
             getGlobalUser(target).user.user_id
           );
