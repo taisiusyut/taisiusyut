@@ -31,8 +31,6 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Root]: [...admin],
   [UserRole.Admin]: admin,
   [UserRole.Author]: [
-    'user_get',
-
     'book_create',
     'book_update',
     'book_get_all',

@@ -1,8 +1,9 @@
 import { ObjectID } from 'mongodb';
 import { Exclude, Transform } from 'class-transformer';
 import { Prop, PropOptions, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { InsertedUserSchema, UserRole } from '@/typings';
+import { InsertedUserSchema, UserRole, UserStatus } from '@/typings';
 import bcrypt from 'bcrypt';
+import { Group } from '@/utils/access';
 
 function hashPassword(password: string) {
   return bcrypt.hashSync(password, 10);
@@ -38,10 +39,18 @@ export class User implements InsertedUserSchema {
 
   @Prop({
     type: String,
-    default: UserRole.Client,
+    required: true,
     enum: Object.values(UserRole)
   })
   role: UserRole;
+
+  @Prop({
+    type: Number,
+    required: true,
+    enum: Object.values(UserStatus)
+  })
+  @Group(['Root', 'Admin'])
+  status: UserStatus;
 
   @Prop({
     type: String,

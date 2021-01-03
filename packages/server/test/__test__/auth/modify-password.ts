@@ -2,16 +2,16 @@ import { HttpStatus } from '@nestjs/common';
 import { rid } from '@/utils/rid';
 import { Schema$Authenticated, UserRole } from '@/typings';
 import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
+import { UserService } from '@/modules/user/user.service';
+import { ModifyPasswordDto } from '@/modules/auth/dto';
 import {
   login,
   modifyPassword,
   createUserAndLogin,
-  loginAsDefaultRoot,
-  setupRoot
+  loginAsDefaultRoot
 } from '../../service/auth';
 import { extractCookies } from '../../service/cookies';
 import { CreateUserDto, createUserDto } from '../../service/user';
-import { ModifyPasswordDto } from '@/modules/auth/dto';
 
 export function testModifyPassword() {
   const mock = {
@@ -30,18 +30,20 @@ export function testModifyPassword() {
     defaultRoot = response.body;
   });
 
+  afterAll(async () => {
+    await app.get(UserService).delete({ _id: auth.root.user.user_id });
+  });
+
   test.each(['root', 'admin', 'author', 'client'])(
     '%s can modify password',
     async type => {
       const account: CreateUserDto = mock[type as keyof typeof mock];
-      let response = await createUserAndLogin(
-        (auth.root || defaultRoot).token,
-        account
-      );
+
+      let response = await createUserAndLogin(defaultRoot.token, account);
       auth[type] = response.body;
 
       const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
-      expect(cookie).toBeObject();
+      expect(cookie.value).not.toBeEmpty();
 
       const newPassword = createUserDto().password;
       response = await modifyPassword(auth[type].token, {
@@ -61,16 +63,12 @@ export function testModifyPassword() {
 
       response = await login({ ...account, password: newPassword });
       expect(response.status).toBe(HttpStatus.OK);
+
+      mock[type as keyof typeof mock].password = newPassword;
     }
   );
 
-  test('fail to modify password with invalid params', async () => {
-    if (auth.root) {
-      root = auth.root;
-    } else {
-      await setupRoot();
-    }
-
+  test('cannot modify password with invalid format', async () => {
     const newPassword = createUserDto().password;
     const payload: ModifyPasswordDto[] = [
       {
@@ -90,13 +88,9 @@ export function testModifyPassword() {
       }
     ];
 
-    const responses = [];
     for (const params of payload) {
-      responses.push(await modifyPassword(root.token, params));
+      const response = await modifyPassword(auth.root.token, params);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
-
-    expect(responses).toSatisfyAll(
-      response => response.status === HttpStatus.BAD_REQUEST
-    );
   });
 }

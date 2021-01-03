@@ -18,13 +18,22 @@ export enum UserRole {
   Guest = 'Guest'
 }
 
+export enum UserStatus {
+  Active = 1,
+  InActive,
+  Pending,
+  Blocked,
+  Deleted
+}
+
 export interface BaseUser extends Timestamp {
   id: string;
   email: string;
   username: string;
   password: string;
-  role: UserRole;
   nickname: string;
+  status: UserStatus;
+  role: UserRole;
 }
 
 export interface Schema$Root extends BaseUser {

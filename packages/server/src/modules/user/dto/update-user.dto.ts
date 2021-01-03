@@ -1,8 +1,8 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsOptional } from 'class-validator';
-import { InsertedUserSchema, InsertedUpdateuser } from '@/typings';
-import { AuthorOnly } from '@/utils/access';
-import { IsDescription, IsNickname } from './';
+import { InsertedUserSchema, InsertedUpdateuser, UserStatus } from '@/typings';
+import { AuthorOnly, Group } from '@/utils/access';
+import { IsDescription, IsNickname, IsUserStatus } from './';
 
 class Excluded implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   @Exclude()
@@ -41,6 +41,11 @@ class UpdateUser
   @IsOptional()
   @IsEmail()
   email?: string;
+
+  @IsOptional()
+  @IsUserStatus()
+  @Group(['Root', 'Admin'])
+  status?: UserStatus;
 }
 
 export class UpdateUserDto

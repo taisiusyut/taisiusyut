@@ -1,13 +1,10 @@
-import {
-  Injectable,
-  ForbiddenException,
-  InternalServerErrorException
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongooseCRUDService } from '@/utils/mongoose';
 import { PaginateModel, Document, FilterQuery } from 'mongoose';
-import { JWTSignPayload, UserRole } from '@/typings';
+import { JWTSignPayload, UserRole, UserStatus } from '@/typings';
 import { User } from './schemas/user.schema';
+import { CreateUserDto } from './dto';
 
 const roles = Object.values(UserRole);
 
@@ -28,22 +25,25 @@ export class UserService extends MongooseCRUDService<User> {
     super(userModel);
   }
 
-  getRoleBasedQuery(id?: string, user?: JWTSignPayload) {
-    if (!user) {
-      throw new InternalServerErrorException(`user is ${user}`);
+  create(payload: CreateUserDto) {
+    payload = { status: UserStatus.Active, role: UserRole.Client, ...payload };
+    return super.create(payload);
+  }
+
+  getRoleBasedQuery(user?: JWTSignPayload, query: FilterQuery<User> = {}) {
+    const id = query._id;
+
+    if (typeof id !== 'string') {
+      throw new Error(`id expect string`);
     }
 
-    let query: FilterQuery<User> = {};
-
     if (
+      !user ||
       user.role === UserRole.Author ||
       user.role === UserRole.Client ||
       user.role === UserRole.Guest
     ) {
-      if (user.user_id !== id) {
-        throw new ForbiddenException();
-      }
-      query = { _id: user.user_id };
+      query = { _id: user?.user_id };
     } else {
       query.$or = this.roles[user.role]?.map(value =>
         id === user.user_id ? { _id: id } : { _id: id, ...value }

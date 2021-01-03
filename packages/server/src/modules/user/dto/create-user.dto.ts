@@ -1,6 +1,11 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsOptional } from 'class-validator';
-import { InsertedUserSchema, InsertedCreateuser, UserRole } from '@/typings';
+import {
+  InsertedUserSchema,
+  InsertedCreateuser,
+  UserRole,
+  UserStatus
+} from '@/typings';
 import { IsUsername, IsPassword } from '@/decorators';
 import { AuthorOnly } from '@/utils/access';
 import { IsNickname, IsDescription, IsUserRole } from './';
@@ -8,6 +13,9 @@ import { IsNickname, IsDescription, IsUserRole } from './';
 class Excluded implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   @Exclude()
   id?: undefined;
+
+  @Exclude()
+  status?: UserStatus;
 
   @Exclude()
   createdAt?: undefined;

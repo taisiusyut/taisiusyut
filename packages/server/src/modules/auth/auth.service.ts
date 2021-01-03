@@ -6,7 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/modules/user/user.service';
-import { UserRole, JWTSignPayload, JWTSignResult } from '@/typings';
+import { UserRole, JWTSignPayload, JWTSignResult, UserStatus } from '@/typings';
 import { RefreshTokenService } from './refresh-token.service';
 import { formatJWTSignPayload } from './dto/jwt-sign.dto';
 import bcrypt from 'bcrypt';
@@ -24,7 +24,14 @@ export class AuthService {
     username: string,
     password: string
   ): Promise<JWTSignPayload> {
-    const user = await this.userService.findOne({ username }, {}, '+password');
+    const user = await this.userService.findOne(
+      {
+        username,
+        $nor: [{ status: UserStatus.Blocked }, { status: UserStatus.Deleted }]
+      },
+      {},
+      '+password'
+    );
 
     if (user) {
       const valid = await bcrypt.compare(password, user.password);
@@ -46,7 +53,10 @@ export class AuthService {
 
       throw new BadRequestException('incorrect password');
     } else {
-      const root = await this.userService.findOne({ role: UserRole.Root });
+      const root = await this.userService.findOne({
+        role: UserRole.Root,
+        status: { $not: { $eq: UserStatus.Deleted } }
+      });
 
       if (!root) {
         const [defaultUsername, defaultPassword] = [

@@ -1,8 +1,14 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, IsOptional, IsString, IsMongoId } from 'class-validator';
-import { UserRole, InsertedUserSchema, Param$GetUsers } from '@/typings';
+import {
+  UserRole,
+  InsertedUserSchema,
+  Param$GetUsers,
+  UserStatus
+} from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
-import { IsNickname, IsUserRole } from './';
+import { IsNickname, IsUserRole, IsUserStatus } from './';
+import { Group } from '@/utils/access';
 
 class Excluded
   extends QueryDto
@@ -38,6 +44,11 @@ class GetUsers
   @IsOptional()
   @IsUserRole()
   role?: UserRole;
+
+  @IsOptional()
+  @IsUserStatus()
+  @Group(['Root', 'Admin'])
+  status?: UserStatus;
 }
 
 export class GetUsersDto

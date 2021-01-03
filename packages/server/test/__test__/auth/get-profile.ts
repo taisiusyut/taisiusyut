@@ -1,23 +1,27 @@
 import { HttpStatus } from '@nestjs/common';
-import { setupUsers, getUser } from '../../service/auth';
-import { getUserProfile } from '../../service/user';
-
-const users = ['root', 'admin', 'author', 'client'];
+import { setupUsers, getUser, setupRoot } from '../../service/auth';
+import { getUserProfile } from '../../service/auth';
 
 export function testGetProfile() {
   beforeAll(async () => {
+    await setupRoot();
     await setupUsers();
   });
 
-  test.each(users)(`%s can access his/her profile`, async user => {
-    const auth = getUser(user);
-    const response = await getUserProfile(auth.token, auth.user.user_id);
-    expect(response.status).toBe(HttpStatus.OK);
-    expect(response.body).toMatchObject({
-      id: auth.user.user_id,
-      role: auth.user.role,
-      username: auth.user.username
-    });
-    expect(response.body).not.toHaveProperty('password');
-  });
+  test.each(['root', 'admin', 'author', 'client'])(
+    `%s can access profile`,
+    async user => {
+      const auth = getUser(user);
+      expect(auth).toBeDefined();
+
+      const response = await getUserProfile(auth.token);
+      expect(response.status).toBe(HttpStatus.OK);
+      expect(response.body).toMatchObject({
+        id: auth.user.user_id,
+        role: auth.user.role,
+        username: auth.user.username
+      });
+      expect(response.body).not.toHaveProperty('password');
+    }
+  );
 }

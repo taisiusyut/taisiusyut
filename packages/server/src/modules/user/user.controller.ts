@@ -1,5 +1,4 @@
 import { FastifyRequest } from 'fastify';
-import { FilterQuery } from 'mongoose';
 import {
   Controller,
   Post,
@@ -16,12 +15,11 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
-import { UserRole } from '@/typings';
-import { Access } from '@/utils/access';
+import { UserRole, UserStatus } from '@/typings';
+import { Access, AccessPipe } from '@/utils/access';
 import { Condition } from '@/utils/mongoose';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
-import { User } from './schemas/user.schema';
 
 @Controller(routes.user.prefix)
 export class UserController {
@@ -45,7 +43,7 @@ export class UserController {
 
   @Access('user_get_all')
   @Get(routes.user.get_users)
-  getUsers(@Query() query: GetUsersDto, @Req() req: FastifyRequest) {
+  getUsers(@Query(AccessPipe) query: GetUsersDto, @Req() req: FastifyRequest) {
     let condition: Condition[] = [];
 
     if (req.user) {
@@ -62,14 +60,18 @@ export class UserController {
     });
   }
 
-  @Access('Auth')
+  @Access('user_get')
   @Get(routes.user.get_user)
   async getUser(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
-    const query = this.userService.getRoleBasedQuery(id, user);
-    const result = await this.userService.findOne(query);
-    if (!result) {
+    const result = await this.userService.findOne({ _id: id });
+
+    if (
+      !result ||
+      (result.role === user?.role && String(result._id) !== user?.user_id)
+    ) {
       throw new NotFoundException();
     }
+
     return result;
   }
 
@@ -100,10 +102,9 @@ export class UserController {
     @ObjectId('id') id: string,
     @Body() updateUserDto: UpdateUserDto
   ) {
-    const query: FilterQuery<User> = this.userService.getRoleBasedQuery(
-      id,
-      user
-    );
+    const query = this.userService.getRoleBasedQuery(user, {
+      _id: id
+    });
 
     const result = await this.userService.findOneAndUpdate(
       query,
@@ -137,6 +138,9 @@ export class UserController {
       throw new ForbiddenException(error);
     }
 
-    return this.userService.delete({ _id: id });
+    return this.userService.updateOne(
+      { _id: id },
+      { status: UserStatus.Deleted }
+    );
   }
 }

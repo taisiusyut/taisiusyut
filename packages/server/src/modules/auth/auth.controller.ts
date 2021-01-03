@@ -21,7 +21,12 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { isMongoId } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants/routes';
-import { Schema$Authenticated, Schema$LoginRecord, UserRole } from '@/typings';
+import {
+  Schema$Authenticated,
+  Schema$LoginRecord,
+  UserRole,
+  UserStatus
+} from '@/typings';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/schemas/user.schema';
@@ -169,7 +174,7 @@ export class AuthController {
   @Access('delete-account')
   @HttpCode(HttpStatus.OK)
   @Delete(routes.auth.delete_account)
-  async delete(
+  async deleteAccount(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
     @Body() { password }: DeleteAccountDto
@@ -177,11 +182,12 @@ export class AuthController {
     if (!req.user)
       throw new InternalServerErrorException(`user is ${req.user}`);
 
-    if (req.user.role === UserRole.Guest) throw new ForbiddenException();
-
     await this.validateUser(req.user.username, password);
 
-    await this.userService.delete({ _id: req.user.user_id });
+    await this.userService.updateOne(
+      { _id: req.user.user_id },
+      { status: UserStatus.Deleted }
+    );
 
     await this.logout(req, res);
   }
@@ -197,18 +203,12 @@ export class AuthController {
     if (!req.user)
       throw new InternalServerErrorException(`user is ${req.user}`);
 
-    if (req.user.role === UserRole.Guest) throw new ForbiddenException();
-
     await this.validateUser(req.user.username, password);
 
-    const result = await this.userService.findOneAndUpdate(
+    await this.userService.findOneAndUpdate(
       { _id: req.user.user_id },
       { password: newPassword }
     );
-
-    if (!result) {
-      throw new BadRequestException(`user not found`);
-    }
 
     await this.logout(req, res);
   }
@@ -228,11 +228,7 @@ export class AuthController {
     @Body(AccessPipe) updateProfileDto: UpdateProfileDto
   ) {
     if (!req.user) {
-      throw new BadRequestException(`user not found`);
-    }
-
-    if (req.user.role === UserRole.Guest) {
-      throw new ForbiddenException();
+      throw new InternalServerErrorException(`user not found`);
     }
 
     const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
@@ -246,7 +242,7 @@ export class AuthController {
     );
 
     if (!result) {
-      throw new BadRequestException(`user not found`);
+      throw new InternalServerErrorException(`user not found`);
     }
 
     const nicknameHasChanged =

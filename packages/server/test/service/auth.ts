@@ -133,6 +133,13 @@ export function getLoginRecords(token: string) {
     .send();
 }
 
+export function getUserProfile(token: string) {
+  return request
+    .get(routes.profile)
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
 export function logoutOthers(token: string, cookie: string) {
   return request
     .post(routes.logout_others)

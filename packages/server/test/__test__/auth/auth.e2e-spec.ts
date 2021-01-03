@@ -1,7 +1,7 @@
 import { Response } from 'supertest';
 import { HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UserRole } from '@/typings';
+import { Schema$Authenticated, UserRole } from '@/typings';
 import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
 import {
   login,
@@ -10,8 +10,7 @@ import {
   registration,
   loginAsDefaultRoot,
   createUserAndLogin,
-  getToken,
-  setupRoot
+  getToken
 } from '../../service/auth';
 import { createUser, createUserDto } from '../../service/user';
 import { extractCookies } from '../../service/cookies';
@@ -33,6 +32,7 @@ describe('AuthController (e2e)', () => {
   const delay = (ms: number) => new Promise(_ => setTimeout(_, ms));
 
   let refreshTokenVal: string;
+  let defaultRoot: Schema$Authenticated;
 
   function validateCookies(response: Response) {
     const cookie = extractCookies(response.header, REFRESH_TOKEN_COOKIES);
@@ -50,18 +50,19 @@ describe('AuthController (e2e)', () => {
       const response = await loginAsDefaultRoot();
       expect(response.error).toBeFalse();
       expect(response.body).toMatchObject({ isDefaultAc: true });
-      root = response.body;
+      defaultRoot = response.body;
     });
 
     test('Login with registered user and logout', async () => {
       const mockUser = createUserDto();
 
-      let response = await createUser(root.token, mockUser);
+      let response = await createUser(defaultRoot.token, mockUser);
       expect(response.error).toBeFalse();
 
       response = await login(mockUser);
       expect(response.error).toBeFalse();
       expect(response.body).toMatchObject({ isDefaultAc: false });
+
       validateCookies(response);
 
       response = await logout();
@@ -84,10 +85,7 @@ describe('AuthController (e2e)', () => {
 
     test('Client registration', async () => {
       await expect(
-        Promise.all([
-          registration({ role: undefined }),
-          registration({ role: UserRole.Client })
-        ])
+        Promise.all([registration({ role: UserRole.Client })])
       ).resolves.toSatisfyAll(
         (response: Response) => response.status === HttpStatus.CREATED
       );
@@ -97,7 +95,7 @@ describe('AuthController (e2e)', () => {
   describe('(POST) Refresh Token', () => {
     test('Refresh', async () => {
       if (!refreshTokenVal) {
-        const response = await createUserAndLogin(root.token);
+        const response = await createUserAndLogin(defaultRoot.token);
         validateCookies(response);
       }
       expect(refreshTokenVal).toEqual(expect.any(String));
@@ -121,9 +119,7 @@ describe('AuthController (e2e)', () => {
   test.skip(
     'JWT expires',
     async () => {
-      await setupRoot();
-
-      let response = await createUserAndLogin(root.token, {
+      let response = await createUserAndLogin(defaultRoot.token, {
         role: UserRole.Admin
       });
 
