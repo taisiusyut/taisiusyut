@@ -20,6 +20,7 @@ export function RegistrationForm({ head, children, ...props }: Props) {
       />
 
       <Password
+        autoComplete="new-password"
         deps={['username']}
         validators={({ username }) => [
           userValidators.password.required,

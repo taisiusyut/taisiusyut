@@ -31,7 +31,7 @@ export function ModifyPasswordForm(props: UserFormProps) {
           ];
         }}
       >
-        <Password />
+        <Password autoComplete="new-password" />
       </FormItem>
 
       <FormItem
@@ -46,7 +46,7 @@ export function ModifyPasswordForm(props: UserFormProps) {
           )
         ]}
       >
-        <Password />
+        <Password autoComplete="new-password" />
       </FormItem>
     </Form>
   );

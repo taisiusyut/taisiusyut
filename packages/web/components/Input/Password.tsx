@@ -6,6 +6,8 @@ interface PasswordProps extends InputProps {
   visible?: boolean;
 }
 
+const disablePasting = (event: React.ClipboardEvent) => event.preventDefault();
+
 export function Password({
   className = '',
   visible = false,
@@ -16,9 +18,10 @@ export function Password({
   return (
     <Input
       {...props}
-      autoComplete={autoComplete === 'off' ? 'new-password' : autoComplete}
+      autoComplete={autoComplete}
       className={`password ${className}`.trim()}
       type={isVisible ? '' : 'password'}
+      onPaste={disablePasting}
       rightElement={
         <Button
           minimal

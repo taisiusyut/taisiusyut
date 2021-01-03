@@ -101,13 +101,6 @@ export const maxLength = lengthComparation(
   (length, maxLength) => length <= maxLength
 );
 
-export const passwordFormat = (
-  msg = 'Password must contain number and english character'
-): Validator => (_, value) =>
-  /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_]{6,20}$/.test(value)
-    ? Promise.resolve()
-    : Promise.reject(msg);
-
 export const shouldBeEqual = (val: any, msg: string): Validator => (_, value) =>
   value === val ? Promise.resolve() : Promise.reject(msg);
 
@@ -117,7 +110,10 @@ export const shouldNotBeEqual = (val: any, msg: string): Validator => (
 ) => (value !== val ? Promise.resolve() : Promise.reject(msg));
 
 export const regex = (regex: RegExp, msg: string): Validator => (_, value) => {
-  const valid = typeof value === 'string' ? regex.test(value) : false;
+  const valid =
+    typeof value === 'string'
+      ? regex.test(value)
+      : Promise.reject(`value is not a string`);
   return valid ? Promise.resolve() : Promise.reject(msg);
 };
 
@@ -141,24 +137,7 @@ export const password = {
     shouldNotBeEqual(username, PASSWORD_EUQAL_TO_USERNAME)
 };
 
-export const oldPassword = [required('Please input your old password')];
-
-export const newPassword = ({ password }: { password: string }) => [
-  required('Please input new password'),
-  shouldNotBeEqual(
-    password,
-    'The new password should not be equal to the old password'
-  )
-];
-
-export const confirmNewPassword = ({
-  newPassword
-}: {
-  newPassword: string;
-}) => [
-  required('Please input the new password again'),
-  shouldBeEqual(
-    newPassword,
-    'Confirm new password is not equal to the above new password'
-  )
-];
+export const emailFormat = (msg = 'Invalid email format'): Validator => (
+  _,
+  value
+) => (regex(/^\S+@\S+\.\S+$/, value) ? Promise.resolve() : Promise.reject(msg));

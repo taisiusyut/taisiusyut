@@ -6,7 +6,7 @@ import {
   Param$ModifyPassword
 } from '@/typings';
 import { createForm, validators, FormProps, FormItemProps } from '@/utils/form';
-import { Input, Password as PasswordInput } from '../Input';
+import { Input, InputProps, Password as PasswordInput } from '../Input';
 import { UserRoleSelect } from '../Select';
 
 type UserFormSchema = Param$CreateUser &
@@ -31,16 +31,24 @@ export function createUserForm({
 
   const Username = (props: FormItemProps<UserFormSchema> = {}) => (
     <FormItem {...(props as unknown)} name="username" label="Username">
-      <Input large={large} />
+      <Input large={large} autoComplete="username" />
     </FormItem>
   );
 
   const Password = ({
     visible,
+    autoComplete,
     ...props
-  }: FormItemProps<UserFormSchema> & { visible?: boolean } = {}) => (
+  }: FormItemProps<UserFormSchema> & {
+    visible?: boolean;
+    autoComplete?: InputProps['autoComplete'];
+  } = {}) => (
     <FormItem {...(props as unknown)} name="password" label="Password">
-      <PasswordInput large={large} visible={visible} />
+      <PasswordInput
+        large={large}
+        visible={visible}
+        autoComplete={autoComplete}
+      />
     </FormItem>
   );
 
@@ -50,14 +58,14 @@ export function createUserForm({
       label="Confirm Password"
       deps={['password']}
       validators={({ password }) => [
-        validators.required('Please input the  password again'),
+        validators.required('Please input the password again'),
         validators.shouldBeEqual(
           password,
           'Confirm password is not equal to the above password'
         )
       ]}
     >
-      <PasswordInput large={large} />
+      <PasswordInput large={large} autoComplete="new-password" />
     </FormItem>
   );
 
@@ -66,11 +74,11 @@ export function createUserForm({
       name="email"
       label="Email"
       validators={[
-        validators.required('Please input an email')
-        // TODO: email validation
+        validators.required('Please input an email'),
+        validators.emailFormat()
       ]}
     >
-      <Input large={large} />
+      <Input large={large} autoComplete="email" type="email" />
     </FormItem>
   );
 
