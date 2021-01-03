@@ -1,7 +1,8 @@
 import React from 'react';
 import router from 'next/router';
-import { Order } from '@/typings';
 import { Icon } from '@blueprintjs/core';
+import { Order } from '@/typings';
+import { JSONParse } from '@/utils/JSONParse';
 import { setSearchParam } from '@/utils/setSearchParam';
 import classes from './Table.module.scss';
 
@@ -20,19 +21,25 @@ export function SortableHeader({
   defaultOrder,
   ...props
 }: Props) {
-  const order = Number(router.query[`sort[${field}]`] || defaultOrder);
+  const sort = JSONParse<Record<string, unknown>>(
+    router.query['sort'] as string,
+    {}
+  );
+  const order = Number(sort[field] || defaultOrder);
 
   return (
     <div
       {...props}
       onClick={() =>
-        setSearchParam(({ sort, ...params }) => ({
-          ...params,
-          sort: {
-            ...(sort as Record<string, unknown>),
-            [field]: order === Order.DESC ? Order.ASC : Order.DESC
-          }
-        }))
+        setSearchParam(({ sort, ...params }) => {
+          return {
+            ...params,
+            sort: JSON.stringify({
+              ...JSONParse<Record<string, unknown>>(sort as string, {}),
+              [field]: order === Order.DESC ? Order.ASC : Order.DESC
+            })
+          };
+        })
       }
     >
       <div className={classes['th']}>
