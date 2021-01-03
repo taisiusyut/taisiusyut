@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { MongooseCRUDService } from '@/utils/mongoose';
-import { PaginateModel, Document, FilterQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
+import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { JWTSignPayload, UserRole, UserStatus } from '@/typings';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto';
@@ -22,10 +22,9 @@ export class UserService extends MongooseCRUDService<User> {
     )
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     @InjectModel(User.name)
-    userModel: PaginateModel<User & Document>
+    readonly userModel: Model<User>
   ) {
     super(userModel);
   }

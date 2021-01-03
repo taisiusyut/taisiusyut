@@ -1,11 +1,11 @@
-import { Document, FilterQuery, PaginateModel } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import {
   Inject,
   Injectable,
   InternalServerErrorException
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { MongooseCRUDService } from '@/utils/mongoose';
+import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { ChapterStatus, ChapterType, PaymentType } from '@/typings';
 import { PaymentDetailsDto } from './dto';
 import { Payment } from './schemas/payment.schema';
@@ -16,7 +16,7 @@ import { ChapterService } from '../chapter/chapter.service';
 export class PaymentService extends MongooseCRUDService<Payment> {
   constructor(
     @InjectModel(Payment.name)
-    private readonly paymentModel: PaginateModel<Payment & Document>,
+    readonly paymentModel: Model<Payment>,
     @Inject(ChapterService) private readonly chapterService: ChapterService
   ) {
     super(paymentModel);

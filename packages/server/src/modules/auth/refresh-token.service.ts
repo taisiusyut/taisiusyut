@@ -1,16 +1,15 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import { Document, PaginateModel } from 'mongoose';
 import { CookieSerializeOptions } from 'fastify-cookie';
-import { MongooseCRUDService } from '@/utils/mongoose';
+import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { RefreshToken } from './schemas/refreshToken.schema';
 
 @Injectable()
 export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
   constructor(
     @InjectModel(RefreshToken.name)
-    private refreshTokenModel: PaginateModel<RefreshToken & Document>,
+    readonly refreshTokenModel: Model<RefreshToken>,
     private readonly configService: ConfigService
   ) {
     super(refreshTokenModel);

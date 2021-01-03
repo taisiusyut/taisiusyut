@@ -1,4 +1,4 @@
-import { Aggregate, Document, FilterQuery, PaginateModel } from 'mongoose';
+import { Aggregate, Document, FilterQuery } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -8,7 +8,7 @@ import {
   Schema$Tags,
   UserRole
 } from '@/typings';
-import { MongooseCRUDService } from '@/utils/mongoose';
+import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { Book } from './schemas/book.schema';
 
 const allBookStatus = Object.values(BookStatus).filter(
@@ -23,10 +23,9 @@ export class BookService extends MongooseCRUDService<Book> {
     { status: BookStatus.Finished }
   ];
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(
     @InjectModel(Book.name)
-    private readonly bookModel: PaginateModel<Book & Document>
+    readonly bookModel: Model<Book>
   ) {
     super(bookModel);
   }

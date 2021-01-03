@@ -34,7 +34,7 @@ export class ChapterService extends MongooseCRUDService<Chapter> {
 
   constructor(
     @InjectModel(Chapter.name)
-    private readonly chapterModel: PaginateModel<Chapter & Document>
+    readonly chapterModel: PaginateModel<Chapter & Document>
   ) {
     super(chapterModel);
   }
