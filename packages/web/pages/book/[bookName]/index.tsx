@@ -1,5 +1,5 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { Meta } from '@/components/Meta';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import {
@@ -27,28 +27,32 @@ type Params = {
   bookName: string;
 };
 
-export const getServerSideProps: GetServerSideProps<
-  Props,
-  Params
-> = async context => {
-  const { bookName, ...query } = context.query;
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props, Params> = async context => {
+  const { bookName, ...query } = context.params || {};
 
   if (typeof bookName !== 'string') {
     throw new Error(`bookName is ${bookName}`);
   }
 
   const [bookController, chapterController] = await Promise.all([
-    getBookController(context.res.app),
-    getChpaterController(context.res.app)
+    getBookController(),
+    getChpaterController()
   ]);
 
   const book = await bookController
-    .getByName(context.req as any, bookName)
+    .getByName({} as any, bookName)
     .then(book => book && serialize<Schema$Book | null>(book));
 
   const chapters = book
     ? await chapterController
-        .getAll(context.req as any, book.id, {
+        .getAll({} as any, book.id, {
           pageSize: 30,
           status: ChapterStatus.Public,
           sort: { createdAt: Order.ASC },
@@ -58,9 +62,10 @@ export const getServerSideProps: GetServerSideProps<
     : undefined;
 
   return {
+    revalidate: 60 * 60,
     props: {
-      bookName,
       book,
+      bookName,
       chapters
     }
   };

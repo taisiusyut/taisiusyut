@@ -44,7 +44,7 @@ const getTarget = (chapterNo: number) =>
 export const getChapterTitle = (chapterName: string, bookName: string) =>
   `${chapterName} | ${bookName} | 睇小說`;
 
-export function ClientChapter({
+function ClientChapterComponment({
   bookID,
   bookName,
   chapter: initialChapter,
@@ -349,4 +349,28 @@ export function ClientChapter({
 
   // TODO:
   return <div>Not Found</div>;
+}
+
+export function ClientChapter({
+  bookName,
+  chapter,
+  chapterNo,
+  ...props
+}: Partial<ClientChapterProps>) {
+  if (
+    typeof bookName === 'string' &&
+    typeof chapterNo === 'number' &&
+    typeof chapter !== 'undefined'
+  ) {
+    return (
+      <ClientChapterComponment
+        {...props}
+        bookName={bookName}
+        chapter={chapter}
+        chapterNo={chapterNo}
+      />
+    );
+  }
+
+  return null;
 }

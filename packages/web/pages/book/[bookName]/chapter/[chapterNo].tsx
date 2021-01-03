@@ -1,5 +1,5 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { Meta } from '@/components/Meta';
 import {
   ClientLayout,
@@ -24,11 +24,15 @@ type Params = {
   chapterNo: string;
 };
 
-export const getServerSideProps: GetServerSideProps<
-  Props,
-  Params
-> = async context => {
-  const { bookName, chapterNo } = context.query;
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props, Params> = async context => {
+  const { bookName, chapterNo } = context.params || {};
 
   if (typeof bookName !== 'string') {
     throw new Error(`bookName is ${bookName}`);
@@ -39,21 +43,22 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const [bookController, chapterController] = await Promise.all([
-    getBookController(context.res.app),
-    getChpaterController(context.res.app)
+    getBookController(),
+    getChpaterController()
   ]);
 
   const book = await bookController
-    .getByName(context.req as any, bookName)
+    .getByName({} as any, bookName)
     .then(book => serialize<Schema$Book | null>(book));
 
   const chapter = book
     ? await chapterController
-        .getByNum(context.req as any, book.id, Number(chapterNo))
+        .getByNum({} as any, book.id, Number(chapterNo))
         .then(chapter => serialize<Schema$Chapter | null>(chapter))
     : null;
 
   return {
+    revalidate: 60 * 60,
     props: { bookID: book?.id, bookName, chapterNo: Number(chapterNo), chapter }
   };
 };

@@ -36,7 +36,7 @@ function useBook(
 
 const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
 
-export function ClientBookDetails({
+export function ClientBookDetailsComponent({
   bookName,
   book: initialBook,
   chapters: initialChapters
@@ -76,4 +76,18 @@ export function ClientBookDetails({
       <div className={classes['content']}>Book not found</div>
     </>
   );
+}
+
+export function ClientBookDetails({
+  bookName,
+  book,
+  ...props
+}: Partial<ClientBookDetailsProps>) {
+  if (bookName && book) {
+    return (
+      <ClientBookDetailsComponent {...props} book={book} bookName={bookName} />
+    );
+  }
+
+  return null;
 }
