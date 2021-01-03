@@ -1,7 +1,7 @@
 import { SuperAgentRequest, Response } from 'superagent';
 import { ConfigService } from '@nestjs/config';
 import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
-import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
+import { REFRESH_TOKEN_COOKIES } from '@/constants';
 import { routes } from '@/constants/routes';
 import { Param$Login, Schema$Authenticated, UserRole } from '@/typings';
 import {

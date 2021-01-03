@@ -5,7 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from '@/modules/user/user.module';
 import { LocalStrategy, JwtStrategy } from './strategy';
-import { AuthController } from './auth.controller';
+import {
+  AuthController,
+  AuthProfileController,
+  AuthLoginRecordsController
+} from './controllers';
 import { AuthService } from './auth.service';
 import { RefreshTokenService } from './refresh-token.service';
 import {
@@ -38,7 +42,11 @@ import {
     })
   ],
   exports: [AuthService],
-  controllers: [AuthController],
+  controllers: [
+    AuthController,
+    AuthProfileController,
+    AuthLoginRecordsController
+  ],
   providers: [LocalStrategy, JwtStrategy, AuthService, RefreshTokenService]
 })
 export class AuthModule {}

@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { rid } from '@/utils/rid';
 import { Schema$Authenticated, UserRole } from '@/typings';
-import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/auth.controller';
+import { REFRESH_TOKEN_COOKIES } from '@/constants';
 import { UserService } from '@/modules/user/user.service';
 import { ModifyPasswordDto } from '@/modules/auth/dto';
 import {

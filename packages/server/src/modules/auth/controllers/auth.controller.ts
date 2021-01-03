@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Req,
@@ -16,37 +15,27 @@ import {
   InternalServerErrorException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { isMongoId } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
-import { routes } from '@/constants/routes';
-import {
-  Schema$Authenticated,
-  Schema$LoginRecord,
-  UserRole,
-  UserStatus
-} from '@/typings';
+import { routes, REFRESH_TOKEN_COOKIES } from '@/constants';
+import { Schema$Authenticated, UserRole, UserStatus } from '@/typings';
 import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '@/modules/user/dto';
 import { User } from '@/modules/user/schemas/user.schema';
 import { throwMongoError } from '@/utils/mongoose';
-import { Access, AccessPipe } from '@/utils/access';
-import { AuthService } from './auth.service';
-import { RefreshTokenService } from './refresh-token.service';
-import { RefreshToken } from './schemas/refreshToken.schema';
-import { DeleteAccountDto, ModifyPasswordDto, UpdateProfileDto } from './dto';
-import { AuthorNameUpdateEvent } from './event';
-
-export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
+import { Access } from '@/utils/access';
+import { AuthService } from '../auth.service';
+import { RefreshTokenService } from '../refresh-token.service';
+import { RefreshToken } from '../schemas/refreshToken.schema';
+import { DeleteAccountDto, ModifyPasswordDto } from '../dto';
 
 @Controller(routes.auth.prefix)
 export class AuthController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
-    private readonly refreshTokenService: RefreshTokenService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly refreshTokenService: RefreshTokenService
   ) {}
 
   @Access('Everyone')
@@ -214,94 +203,5 @@ export class AuthController {
     );
 
     await this.logout(req, res);
-  }
-
-  @Access('Auth')
-  @HttpCode(HttpStatus.OK)
-  @Get(routes.auth.profile)
-  getProfile(@Req() req: FastifyRequest) {
-    return this.userService.findOne({ _id: req.user?.user_id });
-  }
-
-  @Access('Auth')
-  @HttpCode(HttpStatus.OK)
-  @Patch(routes.auth.profile)
-  async updateProfile(
-    @Req() req: FastifyRequest,
-    @Body(AccessPipe) updateProfileDto: UpdateProfileDto
-  ) {
-    if (!req.user) {
-      throw new InternalServerErrorException(`user not found`);
-    }
-
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
-
-    const result = await this.userService.findOneAndUpdate(
-      {
-        _id: req.user.user_id,
-        role: req.user.role // required for discrimination
-      },
-      updateProfileDto
-    );
-
-    if (!result) {
-      throw new InternalServerErrorException(`user not found`);
-    }
-
-    const nicknameHasChanged =
-      updateProfileDto.nickname &&
-      updateProfileDto.nickname !== req.user.nickname;
-
-    if (nicknameHasChanged) {
-      if (req.user.role === UserRole.Author) {
-        this.eventEmitter.emit(
-          AuthorNameUpdateEvent.name,
-          new AuthorNameUpdateEvent({
-            authorId: req.user.user_id,
-            authorName: result.nickname
-          })
-        );
-      }
-
-      await this.refreshTokenService.findOneAndUpdate(
-        { refreshToken: tokenFromCookies },
-        { nickname: result.nickname }
-      );
-    }
-
-    return result;
-  }
-
-  @Access('Auth')
-  @HttpCode(HttpStatus.OK)
-  @Get(routes.auth.get_login_records)
-  async loginRecords(@Req() req: FastifyRequest) {
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
-
-    const tokens = await this.refreshTokenService.findAll({
-      user_id: req.user?.user_id
-    });
-
-    return tokens.map<Schema$LoginRecord>(data => ({
-      id: data.id,
-      userAgent: data.userAgent,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-      current: data.refreshToken === tokenFromCookies
-    }));
-  }
-
-  @Access('Auth')
-  @HttpCode(HttpStatus.OK)
-  @Post(routes.auth.logout_others)
-  async logoutOthers(@Req() req: FastifyRequest) {
-    const tokenFromCookies = req.cookies[REFRESH_TOKEN_COOKIES];
-
-    await this.refreshTokenService.deleteMany({
-      user_id: req.user?.user_id,
-      refreshToken: {
-        $ne: tokenFromCookies
-      }
-    });
   }
 }
