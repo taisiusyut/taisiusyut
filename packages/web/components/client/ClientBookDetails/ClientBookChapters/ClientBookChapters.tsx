@@ -10,26 +10,36 @@ export interface Props {
   book: Schema$Book;
 }
 
-export function ClientBookChapters({ book }: Props) {
-  const [openChapterListDrawer] = useChapterListDrawer(book.id);
-
+export function BookChaptersContent({
+  onClick,
+  children
+}: {
+  onClick?: () => void;
+  children?: React.ReactNode;
+}) {
   return (
     <div className={classes['content']}>
-      <Card
-        interactive
-        className={classes['trigger']}
-        onClick={() =>
-          openChapterListDrawer({
-            onItemClick: chapter =>
-              chapter.number &&
-              router.push(`/book/${book.name}/chapter/${chapter.number}`)
-          })
-        }
-      >
+      <Card interactive className={classes['trigger']} onClick={onClick}>
         <div className={classes['chapter-head']}>章節目錄</div>
         <Icon icon="chevron-right" />
       </Card>
+      {children}
+    </div>
+  );
+}
 
+export function ClientBookChapters({ book }: Props) {
+  const [openChapterListDrawer] = useChapterListDrawer(book.id);
+  return (
+    <BookChaptersContent
+      onClick={() =>
+        openChapterListDrawer({
+          onItemClick: chapter =>
+            chapter.number &&
+            router.push(`/book/${book.name}/chapter/${chapter.number}`)
+        })
+      }
+    >
       <div className={classes['button-group']}>
         <Button
           fill
@@ -39,6 +49,6 @@ export function ClientBookChapters({ book }: Props) {
         />
         <BookShelfToggle bookID={book.id} fill />
       </div>
-    </div>
+    </BookChaptersContent>
   );
 }

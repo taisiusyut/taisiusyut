@@ -2,6 +2,7 @@ import React from 'react';
 import router from 'next/router';
 import { Card } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
+import { Skelecton } from '@/components/Skelecton';
 import { Tags } from '@/components/Tags';
 import { BookStatus, Schema$Book } from '@/typings';
 import classes from './ClientBookDetails.module.scss';
@@ -22,8 +23,14 @@ export function ClientBookDetailsBook({ book }: Props) {
 
       <div className={classes['book-content']}>
         <div className={classes['book-title']}>
-          <span className={classes['name']}>{book.name}</span>
-          <span className={classes['author']}>{book.authorName} 著</span>
+          <span className={classes['name']}>
+            <Skelecton length={3}>{book.name}</Skelecton>
+          </span>
+          <span className={classes['author']}>
+            <Skelecton length={2}>
+              {book.authorName && `${book.authorName} 著`}
+            </Skelecton>
+          </span>
         </div>
       </div>
 
@@ -49,7 +56,9 @@ export function ClientBookDetailsBook({ book }: Props) {
         )}
       </div>
 
-      <div className={classes['description']}>{book.description}</div>
+      <div className={classes['description']}>
+        <Skelecton length={60}>{book.description}</Skelecton>
+      </div>
     </Card>
   );
 }

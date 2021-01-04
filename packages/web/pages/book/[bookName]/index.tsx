@@ -17,7 +17,8 @@ import {
   PaginateResult,
   ChapterStatus,
   Schema$Chapter,
-  Schema$Book
+  Schema$Book,
+  BookStatus
 } from '@/typings';
 
 // TODO: handle private book/chatper
@@ -60,16 +61,19 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
     .getByName({} as any, bookName)
     .then(book => book && serialize<Schema$Book | null>(book));
 
-  const chapters = book
-    ? await chapterController
-        .getAll({} as any, book.id, {
-          pageSize: 30,
-          status: ChapterStatus.Public,
-          sort: { createdAt: Order.ASC },
-          ...query
-        })
-        .then(response => serialize<PaginateResult<Schema$Chapter>>(response))
-    : undefined;
+  const chapters =
+    book &&
+    book.status &&
+    [BookStatus.Public, BookStatus.Finished].includes(book.status)
+      ? await chapterController
+          .getAll({} as any, book.id, {
+            pageSize: 30,
+            status: ChapterStatus.Public,
+            sort: { createdAt: Order.ASC },
+            ...query
+          })
+          .then(response => serialize<PaginateResult<Schema$Chapter>>(response))
+      : undefined;
 
   return {
     revalidate: 60 * 60,

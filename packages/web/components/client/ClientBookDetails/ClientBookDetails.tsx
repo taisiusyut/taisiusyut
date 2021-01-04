@@ -1,6 +1,6 @@
-import React, { ComponentProps, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { ClientHeader } from '@/components/client/ClientLayout';
+import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
 import { GoBackButton } from '@/components/GoBackButton';
 import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
@@ -8,8 +8,8 @@ import { Toaster } from '@/utils/toaster';
 import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
 import { getBookByName } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
-import { ClientBookChaptersGrid } from './ClientBookChaptersGrid';
-import { ClientBookChapters } from './ClientBookChapters';
+import { ClientBookChaptersGrid, ChaptersGrid } from './ClientBookChaptersGrid';
+import { ClientBookChapters, BookChaptersContent } from './ClientBookChapters';
 import classes from './ClientBookDetails.module.scss';
 
 export interface ClientBookDetailsData {
@@ -22,11 +22,22 @@ export interface ClientBookDetailsProps extends ClientBookDetailsData {}
 
 const onFailure = Toaster.apiError.bind(Toaster, `Get book failure`);
 
+const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
+
+const headerProps: HeaderProps = {
+  title: '書籍詳情',
+  left: <GoBackButton targetPath={['/', '/featured', '/search']} />
+};
+
+const chapterPlaceHolders = Array.from({ length: 30 }).map((_, idx) => ({
+  id: String(idx)
+}));
+
 function useBook(
   bookName: string,
   initialData?: Schema$Book | null
 ): Schema$Book | null {
-  const [request] = useState(() => () => getBookByName({ bookName }));
+  const request = useCallback(() => getBookByName({ bookName }), [bookName]);
   const [{ data }] = useRxAsync(request, {
     defer: !!initialData,
     onFailure
@@ -34,18 +45,12 @@ function useBook(
   return initialData || data || null;
 }
 
-const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
-
 export function ClientBookDetailsComponent({
   bookName,
   book: initialBook,
   chapters: initialChapters
 }: ClientBookDetailsProps) {
   const book = useBook(bookName, initialBook);
-  const headerProps: ComponentProps<typeof ClientHeader> = {
-    title: '書籍詳情',
-    left: <GoBackButton targetPath={['/', '/featured', '/search']} />
-  };
 
   if (book) {
     return (
@@ -83,11 +88,24 @@ export function ClientBookDetails({
   book,
   ...props
 }: Partial<ClientBookDetailsProps>) {
-  if (bookName && book) {
+  if (bookName) {
     return (
-      <ClientBookDetailsComponent {...props} book={book} bookName={bookName} />
+      <ClientBookDetailsComponent
+        {...props}
+        book={book || null}
+        bookName={bookName}
+      />
     );
   }
 
-  return null;
+  return (
+    <>
+      <ClientHeader {...headerProps} />
+      <div className={classes['content']}>
+        <ClientBookDetailsBook book={{}} />
+        <ChaptersGrid chapters={chapterPlaceHolders} />
+        <BookChaptersContent />
+      </div>
+    </>
+  );
 }
