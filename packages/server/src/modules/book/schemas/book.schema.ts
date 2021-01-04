@@ -47,7 +47,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
 
   @Prop({
     type: Number,
-    default: BookStatus.Private,
+    required: true,
     enum: Object.values(BookStatus).filter(v => typeof v === 'number')
   })
   status: BookStatus;

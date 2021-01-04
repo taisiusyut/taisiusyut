@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { UserRole } from '@/typings';
 import { Permission } from './permission-types';
 import { permissonsMap } from './permission-config';
 
@@ -25,6 +26,14 @@ export const Access = (
 ): CustomDecorator<string> => {
   return SetMetadata(AccessMetakey, access);
 };
+
+export function canAccess(role: UserRole | undefined, access: AccessType[]) {
+  if (role) {
+    const permissions = permissonsMap[role];
+    return access.every(a => permissions.includes(a as Permission));
+  }
+  return false;
+}
 
 export class AccessGuard extends AuthGuard('jwt') {
   constructor(@Inject(Reflector) private reflector: Reflector) {
@@ -57,8 +66,7 @@ export class AccessGuard extends AuthGuard('jwt') {
           const req = context.switchToHttp().getRequest<FastifyRequest>();
 
           if (!!req.user?.role) {
-            const permissions = permissonsMap[req.user.role];
-            return access.every(a => permissions.includes(a as Permission));
+            return canAccess(req.user.role, access);
           }
         }
         return false;

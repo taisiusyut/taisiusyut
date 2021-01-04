@@ -32,6 +32,7 @@ export class BookController {
   create(@Req() req: FastifyRequest, @Body() createBookDto: CreateBookDto) {
     return this.bookService.create({
       ...createBookDto,
+      status: BookStatus.Private,
       authorName: req.user?.nickname,
       author: req.user?.user_id
     });

@@ -14,5 +14,5 @@ describe('BookController (e2e)', () => {
   describe('(GET)  Get Book', testGetBook);
   describe('(GET)  Get Book By Name', testGetBookByName);
   describe('(POST) Public and Fnish Book', testPublicAndFinishBook);
-  describe('(XXXX) Book Cover', testBookCover);
+  describe('(    ) Book Cover', testBookCover);
 });
