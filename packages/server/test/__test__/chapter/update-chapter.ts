@@ -132,21 +132,28 @@ export function testUpdateChapter() {
     expect(response.body).not.toMatchObject(changes);
   });
 
-  test('cannot chapter type to pay if book is finished', async () => {
+  test.each`
+    key           | status
+    ${'finished'} | ${BookStatus.Finished}
+    ${'deleted'}  | ${BookStatus.Deleted}
+  `('cannot update chapter type to pay if book is $key', async ({ status }) => {
     let response = await createBook(author.token);
-    let book = response.body;
-    response = await updateBook(root.token, book.id, {
-      status: BookStatus.Finished
-    });
-    book = response.body;
-    expect(book.status).toBe(BookStatus.Finished);
+    const book = response.body;
+
+    response = await updateBook(root.token, book.id, { status });
+    expect(response.body).toHaveProperty('status', status);
 
     response = await createChapter(author.token, book.id);
-    const chapter = response.body;
 
-    response = await updateChapter(author.token, book.id, chapter.id, {
-      type: ChapterType.Pay
-    });
+    if (status === BookStatus.Deleted) {
+      // deleted book cannot update chapter
+    } else {
+      const chapter = response.body;
+      response = await updateChapter(author.token, book.id, chapter.id, {
+        type: ChapterType.Pay
+      });
+    }
+
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
   });
 }

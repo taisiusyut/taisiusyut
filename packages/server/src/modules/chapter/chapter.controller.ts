@@ -38,9 +38,12 @@ export class ChapterController {
   getBookQuery(bookID: string, author?: string, chapterType?: ChapterType) {
     const query: FilterQuery<Book> = {
       _id: bookID,
-      author,
       $nor: [{ status: BookStatus.Deleted }]
     };
+
+    if (author) {
+      query.author = author;
+    }
 
     // `Deleted` or `Finished` book cannot create pay chapter
     if (chapterType === ChapterType.Pay) {
@@ -86,18 +89,8 @@ export class ChapterController {
     @ObjectId('chapterID') chapterID: string,
     @Body(AccessPipe) updateChapterDto: UpdateChapterDto
   ) {
-    const author = user?.user_id;
-    const query: FilterQuery<Chapter> = {
-      _id: chapterID,
-      book: bookID
-    };
-
-    if (user?.role === UserRole.Author) {
-      query.author = user.user_id;
-    }
-
     const bookExists = await this.bookService.exists(
-      this.getBookQuery(bookID, author, updateChapterDto.type)
+      this.getBookQuery(bookID, undefined, updateChapterDto.type)
     );
 
     if (!bookExists) {
@@ -106,8 +99,17 @@ export class ChapterController {
       );
     }
 
+    const chapterQuery: FilterQuery<Chapter> = {
+      _id: chapterID,
+      book: bookID
+    };
+
+    if (user?.role === UserRole.Author) {
+      chapterQuery.author = user.user_id;
+    }
+
     const chapter = await this.chapterService.findOneAndUpdate(
-      query,
+      chapterQuery,
       updateChapterDto
     );
 

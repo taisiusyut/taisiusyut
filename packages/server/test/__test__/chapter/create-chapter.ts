@@ -80,14 +80,16 @@ export function testCreateChapter() {
     }
   );
 
-  test('finished book cannot create pay chapter', async () => {
+  test.each`
+    key           | status
+    ${'finished'} | ${BookStatus.Finished}
+    ${'deleted'}  | ${BookStatus.Deleted}
+  `('$key book cannot create pay chapter', async ({ status }) => {
     let response = await createBook(author.token);
-    let book = response.body;
-    response = await updateBook(root.token, book.id, {
-      status: BookStatus.Finished
-    });
-    book = response.body;
-    expect(book.status).toBe(BookStatus.Finished);
+    const book = response.body;
+
+    response = await updateBook(root.token, book.id, { status });
+    expect(response.body).toHaveProperty('status', status);
 
     response = await createChapter(author.token, book.id, {
       type: ChapterType.Pay
