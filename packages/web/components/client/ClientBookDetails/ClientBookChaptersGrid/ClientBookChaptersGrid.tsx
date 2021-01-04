@@ -62,6 +62,7 @@ export function ChaptersGrid({
             return (
               <Link
                 key={chapter.id}
+                prefetch={false}
                 href={`/book/${bookName}/chapter/${chapter.number}`}
               >
                 {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

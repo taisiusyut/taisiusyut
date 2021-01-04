@@ -68,7 +68,9 @@ export function ClientSearchItem({ book, className: id }: Props) {
           .join(' ')
           .trim()}
       >
-        <Link href={basePath}>{content(active)}</Link>
+        <Link href={basePath} prefetch={false}>
+          {content(active)}
+        </Link>
       </div>
     );
   }
