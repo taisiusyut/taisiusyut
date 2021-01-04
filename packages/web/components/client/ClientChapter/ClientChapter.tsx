@@ -12,7 +12,10 @@ import { useGoBack } from '@/hooks/useGoBack';
 import { FixedChapterName } from './FixedChapterName';
 import { ClientChapterHeader } from './ClientChapterHeader';
 import { ClientChapterOverlay } from './ClientChapterOverlay';
-import { ClientChapterContent } from './ClientChapterContent';
+import {
+  ClientChapterContent,
+  ClientChapterContentLoading
+} from './ClientChapterContent';
 import classes from './ClientChapter.module.scss';
 
 export interface ClientChapterData {
@@ -357,6 +360,14 @@ export function ClientChapter({
   chapterNo,
   ...props
 }: Partial<ClientChapterProps>) {
+  const [preferences, preferencesActions] = useClientPreferences();
+  const _openClientPreferences = () =>
+    openClientPreferences({
+      preferences: preferences,
+      onUpdate: preferencesActions.update
+    });
+  const { fontSize, lineHeight } = preferences;
+
   if (
     typeof bookName === 'string' &&
     typeof chapterNo === 'number' &&
@@ -372,5 +383,20 @@ export function ClientChapter({
     );
   }
 
-  return null;
+  return (
+    <div className={classes['container']}>
+      <ClientChapterHeader
+        goBackButton={<GoBackButton targetPath={['/', '/featured']} />}
+        openClientPreferences={_openClientPreferences}
+        openChapterListDrawer={() => void 0}
+      />
+      <div className={classes['scroller']}>
+        <div>
+          <div className={classes['content']} style={{ fontSize, lineHeight }}>
+            {ClientChapterContentLoading}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -12,6 +12,10 @@ export interface Props {
   onLoaded: (chapter: Schema$Chapter) => void;
 }
 
+export const ClientChapterContentLoading = (
+  <div className={classes['loading']}>LOADING</div>
+);
+
 export const ClientChapterContent = React.memo(
   ({ bookID, chapterNo, onLoaded, defaultChapter }: Props) => {
     const request = useCallback(() => getChapterByNo({ bookID, chapterNo }), [
@@ -28,7 +32,7 @@ export const ClientChapterContent = React.memo(
     });
 
     if (loading) {
-      return <div className={classes['loading']}>LOADING</div>;
+      return ClientChapterContentLoading;
     }
 
     if (chapter) {
