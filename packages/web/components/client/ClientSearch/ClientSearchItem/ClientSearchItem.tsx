@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { Tag } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { getTagPropsByBookStatus } from '@/components/Tags';
+import { Skelecton } from '@/components/Skelecton';
 import { BookStatus, Schema$Book } from '@/typings';
 import classes from './ClientSearchItem.module.scss';
 import dayjs from 'dayjs';
@@ -19,6 +20,11 @@ export function ClientSearchItem({ book, className: id }: Props) {
   const { asPath } = useRouter();
 
   const className = [id, classes['item']];
+  const tagName = book.status
+    ? book.status === BookStatus.Finished
+      ? '已完結'
+      : '連載中'
+    : '';
 
   const content = (flatten: boolean) => (
     <div className={classes['item-body']}>
@@ -28,26 +34,28 @@ export function ClientSearchItem({ book, className: id }: Props) {
         className={classes['book-model']}
       />
       <div className={classes['item-content']}>
-        <div className={classes['book-name']}>{book?.name}</div>
-        <div className={classes['book-author']}>
-          {book?.authorName && `${book.authorName} 著`}
+        <div className={classes['book-name']}>
+          <Skelecton length={3}>{book?.name}</Skelecton>
         </div>
+        <div className={classes['book-author']}>
+          <Skelecton length={4}>
+            {book?.authorName && `${book.authorName} 著`}
+          </Skelecton>
+        </div>
+
         <div className={classes['book-updated-at']}>
-          {book.updatedAt &&
-            `上次更新: ${dayjs(book.updatedAt).format('YYYY-MM-DD')}`}
+          <Skelecton length={5}>
+            {book.updatedAt &&
+              `上次更新: ${dayjs(book.updatedAt).format('YYYY-MM-DD')}`}
+          </Skelecton>
         </div>
       </div>
-      <div>
-        <Tag
-          {...getTagPropsByBookStatus(book.status)}
-          className={classes['book-status']}
-        >
-          {book.status
-            ? book.status === BookStatus.Finished
-              ? '已完結'
-              : '連載中'
-            : ''}
-        </Tag>
+      <div className={classes['book-status']}>
+        <Skelecton length={1}>
+          {tagName && (
+            <Tag {...getTagPropsByBookStatus(book.status)}>{tagName}</Tag>
+          )}
+        </Skelecton>
       </div>
     </div>
   );
@@ -73,9 +81,5 @@ export function ClientSearchItem({ book, className: id }: Props) {
     );
   }
 
-  return (
-    <div className={[...className, classes['skeleton']].join(' ').trim()}>
-      {content(false)}
-    </div>
-  );
+  return <div className={className.join(' ').trim()}>{content(false)}</div>;
 }

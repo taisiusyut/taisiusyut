@@ -65,31 +65,6 @@ $min-height: 1em;
   line-height: $line-height;
 }
 
-.skeleton {
-  .book-name:empty {
-    width: 50%;
-  }
-
-  .book-author:empty {
-    width: 60%;
-  }
-
-  .book-latest-chapter:empty {
-    width: 80%;
-  }
-
-  .book-name,
-  .book-author,
-  .book-latest-chapter {
-    &:empty {
-      @include margin-y(($line-height - $min-height) / 2);
-      background-color: var(--book-model-front-bottom-color);
-      min-height: $min-height;
-      max-width: 70%;
-    }
-  }
-}
-
 .book-author,
 .book-latest-chapter {
   color: var(--text-light-color);

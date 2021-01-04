@@ -58,32 +58,6 @@ $min-height: 1em;
   line-height: $line-height;
 }
 
-.skeleton {
-  .book-name:empty {
-    width: 50%;
-  }
-
-  .book-author:empty {
-    width: 60%;
-  }
-
-  .book-latest-chapter:empty {
-    width: 80%;
-  }
-
-  .book-name,
-  .book-author,
-  .book-updated-at,
-  .book-status {
-    &:empty {
-      @include margin-y(($line-height - $min-height) / 2);
-      background-color: var(--book-model-front-bottom-color);
-      min-height: $min-height;
-      max-width: 70%;
-    }
-  }
-}
-
 .book-author,
 .book-updated-at {
   color: var(--text-light-color);
@@ -92,7 +66,8 @@ $min-height: 1em;
 }
 
 .book-status {
+  flex: 0 0 auto;
   margin-left: 10px;
   min-width: 3em;
-  min-height: 2em;
+  min-height: 20px;
 }

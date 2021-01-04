@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Button, Popover } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
+import { Skelecton } from '@/components/Skelecton';
 import { BookShelf, useBookShelf } from '@/hooks/useBookShelf';
 import { useContextMenu, UseContextMenuEvent } from '@/hooks/useContextMenu';
 import { isTouchable } from '@/constants';
@@ -64,12 +65,18 @@ export function BookShelfItem({
     <div className={classes['item-body']}>
       <BookModel width={55} flatten={flatten} />
       <div className={classes['item-content']}>
-        <div className={classes['book-name']}>{book?.name}</div>
+        <div className={classes['book-name']}>
+          <Skelecton length={3}>{book?.name}</Skelecton>
+        </div>
         <div className={classes['book-author']}>
-          {book?.authorName && `${book.authorName} 著`}
+          <Skelecton length={4}>
+            {book?.authorName && `${book.authorName} 著`}
+          </Skelecton>
         </div>
         <div className={classes['book-latest-chapter']}>
-          {latestChapter && `連載至 ${latestChapter.name}`}
+          <Skelecton length={5}>
+            {latestChapter && `連載至 ${latestChapter.name}`}
+          </Skelecton>
         </div>
       </div>
     </div>
@@ -95,9 +102,5 @@ export function BookShelfItem({
     );
   }
 
-  return (
-    <div className={[...className, classes['skeleton']].join(' ').trim()}>
-      {content(false)}
-    </div>
-  );
+  return <div className={className.join(' ').trim()}>{content(false)}</div>;
 }
