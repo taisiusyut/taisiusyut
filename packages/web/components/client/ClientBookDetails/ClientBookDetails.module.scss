@@ -49,8 +49,10 @@
   }
 
   .book-content {
+    @include dimen(calc(100% - 100px));
+    @include relative(); // make sure will not block by tags
     float: left;
-    width: calc(100% - 100px);
+    z-index: 1;
   }
 
   .tags {
@@ -61,5 +63,12 @@
   .description {
     line-height: 1.5em;
     word-break: break-all;
+  }
+}
+
+.error {
+  @include sq-dimen(100%);
+  button {
+    min-width: 80px;
   }
 }

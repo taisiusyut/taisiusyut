@@ -8,14 +8,21 @@ import { Toaster } from '@/utils/toaster';
 import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
 import { getBookByName } from '@/service';
 import { ClientBookDetailsBook } from './ClientBookDetailsBook';
+import { ClientBookError } from './ClientBookError';
 import { ClientBookChaptersGrid, ChaptersGrid } from './ClientBookChaptersGrid';
-import { ClientBookChapters, BookChaptersContent } from './ClientBookChapters';
+import {
+  ClientBookChaptersDrawer,
+  ClientBookChaptersDrawerCard
+} from './ClientBookChaptersDrawer';
 import classes from './ClientBookDetails.module.scss';
 
-export interface ClientBookDetailsData {
+export type ClientBookDetailsParams = {
   bookName: string;
+};
+
+export interface ClientBookDetailsData extends ClientBookDetailsParams {
   book: Schema$Book | null;
-  chapters?: PaginateResult<Schema$Chapter>;
+  chapters: PaginateResult<Schema$Chapter> | null;
 }
 
 export interface ClientBookDetailsProps extends ClientBookDetailsData {}
@@ -33,52 +40,49 @@ const chapterPlaceHolders = Array.from({ length: 30 }).map((_, idx) => ({
   id: String(idx)
 }));
 
-function useBook(
-  bookName: string,
-  initialData?: Schema$Book | null
-): Schema$Book | null {
-  const request = useCallback(() => getBookByName({ bookName }), [bookName]);
-  const [{ data }] = useRxAsync(request, {
-    defer: !!initialData,
-    onFailure
-  });
-  return initialData || data || null;
-}
-
 export function ClientBookDetailsComponent({
   bookName,
   book: initialBook,
   chapters: initialChapters
 }: ClientBookDetailsProps) {
-  const book = useBook(bookName, initialBook);
+  const request = useCallback(() => getBookByName({ bookName }), [bookName]);
+  const [{ data, error, loading }, { fetch }] = useRxAsync(request, {
+    defer: !!initialBook,
+    onFailure
+  });
+  const book = data || initialBook || null;
 
-  if (book) {
+  if (!book) {
     return (
       <>
-        <ClientHeader
-          {...headerProps}
-          right={[
-            <DesktopBookShelfToggle key="0" icon minimal bookID={book.id} />
-          ]}
+        <ClientHeader {...headerProps} />
+        <ClientBookError
+          bookName={bookName}
+          loading={loading}
+          retry={fetch}
+          error={error}
         />
-        <div className={classes['content']}>
-          <ClientBookDetailsBook book={book} />
-          <ClientBookChaptersGrid
-            bookID={book.id}
-            bookName={book.name}
-            chapters={initialChapters}
-          />
-          <ClientBookChapters book={book} />
-        </div>
       </>
     );
   }
 
   return (
     <>
-      <ClientHeader {...headerProps} />
-      {/* TODO: */}
-      <div className={classes['content']}>Book not found</div>
+      <ClientHeader
+        {...headerProps}
+        right={[
+          <DesktopBookShelfToggle key="0" icon minimal bookID={book.id} />
+        ]}
+      />
+      <div className={classes['content']}>
+        <ClientBookDetailsBook book={book} />
+        <ClientBookChaptersGrid
+          bookID={book.id}
+          bookName={book.name}
+          chapters={initialChapters}
+        />
+        <ClientBookChaptersDrawer book={book} />
+      </div>
     </>
   );
 }
@@ -86,26 +90,28 @@ export function ClientBookDetailsComponent({
 export function ClientBookDetails({
   bookName,
   book,
+  chapters,
   ...props
-}: Partial<ClientBookDetailsProps>) {
-  if (bookName) {
+}: ClientBookDetailsProps & Partial<ClientBookDetailsParams>) {
+  if (!bookName) {
     return (
-      <ClientBookDetailsComponent
-        {...props}
-        book={book || null}
-        bookName={bookName}
-      />
+      <>
+        <ClientHeader {...headerProps} />
+        <div className={classes['content']}>
+          <ClientBookDetailsBook book={{}} />
+          <ChaptersGrid chapters={chapterPlaceHolders} />
+          <ClientBookChaptersDrawerCard />
+        </div>
+      </>
     );
   }
 
   return (
-    <>
-      <ClientHeader {...headerProps} />
-      <div className={classes['content']}>
-        <ClientBookDetailsBook book={{}} />
-        <ChaptersGrid chapters={chapterPlaceHolders} />
-        <BookChaptersContent />
-      </div>
-    </>
+    <ClientBookDetailsComponent
+      {...props}
+      book={book}
+      bookName={bookName}
+      chapters={chapters}
+    />
   );
 }

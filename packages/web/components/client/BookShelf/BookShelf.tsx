@@ -15,6 +15,7 @@ import { Toaster } from '@/utils/toaster';
 import { BookShelfItem } from './BookShelfItem';
 import { BookShelfEmpty } from './BookShelfEmpty';
 import classes from './BookShelf.module.scss';
+import { Order } from '@/typings';
 
 const MainMenuButton = withMainMenuOverLay(ButtonPopover);
 const DeskstopMainMenuButton = withDesktopHeaderBtn(MainMenuButton);
@@ -32,7 +33,9 @@ export function BookShelf() {
         actions.list([]);
         break;
       case 'loggedIn':
-        const subscription = defer(() => getBookShelf()).subscribe(
+        const subscription = defer(() =>
+          getBookShelf({ sort: { updatedAt: Order.DESC } })
+        ).subscribe(
           books => {
             const payload = books.map(data => ({
               ...data,

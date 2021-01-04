@@ -61,7 +61,8 @@ export function BookShelfItem({
       })
   );
 
-  const content = (flatten: boolean) => (
+  // if `skelecton` is a space can disable `Skelecton` fallback
+  const content = (flatten: boolean, skelecton = '') => (
     <div className={classes['item-body']}>
       <BookModel width={55} flatten={flatten} />
       <div className={classes['item-content']}>
@@ -75,7 +76,7 @@ export function BookShelfItem({
         </div>
         <div className={classes['book-latest-chapter']}>
           <Skelecton length={5}>
-            {latestChapter && `連載至 ${latestChapter.name}`}
+            {(latestChapter && `連載至 ${latestChapter.name}`) || skelecton}
           </Skelecton>
         </div>
       </div>
@@ -95,7 +96,7 @@ export function BookShelfItem({
       >
         <Link href={`${basePath}/chapter/${lastVisit || 1}`}>
           {/* Should not use <a /> since it have conflict with context menu in In iPhone safari */}
-          {content(active)}
+          {content(active, ' ')}
         </Link>
         <ActionButton bookID={book.id} shelf={shelf} actions={actions} />
       </div>

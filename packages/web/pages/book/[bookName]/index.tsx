@@ -4,6 +4,7 @@ import { Meta } from '@/components/Meta';
 import { ClientLayout } from '@/components/client/ClientLayout';
 import {
   ClientBookDetails,
+  ClientBookDetailsParams,
   ClientBookDetailsProps
 } from '@/components/client/ClientBookDetails';
 import {
@@ -21,13 +22,7 @@ import {
   BookStatus
 } from '@/typings';
 
-// TODO: handle private book/chatper
-
 interface Props extends ClientBookDetailsProps {}
-
-type Params = {
-  bookName: string;
-};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const { data } = await getClientFeaturedPageData();
@@ -45,7 +40,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<Props, Params> = async context => {
+export const getStaticProps: GetStaticProps<
+  Props,
+  ClientBookDetailsParams
+> = async context => {
   const { bookName, ...query } = context.params || {};
 
   if (typeof bookName !== 'string') {
@@ -59,7 +57,8 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
 
   const book = await bookController
     .getByName({} as any, bookName)
-    .then(book => book && serialize<Schema$Book | null>(book));
+    .then(book => book && serialize<Schema$Book | null>(book))
+    .catch(() => null);
 
   const chapters =
     book &&
@@ -73,7 +72,8 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
             ...query
           })
           .then(response => serialize<PaginateResult<Schema$Chapter>>(response))
-      : undefined;
+          .catch(() => null)
+      : null;
 
   return {
     revalidate: 60 * 60,

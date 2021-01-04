@@ -1,9 +1,13 @@
 import { routes } from '@/constants';
-import { Param$UpdateBookInShelf, Schema$BookShelf } from '@/typings';
+import {
+  Param$GetBooksFromShelf,
+  Param$UpdateBookInShelf,
+  Schema$BookShelf
+} from '@/typings';
 import { api } from './api';
 
-export const getBookShelf = () =>
-  api.get<Schema$BookShelf[]>(routes.get_books_from_shelf, {});
+export const getBookShelf = (params?: Param$GetBooksFromShelf) =>
+  api.get<Schema$BookShelf[]>(routes.get_books_from_shelf, { params });
 
 export const addBookToShelf = (bookID: string) =>
   api.post<Schema$BookShelf>(routes.add_book_to_shelf.generatePath({ bookID }));

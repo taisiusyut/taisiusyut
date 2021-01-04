@@ -49,12 +49,14 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
 
   const book = await bookController
     .getByName({} as any, bookName)
-    .then(book => serialize<Schema$Book | null>(book));
+    .then(book => serialize<Schema$Book | null>(book))
+    .catch(() => null);
 
   const chapter = book
     ? await chapterController
         .getByNum({} as any, book.id, Number(chapterNo))
         .then(chapter => serialize<Schema$Chapter | null>(chapter))
+        .catch(() => null)
     : null;
 
   return {

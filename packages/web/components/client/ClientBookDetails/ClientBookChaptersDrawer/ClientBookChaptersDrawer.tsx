@@ -3,14 +3,15 @@ import router from 'next/router';
 import { Button, Card, Icon } from '@blueprintjs/core';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { useChapterListDrawer } from '@/components/client/ChapterListDrawer';
+import { withBreakPoint } from '@/hooks/useBreakPoints';
 import { Schema$Book } from '@/typings';
-import classes from './ClientBookChapters.module.scss';
+import classes from './ClientBookChaptersDrawer.module.scss';
 
 export interface Props {
   book: Schema$Book;
 }
 
-export function BookChaptersContent({
+export function ClientBookChaptersDrawerCard({
   onClick,
   children
 }: {
@@ -28,10 +29,10 @@ export function BookChaptersContent({
   );
 }
 
-export function ClientBookChapters({ book }: Props) {
+function ClientBookChaptersDrawerComponent({ book }: Props) {
   const [openChapterListDrawer] = useChapterListDrawer(book.id);
   return (
-    <BookChaptersContent
+    <ClientBookChaptersDrawerCard
       onClick={() =>
         openChapterListDrawer({
           onItemClick: chapter =>
@@ -49,6 +50,13 @@ export function ClientBookChapters({ book }: Props) {
         />
         <BookShelfToggle bookID={book.id} fill />
       </div>
-    </BookChaptersContent>
+    </ClientBookChaptersDrawerCard>
   );
 }
+
+export const ClientBookChaptersDrawer = withBreakPoint(
+  ClientBookChaptersDrawerComponent,
+  {
+    validate: breakPoint => breakPoint <= 768
+  }
+);

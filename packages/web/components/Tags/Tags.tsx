@@ -6,15 +6,10 @@ type DivProps = React.DetailedHTMLProps<
   HTMLDivElement
 >;
 
-interface TagOption {
-  value: string;
-  clickable?: boolean;
-}
-
 interface Props extends Omit<DivProps, 'children'> {
-  tags?: (TagOption | string)[];
+  tags?: (ITagProps | string)[];
   tagProps?: ITagProps;
-  onTagClick?: (tag: TagOption, index: number) => void;
+  onTagClick?: (tag: ITagProps, index: number) => void;
 }
 
 const getStyle = (space: number) =>
@@ -35,20 +30,26 @@ export function Tags({
   return (
     <div {...props} className={`tags ${className}`.trim()} style={tagsStyle}>
       {tags.map((_tag, idx) => {
-        const tag =
-          typeof _tag === 'string' ? { value: _tag, clickable: true } : _tag;
-        const interactive = !!(tag.clickable && onTagClick);
+        const tag: ITagProps =
+          typeof _tag === 'string'
+            ? { children: _tag, interactive: true }
+            : _tag;
+        const interactive = !!(tag.interactive && onTagClick);
 
         return (
           <Tag
+            intent="primary"
             {...tagProps}
+            {...tag}
             key={`${tag}-${idx}`}
             style={tagStyle}
             interactive={interactive}
-            onClick={onTagClick && (() => onTagClick(tag, idx))}
-          >
-            {tag.value}
-          </Tag>
+            onClick={
+              interactive
+                ? onTagClick && (() => onTagClick(tag, idx))
+                : undefined
+            }
+          />
         );
       })}
     </div>

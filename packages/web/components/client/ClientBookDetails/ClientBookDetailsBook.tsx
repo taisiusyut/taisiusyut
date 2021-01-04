@@ -3,8 +3,8 @@ import router from 'next/router';
 import { Card } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
-import { Tags } from '@/components/Tags';
-import { BookStatus, Schema$Book } from '@/typings';
+import { getBookStatusTagProps, Tags } from '@/components/Tags';
+import { Schema$Book } from '@/typings';
 import classes from './ClientBookDetails.module.scss';
 
 interface Props {
@@ -39,15 +39,14 @@ export function ClientBookDetailsBook({ book }: Props) {
           <Tags
             tags={[
               {
-                value:
-                  book.status === BookStatus.Finished ? '已完結' : '連載中',
-                clickable: false
+                ...getBookStatusTagProps(book.status),
+                interactive: false
               },
               ...(book.tags || [])
             ]}
             onTagClick={tag =>
               router.push(
-                { pathname: '/search', query: { tag: tag.value } },
+                { pathname: '/search', query: { tag: tag.children as string } },
                 undefined,
                 { shallow: true }
               )

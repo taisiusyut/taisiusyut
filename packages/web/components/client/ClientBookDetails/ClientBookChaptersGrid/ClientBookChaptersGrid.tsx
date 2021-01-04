@@ -19,7 +19,10 @@ import classes from './ClientBookChaptersGrid.module.scss';
 interface Props {
   bookID: string;
   bookName: string;
-  chapters?: Pick<PaginateResult<Partial<Schema$Chapter>>, 'data' | 'pageSize'>;
+  chapters: Pick<
+    PaginateResult<Partial<Schema$Chapter>>,
+    'data' | 'pageSize'
+  > | null;
 }
 
 interface ChaptersGridProps {
@@ -89,21 +92,32 @@ export function ClientBookChaptersGrid({
       getChapters({ ...params, bookID, sort: { createdAt: Order.ASC } });
     return createUsePaginationLocal('id', request, {
       defaultState: { pageSize: initialChapters?.pageSize },
-      initializer: (state, reducer) => ({
-        ...reducer(state, {
-          type: DefaultCRUDActionTypes.PAGINATE,
-          payload: initialChapters
-        })
-      })
+      initializer: (state, reducer) =>
+        initialChapters
+          ? {
+              ...reducer(state, {
+                type: DefaultCRUDActionTypes.PAGINATE,
+                payload: initialChapters
+              }),
+              // the `pageNo` in initialChapters is alway 1 as getStaticProps
+              pageNo: state.pageNo
+            }
+          : state
     });
   });
   const { data, pagination } = useChapters({ onFailure });
 
   return (
     <ChaptersGrid chapters={data} bookName={bookName}>
-      <div className={classes['spacer']} />
-      <Divider className={classes['divider']} />
-      <Pagination {...pagination} />
+      {!!pagination.total ? (
+        <>
+          <div className={classes['spacer']} />
+          <Divider className={classes['divider']} />
+          <Pagination {...pagination} />
+        </>
+      ) : (
+        <div className={classes['no-chapters']}>作者尚未創建章節</div>
+      )}
     </ChaptersGrid>
   );
 }

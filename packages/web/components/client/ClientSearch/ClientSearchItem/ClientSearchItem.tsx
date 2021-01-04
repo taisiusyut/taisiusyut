@@ -1,11 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Tag } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
-import { getTagPropsByBookStatus } from '@/components/Tags';
+import { BookStatusTag } from '@/components/Tags';
 import { Skelecton } from '@/components/Skelecton';
-import { BookStatus, Schema$Book } from '@/typings';
+import { Schema$Book } from '@/typings';
 import classes from './ClientSearchItem.module.scss';
 import dayjs from 'dayjs';
 
@@ -20,11 +19,6 @@ export function ClientSearchItem({ book, className: id }: Props) {
   const { asPath } = useRouter();
 
   const className = [id, classes['item']];
-  const tagName = book.status
-    ? book.status === BookStatus.Finished
-      ? '已完結'
-      : '連載中'
-    : '';
 
   const content = (flatten: boolean) => (
     <div className={classes['item-body']}>
@@ -52,9 +46,7 @@ export function ClientSearchItem({ book, className: id }: Props) {
       </div>
       <div className={classes['book-status']}>
         <Skelecton length={1}>
-          {tagName && (
-            <Tag {...getTagPropsByBookStatus(book.status)}>{tagName}</Tag>
-          )}
+          <BookStatusTag status={book.status} />
         </Skelecton>
       </div>
     </div>
