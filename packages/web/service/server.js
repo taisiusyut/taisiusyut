@@ -12,12 +12,20 @@ const {
   MongooseSerializerInterceptor
 } = require('@fullstack/server');
 
+// eslint-disable-next-line no-console
+const log = console.log.bind(console.log);
+
 if (typeof global.app === 'undefined') {
   global.app = undefined;
+}
+
+if (typeof global.appPromise === 'undefined') {
   global.appPromise = undefined;
 }
 
 async function createInstance() {
+  log(`wait  - start a new server instance`);
+
   const instance = await NestFactory.create(
     AppModule.init(),
     fastifyAdapter(),
@@ -25,6 +33,9 @@ async function createInstance() {
   );
   await instance.init();
   await instance.getHttpAdapter().getInstance().ready();
+
+  log(`event - new server instance ready`);
+
   return instance;
 }
 
@@ -54,12 +65,15 @@ async function getServerInstance(type, defaultInstance) {
         ]);
       } catch (error) {
         appPromise = undefined;
-        return getServerInstance(type, defaultInstance);
       }
     }
   }
 
-  return app.resolve(type);
+  if (app) {
+    return app.resolve(type);
+  }
+
+  return getServerInstance(type, defaultInstance);
 }
 
 /**
