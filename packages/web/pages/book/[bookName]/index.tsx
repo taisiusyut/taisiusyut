@@ -11,6 +11,7 @@ import {
   getChpaterController,
   serialize
 } from '@/service/server';
+import { getClientFeaturedPageData } from '@/service/featured';
 import {
   Order,
   PaginateResult,
@@ -28,8 +29,17 @@ type Params = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const { data } = await getClientFeaturedPageData();
+  const names: string[] = [];
+  for (const books of Object.values(data)) {
+    for (const book of books) {
+      if (!names.includes(book.name)) {
+        names.push(book.name);
+      }
+    }
+  }
   return {
-    paths: [],
+    paths: names.map(bookName => ({ params: { bookName } })),
     fallback: true
   };
 };
@@ -38,7 +48,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
   const { bookName, ...query } = context.params || {};
 
   if (typeof bookName !== 'string') {
-    throw new Error(`bookName is ${bookName}`);
+    throw new Error(`bookName is ${bookName} expect string`);
   }
 
   const [bookController, chapterController] = await Promise.all([
