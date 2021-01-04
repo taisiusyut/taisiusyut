@@ -44,6 +44,11 @@ async function gotoChapter(
 const getTarget = (chapterNo: number) =>
   document.querySelector<HTMLDivElement>(`#chapter-${chapterNo}`);
 
+const getMarginY = (el: Element) => {
+  const style = window.getComputedStyle(el);
+  return parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
+};
+
 export const getChapterTitle = (chapterName: string, bookName: string) =>
   `${chapterName} | ${bookName} | 睇小說`;
 
@@ -213,7 +218,10 @@ function ClientChapterComponment({
               // Note: should not use both <= and >= for checking
               if (pos < target.offsetTop) {
                 return -1;
-              } else if (pos >= target.offsetTop + target.offsetHeight) {
+              } else if (
+                pos >=
+                target.offsetTop + target.offsetHeight + getMarginY(target)
+              ) {
                 return 1;
               }
             }
