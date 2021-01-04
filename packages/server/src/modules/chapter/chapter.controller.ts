@@ -35,6 +35,21 @@ export class ChapterController {
     private readonly eventEmitter: EventEmitter2
   ) {}
 
+  getBookQuery(bookID: string, author?: string, chapterType?: ChapterType) {
+    const query: FilterQuery<Book> = {
+      _id: bookID,
+      author,
+      $nor: [{ status: BookStatus.Deleted }]
+    };
+
+    // `Deleted` or `Finished` book cannot create pay chapter
+    if (chapterType === ChapterType.Pay) {
+      query.$nor = [...(query.$nor || []), { status: BookStatus.Finished }];
+    }
+
+    return query;
+  }
+
   @Access('chapter_create')
   @Post(routes.chapter.create_chapter)
   async create(
@@ -43,24 +58,12 @@ export class ChapterController {
     @Body() createChapterDto: CreateChapterDto
   ) {
     const author = user?.user_id;
-
-    const bookQuery: FilterQuery<Book> = {
-      _id: bookID,
-      author
-    };
-
-    // finished book cannot create pay chapter
-    if (createChapterDto.type === ChapterType.Pay) {
-      bookQuery.status = { $ne: BookStatus.Finished };
-    }
-
-    const bookExists = await this.bookService.exists(bookQuery);
+    const bookExists = await this.bookService.exists(
+      this.getBookQuery(bookID, author, createChapterDto.type)
+    );
 
     if (bookExists) {
-      const query = {
-        book: bookID,
-        author
-      };
+      const query: FilterQuery<Chapter> = { book: bookID, author };
       const count = await this.chapterService.countDocuments(query);
 
       createChapterDto.content = createChapterDto.content.trimEnd();
@@ -83,6 +86,7 @@ export class ChapterController {
     @ObjectId('chapterID') chapterID: string,
     @Body(AccessPipe) updateChapterDto: UpdateChapterDto
   ) {
+    const author = user?.user_id;
     const query: FilterQuery<Chapter> = {
       _id: chapterID,
       book: bookID
@@ -92,15 +96,14 @@ export class ChapterController {
       query.author = user.user_id;
     }
 
-    if (updateChapterDto.type === ChapterType.Pay) {
-      const finished = await this.bookService.exists({
-        _id: bookID,
-        status: { $ne: BookStatus.Finished }
-      });
-      if (finished)
-        new BadRequestException(
-          `cannot set chapter type to pay as book is finished`
-        );
+    const bookExists = await this.bookService.exists(
+      this.getBookQuery(bookID, author, updateChapterDto.type)
+    );
+
+    if (!bookExists) {
+      throw new BadRequestException(
+        `current book status is not allow to update chapter`
+      );
     }
 
     const chapter = await this.chapterService.findOneAndUpdate(
@@ -138,7 +141,8 @@ export class ChapterController {
 
     // do not select these properties
     let projection: { [K in keyof Chapter]?: number } = {
-      content: 0
+      content: 0,
+      hasNext: 0
     };
 
     if (!timestamp) {
