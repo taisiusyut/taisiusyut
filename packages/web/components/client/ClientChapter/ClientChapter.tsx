@@ -49,8 +49,8 @@ const getMarginY = (el: Element) => {
   return parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 };
 
-export const getChapterTitle = (chapterName: string, bookName: string) =>
-  `${chapterName} | ${bookName} | 睇小說`;
+export const getChapterTitle = (chapterNo: number, bookName: string) =>
+  `${bookName} | 第${chapterNo}章 | 睇小說`;
 
 function ClientChapterComponment({
   bookID,
@@ -279,16 +279,8 @@ function ClientChapterComponment({
     data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
 
   useEffect(() => {
-    if (chapterName) {
-      const handler = (url: string) => {
-        if (decodeURI(url).indexOf(bookName) !== -1) {
-          document.title = getChapterTitle(chapterName, bookName);
-        }
-      };
-      router.events.on('routeChangeComplete', handler);
-      return () => router.events.off('routeChangeComplete', handler);
-    }
-  }, [chapterName, bookName]);
+    document.title = getChapterTitle(currentChapter, bookName);
+  }, [currentChapter, bookName]);
 
   if (bookID) {
     const title = `第${currentChapter}章 ${chapterName}`;

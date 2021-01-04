@@ -73,7 +73,7 @@ export default function ClientChapterPage(props: Props) {
     head = (
       <Meta
         keywords={bookName}
-        title={getChapterTitle(chapter.name, bookName)}
+        title={getChapterTitle(chapter.number, bookName)}
         description={chapter.content.trim().slice(0, 100)}
       />
     );
