@@ -7,7 +7,7 @@ interface Props {
 }
 
 export interface GoBackOptions {
-  targetPath: string | string[];
+  targetPath?: string | string[];
 }
 
 type GoBack = (options: GoBackOptions) => Promise<void>;
@@ -34,7 +34,7 @@ export function GoBackProvider({ children }: Props) {
   const records = useRef<string[]>([]);
   const actions = useMemo<GoBackActions>(() => {
     return {
-      goBack: async ({ targetPath }) => {
+      goBack: async ({ targetPath = [] }) => {
         const previous = records.current[records.current.length - 2];
         const targetPaths = Array.isArray(targetPath)
           ? targetPath
@@ -42,12 +42,13 @@ export function GoBackProvider({ children }: Props) {
 
         if (
           previous &&
-          targetPaths.some(
-            path => decodeURIComponent(previous).replace(/\?.*/, '') === path
-          )
+          (targetPaths.length === 0 ||
+            targetPaths.some(
+              path => decodeURIComponent(previous).replace(/\?.*/, '') === path
+            ))
         ) {
           await router.push(previous);
-        } else {
+        } else if (targetPaths[0]) {
           await router.push(targetPaths[0]);
         }
         records.current = records.current.slice(0, -2);
