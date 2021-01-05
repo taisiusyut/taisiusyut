@@ -287,6 +287,7 @@ function ClientChapterComponment({
     const content = chapterNums.map(chapterNo => (
       <div
         key={chapterNo}
+        // changing id format should also check `preload.js`
         id={`chapter-${chapterNo}`}
         className={classes['content']}
         style={{ fontSize, lineHeight }}

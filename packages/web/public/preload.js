@@ -6,6 +6,8 @@
  *  accentColor?: AccentColor,
  *  fixWidth?: boolean,
  *  pagingDisplay?: boolean
+ *  fontSize?: number
+ *  lineHeight?: string
  * }} Preferences
  */
 
@@ -34,10 +36,8 @@
       flag ? 'paging' : 'single'
     );
   };
-
   /** @type {Preferences}} */
   var preferences = {};
-
   try {
     var keys = {
       root: 'taisiusyut',
@@ -74,9 +74,25 @@
   );
 
   function setViewHeightVariable() {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    var vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', vh + 'px');
   }
   setViewHeightVariable();
   window.addEventListener('resize', setViewHeightVariable);
+
+  function handleChapterContentStyle() {
+    var fontSize = preferences['fontSize'];
+    var lineHeight = preferences['lineHeight'];
+    if (fontSize || lineHeight) {
+      /** @type {HTMLElement[]} */
+      var els = Array.prototype.slice.call(
+        document.querySelectorAll(`[id^="chapter-"]`)
+      );
+      els.forEach(function (el) {
+        // prettier-ignore
+        el.setAttribute('style', 'font-size: ' + (fontSize || 18) + 'px; line-height: ' + (lineHeight || '1.5em'))
+      });
+    }
+  }
+  handleChapterContentStyle();
 })();
