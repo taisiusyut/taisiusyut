@@ -1,5 +1,5 @@
 import React, { MouseEvent } from 'react';
-import { openConfirmDialog } from '@/components/ConfirmDialog';
+import { openMixedConfirmOverlay } from '@/components/MixedOverlay';
 import { createUserForm, ModifyPasswordForm } from '@/components/UserForm';
 import { modifyPassword } from '@/service';
 import { Toaster } from '@/utils/toaster';
@@ -37,7 +37,7 @@ export function withModifyPassword<P extends OnClick>(
 
     function handleClick() {
       form.resetFields();
-      openConfirmDialog({
+      openMixedConfirmOverlay({
         title,
         onConfirm,
         icon: 'lock',

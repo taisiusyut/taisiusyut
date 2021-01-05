@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
 import {
-  ListViewDialog,
+  ListViewOverlay,
   ListViewDialogProps,
   ListViewFooter,
   ListItem,
@@ -24,10 +24,6 @@ interface Record extends Partial<Schema$LoginRecord> {
 
 const icon = 'application';
 const title = '已登入裝置';
-
-const contentStyle: CSSProperties = {
-  width: 270
-};
 
 const mutedTextStyle: CSSProperties = {
   color: `var(--text-light-color)`,
@@ -72,24 +68,22 @@ export function LoginRecordsDialog(props: Props) {
   });
 
   return (
-    <ListViewDialog {...props} icon={icon} title={title}>
+    <ListViewOverlay {...props} icon={icon} title={title}>
       {records.map((record, idx) => (
         <React.Fragment key={record.id}>
           {idx === 0 && <ListSpacer>當前裝置</ListSpacer>}
           {idx === 1 && <ListSpacer>其他裝置</ListSpacer>}
           <ListItem>
-            <div style={contentStyle}>
-              <div>
-                {record.platform
-                  ? record.platform.description || '未知裝置'
-                  : 'Loading...'}
-              </div>
-              <div style={mutedTextStyle}>
-                最後登入於：
-                {record.updatedAt
-                  ? dayjs(record.updatedAt).format(`YYYY-MM-DD HH:mm:ss`)
-                  : `N/A`}
-              </div>
+            <div>
+              {record.platform
+                ? record.platform.description || '未知裝置'
+                : 'Loading...'}
+            </div>
+            <div style={mutedTextStyle}>
+              最後登入於：
+              {record.updatedAt
+                ? dayjs(record.updatedAt).format(`YYYY-MM-DD HH:mm:ss`)
+                : `N/A`}
             </div>
           </ListItem>
         </React.Fragment>
@@ -100,6 +94,6 @@ export function LoginRecordsDialog(props: Props) {
           <LogoutOther onClose={props.onClose} />
         )}
       </ListViewFooter>
-    </ListViewDialog>
+    </ListViewOverlay>
   );
 }

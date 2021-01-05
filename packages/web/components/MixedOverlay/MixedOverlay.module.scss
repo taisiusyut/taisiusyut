@@ -1,0 +1,41 @@
+@import '~styles/utils';
+
+.dialog.dialog {
+  @include dimen(300px);
+}
+
+.drawer {
+  .drawer-content {
+    @include flex($flex-direction: column);
+    flex: 1 1 auto;
+    overflow: auto;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+
+.drawer-header {
+  @include flex(center, space-between);
+  @include shadow-border();
+  @include padding-x(15px 10px);
+  background-color: var(--primary-color);
+  min-height: $header-height;
+  margin-bottom: 1px;
+
+  .heading {
+    font-size: 16px;
+    flex: 1 1 auto;
+    text-align: left;
+    margin-left: 10px;
+  }
+}
+
+.confirm {
+  &:global(.#{$ns}-drawer) {
+    :global(.#{$ns}-dialog-footer) {
+      margin-bottom: 20px;
+      > div {
+        margin-bottom: env(safe-area-inset-bottom, 0);
+      }
+    }
+  }
+}

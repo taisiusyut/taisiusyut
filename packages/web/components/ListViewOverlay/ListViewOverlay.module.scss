@@ -8,6 +8,7 @@ $padding-x: 15px;
   @include padding-y(10px);
   @include shadow-border();
   background-color: var(--primary-color);
+  flex: 0 0 auto;
   margin: 1px 0px;
   min-height: 50px;
 
@@ -20,7 +21,7 @@ $padding-x: 15px;
   }
 
   .item-left {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
   }
 
   .item-right {
@@ -36,10 +37,6 @@ $padding-x: 15px;
   &:not(:empty) {
     padding: 10px $padding-x;
   }
-
-  :global(.#{$ns}-dialog-header) + & {
-    margin-top: 1px;
-  }
 }
 
 .interactive {
@@ -53,36 +50,18 @@ $padding-x: 15px;
 
 .footer {
   @include margin-x(20px);
-  margin-top: 25px;
+  padding-top: 25px;
 
   button + button {
     margin-top: 10px;
   }
 }
 
-.drawer {
-  .drawer-content {
-    @include flex($flex-direction: column);
-    padding-bottom: env(safe-area-inset-bottom, 0);
-    flex: 1 1 auto;
-  }
-
-  .footer {
-    margin-top: auto;
-    margin-bottom: 25px;
-  }
-}
-
-.drawer-header {
-  @include flex(center, space-between);
-  @include padding-x(15px 10px);
-  background-color: var(--primary-color);
-  min-height: $header-height;
-
-  .heading {
-    font-size: 16px;
-    flex: 1 1 auto;
-    text-align: left;
-    margin-left: 10px;
+.overlay {
+  &:global(.#{$ns}-drawer) {
+    .footer {
+      margin-top: auto;
+      margin-bottom: 25px;
+    }
   }
 }

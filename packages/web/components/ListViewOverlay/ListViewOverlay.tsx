@@ -5,10 +5,10 @@ import {
   IDialogProps,
   Icon,
   IIconProps,
-  Drawer,
   IDrawerProps
 } from '@blueprintjs/core';
 import { createOpenOverlay } from '@/utils/openOverlay';
+import { MixedOverlay } from '@/components/MixedOverlay';
 import classes from './ListViewOverlay.module.scss';
 
 type DivProps = React.DetailedHTMLProps<
@@ -41,8 +41,6 @@ export interface ListViewDrawerProps extends IDrawerProps {
 export type ListViewOverlayProps = ListViewDialogProps & ListViewDrawerProps;
 
 export const openListViewDialog = createOpenOverlay(ListViewDialog);
-
-export const openListViewDrawer = createOpenOverlay(ListViewDrawer);
 
 export const openListViewOverlay = createOpenOverlay(ListViewOverlay);
 
@@ -87,33 +85,6 @@ export function ListViewFooter({
   );
 }
 
-export function ListViewDrawer({
-  icon,
-  title,
-  children,
-  ...props
-}: ListViewDrawerProps) {
-  return (
-    <Drawer
-      size="100%"
-      transitionDuration={300}
-      {...props}
-      className={classes['drawer']}
-    >
-      <div className={classes['drawer-header']}>
-        <Icon icon={icon} />
-        <span className={classes['heading']}>{title}</span>
-        <Button minimal icon="cross" onClick={props.onClose} />
-      </div>
-      <div className={classes['drawer-content']}>{children}</div>
-    </Drawer>
-  );
-}
-
 export function ListViewOverlay(props: ListViewOverlayProps) {
-  const Component =
-    typeof window !== 'undefined' && window.screen.width <= 480
-      ? ListViewDrawer
-      : ListViewDialog;
-  return <Component {...props} />;
+  return <MixedOverlay {...props} className={classes['overlay']} />;
 }
