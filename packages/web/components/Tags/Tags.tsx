@@ -23,7 +23,7 @@ export function Tags({
   tagProps,
   onTagClick,
   ...props
-}: Props) {
+}: TagsProps) {
   return (
     <div {...props} className={`tags ${className}`.trim()}>
       {tags.map((_tag, idx) => {
