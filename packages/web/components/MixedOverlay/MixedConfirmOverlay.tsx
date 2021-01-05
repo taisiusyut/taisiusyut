@@ -7,5 +7,5 @@ function _MixedConfirmOverlay(props: MixedOverlayProps) {
   return <MixedOverlay {...props} className={classes['confirm']} />;
 }
 
-const MixedConfirmOverlay = createConfirmDialog(_MixedConfirmOverlay);
+export const MixedConfirmOverlay = createConfirmDialog(_MixedConfirmOverlay);
 export const openMixedConfirmOverlay = createOpenOverlay(MixedConfirmOverlay);

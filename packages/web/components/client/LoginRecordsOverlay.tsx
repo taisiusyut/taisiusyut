@@ -57,9 +57,9 @@ function LogoutOther({ onClose }: Pick<ListViewDialogProps, 'onClose'>) {
   );
 }
 
-export const openLoginRecordsDialog = createOpenOverlay(LoginRecordsDialog);
+export const openLoginRecordsOverlay = createOpenOverlay(LoginRecordsOverlay);
 
-export function LoginRecordsDialog(props: Props) {
+export function LoginRecordsOverlay(props: Props) {
   const [
     { loading, data: records = [{ id: '1' }, { id: '2' }, { id: '3' }] }
   ] = useRxAsync(request, {

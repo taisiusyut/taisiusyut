@@ -9,21 +9,21 @@ import {
   ListViewOverlay
 } from '@/components/ListViewOverlay';
 import {
-  openClientProfileDialog,
-  ClientProfileDialogIcon,
-  ClientProfileDialogTitle
-} from '@/components/client/ClientProfile';
+  openClientProfileOverlay,
+  ClientProfileOverlayIcon,
+  ClientProfileOverlayTitle
+} from '@/components/client/ClientProfileOverlay';
 import {
   openClientPreferences,
-  ClientPreferencesDialogIcon,
-  ClientPreferencesDialogTitle
-} from '@/components/client/ClientPreferencesDialog';
+  ClientPreferencesOverlayIcon,
+  ClientPreferencesOverlayTitle
+} from '@/components/client/ClientPreferencesOverlay';
 import { Github } from '@/components/Icon/Github';
+import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
-import { withAuthRequired } from './withAuthRequired';
-import pkg from '../../package.json';
+import pkg from '@/package.json';
 
 interface MainMenuDialogProps extends ListViewDialogProps {}
 
@@ -51,7 +51,7 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       <ListSpacer />
 
       <AuthrizedListItem
-        icon={ClientProfileDialogIcon}
+        icon={ClientProfileOverlayIcon}
         rightElement={
           <div>
             <span style={{ marginRight: 5 }}>
@@ -60,13 +60,13 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
             {chevron}
           </div>
         }
-        onClick={() => openClientProfileDialog({ auth, actions: authActions })}
+        onClick={() => openClientProfileOverlay({ auth, actions: authActions })}
       >
-        {ClientProfileDialogTitle}
+        {ClientProfileOverlayTitle}
       </AuthrizedListItem>
 
       <ListItem
-        icon={ClientPreferencesDialogIcon}
+        icon={ClientPreferencesOverlayIcon}
         rightElement={chevron}
         onClick={() =>
           openClientPreferences({
@@ -75,7 +75,7 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
           })
         }
       >
-        {ClientPreferencesDialogTitle}
+        {ClientPreferencesOverlayTitle}
       </ListItem>
 
       <ListItem

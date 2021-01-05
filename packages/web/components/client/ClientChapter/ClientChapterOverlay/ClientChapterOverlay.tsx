@@ -8,9 +8,9 @@ import {
   Overlay
 } from '@blueprintjs/core';
 import {
-  ClientPreferencesDialogIcon,
-  ClientPreferencesDialogTitle
-} from '@/components/client/ClientPreferencesDialog';
+  ClientPreferencesOverlayIcon,
+  ClientPreferencesOverlayTitle
+} from '@/components/client/ClientPreferencesOverlay';
 import { withBreakPoint } from '@/hooks/useBreakPoints';
 import classes from './ClientChapterOverlay.module.scss';
 
@@ -75,10 +75,10 @@ function ClientChapterOverlayBase({
               詳情
             </Item>
             <Item
-              icon={ClientPreferencesDialogIcon}
+              icon={ClientPreferencesOverlayIcon}
               onClick={openClientPreferences}
             >
-              {ClientPreferencesDialogTitle}
+              {ClientPreferencesOverlayTitle}
             </Item>
             <Item icon="properties" onClick={openChapterListDrawer}>
               目錄

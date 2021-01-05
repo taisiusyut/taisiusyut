@@ -2,9 +2,9 @@ import React from 'react';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
 import {
-  ClientPreferencesDialogIcon,
-  ClientPreferencesDialogTitle
-} from '@/components/client/ClientPreferencesDialog';
+  ClientPreferencesOverlayIcon,
+  ClientPreferencesOverlayTitle
+} from '@/components/client/ClientPreferencesOverlay';
 import classes from './ClientChapter.module.scss';
 
 interface Props extends HeaderProps {
@@ -28,8 +28,8 @@ export function ClientChapterHeader({
         <ButtonPopover
           key="0"
           minimal
-          icon={ClientPreferencesDialogIcon}
-          content={ClientPreferencesDialogTitle}
+          icon={ClientPreferencesOverlayIcon}
+          content={ClientPreferencesOverlayTitle}
           onClick={openClientPreferences}
         />,
         <ButtonPopover

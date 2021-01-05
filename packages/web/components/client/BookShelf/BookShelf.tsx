@@ -12,10 +12,10 @@ import { useBookShelf, placeholder } from '@/hooks/useBookShelf';
 import { useAuthState } from '@/hooks/useAuth';
 import { getBookShelf } from '@/service';
 import { Toaster } from '@/utils/toaster';
+import { Order } from '@/typings';
 import { BookShelfItem } from './BookShelfItem';
 import { BookShelfEmpty } from './BookShelfEmpty';
 import classes from './BookShelf.module.scss';
-import { Order } from '@/typings';
 
 const MainMenuButton = withMainMenuOverLay(ButtonPopover);
 const DeskstopMainMenuButton = withDesktopHeaderBtn(MainMenuButton);

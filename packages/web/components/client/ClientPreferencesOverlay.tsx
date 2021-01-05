@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { fromEvent } from 'rxjs';
+import { merge, fromEvent } from 'rxjs';
 import {
   Button,
   HTMLSelect,
@@ -22,7 +22,7 @@ import {
 import { createForm, FormItemProps, ControlProps } from '@/utils/form';
 import { createOpenOverlay } from '@/utils/openOverlay';
 
-interface ClientPreferencesDialogProps extends ListViewOverlayProps {
+interface ClientPreferencesOverlayProps extends ListViewOverlayProps {
   preferences: Preferences;
   onUpdate: PreferencesActions['update'];
 }
@@ -39,7 +39,7 @@ function Switch(props: FormItemProps<Preferences> & { deps?: undefined }) {
   );
 }
 
-function ThemeSelector({ value, onChange }: ControlProps<Theme>) {
+function ThemeSwtich({ value, onChange }: ControlProps<Theme>) {
   return (
     <BP3Swtich
       large
@@ -58,23 +58,26 @@ function ThemeSelector({ value, onChange }: ControlProps<Theme>) {
 const getScreenWidth =
   typeof window !== 'undefined' ? window.screen.width : 1440;
 
-export const openClientPreferences = createOpenOverlay(ClientPreferencesDialog);
+export const openClientPreferences = createOpenOverlay(
+  ClientPreferencesOverlay
+);
 
-export const ClientPreferencesDialogIcon = 'settings';
-export const ClientPreferencesDialogTitle = '設定';
+export const ClientPreferencesOverlayIcon = 'settings';
+export const ClientPreferencesOverlayTitle = '設定';
 
-export function ClientPreferencesDialog({
+export function ClientPreferencesOverlay({
   preferences,
   onUpdate,
   ...props
-}: ClientPreferencesDialogProps) {
+}: ClientPreferencesOverlayProps) {
   const [form] = useForm();
   const [screenWidth, setScreenWidth] = useState(getScreenWidth);
 
   useEffect(() => {
-    const subscription = fromEvent(window, 'orientationchange').subscribe(() =>
-      setScreenWidth(getScreenWidth)
-    );
+    const subscription = merge(
+      fromEvent(window, 'resize'),
+      fromEvent(window, 'orientationchange')
+    ).subscribe(() => setScreenWidth(getScreenWidth));
     return () => subscription.unsubscribe();
   }, []);
 
@@ -87,15 +90,15 @@ export function ClientPreferencesDialog({
     >
       <ListViewOverlay
         {...props}
-        icon={ClientPreferencesDialogIcon}
-        title={ClientPreferencesDialogTitle}
+        icon={ClientPreferencesOverlayIcon}
+        title={ClientPreferencesOverlayTitle}
       >
         <ListSpacer>外觀</ListSpacer>
 
         <ListItem
           rightElement={
             <FormItem name="theme">
-              <ThemeSelector />
+              <ThemeSwtich />
             </FormItem>
           }
         >

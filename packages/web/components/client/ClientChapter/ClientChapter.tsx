@@ -6,7 +6,7 @@ import { Button } from '@blueprintjs/core';
 import { Schema$Chapter } from '@/typings';
 import { useChapterListDrawer } from '@/components/client/ChapterListDrawer';
 import { GoBackButton } from '@/components/GoBackButton';
-import { openClientPreferences } from '@/components/client/ClientPreferencesDialog';
+import { openClientPreferences } from '@/components/client/ClientPreferencesOverlay';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
 import { useGoBack } from '@/hooks/useGoBack';
 import { FixedChapterName } from './FixedChapterName';
