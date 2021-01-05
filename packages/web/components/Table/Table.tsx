@@ -1,4 +1,4 @@
-import React, { ReactNode, MouseEvent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   useTable,
   usePagination,
@@ -15,11 +15,14 @@ export * from 'react-table';
 
 export interface TableProps<T extends {}> extends TableOptions<T> {
   className?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
   pagination?: PaginationProps;
   loading?: boolean;
   rowSelectedClassName?: string;
-  onRowClick?: (row: Row<T>, event: MouseEvent<HTMLTableRowElement>) => void;
+  onRowClick?: (
+    row: Row<T>,
+    event: React.MouseEvent<HTMLTableRowElement>
+  ) => void;
 }
 
 export function Table<T extends {}>({

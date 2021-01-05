@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import router, { SingletonRouter } from 'next/router';
 import { Icon, IconName } from '@blueprintjs/core';
@@ -8,7 +8,7 @@ export interface SidebarItemProps {
   href: string;
   icon: IconName;
   iconSize?: number;
-  text?: ReactNode;
+  text?: React.ReactNode;
   isActive?: (href: string, router: SingletonRouter) => boolean;
 }
 

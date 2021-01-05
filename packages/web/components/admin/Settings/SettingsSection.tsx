@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Card, Divider, H4 } from '@blueprintjs/core';
 import classes from './Settings.module.scss';
 
 interface SectionProps {
   title?: string;
   className?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export function SettingsSection({

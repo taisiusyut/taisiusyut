@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Divider } from '@blueprintjs/core';
 import { SettingsSection } from '../SettingsSection';
 import { ModifyPassword } from './ModifyPassword';
@@ -8,7 +8,7 @@ import classes from '../Settings.module.scss';
 interface RowProps {
   title?: string;
   desc?: string;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 function Row({ title, desc, children }: RowProps) {

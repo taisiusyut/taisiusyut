@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import React from 'react';
 import { IMenuItemProps, IOverlayProps } from '@blueprintjs/core';
 import { BookShelfState, BookShelfActions } from '@/hooks/useBookShelf';
 import { withGroupBookInShelf } from './withGroupBookInShelf';
@@ -7,7 +7,7 @@ import { withRemoveBookFromShelf } from './withRemoveBookFromShelf';
 import { withShareBookInShelf } from './withShareBookInShelf';
 
 export interface Create extends Partial<Pick<IMenuItemProps, 'icon' | 'text'>> {
-  onClick?: (event: MouseEvent<any>) => void;
+  onClick?: (event: React.MouseEvent<any>) => void;
 }
 
 export interface RequiredProps {

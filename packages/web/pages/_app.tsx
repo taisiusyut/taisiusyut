@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import router from 'next/router';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import { CommonMeta } from '@/components/Meta';
@@ -10,7 +10,7 @@ import '@/styles/globals.scss';
 import 'typeface-muli';
 
 interface LayoutProps {
-  children?: ReactNode;
+  children?: React.ReactNode;
   disableScrollRestoration?: boolean;
 }
 

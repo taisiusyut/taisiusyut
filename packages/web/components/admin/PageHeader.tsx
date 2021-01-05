@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { H4 } from '@blueprintjs/core';
 import { GoBackButton } from '@/components/GoBackButton';
 import { resolve } from 'styled-jsx/css';
 
 interface Props {
-  title?: ReactNode;
-  children?: ReactNode;
+  title?: React.ReactNode;
+  children?: React.ReactNode;
   targetPath?: string;
 }
 

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { MenuItem, IIconProps, IMenuItemProps } from '@blueprintjs/core';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { Schema$User } from '@/typings';
@@ -17,7 +17,7 @@ interface Create {
 }
 
 export interface UserMenuItemProps extends OnUpdate, Partial<IMenuItemProps> {
-  children?: ReactNode;
+  children?: React.ReactNode;
   user: Schema$User;
   getPayload: () => Promise<Partial<Schema$User>> | Partial<Schema$User>;
 }

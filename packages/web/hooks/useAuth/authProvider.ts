@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { defer, fromEvent, Observable, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import {
@@ -69,7 +69,7 @@ function authenticate$(
   );
 }
 
-export function AuthProvider({ children }: { children?: ReactNode }) {
+export function AuthProvider({ children }: { children?: React.ReactNode }) {
   const [state, dispatch] = React.useReducer(authReducer, initialState);
 
   const authActions = React.useMemo<AuthActions>(() => {

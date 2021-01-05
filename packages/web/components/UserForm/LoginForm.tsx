@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { createUserForm, userValidators, UserFormProps } from './UserForm';
 
 interface Props extends UserFormProps {
-  head?: ReactNode;
+  head?: React.ReactNode;
 }
 
 const { Form, Username, Password } = createUserForm();

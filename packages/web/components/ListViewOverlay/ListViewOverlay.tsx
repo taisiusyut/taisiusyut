@@ -1,4 +1,4 @@
-import React, { ReactNode, SyntheticEvent } from 'react';
+import React from 'react';
 import {
   Button,
   Dialog,
@@ -18,18 +18,18 @@ type DivProps = React.DetailedHTMLProps<
 
 export interface ListViewDialogProps extends Omit<IDialogProps, 'onClose'> {
   onClose: () => void;
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export interface ListItemProps extends DivProps {
-  rightElement?: ReactNode;
+  rightElement?: React.ReactNode;
   icon?: IIconProps['icon'];
 }
 
 export interface ListSpacerProps extends DivProps {}
 
 export interface ListFooterProps extends DivProps {
-  onClose?: (event: SyntheticEvent<HTMLElement>) => void;
+  onClose?: (event: React.SyntheticEvent<HTMLElement>) => void;
 }
 
 export interface ListViewDrawerProps extends IDrawerProps {
