@@ -10,17 +10,18 @@ import {
   createUsePaginationLocal,
   DefaultCRUDActionTypes
 } from '@/hooks/usePaginationLocal';
-import { UserRole, Schema$Book, Param$GetChapters } from '@/typings';
+import { UserRole, Param$GetChapters } from '@/typings';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import { BookDetailsActions, OnUpdate } from './BookDetailsActions';
+import {
+  BookDetailsActions,
+  BookDetailsActionsProps
+} from './BookDetailsActions';
 import { ChapterTable } from './ChapterTable';
 import classes from './BookDetails.module.scss';
 import { ButtonPopover } from '@/components/ButtonPopover';
 
-interface Props extends OnUpdate {
-  book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
-}
+interface Props extends BookDetailsActionsProps {}
 
 const {
   Filter,

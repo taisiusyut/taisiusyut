@@ -1,33 +1,40 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, Popover, Menu, MenuItem } from '@blueprintjs/core';
-import { Schema$Book, BookStatus, UserRole } from '@/typings';
-import { withPublishBook } from './PublishBook';
-import { withFinishBook } from './FinishBook';
-import { withUpdateBook } from './UpdateBook';
+import { BookStatus } from '@/typings';
+import {
+  Book,
+  OnUpdate,
+  GetBookDetailsActionProps
+} from './bookDetailsActionCreator';
+import { getUpdateBookActionProps } from './UpdateBook';
+import { getFinishBookActionProps } from './FinishBook';
+import { getPublishBookActionProps } from './PublishBook';
 
-export interface OnUpdate {
-  onUpdate: (payload: Partial<Schema$Book>) => void;
-}
+export interface BookDetailsActionsProps extends Book, OnUpdate {}
 
-interface Props extends OnUpdate {
-  book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
-  role?: UserRole;
-}
+export function BookDetailsActions({
+  book,
+  onUpdate
+}: BookDetailsActionsProps) {
+  const { updateBook, publishBook, finishBook } = useMemo(() => {
+    const handler = (getter: GetBookDetailsActionProps) => {
+      const props = getter({ book, onUpdate });
+      return <MenuItem key={props.text} {...props} />;
+    };
+    return {
+      updateBook: handler(getUpdateBookActionProps),
+      finishBook:
+        book.status === BookStatus.Private && handler(getFinishBookActionProps),
+      publishBook:
+        book.status === BookStatus.Public && handler(getPublishBookActionProps)
+    };
+  }, [book, onUpdate]);
 
-const PublishBook = withPublishBook(MenuItem);
-const FinishBook = withFinishBook(MenuItem);
-const UpdateBook = withUpdateBook(MenuItem);
-
-export function BookDetailsActions({ book, onUpdate }: Props) {
   const menu = (
     <Menu>
-      <UpdateBook text="Update Book" book={book} onUpdate={onUpdate} />
-      {book.status === BookStatus.Private && (
-        <PublishBook text="Publish Book" book={book} onUpdate={onUpdate} />
-      )}
-      {book.status === BookStatus.Public && (
-        <FinishBook text="Finish Book" book={book} onUpdate={onUpdate} />
-      )}
+      {updateBook}
+      {publishBook}
+      {finishBook}
     </Menu>
   );
 
