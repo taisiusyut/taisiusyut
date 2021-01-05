@@ -23,6 +23,13 @@
       "packages/*"
     ]
   },
+  "cacheDirectories": [
+    "node_modules",
+    "packages/server/node_modules",
+    "packages/styles/node_modules",
+    "packages/web/node_modules",
+    "packages/web/.next"
+  ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.8.1",
     "@typescript-eslint/parser": "^4.8.1",
