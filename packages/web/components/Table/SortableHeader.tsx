@@ -35,7 +35,6 @@ export function SortableHeader({
           return {
             ...params,
             sort: JSON.stringify({
-              ...JSONParse<Record<string, unknown>>(sort as string, {}),
               [field]: order === Order.DESC ? Order.ASC : Order.DESC
             })
           };
