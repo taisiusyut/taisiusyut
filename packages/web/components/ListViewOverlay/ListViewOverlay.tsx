@@ -35,7 +35,7 @@ export interface ListFooterProps extends DivProps {
 export interface ListViewDrawerProps extends IDrawerProps {
   title?: string;
   icon?: IIconProps['icon'];
-  children?: ReactNode;
+  children?: React.ReactNode;
 }
 
 export type ListViewOverlayProps = ListViewDialogProps & ListViewDrawerProps;
