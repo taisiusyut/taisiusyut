@@ -52,6 +52,7 @@ export function ClientBookDetailsComponent({
   });
   const book = data || initialBook || null;
 
+  // book not found / error
   if (!book) {
     return (
       <>
@@ -77,6 +78,7 @@ export function ClientBookDetailsComponent({
       <div className={classes['content']}>
         <ClientBookDetailsBook book={book} />
         <ClientBookChaptersGrid
+          key={book.id}
           bookID={book.id}
           bookName={book.name}
           chapters={initialChapters}
@@ -93,6 +95,7 @@ export function ClientBookDetails({
   chapters,
   ...props
 }: ClientBookDetailsProps & Partial<ClientBookDetailsParams>) {
+  // fallback
   if (!bookName) {
     return (
       <>
