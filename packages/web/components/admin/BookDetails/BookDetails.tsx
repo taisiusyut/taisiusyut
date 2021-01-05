@@ -75,7 +75,7 @@ export function BookDetails({ book, onUpdate }: Props) {
       <BookInfoCard
         book={book}
         className={classes['info']}
-        author={user?.role !== UserRole.Author}
+        author={!isAuthor}
       />
 
       <Card className={classes['chapters']}>
@@ -109,8 +109,9 @@ export function BookDetails({ book, onUpdate }: Props) {
           onRowClick={
             isAuthor
               ? row => {
-                  const chapterID = row.original.id;
-                  return chapterID && gotoChapter(book.id, chapterID);
+                  if (!!row.original.name) {
+                    gotoChapter(book.id, row.original.id);
+                  }
                 }
               : undefined
           }
