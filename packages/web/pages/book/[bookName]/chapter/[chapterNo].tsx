@@ -6,9 +6,10 @@ import {
   ClientLayoutProps
 } from '@/components/client/ClientLayout';
 import {
-  getChapterTitle,
+  formatChapterTitle,
   ClientChapter,
-  ClientChapterData
+  ClientChapterData,
+  ClientChapterParams
 } from '@/components/client/ClientChapter';
 import {
   getBookController,
@@ -20,8 +21,7 @@ import { Schema$Book, Schema$Chapter } from '@/typings';
 interface Props extends ClientChapterData {}
 
 type Params = {
-  bookName: string;
-  chapterNo: string;
+  [X in keyof ClientChapterParams]: string;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -61,7 +61,12 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
 
   return {
     revalidate: 60 * 60,
-    props: { bookID: book?.id, bookName, chapterNo: Number(chapterNo), chapter }
+    props: {
+      bookID: book?.id || null,
+      bookName,
+      chapterNo: Number(chapterNo),
+      chapter
+    }
   };
 };
 
@@ -73,7 +78,7 @@ export default function ClientChapterPage(props: Props) {
     head = (
       <Meta
         keywords={bookName}
-        title={getChapterTitle(chapter.number, bookName)}
+        title={formatChapterTitle(chapter.number, bookName)}
         description={chapter.content.trim().slice(0, 100)}
       />
     );

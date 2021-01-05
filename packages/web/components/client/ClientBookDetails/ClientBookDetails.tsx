@@ -1,16 +1,15 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import router from 'next/router';
-import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
 import { BookInfoCard } from '@/components/BookInfoCard';
 import { GoBackButton } from '@/components/GoBackButton';
 import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
-import { Toaster } from '@/utils/toaster';
+import {
+  ClientBookError,
+  useGetBookByName
+} from '@/components/client/ClientBookError';
 import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
-import { getBookByName } from '@/service';
-// import { ClientBookDetailsBook } from './ClientBookDetailsBook';
-import { ClientBookError } from './ClientBookError';
 import { ClientBookChaptersGrid, ChaptersGrid } from './ClientBookChaptersGrid';
 import {
   ClientBookChaptersDrawer,
@@ -29,8 +28,6 @@ export interface ClientBookDetailsData extends ClientBookDetailsParams {
 
 export interface ClientBookDetailsProps extends ClientBookDetailsData {}
 
-const onFailure = Toaster.apiError.bind(Toaster, `Get book failure`);
-
 const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
 
 const headerProps: HeaderProps = {
@@ -47,24 +44,15 @@ export function ClientBookDetailsComponent({
   book: initialBook,
   chapters: initialChapters
 }: ClientBookDetailsProps) {
-  const request = useCallback(() => getBookByName({ bookName }), [bookName]);
-  const [{ data, error, loading }, { fetch }] = useRxAsync(request, {
-    defer: !!initialBook,
-    onFailure
-  });
-  const book = data || initialBook || null;
+  const bookState = useGetBookByName(bookName, !!initialBook);
+  const book = bookState.data || initialBook;
 
   // book not found / error
   if (!book) {
     return (
       <>
         <ClientHeader {...headerProps} />
-        <ClientBookError
-          bookName={bookName}
-          loading={loading}
-          retry={fetch}
-          error={error}
-        />
+        <ClientBookError bookName={bookName} {...bookState} />
       </>
     );
   }

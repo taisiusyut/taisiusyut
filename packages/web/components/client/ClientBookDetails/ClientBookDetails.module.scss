@@ -63,10 +63,3 @@
     word-break: break-all;
   }
 }
-
-.error {
-  @include sq-dimen(100%);
-  button {
-    min-width: 80px;
-  }
-}

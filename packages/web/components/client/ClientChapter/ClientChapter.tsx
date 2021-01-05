@@ -6,8 +6,15 @@ import { Button } from '@blueprintjs/core';
 import { Schema$Chapter } from '@/typings';
 import { useChapterListDrawer } from '@/components/client/ChapterListDrawer';
 import { GoBackButton } from '@/components/GoBackButton';
+import {
+  ClientBookError,
+  useGetBookByName
+} from '@/components/client/ClientBookError';
 import { openClientPreferences } from '@/components/client/ClientPreferencesOverlay';
-import { useClientPreferences } from '@/hooks/useClientPreferences';
+import {
+  Preferences,
+  useClientPreferences
+} from '@/hooks/useClientPreferences';
 import { useGoBack } from '@/hooks/useGoBack';
 import { FixedChapterName } from './FixedChapterName';
 import { ClientChapterHeader } from './ClientChapterHeader';
@@ -18,14 +25,21 @@ import {
 } from './ClientChapterContent';
 import classes from './ClientChapter.module.scss';
 
-export interface ClientChapterData {
-  bookID?: string;
+export type ClientChapterParams = {
   bookName: string;
   chapterNo: number;
+};
+
+export interface ClientChapterData extends ClientChapterParams {
+  bookID: string | null;
   chapter: Schema$Chapter | null;
 }
 
-export interface ClientChapterProps extends ClientChapterData {}
+export interface ClientChapterProps extends Omit<ClientChapterData, 'bookID'> {
+  bookID?: string;
+  openClientPreferences: () => void;
+  preferences: Preferences;
+}
 
 type ScrollDirection = 'up' | 'down' | 'unknown';
 
@@ -49,14 +63,16 @@ const getMarginY = (el: Element) => {
   return parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 };
 
-export const getChapterTitle = (chapterNo: number, bookName: string) =>
+export const formatChapterTitle = (chapterNo: number, bookName: string) =>
   `${bookName} | 第${chapterNo}章 | 睇小說`;
 
 function ClientChapterComponment({
-  bookID,
   bookName,
+  bookID,
   chapter: initialChapter,
-  chapterNo: initialChapterNo
+  chapterNo: initialChapterNo,
+  preferences,
+  openClientPreferences
 }: ClientChapterProps) {
   const [chapterNums, setChapterNums] = useState([initialChapterNo]);
   const [currentChapter, setCurrentChapter] = useState(initialChapterNo);
@@ -80,18 +96,12 @@ function ClientChapterComponment({
   );
 
   const [showOverlay, setShowOverlay] = useState(false);
-  const [preferences, preferencesActions] = useClientPreferences();
   const { fontSize, lineHeight, autoFetchNextChapter } = preferences;
 
   const _openChapterListDrawer = () =>
     openChapterListDrawer({
       chapterNo: currentChapter,
       onItemClick: chapter => gotoChapter(bookName, chapter.number)
-    });
-  const _openClientPreferences = () =>
-    openClientPreferences({
-      preferences: preferences,
-      onUpdate: preferencesActions.update
     });
 
   const navigateChapter = (factor: 1 | -1) => {
@@ -113,7 +123,7 @@ function ClientChapterComponment({
     return gotoChapter(bookName, chapterNo);
   };
 
-  const onLoaded = useCallback((chapter: Schema$Chapter) => {
+  const handleChapterLoaded = useCallback((chapter: Schema$Chapter) => {
     hasNext.current = chapter.hasNext;
     loaded.current[chapter.number] = true;
 
@@ -285,14 +295,13 @@ function ClientChapterComponment({
     hasNext.current = data[currentChapter]?.hasNext;
   }, [data, currentChapter]);
 
-  const chapterName =
-    data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
-
   useEffect(() => {
-    document.title = getChapterTitle(currentChapter, bookName);
+    document.title = formatChapterTitle(currentChapter, bookName);
   }, [currentChapter, bookName]);
 
   if (bookID) {
+    const chapterName =
+      data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
     const title = `第${currentChapter}章 ${chapterName}`;
     const content = chapterNums.map(chapterNo => (
       <div
@@ -305,7 +314,7 @@ function ClientChapterComponment({
         <ClientChapterContent
           bookID={bookID}
           chapterNo={chapterNo}
-          onLoaded={onLoaded}
+          onLoaded={handleChapterLoaded}
           defaultChapter={data[chapterNo]}
         />
       </div>
@@ -341,7 +350,7 @@ function ClientChapterComponment({
         <ClientChapterHeader
           title={title}
           goBackButton={goBackButton}
-          openClientPreferences={_openClientPreferences}
+          openClientPreferences={openClientPreferences}
           openChapterListDrawer={_openChapterListDrawer}
         />
         <ClientChapterOverlay
@@ -349,7 +358,7 @@ function ClientChapterComponment({
           bookName={bookName}
           goBackButton={goBackButton}
           navigateChapter={navigateChapter}
-          openClientPreferences={_openClientPreferences}
+          openClientPreferences={openClientPreferences}
           openChapterListDrawer={_openChapterListDrawer}
           onClose={() => setShowOverlay(false)}
         />
@@ -361,25 +370,28 @@ function ClientChapterComponment({
     );
   }
 
-  // TODO:
-  return <div>Not Found</div>;
+  return null;
 }
 
 export function ClientChapter({
   bookName,
   chapter,
   chapterNo,
+  bookID: initialBookID,
   ...props
-}: Partial<ClientChapterProps>) {
+}: ClientChapterData & Partial<ClientChapterParams>) {
   const [preferences, preferencesActions] = useClientPreferences();
-  const _openClientPreferences = () =>
+  const handleOpenClientPreferences = () =>
     openClientPreferences({
       preferences: preferences,
       onUpdate: preferencesActions.update
     });
-  const { fontSize, lineHeight } = preferences;
+
+  const book = useGetBookByName(bookName, !!initialBookID);
+  const bookID = book.data?.id || initialBookID;
 
   if (
+    typeof bookID === 'string' &&
     typeof bookName === 'string' &&
     typeof chapterNo === 'number' &&
     typeof chapter !== 'undefined'
@@ -387,9 +399,12 @@ export function ClientChapter({
     return (
       <ClientChapterComponment
         {...props}
+        bookID={bookID}
         bookName={bookName}
         chapter={chapter}
         chapterNo={chapterNo}
+        preferences={preferences}
+        openClientPreferences={handleOpenClientPreferences}
       />
     );
   }
@@ -398,16 +413,20 @@ export function ClientChapter({
     <div className={classes['container']}>
       <ClientChapterHeader
         goBackButton={<GoBackButton targetPath={['/', '/featured']} />}
-        openClientPreferences={_openClientPreferences}
+        openClientPreferences={handleOpenClientPreferences}
         openChapterListDrawer={() => void 0}
       />
-      <div className={classes['scroller']}>
-        <div>
-          <div className={classes['content']} style={{ fontSize, lineHeight }}>
-            {ClientChapterContentLoading}
+      {book.notFound ? (
+        <ClientBookError {...book} bookName={bookName} />
+      ) : (
+        <div className={classes['scroller']}>
+          <div>
+            <div className={classes['content']}>
+              {ClientChapterContentLoading}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

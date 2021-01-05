@@ -16,6 +16,8 @@ $fixed-chapter-name-height: $fixed-chapter-name-padding-y * 2 +
 }
 
 .container {
+  @include sq-dimen(100%);
+
   @media (min-width: $break-point +1) {
     @include flex($flex-direction: column);
     overflow: hidden;
