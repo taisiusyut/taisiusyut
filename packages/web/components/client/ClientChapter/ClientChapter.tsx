@@ -95,12 +95,22 @@ function ClientChapterComponment({
     });
 
   const navigateChapter = (factor: 1 | -1) => {
+    const chapterNo = currentChapter + factor;
     const idx = currentChapter + factor - 1;
-    const chapter = chapters[idx];
-    if (!chapters.length) return alert(`請刷新頁面或者稍後再試`);
-    if (!chapter) return alert(factor === 1 ? `沒有下一章節` : `沒有上一章節`);
-    if (!chapter.number) return alert(`發生錯誤，請刷新頁面`);
-    return gotoChapter(bookName, chapter.number);
+
+    if (chapterNo <= 0) return alert(`沒有上一章節`);
+    if (factor === 1) {
+      // true if not sure has next chapter?
+      if (
+        !loaded.current[currentChapter] &&
+        !chapters[idx]?.number // chapters could be empty array;
+      ) {
+        return alert(`請刷新頁面或者稍後再試`);
+      } else if (!hasNext.current) {
+        return alert(`沒有下一章節`);
+      }
+    }
+    return gotoChapter(bookName, chapterNo);
   };
 
   const onLoaded = useCallback((chapter: Schema$Chapter) => {
