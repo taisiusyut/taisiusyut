@@ -57,7 +57,8 @@ $easing: linear;
   @include dimen(100%);
   @include flex(center, space-between);
   @include padding-x(15px);
-  @include padding-y(10px 15px);
+  @include padding-y(20px 15px);
+  @include shadow-border();
 }
 
 .item {

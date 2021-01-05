@@ -102,7 +102,7 @@
     }
 
     .header {
-      @include fixed(0, null, 0);
+      @include fixed(-1px, null, 0);
       z-index: 10;
     }
 

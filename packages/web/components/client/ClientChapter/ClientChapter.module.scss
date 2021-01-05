@@ -67,7 +67,7 @@ $fixed-chapter-name-height: $fixed-chapter-name-padding-y * 2 +
 .fixed-chapter-name {
   @include animate(transform);
   @include dimen(100%);
-  @include fixed(0, null, 0);
+  @include fixed(-1px, null, 0);
   @include padding-y(10px);
   @include paragraph-padding-x;
   background-color: var(--secondary-color);
