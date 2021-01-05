@@ -16,13 +16,13 @@
 }
 
 .inner {
-  @include fixed();
   @include flex($flex-direction: column);
   background-color: var(--primary-color);
   box-shadow: 1px 0 0 var(--divider-color);
   min-height: 100%;
 
   @media (min-width: $break-point + 1) {
+    @include fixed();
     @include dimen(1000px + $sidebar-width);
     overflow-y: auto;
     margin-left: -1000px;

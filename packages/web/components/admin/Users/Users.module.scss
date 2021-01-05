@@ -1,7 +1,13 @@
 @import '~styles/utils';
 
 .users {
+  @include flex($flex-direction: column);
+  @include sq-dimen(100%);
   flex: 1 1 auto;
+
+  > :global(*) {
+    flex: 1 1 auto;
+  }
 }
 
 .header {

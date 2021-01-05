@@ -19,18 +19,19 @@ export function AdminLayout({ children }: Props) {
         <style jsx>
           {`
             .layout {
-              @include sq-dimen(100%);
               background-color: var(--secondary-color);
-              min-height: 100%;
-              overflow: auto;
+              font-size: $pt-font-size;
+              font-weight: 400;
+              font-family: 'Muli', #{$pt-font-family};
             }
 
             .layout-body {
-              @include dimen(100%);
+              @include sq-dimen(100%);
               @include margin-x(auto);
               @include flex();
               max-width: $max-width;
-              min-height: 100%;
+              height: 100vh;
+              height: calc(var(--vh, 1vh) * 100);
             }
 
             .layout-content {

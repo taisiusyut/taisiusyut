@@ -30,7 +30,23 @@
   @include flex($flex-direction: column);
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
+  font-family: #{$pt-font-family};
   overflow: hidden;
+
+  @media (min-width: $break-point+1) {
+    font-size: $pt-font-size;
+
+    html:not([data-display='single']) & {
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+    }
+  }
+
+  @media (max-width: $break-point) {
+    // https://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone
+    // Disable Auto Zoom in Input “Text” tag - Safari on iPhone
+    font-size: 16px;
+  }
 
   :global([data-width='fixed']) & {
     @media (min-width: $fix-width) {

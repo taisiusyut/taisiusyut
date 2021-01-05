@@ -18,28 +18,11 @@
 body {
   background-color: var(--secondary-color);
   color: var(--text-color);
-  font-weight: 400;
-  font-family: 'Muli', #{$pt-font-family};
   margin: 0;
   padding: 0;
 
   // this disable scroll bouncing on some brwoser
   overscroll-behavior: none;
-
-  @media (min-width: $break-point + 1) {
-    font-size: $pt-font-size;
-
-    html:not([data-display='single']) & {
-      overflow: hidden;
-      height: 100vh;
-    }
-  }
-
-  @media (max-width: $break-point) {
-    // https://stackoverflow.com/questions/2989263/disable-auto-zoom-in-input-text-tag-safari-on-iphone
-    // Disable Auto Zoom in Input “Text” tag - Safari on iPhone
-    font-size: 16px;
-  }
 }
 
 img {
