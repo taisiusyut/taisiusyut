@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import router from 'next/router';
-import { Card, Button } from '@blueprintjs/core';
+import { Card } from '@blueprintjs/core';
 import { createFilter } from '@/components/Filter';
+import { BookInfoCard } from '@/components/BookInfoCard';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { ChapterStatusSelect, ChapterTypeSelect } from '@/components/Select';
 import { useAuthState } from '@/hooks/useAuth';
@@ -12,9 +13,10 @@ import {
 import { UserRole, Schema$Book, Param$GetChapters } from '@/typings';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import { BookDetailsHeader, OnUpdate } from './BookDetailsHeader';
+import { BookDetailsActions, OnUpdate } from './BookDetailsActions';
 import { ChapterTable } from './ChapterTable';
 import classes from './BookDetails.module.scss';
+import { ButtonPopover } from '@/components/ButtonPopover';
 
 interface Props extends OnUpdate {
   book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
@@ -62,11 +64,29 @@ export function BookDetails({ book, onUpdate }: Props) {
 
   return (
     <div>
-      <BookDetailsHeader book={book} role={user?.role} onUpdate={onUpdate} />
+      <Card>
+        <PageHeader targetPath={`/admin/book`} title="Book Details">
+          {user?.role === UserRole.Author && (
+            <BookDetailsActions book={book} onUpdate={onUpdate} />
+          )}
+        </PageHeader>
+      </Card>
+
+      <BookInfoCard
+        book={book}
+        className={classes['info']}
+        author={user?.role !== UserRole.Author}
+      />
+
       <Card className={classes['chapters']}>
         <PageHeader title="Chapters">
           {isAuthor && (
-            <Button minimal icon="plus" onClick={() => gotoChapter(book.id)} />
+            <ButtonPopover
+              minimal
+              icon="plus"
+              content="New Chapter"
+              onClick={() => gotoChapter(book.id)}
+            />
           )}
         </PageHeader>
 

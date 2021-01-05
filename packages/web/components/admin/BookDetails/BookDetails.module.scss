@@ -1,51 +1,10 @@
 @import '~styles/utils';
 
-.header {
-  @include flex(flex-start);
-  margin-top: 10px;
-
-  .header-title {
-    @include flex();
-    margin-bottom: 10px;
-  }
-
-  .header-content {
-    flex: 1 1 auto;
-  }
-
-  .description {
-    @include margin-y(10px 7.5px);
-    font-size: 15px;
-    line-height: 1.5em;
-    word-break: break-all;
-  }
-}
-
-.book-model {
-  @include margin-x(15px);
-}
-
-.dialog {
-  width: 300px;
-  font-size: 15px;
-  line-height: 1.5em;
-}
-
+.info,
 .chapters {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .filter {
   margin-top: 20px;
-}
-
-.chapters-content {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  padding: 0;
-
-  &:not(:empty) {
-    margin-top: 15px;
-  }
 }

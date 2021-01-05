@@ -1,28 +1,28 @@
 import React from 'react';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { finishBook } from '@/service';
-import { BookStatus } from '@/typings';
+import { Schema$Book } from '@/typings';
 import { Toaster } from '@/utils/toaster';
-import classes from './BookDetails.module.scss';
+import classes from './BookDetailsActions.module.scss';
 
 interface Props {
-  bookID: string;
-  onSuccess?: (payload: { status: BookStatus }) => void;
+  book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
+  onUpdate?: (payload: Schema$Book) => void;
 }
 
 interface OnClick {
-  onClick?: (event: any) => void;
+  onClick?: (event: React.MouseEvent<any>) => void;
 }
 
 export function withFinishBook<P extends OnClick>(
   Component: React.ComponentType<P>
 ) {
-  return function FinishBook({ bookID, onSuccess, ...props }: P & Props) {
+  return function FinishBook({ book, onUpdate, ...props }: P & Props) {
     async function onConfirm() {
       try {
-        await finishBook({ id: bookID });
+        const response = await finishBook({ id: book.id });
         Toaster.success({ message: `Finish book success` });
-        onSuccess && onSuccess({ status: BookStatus.Finished });
+        onUpdate && onUpdate(response);
       } catch (error) {
         Toaster.apiError(`Finish book failure`, error);
       }
@@ -31,10 +31,11 @@ export function withFinishBook<P extends OnClick>(
     function handleClick() {
       openConfirmDialog({
         title: 'Finish Book',
+        intent: 'danger',
         children: (
           <div className={classes['dialog']}>
-            Finished book cannot publish pay chapter. Are you sure to finish the
-            book?
+            Finished book cannot publish paid chapter. Are you sure to finish
+            the book 「{book.name}」?
           </div>
         ),
         onConfirm

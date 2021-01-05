@@ -6,19 +6,16 @@ type DivProps = React.DetailedHTMLProps<
   HTMLDivElement
 >;
 
-interface Props extends Omit<DivProps, 'children'> {
+export interface TagsProps extends Omit<DivProps, 'children'> {
   tags?: (ITagProps | string)[];
   tagProps?: ITagProps;
   onTagClick?: (tag: ITagProps, index: number) => void;
 }
 
 const getStyle = (space: number) =>
-  [
-    { marginTop: -space, marginLeft: -space },
-    { marginTop: space, marginRight: space }
-  ] as const;
+  [{ marginTop: space, marginRight: space }] as const;
 
-const [tagsStyle, tagStyle] = getStyle(5);
+const [tagStyle] = getStyle(5);
 
 export function Tags({
   className = '',
@@ -28,7 +25,7 @@ export function Tags({
   ...props
 }: Props) {
   return (
-    <div {...props} className={`tags ${className}`.trim()} style={tagsStyle}>
+    <div {...props} className={`tags ${className}`.trim()}>
       {tags.map((_tag, idx) => {
         const tag: ITagProps =
           typeof _tag === 'string'

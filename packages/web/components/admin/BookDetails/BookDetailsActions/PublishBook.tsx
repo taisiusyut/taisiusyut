@@ -1,28 +1,28 @@
 import React from 'react';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { publishBook } from '@/service';
-import { BookStatus } from '@/typings';
+import { Schema$Book } from '@/typings';
 import { Toaster } from '@/utils/toaster';
-import classes from './BookDetails.module.scss';
+import classes from './BookDetailsActions.module.scss';
 
 interface Props {
-  bookID: string;
-  onSuccess?: (payload: { status: BookStatus }) => void;
+  book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
+  onUpdate?: (payload: Schema$Book) => void;
 }
 
-interface OnClick<E extends HTMLElement = HTMLElement> {
-  onClick?: (event: React.MouseEvent<E>) => void;
+interface OnClick {
+  onClick?: (event: React.MouseEvent<any>) => void;
 }
 
 export function withPublishBook<P extends OnClick>(
   Component: React.ComponentType<P>
 ) {
-  return function PublishBook({ bookID, onSuccess, ...props }: P & Props) {
+  return function PublishBook({ book, onUpdate, ...props }: P & Props) {
     async function onConfirm() {
       try {
-        await publishBook({ id: bookID });
+        const response = await publishBook({ id: book.id });
         Toaster.success({ message: `Publish book success` });
-        onSuccess && onSuccess({ status: BookStatus.Public });
+        onUpdate && onUpdate(response);
       } catch (error) {
         Toaster.apiError(`Publish book failure`, error);
       }
@@ -33,10 +33,8 @@ export function withPublishBook<P extends OnClick>(
         title: 'Publish Book',
         children: (
           <div className={classes['dialog']}>
-            <p>
-              Published book cannot set to private again. Are you sure to
-              publish the book?
-            </p>
+            Published book cannot set to private again. Are you sure to publish
+            the book 「{book.name}」?
           </div>
         ),
         onConfirm

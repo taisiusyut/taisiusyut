@@ -1,13 +1,15 @@
 import React, { useCallback } from 'react';
+import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
+import { BookInfoCard } from '@/components/BookInfoCard';
 import { GoBackButton } from '@/components/GoBackButton';
 import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
 import { Toaster } from '@/utils/toaster';
 import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
 import { getBookByName } from '@/service';
-import { ClientBookDetailsBook } from './ClientBookDetailsBook';
+// import { ClientBookDetailsBook } from './ClientBookDetailsBook';
 import { ClientBookError } from './ClientBookError';
 import { ClientBookChaptersGrid, ChaptersGrid } from './ClientBookChaptersGrid';
 import {
@@ -76,7 +78,16 @@ export function ClientBookDetailsComponent({
         ]}
       />
       <div className={classes['content']}>
-        <ClientBookDetailsBook book={book} />
+        <BookInfoCard
+          book={book}
+          onTagClick={tag =>
+            router.push(
+              { pathname: '/search', query: { tag: tag.children as string } },
+              undefined,
+              { shallow: true }
+            )
+          }
+        />
         <ClientBookChaptersGrid
           key={book.id}
           bookID={book.id}
@@ -101,7 +112,7 @@ export function ClientBookDetails({
       <>
         <ClientHeader {...headerProps} />
         <div className={classes['content']}>
-          <ClientBookDetailsBook book={{}} />
+          <BookInfoCard book={{}} />
           <ChaptersGrid chapters={chapterPlaceHolders} />
           <ClientBookChaptersDrawerCard />
         </div>
