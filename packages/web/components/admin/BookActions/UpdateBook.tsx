@@ -1,4 +1,4 @@
-import React from 'react';
+import { BookActionDialog, BookActionDialogProps } from './BookActionDialog';
 import {
   useForm,
   Form,
@@ -8,15 +8,18 @@ import {
   BookTags,
   BookCover
 } from '@/components/admin/Books/BookForm';
-import { ConfirmDialog } from '@/components/ConfirmDialog';
-import { BookActionDialogProps, bookActionCreator } from './bookActionCreator';
 import { updateBook } from '@/service';
 
-export function UpdateBookDialog({ book, ...props }: BookActionDialogProps) {
+export function UpdateBookDialog(props: BookActionDialogProps) {
   const [form] = useForm();
   return (
-    <ConfirmDialog {...props}>
-      <Form form={form} style={{ width: 500 }} initialValues={book}>
+    <BookActionDialog
+      {...props}
+      request={({ id }) =>
+        form.validateFields().then(changes => updateBook({ ...changes, id }))
+      }
+    >
+      <Form form={form} style={{ width: 500 }} initialValues={props.book}>
         <div style={{ display: 'flex' }}>
           <div style={{ flex: '1 1 auto' }}>
             <BookName />
@@ -29,12 +32,6 @@ export function UpdateBookDialog({ book, ...props }: BookActionDialogProps) {
         <BookDescription />
         <BookTags />
       </Form>
-    </ConfirmDialog>
+    </BookActionDialog>
   );
 }
-
-export const getUpdateBookActionProps = bookActionCreator(
-  'Update',
-  updateBook,
-  UpdateBookDialog
-);

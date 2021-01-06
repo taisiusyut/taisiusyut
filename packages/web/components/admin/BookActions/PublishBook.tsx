@@ -1,22 +1,15 @@
 import React from 'react';
-import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { publishBook } from '@/service';
-import { BookActionDialogProps, bookActionCreator } from './bookActionCreator';
+import { BookActionDialog, BookActionDialogProps } from './BookActionDialog';
 import classes from './BookActions.module.scss';
 
-export function PublishBookDialog({ book, ...props }: BookActionDialogProps) {
+export function PublishBookDialog(props: BookActionDialogProps) {
   return (
-    <ConfirmDialog {...props}>
+    <BookActionDialog {...props} intent="danger" request={publishBook}>
       <div className={classes['dialog']}>
         Published book cannot set to private again. Are you sure to publish the
-        book 「{book.name}」?
+        book 「{props.book.name}」?
       </div>
-    </ConfirmDialog>
+    </BookActionDialog>
   );
 }
-
-export const getPublishBookActionProps = bookActionCreator(
-  'Publish',
-  publishBook,
-  PublishBookDialog
-);

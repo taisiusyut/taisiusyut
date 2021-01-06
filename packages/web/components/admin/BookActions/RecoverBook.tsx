@@ -4,15 +4,15 @@ import { BookStatus } from '@/typings';
 import { BookActionDialog, BookActionDialogProps } from './BookActionDialog';
 import classes from './BookActions.module.scss';
 
-export function DeleteBookDialog(props: BookActionDialogProps) {
+export function RecoverBookDialog(props: BookActionDialogProps) {
   return (
     <BookActionDialog
       {...props}
       intent="danger"
-      request={params => updateBook({ ...params, status: BookStatus.Deleted })}
+      request={params => updateBook({ ...params, status: BookStatus.Private })}
     >
       <div className={classes['dialog']}>
-        Are you sure to delete the book 「{props.book.name}」?
+        Are you sure to recover the book 「{props.book.name}」?
       </div>
     </BookActionDialog>
   );
