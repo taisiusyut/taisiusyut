@@ -25,13 +25,11 @@ export function paginateSelector<S extends CRUDState<any, any>>({
   const start = (pageNo - 1) * pageSize;
   const _list = list.slice(start, start + pageSize);
 
-  let hasData = false;
-  for (const item of _list) {
-    if (item && typeof item === 'object' && Object.keys(item).length > 1) {
-      hasData = true;
-      break;
-    }
-  }
+  // all data should be checked.
+  // so if one of the data deleted and indicates a new request is required.
+  const hasData = _list.some(
+    item => !item || (typeof item === 'object' && Object.keys(item).length > 1)
+  );
 
   return {
     list: _list,
