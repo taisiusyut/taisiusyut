@@ -84,10 +84,7 @@ export class BookService extends MongooseCRUDService<Book> {
     return books;
   }
 
-  getRoleBasedQuery(
-    user?: JWTSignPayload,
-    defaultQuery?: Omit<FilterQuery<Book>, 'createdAt' | 'updatedAt'>
-  ) {
+  getRoleBasedQuery(user?: JWTSignPayload, defaultQuery?: FilterQuery<Book>) {
     const query: FilterQuery<Book> = { ...defaultQuery };
     if (!user || user.role === UserRole.Client) {
       if (

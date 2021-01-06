@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { Schema$Book, Schema$Chapter, UserRole } from '@/typings';
+import { BookStatus, Schema$Book, Schema$Chapter, UserRole } from '@/typings';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
 import { addBookToShelf, mapToLatestChapter } from '../../service/book-shelf';
 import {
@@ -7,12 +7,16 @@ import {
   getGlobalUser,
   setupUsers
 } from '../../service/auth';
-import { createBook, publicBook } from '../../service/book';
+import {
+  createBook,
+  updateBook,
+  publicBook,
+  getBook
+} from '../../service/book';
 import { createChapter, publicChapter } from '../../service/chapter';
 
 export function testAddBookToShelf() {
-  const length = 3;
-
+  const length = 4;
   const books: Schema$Book[] = [];
   const chapters: Schema$Chapter[] = [];
 
@@ -23,8 +27,10 @@ export function testAddBookToShelf() {
       const response = await createBook(author.token);
       books.push(response.body);
     }
-    await publicBook(author.token, books[1].id);
-    await publicBook(author.token, books[2].id);
+    let response = await publicBook(author.token, books[1].id);
+    books[1] = response.body;
+    response = await publicBook(author.token, books[2].id);
+    books[2] = response.body;
 
     for (const book of books) {
       const response = await createChapter(author.token, book.id);
@@ -36,21 +42,31 @@ export function testAddBookToShelf() {
       books[2].id,
       chapters[2].id
     ).then(response => response.body);
+
+    response = await updateBook(root.token, books[3].id, {
+      status: BookStatus.Deleted
+    });
+    books[3] = response.body;
   });
 
   test.each(['root', 'admin', 'author'])(
     `%s can add public/private book to shelf`,
     async user => {
       for (const [k, book] of Object.entries(books)) {
-        const chapter = { ...chapters[Number(k)] };
-        const response = await addBookToShelf(
-          getGlobalUser(user).token,
-          book.id
-        );
-        expect(response.status).toBe(HttpStatus.CREATED);
-        expect(response.body.latestChapter).toEqual(
-          mapToLatestChapter(chapter)
-        );
+        if (
+          book.status === BookStatus.Public ||
+          book.status === BookStatus.Private
+        ) {
+          const chapter = { ...chapters[Number(k)] };
+          const response = await addBookToShelf(
+            getGlobalUser(user).token,
+            book.id
+          );
+          expect(response.status).toBe(HttpStatus.CREATED);
+          expect(response.body.latestChapter).toEqual(
+            mapToLatestChapter(chapter)
+          );
+        }
       }
     }
   );
@@ -96,6 +112,17 @@ export function testAddBookToShelf() {
       );
 
       response = await addBookToShelf(getGlobalUser(user).token, books[2].id);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    }
+  });
+
+  test(`cannot add deleted book to shelf`, async () => {
+    const response = await getBook(root.token, books[3].id);
+    expect(response.body).toHaveProperty('status', BookStatus.Deleted);
+
+    for (const user of ['root', 'admin', 'author', 'client']) {
+      const auth = getGlobalUser(user);
+      const response = await addBookToShelf(auth.token, books[3].id);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
   });

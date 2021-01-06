@@ -15,7 +15,7 @@ import { BookService } from '@/modules/book/book.service';
 import { ChapterService } from '@/modules/chapter/chapter.service';
 import { ObjectId } from '@/decorators';
 import { routes } from '@/constants';
-import { Order } from '@/typings';
+import { BookStatus, Order } from '@/typings';
 import { Access } from '@/utils/access';
 import { BookShelfService } from './book-shelf.service';
 import { GetBooksFromShelfDto, UpdateBookInShelfDto } from './dto';
@@ -44,9 +44,19 @@ export class BookShelfController {
 
   @Post(routes.book_shelf.add_book_to_shelf)
   async add(@Req() req: FastifyRequest, @ObjectId('bookID') bookID: string) {
-    const bookExists = await this.bookService.exists(
-      this.bookService.getRoleBasedQuery(req.user, { _id: bookID })
-    );
+    const bookQuery = this.bookService.getRoleBasedQuery(req.user, {
+      _id: bookID
+    });
+
+    if (bookQuery.$or) {
+      bookQuery.$or = bookQuery.$or.filter(
+        ({ status }) => status !== BookStatus.Deleted
+      );
+    } else {
+      bookQuery.status = { $ne: BookStatus.Deleted };
+    }
+
+    const bookExists = await this.bookService.exists(bookQuery);
 
     if (bookExists) {
       const payload: Partial<BookShelf> = {
