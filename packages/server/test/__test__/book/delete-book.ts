@@ -13,11 +13,11 @@ export function testDeleteBook() {
   test.each`
     user        | expected    | status                  | length
     ${'root'}   | ${'can'}    | ${HttpStatus.OK}        | ${0}
-    ${'admin'}  | ${'can'}    | ${HttpStatus.OK}        | ${0}
+    ${'admin'}  | ${'cannot'} | ${HttpStatus.FORBIDDEN} | ${1}
     ${'client'} | ${'cannot'} | ${HttpStatus.FORBIDDEN} | ${1}
     ${'author'} | ${'cannot'} | ${HttpStatus.FORBIDDEN} | ${1}
   `(
-    `$user $expected delete book`,
+    `$user $expected permanently delete book`,
     async ({ user, status, length }: Record<string, any>) => {
       let response = await createBook(author.token);
       const book = response.body;

@@ -24,12 +24,10 @@ export function testDeleteUser() {
   });
 
   test.each`
-    executor   | target
-    ${'root'}  | ${'admin'}
-    ${'root'}  | ${'author'}
-    ${'root'}  | ${'client'}
-    ${'admin'} | ${'author'}
-    ${'admin'} | ${'client'}
+    executor  | target
+    ${'root'} | ${'admin'}
+    ${'root'} | ${'author'}
+    ${'root'} | ${'client'}
   `(
     '$executor can delete $target',
     async ({ executor, target }: Record<string, string>) => {
@@ -71,9 +69,11 @@ export function testDeleteUser() {
   test.each`
     executor    | target      | status
     ${'root'}   | ${'self'}   | ${HttpStatus.BAD_REQUEST}
-    ${'admin'}  | ${'root'}   | ${HttpStatus.NOT_FOUND}
-    ${'admin'}  | ${'admin'}  | ${HttpStatus.NOT_FOUND}
-    ${'admin'}  | ${'self'}   | ${HttpStatus.BAD_REQUEST}
+    ${'admin'}  | ${'root'}   | ${HttpStatus.FORBIDDEN}
+    ${'admin'}  | ${'admin'}  | ${HttpStatus.FORBIDDEN}
+    ${'admin'}  | ${'self'}   | ${HttpStatus.FORBIDDEN}
+    ${'admin'}  | ${'author'} | ${HttpStatus.FORBIDDEN}
+    ${'admin'}  | ${'client'} | ${HttpStatus.FORBIDDEN}
     ${'author'} | ${'root'}   | ${HttpStatus.FORBIDDEN}
     ${'author'} | ${'admin'}  | ${HttpStatus.FORBIDDEN}
     ${'author'} | ${'client'} | ${HttpStatus.FORBIDDEN}
@@ -83,7 +83,7 @@ export function testDeleteUser() {
     ${'client'} | ${'author'} | ${HttpStatus.FORBIDDEN}
     ${'client'} | ${'self'}   | ${HttpStatus.FORBIDDEN}
   `(
-    '$executor cannot delete $target',
+    '$executor cannot permanently delete $target',
     async ({ executor, target, status }: Record<string, any>) => {
       const executeUser = getGlobalUser(executor);
       let targetUser = target === 'self' ? executeUser : getGlobalUser(target);

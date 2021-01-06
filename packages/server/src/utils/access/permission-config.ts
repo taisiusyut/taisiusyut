@@ -4,12 +4,10 @@ import { Permission } from './permission-types';
 const admin: Permission[] = [
   'user_create',
   'user_update',
-  'user_delete',
   'user_get_all',
   'user_get',
 
   'book_update',
-  'book_delete',
   'book_get_all',
   'book_get',
   'book_status_update',
@@ -28,7 +26,7 @@ const admin: Permission[] = [
 ];
 
 export const permissonsMap: Record<UserRole, Permission[]> = {
-  [UserRole.Root]: [...admin],
+  [UserRole.Root]: [...admin, 'user_delete', 'book_delete'],
   [UserRole.Admin]: admin,
   [UserRole.Author]: [
     'book_create',
