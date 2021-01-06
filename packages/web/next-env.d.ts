@@ -16,3 +16,11 @@ declare interface Window {
   __setFixWidth: (flag: boolean) => void;
   __setPagingDisplay: (flag: boolean) => void;
 }
+
+// for `styled-jsx` width `@types/react@^17.0.0`
+declare namespace React {
+  interface StyleHTMLAttributes<T> extends HTMLAttributes<T> {
+    jsx?: boolean;
+    global?: boolean;
+  }
+}
