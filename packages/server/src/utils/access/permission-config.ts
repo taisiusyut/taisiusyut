@@ -33,8 +33,7 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
     'book_update',
     'book_get_all',
     'book_get',
-    'book_public',
-    'book_finish',
+    'book_public_finish',
 
     'chapter_create',
     'chapter_update',

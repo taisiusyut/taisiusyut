@@ -107,12 +107,10 @@ export class BookController {
     return this.bookService.paginate(query);
   }
 
-  @Access('book_public', 'book_finish')
+  @Access('book_public_finish')
   @HttpCode(HttpStatus.OK)
   @Post(routes.book.public_finish_book)
   async public(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
-    // TODO: check chapter length ?
-
     const currStatus =
       req.params.type === 'public' ? BookStatus.Private : BookStatus.Public;
 
