@@ -44,7 +44,10 @@ export function MixedDrawer({
       {...props}
       className={`${className} ${classes['drawer']}`.trim()}
     >
-      <div className={classes['drawer-header']}>
+      <div
+        className={classes['drawer-header']}
+        onTouchMove={event => event.preventDefault()}
+      >
         <Icon icon={icon} iconSize={20} />
         <span className={classes['heading']}>{title}</span>
         <Button minimal icon="cross" onClick={props.onClose} />

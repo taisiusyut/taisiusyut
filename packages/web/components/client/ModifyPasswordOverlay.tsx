@@ -42,10 +42,9 @@ export function ModifyPasswordOverlay({ logout, ...props }: Props) {
       icon="lock"
       intent="danger"
       confirmText="確認"
-      cancelText="確認"
+      cancelText="取消"
       title={title}
       onConfirm={onConfirm}
-      onClose={() => void 0}
     >
       <ModifyPasswordForm form={form} />
     </MixedConfirmOverlay>
