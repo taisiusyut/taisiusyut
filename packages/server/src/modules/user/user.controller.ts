@@ -128,7 +128,7 @@ export class UserController {
     return result;
   }
 
-  @Access('user_update')
+  @Access('user_delete')
   @Delete(routes.user.delete_user)
   async delete(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
     const self = id === req.user?.user_id;
@@ -139,8 +139,28 @@ export class UserController {
       );
     }
 
-    return this.update(req, id, {
-      status: UserStatus.Deleted
+    const query = this.userService.getRoleBasedQuery(req.user, {
+      _id: id
     });
+
+    const user = await this.userService.findOne(query);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    if (user.status !== UserStatus.Deleted) {
+      throw new BadRequestException(
+        `user status is ${UserStatus[user.status]} expect ${
+          UserStatus[UserStatus.Deleted]
+        }`
+      );
+    }
+
+    const result = this.userService.delete(query);
+
+    await this.refreshTokenService.deleteMany({ user_id: id });
+
+    return result;
   }
 }

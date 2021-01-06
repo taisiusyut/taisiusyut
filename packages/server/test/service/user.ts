@@ -53,7 +53,7 @@ export function updateUser(
 
 export function deleteUser(token: string, id: string) {
   return request
-    .delete(routes.update_user.generatePath({ id }))
+    .delete(routes.delete_user.generatePath({ id }))
     .set('Authorization', `bearer ${token}`)
     .send();
 }

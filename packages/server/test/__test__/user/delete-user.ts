@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { Schema$Authenticated, UserRole } from '@/typings';
+import { Schema$Authenticated, UserRole, UserStatus } from '@/typings';
 import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import {
   login,
@@ -9,7 +9,12 @@ import {
   getGlobalUser,
   refreshToken
 } from '../../service/auth';
-import { createUserDto, deleteUser } from '../../service/user';
+import {
+  createUserDto,
+  deleteUser,
+  getUser,
+  updateUser
+} from '../../service/user';
 import { extractCookies } from '../../service/cookies';
 
 export function testDeleteUser() {
@@ -42,6 +47,14 @@ export function testDeleteUser() {
       const executeUser = getGlobalUser(executor);
 
       response = await deleteUser(executeUser.token, targetUser.user.user_id);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+      response = await updateUser(root.token, targetUser.user.user_id, {
+        status: UserStatus.Deleted
+      });
+      expect(response.status).toBe(HttpStatus.OK);
+
+      response = await deleteUser(executeUser.token, targetUser.user.user_id);
       expect(response.status).toBe(HttpStatus.OK);
 
       response = await refreshToken(`${REFRESH_TOKEN_COOKIES}=${cookie.value}`);
@@ -49,6 +62,9 @@ export function testDeleteUser() {
 
       response = await login(userDto);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+      response = await getUser(root.token, targetUser.user.user_id);
+      expect(response.status).toBe(HttpStatus.NOT_FOUND);
     }
   );
 
