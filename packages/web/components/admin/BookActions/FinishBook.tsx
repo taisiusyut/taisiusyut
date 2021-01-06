@@ -1,16 +1,10 @@
 import React from 'react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { finishBook } from '@/service';
-import {
-  BookDetailsActionDialogProps,
-  bookDetailsActionCreator
-} from './bookDetailsActionCreator';
-import classes from './BookDetailsActions.module.scss';
+import { BookActionDialogProps, bookActionCreator } from './bookActionCreator';
+import classes from './BookActions.module.scss';
 
-export function FinishBookDialog({
-  book,
-  ...props
-}: BookDetailsActionDialogProps) {
+export function FinishBookDialog({ book, ...props }: BookActionDialogProps) {
   return (
     <ConfirmDialog {...props}>
       <div className={classes['dialog']}>
@@ -21,7 +15,7 @@ export function FinishBookDialog({
   );
 }
 
-export const getFinishBookActionProps = bookDetailsActionCreator(
+export const getFinishBookActionProps = bookActionCreator(
   'Finish',
   finishBook,
   FinishBookDialog

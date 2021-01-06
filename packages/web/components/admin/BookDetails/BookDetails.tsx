@@ -13,15 +13,12 @@ import {
 import { UserRole, Param$GetChapters } from '@/typings';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import {
-  BookDetailsActions,
-  BookDetailsActionsProps
-} from './BookDetailsActions';
+import { BookActions, BookActionsProps } from '../BookActions';
 import { ChapterTable } from './ChapterTable';
 import classes from './BookDetails.module.scss';
 import { ButtonPopover } from '@/components/ButtonPopover';
 
-interface Props extends BookDetailsActionsProps {}
+interface Props extends BookActionsProps {}
 
 const {
   Filter,
@@ -67,9 +64,7 @@ export function BookDetails({ book, onUpdate }: Props) {
     <div>
       <Card>
         <PageHeader targetPath={`/admin/book`} title="Book Details">
-          {user?.role === UserRole.Author && (
-            <BookDetailsActions book={book} onUpdate={onUpdate} />
-          )}
+          <BookActions book={book} onUpdate={onUpdate} role={user?.role} />
         </PageHeader>
       </Card>
 

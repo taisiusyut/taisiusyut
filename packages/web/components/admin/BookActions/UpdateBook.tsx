@@ -9,16 +9,10 @@ import {
   BookCover
 } from '@/components/admin/Books/BookForm';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
-import {
-  BookDetailsActionDialogProps,
-  bookDetailsActionCreator
-} from './bookDetailsActionCreator';
+import { BookActionDialogProps, bookActionCreator } from './bookActionCreator';
 import { updateBook } from '@/service';
 
-export function UpdateBookDialog({
-  book,
-  ...props
-}: BookDetailsActionDialogProps) {
+export function UpdateBookDialog({ book, ...props }: BookActionDialogProps) {
   const [form] = useForm();
   return (
     <ConfirmDialog {...props}>
@@ -39,7 +33,7 @@ export function UpdateBookDialog({
   );
 }
 
-export const getUpdateBookActionProps = bookDetailsActionCreator(
+export const getUpdateBookActionProps = bookActionCreator(
   'Update',
   updateBook,
   UpdateBookDialog

@@ -54,6 +54,7 @@ export interface Param$UpdateBook {
   name?: string;
   description?: string;
   category?: Category;
+  status?: BookStatus;
   tags?: string[];
   cover?: string | null;
 }

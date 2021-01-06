@@ -12,26 +12,24 @@ export interface OnUpdate {
   onUpdate: (payload: Schema$Book) => void;
 }
 
-export interface BookDetailsActionDialogProps
-  extends Book,
-    ConfirmDialogProps {}
+export interface BookActionDialogProps extends Book, ConfirmDialogProps {}
 
-export interface BookDetailsActionProps {
+export interface BookActionProps {
   text: string;
   onClick: () => void;
 }
 
-export type GetBookDetailsActionProps = (
-  payload: Omit<BookDetailsActionDialogProps, keyof ConfirmDialogProps> &
+export type GetBookActionProps = (
+  payload: Omit<BookActionDialogProps, keyof ConfirmDialogProps> &
     Partial<ConfirmDialogProps> &
     OnUpdate
-) => BookDetailsActionProps;
+) => BookActionProps;
 
-export function bookDetailsActionCreator(
+export function bookActionCreator(
   prefix: string,
   request: (params: { id: string }) => Promise<Schema$Book>,
-  Component: React.ComponentType<BookDetailsActionDialogProps>
-): GetBookDetailsActionProps {
+  Component: React.ComponentType<BookActionDialogProps>
+): GetBookActionProps {
   const title = `${prefix} Book`;
   const opener = createOpenOverlay(Component);
   return function method({ onUpdate, ...payload }) {
