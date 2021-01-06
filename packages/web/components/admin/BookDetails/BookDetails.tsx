@@ -5,6 +5,7 @@ import { createFilter } from '@/components/Filter';
 import { BookInfoCard } from '@/components/BookInfoCard';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { ChapterStatusSelect, ChapterTypeSelect } from '@/components/Select';
+import { ButtonPopover } from '@/components/ButtonPopover';
 import { useAuthState } from '@/hooks/useAuth';
 import {
   createUsePaginationLocal,
@@ -16,7 +17,6 @@ import { Toaster } from '@/utils/toaster';
 import { BookActions, BookActionsProps } from '../BookActions';
 import { ChapterTable } from './ChapterTable';
 import classes from './BookDetails.module.scss';
-import { ButtonPopover } from '@/components/ButtonPopover';
 
 interface Props extends BookActionsProps {}
 
@@ -37,7 +37,7 @@ const gotoChapter = (bookID: string, chapterID?: string) => {
   return router.push(pathname);
 };
 
-export function BookDetails({ book, onUpdate }: Props) {
+export function BookDetails({ book, onSuccess }: Props) {
   const { user } = useAuthState();
   const [useChapters] = useState(() =>
     createUsePaginationLocal(
@@ -64,7 +64,7 @@ export function BookDetails({ book, onUpdate }: Props) {
     <div>
       <Card>
         <PageHeader targetPath={`/admin/book`} title="Book Details">
-          <BookActions book={book} onUpdate={onUpdate} role={user?.role} />
+          <BookActions book={book} onSuccess={onSuccess} role={user?.role} />
         </PageHeader>
       </Card>
 

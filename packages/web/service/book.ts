@@ -39,3 +39,6 @@ export const finishBook = ({ id }: { id: string }) =>
   api.post<Schema$Book>(
     routes.public_finish_book.generatePath({ id, type: 'finish' })
   );
+
+export const deleteBook = ({ id }: { id: string }) =>
+  api.delete<void>(routes.delete_book.generatePath({ id }));

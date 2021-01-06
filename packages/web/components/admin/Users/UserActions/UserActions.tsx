@@ -2,17 +2,18 @@ import React from 'react';
 import { MenuItem } from '@blueprintjs/core';
 import { UserStatus, UserRole } from '@/typings';
 import { createOpenOverlay } from '@/utils/openOverlay';
-import { User, OnUpdate, UserActionDialogProps } from './UserActionDialog';
+import { User, OnSuccess, UserActionDialogProps } from './UserActionDialog';
 import { BlockUserDialog } from './BlockUser';
 import { DeleteUserDialog } from './DeleteUser';
 import { UpdateUserDialog } from './UpdateUser';
 import { RecoverUserDialog } from './RecoverUser';
+import { DeleteUserPermanentlyDialog } from './DeleteUserPermanently';
 
-export interface UserActionsProps extends User, OnUpdate {
+export interface UserActionsProps extends User, OnSuccess {
   role?: UserRole;
 }
 
-export function UserActions({ user, onUpdate }: UserActionsProps) {
+export function UserActions({ role, user, onSuccess }: UserActionsProps) {
   const create = (
     prefix: string,
     icon: UserActionDialogProps['icon'],
@@ -23,7 +24,9 @@ export function UserActions({ user, onUpdate }: UserActionsProps) {
         icon={icon}
         key={prefix}
         text={prefix}
-        onClick={() => createOpenOverlay(Component)({ prefix, user, onUpdate })}
+        onClick={() =>
+          createOpenOverlay(Component)({ prefix, user, onSuccess })
+        }
       />
     );
   };
@@ -38,6 +41,12 @@ export function UserActions({ user, onUpdate }: UserActionsProps) {
         create('Update', 'edit', UpdateUserDialog),
         create('Block', 'ban-circle', BlockUserDialog),
         create('Delete', 'trash', DeleteUserDialog)
+      );
+    }
+
+    if (role === UserRole.Root && user.status === UserStatus.Deleted) {
+      items.push(
+        create('Permanently Delete', 'trash', DeleteUserPermanentlyDialog)
       );
     }
   }

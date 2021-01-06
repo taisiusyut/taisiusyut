@@ -7,17 +7,17 @@ export interface User {
   user: Partial<Schema$User> & Pick<Schema$User, 'id'>;
 }
 
-export interface OnUpdate {
-  onUpdate: (payload: Schema$User) => void;
+export interface OnSuccess {
+  onSuccess: (payload: User['user']) => void;
 }
 
 export interface Request {
-  request: (params: { id: string }) => Promise<Schema$User>;
+  request: (params: { id: string }) => Promise<Schema$User | void>;
 }
 
 export interface UserActionDialogProps
   extends User,
-    OnUpdate,
+    OnSuccess,
     ConfirmDialogProps {
   prefix: string;
 }
@@ -26,14 +26,19 @@ export function UserActionDialog({
   prefix,
   request,
   user,
-  onUpdate,
+  onSuccess,
   ...props
 }: UserActionDialogProps & Request) {
   async function onConfirm() {
+    prefix =
+      prefix.slice(0, 1).toUpperCase() +
+      prefix.slice(1, prefix.length).toLowerCase();
+
     try {
-      const response = await request({ id: user.id });
+      const params = { id: user.id };
+      const response = await request(params);
       Toaster.success({ message: `${prefix} user success` });
-      onUpdate(response);
+      onSuccess(response || params);
     } catch (error) {
       Toaster.apiError(`${prefix} user failure`, error);
     }

@@ -19,15 +19,17 @@ function BookDetailsPageContent({ bookID }: Props) {
   const [book, setBook] = useState<BookState>({
     id: bookID
   });
-  const [{ request, onUpdate }] = useState({
+  const [{ request, onSuccess }] = useState({
     request: () => getBook({ id: bookID }),
-    onUpdate: (payload?: Partial<Schema$Book>) =>
-      setBook(book => ({ ...book, ...payload }))
+    onSuccess: (payload?: Partial<Schema$Book>) =>
+      payload
+        ? setBook(book => ({ ...book, ...payload }))
+        : router.push('/admin/book')
   });
 
   useRxAsync(request, { onSuccess: setBook, onFailure });
 
-  return <BookDetails book={book} onUpdate={onUpdate} />;
+  return <BookDetails book={book} onSuccess={onSuccess} />;
 }
 
 export default function BookDetailsPage() {

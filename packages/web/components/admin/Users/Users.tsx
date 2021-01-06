@@ -13,6 +13,7 @@ import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
 import { openUsersMenu } from './UsersMenu';
 import classes from './Users.module.scss';
+import { useAuthState } from '@/hooks/useAuth';
 
 const {
   FormItem,
@@ -38,6 +39,7 @@ export function Users() {
     onFailure
   });
   const { sort = { createdAt: Order.DESC } } = state.params;
+  const { user } = useAuthState();
 
   return (
     <div className={classes['users']}>
@@ -84,11 +86,15 @@ export function Users() {
 
             if (Object.keys(row.original).length > 0) {
               openUsersMenu({
+                role: user?.role,
                 title: row.original.username,
                 offset: { top: event.pageY, left: event.pageX },
                 onClose: () => row.toggleRowSelected(),
                 user: row.original as Schema$User,
-                onUpdate: actions.update
+                onSuccess: payload =>
+                  Object.keys(payload).length === 1
+                    ? actions.delete(payload)
+                    : actions.update(payload)
               });
             }
           }}

@@ -8,13 +8,14 @@ import {
   IOverlayProps,
   MenuDivider
 } from '@blueprintjs/core';
-import { Schema$User } from '@/typings';
+import { Schema$User, UserRole } from '@/typings';
 import { createOpenOverlay } from '@/utils/openOverlay';
-import { UserActions, OnUpdate } from './UserActions';
+import { UserActions, OnSuccess } from './UserActions';
 
-interface UsersMenuProps extends Partial<IOverlayProps>, OnUpdate {
+interface UsersMenuProps extends Partial<IOverlayProps>, OnSuccess {
   offset: { top: number; left: number };
   title?: string;
+  role?: UserRole;
   user: Schema$User;
 }
 
@@ -22,9 +23,10 @@ export const openUsersMenu = createOpenOverlay<UsersMenuProps>(UsersMenu);
 
 export function UsersMenu({
   offset,
+  role,
   user,
   onClose,
-  onUpdate,
+  onSuccess,
   ...props
 }: UsersMenuProps) {
   return (
@@ -40,9 +42,10 @@ export function UsersMenu({
               });
             }}
           />
+
           <MenuDivider />
 
-          <UserActions user={user} onUpdate={onUpdate} />
+          <UserActions role={role} user={user} onSuccess={onSuccess} />
 
           <MenuDivider />
           <MenuItem icon="cross" text="Close" />
