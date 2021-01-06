@@ -1,6 +1,7 @@
 @import '~styles/utils';
 
 .book {
+  flex: 0 0 auto;
   overflow: hidden;
 
   .book-model {
@@ -9,7 +10,7 @@
     margin-bottom: 10px;
   }
 
-  .book-title {
+  .title {
     @include flex(flex-end, $wrap: wrap);
     margin-bottom: 5px;
 
@@ -34,7 +35,7 @@
     }
   }
 
-  .book-content {
+  .header {
     @include dimen(calc(100% - 100px));
     float: left;
     z-index: 1;
@@ -47,5 +48,9 @@
   .description {
     line-height: 1.5em;
     word-break: break-all;
+
+    @media (min-width: 481px) {
+      white-space: break-spaces;
+    }
   }
 }

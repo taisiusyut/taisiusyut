@@ -27,8 +27,8 @@ export function BookInfoCard({
         cover={book.cover}
       />
 
-      <div className={classes['book-content']}>
-        <div className={classes['book-title']}>
+      <div className={classes['header']}>
+        <div className={classes['title']}>
           <span className={classes['name']}>
             <Skelecton length={3}>{book.name}</Skelecton>
           </span>
