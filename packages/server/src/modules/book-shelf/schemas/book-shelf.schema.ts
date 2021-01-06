@@ -1,15 +1,15 @@
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Chapter } from '@/modules/chapter/schemas/chapter.schema';
-import { Schema$Book, Schema$BookShelf } from '@/typings';
+import { BookStatus, Schema$Book, Schema$BookShelf } from '@/typings';
 
 type ShelfBook = Schema$BookShelf['book'];
 type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
 
-export const bookSelect: {
+export const bookUnSelect: {
   [X in Exclude<keyof Schema$Book, keyof NonNullable<ShelfBook>>]: 0;
 } = {
   author: 0,
@@ -23,6 +23,10 @@ export const latestChapterSelect: {
   id: 1,
   name: 1,
   number: 1
+};
+
+const bookQuery: FilterQuery<Schema$Book> = {
+  $nor: [{ status: BookStatus.Deleted }]
 };
 
 @Schema({
@@ -50,7 +54,8 @@ export class BookShelf
     required: true,
     autopopulate: {
       maxDepth: 1,
-      select: bookSelect
+      match: bookQuery,
+      select: bookUnSelect
     }
   })
   @Type(() => Book)

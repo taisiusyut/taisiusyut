@@ -1,9 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
-import { Schema$Book } from '@/typings';
+import { BookStatus, Schema$Book } from '@/typings';
 import { addBookToShelf, getBooksFromShelf } from '../../service/book-shelf';
 import { getGlobalUser, setupUsers } from '../../service/auth';
-import { createBook, publicBook } from '../../service/book';
+import { createBook, publicBook, updateBook } from '../../service/book';
+import { bookUnSelect } from '@/modules/book-shelf/schemas';
 
 export function testGetBooksFromShelf() {
   const books: Schema$Book[] = [];
@@ -34,13 +35,31 @@ export function testGetBooksFromShelf() {
   });
 
   test.each(users)(`%s can get books from shelf`, async user => {
-    const response = await getBooksFromShelf(getGlobalUser(user).token);
+    const auth = getGlobalUser(user);
+    const response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(length);
     expect(response.body).not.toContain({
-      book: {
-        tags: expect.anything(),
-        description: expect.anything()
-      }
+      book: Object.keys(bookUnSelect).reduce(
+        (result, k) => ({ ...result, [k]: expect.anything() }),
+        {} as Record<keyof typeof bookUnSelect, any>
+      )
     });
+  });
+
+  test(`deleted book in shelf will not be null`, async () => {
+    const response = await updateBook(root.token, books[0].id, {
+      status: BookStatus.Deleted
+    });
+    books[0] = response.body;
+    expect(books[0]).toHaveProperty('status', BookStatus.Deleted);
+
+    for (const user of users) {
+      const auth = getGlobalUser(user);
+      const response = await getBooksFromShelf(auth.token);
+      expect(response.body).toHaveLength(length);
+      expect(response.body).toContainObject({
+        book: null
+      });
+    }
   });
 }

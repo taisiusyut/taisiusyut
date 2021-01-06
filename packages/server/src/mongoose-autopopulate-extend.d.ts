@@ -1,6 +1,5 @@
 declare module 'mongoose' {
-  export interface AutopopulateOpts {
-    select?: any;
+  export interface AutopopulateOpts extends Partial<ModelPopulateOptions> {
     maxDepth?: number;
   }
 
