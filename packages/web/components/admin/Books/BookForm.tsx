@@ -1,10 +1,12 @@
 import React from 'react';
-import { Input, TextArea, TagInput } from '@/components/Input';
+import { Input, TagInput } from '@/components/Input';
 import { CategorySelect } from '@/components/Select';
+import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Param$CreateBook, Param$UpdateBook } from '@/typings';
 import { createForm, validators } from '@/utils/form';
 import { MAXIMUM_TAGS } from '@/constants';
 import { BookCoverUpload } from './BookCoverUpload';
+import classes from './Books.module.scss';
 
 type BookFormSchema = Param$CreateBook | Param$UpdateBook;
 
@@ -26,7 +28,7 @@ export const BookDescription = () => (
     label="Description"
     validators={[validators.required('Please enter the book description')]}
   >
-    <TextArea rows={4} style={{ resize: 'vertical' }} />
+    <ContentEditor className={classes['description']} />
   </FormItem>
 );
 

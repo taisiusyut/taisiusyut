@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button } from '@blueprintjs/core';
 import { createUserForm } from '@/components/UserForm';
-import type { ContentEditorProps } from '@/components/admin/ContentEditor';
+import { ContentEditor } from '@/components/admin/ContentEditor';
 import { useAuth, useAuthActions } from '@/hooks/useAuth';
 import {
   clearJwtToken,
@@ -17,14 +16,6 @@ import { Toaster } from '@/utils/toaster';
 import classes from './Settings.module.scss';
 
 const { Form, FormItem, Email, Nickname, useForm } = createUserForm();
-
-const ContentEditor = dynamic<ContentEditorProps>(
-  () =>
-    import(
-      /* webpackChunkName: "chapters-list-drawer" */ `@/components/admin/ContentEditor`
-    ).then(({ ContentEditor }) => ContentEditor),
-  { ssr: false }
-);
 
 const useUpdateProfile = () => {
   const { updateProfile } = useAuthActions();

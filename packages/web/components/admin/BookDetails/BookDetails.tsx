@@ -70,8 +70,8 @@ export function BookDetails({ book, onUpdate }: Props) {
 
       <BookInfoCard
         book={book}
-        className={classes['info']}
         author={!isAuthor}
+        className={classes['info']}
       />
 
       <Card className={classes['chapters']}>
