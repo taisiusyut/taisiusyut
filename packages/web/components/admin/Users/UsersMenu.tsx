@@ -8,15 +8,9 @@ import {
   IOverlayProps,
   MenuDivider
 } from '@blueprintjs/core';
-import { Schema$User, UserStatus } from '@/typings';
+import { Schema$User } from '@/typings';
 import { createOpenOverlay } from '@/utils/openOverlay';
-import {
-  OnUpdate,
-  BlockUserItem,
-  DeleteUserItem,
-  UpdateUserItem,
-  RecoverUserItem
-} from './UserMenuItem';
+import { UserActions, OnUpdate } from './UserActions';
 
 interface UsersMenuProps extends Partial<IOverlayProps>, OnUpdate {
   offset: { top: number; left: number };
@@ -33,8 +27,6 @@ export function UsersMenu({
   onUpdate,
   ...props
 }: UsersMenuProps) {
-  const itemProps = { onUpdate, user };
-
   return (
     <Overlay {...props} onClose={onClose} hasBackdrop={false}>
       <div className={Classes.POPOVER} style={offset}>
@@ -49,15 +41,8 @@ export function UsersMenu({
             }}
           />
           <MenuDivider />
-          {[UserStatus.Blocked, UserStatus.Deleted].includes(user.status) ? (
-            <RecoverUserItem {...itemProps} />
-          ) : (
-            <>
-              <UpdateUserItem {...itemProps} />
-              <BlockUserItem {...itemProps} />
-              <DeleteUserItem {...itemProps} />
-            </>
-          )}
+
+          <UserActions user={user} onUpdate={onUpdate} />
 
           <MenuDivider />
           <MenuItem icon="cross" text="Close" />
