@@ -17,6 +17,13 @@ export function removeBookFromShelf(token: string, bookID: string) {
     .send();
 }
 
+export function removeBookFromShelfById(token: string, id: string) {
+  return request
+    .delete(routes.remove_book_from_shelf_by_id.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
+
 export function updateBookInShelf(
   token: string,
   bookID: string,

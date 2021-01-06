@@ -50,8 +50,9 @@ export const Routes = {
   book_shelf: {
     prefix: '/book-shelf',
     get_books_from_shelf: '',
-    add_book_to_shelf: '/:bookID',
-    remove_book_from_shelf: '/:bookID',
+    add_book_to_shelf: '/add/:bookID',
+    remove_book_from_shelf: '/remove/:bookID',
+    remove_book_from_shelf_by_id: '/:id',
     update_book_in_shelf: '/:bookID'
   },
   bug_report: {

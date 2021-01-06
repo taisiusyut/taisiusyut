@@ -85,6 +85,15 @@ export class BookShelfController {
     });
   }
 
+  // for remove delted book from shelf
+  @Delete(routes.book_shelf.remove_book_from_shelf_by_id)
+  removeById(@Req() req: FastifyRequest, @ObjectId('id') id: string) {
+    return this.bookShelfService.delete({
+      user: req.user?.user_id,
+      _id: id
+    });
+  }
+
   @Patch(routes.book_shelf.update_book_in_shelf)
   update(
     @Req() req: FastifyRequest,

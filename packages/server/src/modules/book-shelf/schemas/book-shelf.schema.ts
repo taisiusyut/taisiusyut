@@ -10,7 +10,7 @@ type ShelfBook = Schema$BookShelf['book'];
 type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
 
 export const bookSelect: {
-  [X in Exclude<keyof Schema$Book, keyof ShelfBook>]: 0;
+  [X in Exclude<keyof Schema$Book, keyof NonNullable<ShelfBook>>]: 0;
 } = {
   author: 0,
   tags: 0,
