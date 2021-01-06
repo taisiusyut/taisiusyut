@@ -137,7 +137,6 @@ export const password = {
     shouldNotBeEqual(username, PASSWORD_EUQAL_TO_USERNAME)
 };
 
-export const emailFormat = (msg = 'Invalid email format'): Validator => (
-  _,
-  value
-) => (regex(/^\S+@\S+\.\S+$/, value) ? Promise.resolve() : Promise.reject(msg));
+export const emailFormat = (
+  msg = 'Plase input a valid email format'
+): Validator => regex(/^\S+@\S+\.\S+$/, msg);
