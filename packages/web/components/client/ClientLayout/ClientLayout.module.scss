@@ -130,7 +130,10 @@
     display: block;
 
     &:not(:empty) {
-      @include dimen(100%, $bottom-navigation-height);
+      @include dimen(
+        100%,
+        calc(#{$bottom-navigation-height} + env(safe-area-inset-bottom, 0))
+      );
     }
 
     > * {

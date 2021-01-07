@@ -24,7 +24,7 @@ $fixed-chapter-name-height: $fixed-chapter-name-padding-y * 2 +
   }
 
   @media (max-width: $break-point) {
-    margin-top: -$header-height;
+    @include relative(-$header-height);
 
     &.down {
       .fixed-chapter-name {

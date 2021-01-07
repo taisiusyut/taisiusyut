@@ -3,7 +3,7 @@
 $transition: 0.3s;
 $easing: linear;
 
-@mixin side-anim($name, $factor: 1) {
+@mixin slide-anim($name, $factor: 1) {
   @keyframes #{$name} {
     from {
       transform: translateY(100% * $factor);
@@ -34,14 +34,14 @@ $easing: linear;
 }
 
 .top {
-  @include side-anim(side-down, -1);
+  @include slide-anim(slide-down, -1);
   @include dimen(100%, $header-height);
   @include flex(center);
   @include padding-x(15px);
 }
 
 .bottom {
-  @include side-anim(side-up, 1);
+  @include slide-anim(slide-up, 1);
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
@@ -58,7 +58,7 @@ $easing: linear;
   @include flex(center, space-between);
   @include padding-x(15px);
   @include padding-y(20px 15px);
-  @include shadow-border();
+  border-top: 1px solid var(--divider-color);
 }
 
 .item {

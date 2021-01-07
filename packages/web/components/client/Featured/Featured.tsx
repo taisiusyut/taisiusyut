@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import router from 'next/router';
+import router, { useRouter } from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { exhaustMap } from 'rxjs/operators';
 import { ButtonPopover } from '@/components/ButtonPopover';
@@ -46,6 +46,7 @@ export function Featured({ data }: FeaturedProps) {
   });
 
   const loaded = !!books[0].name;
+  const { asPath } = useRouter();
 
   // only fetch api if visbile
   useEffect(() => {
@@ -59,7 +60,7 @@ export function Featured({ data }: FeaturedProps) {
       window.addEventListener('resize', handler);
       return () => window.removeEventListener('resize', handler);
     }
-  }, [loaded, fetch]);
+  }, [loaded, asPath, fetch]);
 
   return (
     <>
