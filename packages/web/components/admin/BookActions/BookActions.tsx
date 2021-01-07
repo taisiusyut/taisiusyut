@@ -42,7 +42,7 @@ export function BookActions({ role, book, onSuccess }: BookActionsProps) {
 
           if (role === UserRole.Root) {
             items.push(
-              create('Permanently delete', DeleteBookPermanentlyDialog)
+              create('Permanently Delete', DeleteBookPermanentlyDialog)
             );
           }
         } else {
