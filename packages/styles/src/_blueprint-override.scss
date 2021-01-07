@@ -35,19 +35,6 @@ a:hover,
   margin-bottom: 0;
 }
 
-.#{$ns}-toast {
-  max-width: 320px;
-}
-
-.#{$ns}-toast-message {
-  .toast-message-title {
-    font-weight: bold;
-    font-size: 14px;
-    height: 16px;
-    margin-bottom: 5px;
-  }
-}
-
 [data-theme^='dark'] {
   .#{$ns}-popover.#{$ns}-popover {
     .#{$ns}-popover-arrow {
