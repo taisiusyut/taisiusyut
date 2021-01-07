@@ -49,7 +49,7 @@ export class User implements InsertedUserSchema {
     required: true,
     enum: Object.values(UserStatus)
   })
-  @Group(['Root', 'Admin'])
+  @Group(['Root', 'Admin', 'Guest'])
   status: UserStatus;
 
   @Prop({
