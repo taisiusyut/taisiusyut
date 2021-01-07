@@ -50,6 +50,12 @@ export const ClientChapterContent = React.memo(
       );
     }
 
+    const handleRetry = (event: React.MouseEvent<HTMLElement>) => {
+      event.stopPropagation(); // prevent trigger showOverlay in `ClientChapter`
+      event.preventDefault();
+      fetch();
+    };
+
     return (
       <div className={classes['error']}>
         <div>
@@ -57,7 +63,7 @@ export const ClientChapterContent = React.memo(
             <Icon icon="warning-sign" iconSize={50} intent="warning" />
           </div>
           <div>{error ? getErrorMessage(error) : '未知錯誤'}</div>
-          <Button intent="primary" onClick={fetch}>
+          <Button intent="primary" onClick={handleRetry}>
             重試
           </Button>
         </div>
