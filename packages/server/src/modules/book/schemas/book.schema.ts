@@ -3,7 +3,7 @@ import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$Book, BookStatus, Category } from '@/typings';
-import { Author } from './author';
+import { BookAuthor } from './book-author';
 
 @Schema({
   timestamps: true,
@@ -39,8 +39,8 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
     required: true,
     autopopulate: { maxDepth: 1 }
   })
-  @Type(() => Author)
-  author: Author | string;
+  @Type(() => BookAuthor)
+  author: BookAuthor | string;
 
   @Prop({ type: String, required: true, trim: true })
   authorName: string;

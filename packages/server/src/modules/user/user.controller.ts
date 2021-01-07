@@ -24,24 +24,11 @@ import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
 
 @Controller(routes.user.prefix)
 export class UserController {
-  private roles: Partial<Record<UserRole, { role: UserRole }[]>>;
-
   constructor(
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly refreshTokenService: RefreshTokenService
-  ) {
-    const _roles = Object.values(UserRole);
-    this.roles = {
-      [UserRole.Root]: _roles.map(role => ({ role })),
-      [UserRole.Admin]: _roles
-        .filter(r => ![UserRole.Root, UserRole.Admin].includes(r))
-        .map(role => ({ role })),
-      [UserRole.Guest]: _roles
-        .filter(r => ![UserRole.Root, UserRole.Admin].includes(r))
-        .map(role => ({ role }))
-    };
-  }
+  ) {}
 
   @Access('user_get_all')
   @Get(routes.user.get_users)
@@ -51,7 +38,7 @@ export class UserController {
     if (req.user) {
       condition = [
         ...condition,
-        { $or: this.roles[req.user.role] },
+        { $or: this.userService.roles[req.user.role] },
         { $nor: [{ username: req.user.username }] } // Exclude self
       ];
     }

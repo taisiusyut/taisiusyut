@@ -12,7 +12,7 @@ const filterRole = (predicate: (role: UserRole) => boolean) =>
 
 @Injectable()
 export class UserService extends MongooseCRUDService<User> {
-  roles = {
+  roles: Partial<Record<UserRole, { role: UserRole }[]>> = {
     // make sure root cannot access other root that status is `Deleted`
     [UserRole.Root]: filterRole(role => role !== UserRole.Root),
 

@@ -6,6 +6,7 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { fuzzySearch } from '@/utils/mongoose';
 import { Schema$User, UserRole } from '@/typings';
 import { UserController } from './user.controller';
+import { AuthorController } from './author.controller';
 import { UserService } from './user.service';
 import { User, UserSchema } from './schemas/user.schema';
 import { ClientSchema } from './schemas/client.schema';
@@ -44,7 +45,7 @@ import paginate from 'mongoose-paginate-v2';
       }
     ])
   ],
-  controllers: [UserController],
+  controllers: [UserController, AuthorController],
   providers: [UserService],
   exports: [UserService]
 })

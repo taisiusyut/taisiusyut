@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 import { Schema$Author, Schema$BookAuthor } from '@/typings';
 import { groups } from '@/utils/access';
 
@@ -21,7 +22,7 @@ class Excluded implements Partial<Schema$BookAuthor> {
   updatedAt: undefined;
 }
 
-class Optional
+class BookAuthorOptional
   extends Excluded
   implements Partial<Omit<Schema$BookAuthor, keyof Excluded>> {
   @Private()
@@ -33,11 +34,13 @@ class Optional
   @Private()
   email?: string;
 
+  @IsOptional()
+  @IsString()
   description?: string;
 }
 
-export class Author
-  extends Optional
-  implements Required<Omit<Schema$Author, keyof Optional>> {
+export class BookAuthor
+  extends BookAuthorOptional
+  implements Required<Omit<Schema$Author, keyof BookAuthorOptional>> {
   nickname: string;
 }
