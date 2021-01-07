@@ -38,15 +38,14 @@ export function testUpdateBookInShelf() {
   });
 
   test.each(users)(`%s can update book in shelf`, async user => {
+    const payload = { pin: true, lastVisit: 1 };
     const response = await updateBookInShelf(
       getGlobalUser(user).token,
       books[0].id,
-      {
-        pin: true,
-        lastVisit: 1
-      }
+      { pin: true, lastVisit: 1 }
     );
     expect(response.status).toBe(HttpStatus.OK);
+    expect(response.body).toMatchObject(payload);
   });
 
   test.each`

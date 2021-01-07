@@ -1,4 +1,4 @@
-import { IsOptional, IsMongoId, IsInt, Min } from 'class-validator';
+import { IsOptional, IsInt, Min, IsBoolean } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Schema$BookShelf, Param$UpdateBookInShelf } from '@/typings';
 
@@ -31,7 +31,7 @@ class UpdateBookInShelf
     Partial<Omit<Schema$BookShelf, keyof Excluded>>,
     Partial<Omit<Param$UpdateBookInShelf, keyof Excluded>> {
   @IsOptional()
-  @IsMongoId()
+  @IsBoolean()
   @Transform(value => value && JSON.parse(value))
   pin?: boolean;
 

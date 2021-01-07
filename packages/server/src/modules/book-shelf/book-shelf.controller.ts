@@ -1,14 +1,15 @@
 import { FastifyRequest } from 'fastify';
 import {
-  BadRequestException,
   Controller,
-  Delete,
-  ForbiddenException,
   Get,
   Patch,
+  Delete,
   Post,
   Req,
+  Body,
   Query,
+  ForbiddenException,
+  BadRequestException,
   InternalServerErrorException
 } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
@@ -20,6 +21,7 @@ import { Access } from '@/utils/access';
 import { BookShelfService } from './book-shelf.service';
 import { GetBooksFromShelfDto, UpdateBookInShelfDto } from './dto';
 import { BookShelf } from './schemas';
+
 @Access('Auth')
 @Controller(routes.book_shelf.prefix)
 export class BookShelfController {
@@ -108,7 +110,7 @@ export class BookShelfController {
   update(
     @Req() req: FastifyRequest,
     @ObjectId('bookID') bookID: string,
-    dto: UpdateBookInShelfDto
+    @Body() dto: UpdateBookInShelfDto
   ) {
     return this.bookShelfService.findOneAndUpdate(
       {
