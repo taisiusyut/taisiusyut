@@ -39,7 +39,7 @@ export function BookShelf() {
           books => {
             const payload = books.map(data => ({
               ...data,
-              bookID: data.book.id
+              bookID: data.book?.id || data.id
             }));
             actions.list(payload);
           },

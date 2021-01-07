@@ -15,6 +15,9 @@ export const addBookToShelf = (bookID: string) =>
 export const removeBookFromShelf = (bookID: string) =>
   api.delete(routes.remove_book_from_shelf.generatePath({ bookID }));
 
+export const removeBookFromShelfById = (id: string) =>
+  api.delete(routes.remove_book_from_shelf_by_id.generatePath({ id }));
+
 export const updateBookInShelf = ({
   bookID,
   ...payload

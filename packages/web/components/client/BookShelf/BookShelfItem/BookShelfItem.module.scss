@@ -71,3 +71,16 @@ $min-height: 1em;
   font-size: 0.85em;
   margin-top: 0.35em;
 }
+
+.deleted {
+  @include flex(center, center);
+  @include dimen(100%);
+  @include padding-y(20px);
+  color: $orange3;
+  line-height: 1.8em;
+  text-align: center;
+
+  button {
+    width: 60px;
+  }
+}

@@ -10,6 +10,7 @@ import { isTouchable } from '@/constants';
 import { openBookShelfItemActions, Offset } from '../openBookShelfItemActions';
 import { RequiredProps } from '../BookShelfItemActions';
 import { BookShelfMenu } from '../BookShelfContextMenu';
+import { BookDeletedNotice } from './BookDeletedNotice';
 import classes from './BookShelfItem.module.scss';
 
 interface Props {
@@ -41,14 +42,13 @@ function ActionButton(props: RequiredProps) {
   ) : null;
 }
 
-export function BookShelfItem({
-  data: { book, latestChapter, lastVisit }
-}: Props) {
-  const { asPath } = useRouter();
+const bookModelWidth = 55;
+// const RemoveBookButton = withRemoveBookFromShelf(Button);
 
-  const className = [classes['item']];
-
+export function BookShelfItem({ data }: Props) {
   const [shelf, actions] = useBookShelf();
+  const { asPath } = useRouter();
+  const { book, latestChapter, lastVisit } = data;
 
   const [ref] = useContextMenu<HTMLDivElement>(
     event =>
@@ -61,10 +61,12 @@ export function BookShelfItem({
       })
   );
 
+  const className = classes['item'];
+
   // if `skelecton` is a space can disable `Skelecton` fallback
-  const content = (flatten: boolean, skelecton = '') => (
+  const content = (flatten: boolean, disableSkelecton = false) => (
     <div className={classes['item-body']}>
-      <BookModel width={55} flatten={flatten} />
+      <BookModel width={bookModelWidth} flatten={flatten} />
       <div className={classes['item-content']}>
         <div className={classes['book-name']}>
           <Skelecton length={3}>{book?.name}</Skelecton>
@@ -75,8 +77,8 @@ export function BookShelfItem({
           </Skelecton>
         </div>
         <div className={classes['book-latest-chapter']}>
-          <Skelecton length={5}>
-            {(latestChapter && `連載至 ${latestChapter.name}`) || skelecton}
+          <Skelecton length={5} disabled={disableSkelecton}>
+            {latestChapter && `連載至 ${latestChapter.name}`}
           </Skelecton>
         </div>
       </div>
@@ -90,18 +92,26 @@ export function BookShelfItem({
     return (
       <div
         ref={ref}
-        className={[...className, active ? classes['active'] : '']
+        className={[className, active ? classes['active'] : '']
           .join(' ')
           .trim()}
       >
         <Link href={`${basePath}/chapter/${lastVisit || 1}`}>
           {/* Should not use <a /> since it have conflict with context menu in In iPhone safari */}
-          {content(active, ' ')}
+          {content(active, true)}
         </Link>
         <ActionButton bookID={book.id} shelf={shelf} actions={actions} />
       </div>
     );
   }
 
-  return <div className={className.join(' ').trim()}>{content(false)}</div>;
+  if (data.bookID === data.id) {
+    return (
+      <div className={className}>
+        <BookDeletedNotice id={data.id} onSuccess={actions.delete} />
+      </div>
+    );
+  }
+
+  return <div className={className}>{content(false)}</div>;
 }
