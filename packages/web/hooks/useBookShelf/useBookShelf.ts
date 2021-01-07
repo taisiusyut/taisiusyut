@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
+import { updateBookInShelf } from '@/service';
 import { StateContext, ActionContext } from './bookShelfProvider';
 
 export function useBookShelfState() {
@@ -23,4 +24,23 @@ export function useBookShelfActions() {
 
 export function useBookShelf() {
   return [useBookShelfState(), useBookShelfActions()] as const;
+}
+
+export function useLastVisitChapter(
+  bookID: string | undefined,
+  chapterNo: number
+) {
+  const timeout = useRef(setTimeout(() => void 0, 0));
+  const [shelf, actions] = useBookShelf();
+
+  useEffect(() => {
+    if (bookID && shelf.byIds[bookID]?.lastVisit !== chapterNo) {
+      clearTimeout(timeout.current);
+      timeout.current = setTimeout(() => {
+        const payload = { bookID, lastVisit: chapterNo };
+        actions.update(payload);
+        updateBookInShelf(payload);
+      }, 1000);
+    }
+  }, [chapterNo, bookID, actions, shelf.byIds]);
 }

@@ -16,6 +16,8 @@ import {
   useClientPreferences
 } from '@/hooks/useClientPreferences';
 import { useGoBack } from '@/hooks/useGoBack';
+import { useLastVisitChapter } from '@/hooks/useBookShelf';
+import { lastVisitStorage } from '@/utils/storage';
 import { FixedChapterName } from './FixedChapterName';
 import { ClientChapterHeader } from './ClientChapterHeader';
 import { ClientChapterOverlay } from './ClientChapterOverlay';
@@ -297,7 +299,10 @@ function ClientChapterComponment({
 
   useEffect(() => {
     document.title = formatChapterTitle(currentChapter, bookName);
+    lastVisitStorage.set(bookName, currentChapter);
   }, [currentChapter, bookName]);
+
+  useLastVisitChapter(bookID, currentChapter);
 
   if (bookID) {
     const chapterName =

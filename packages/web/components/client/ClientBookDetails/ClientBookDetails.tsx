@@ -13,7 +13,7 @@ import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
 import { ClientBookChaptersGrid, ChaptersGrid } from './ClientBookChaptersGrid';
 import {
   ClientBookChaptersDrawer,
-  ClientBookChaptersDrawerCard
+  ClientBookChaptersDrawerTrigger
 } from './ClientBookChaptersDrawer';
 import classes from './ClientBookDetails.module.scss';
 
@@ -38,6 +38,14 @@ const headerProps: HeaderProps = {
 const chapterPlaceHolders = Array.from({ length: 30 }).map((_, idx) => ({
   id: String(idx)
 }));
+
+const onTagClick = (tag: unknown) => {
+  if (typeof tag === 'string') {
+    router.push({ pathname: '/search', query: { tag } }, undefined, {
+      shallow: true
+    });
+  }
+};
 
 export function ClientBookDetailsComponent({
   bookName,
@@ -68,13 +76,7 @@ export function ClientBookDetailsComponent({
       <div className={classes['content']}>
         <BookInfoCard
           book={book}
-          onTagClick={tag =>
-            router.push(
-              { pathname: '/search', query: { tag: tag.children as string } },
-              undefined,
-              { shallow: true }
-            )
-          }
+          onTagClick={tag => onTagClick(tag.children)}
         />
         <ClientBookChaptersGrid
           key={book.id}
@@ -102,7 +104,7 @@ export function ClientBookDetails({
         <div className={classes['content']}>
           <BookInfoCard book={{}} />
           <ChaptersGrid chapters={chapterPlaceHolders} />
-          <ClientBookChaptersDrawerCard />
+          <ClientBookChaptersDrawerTrigger />
         </div>
       </>
     );

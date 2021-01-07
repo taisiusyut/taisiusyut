@@ -7,6 +7,7 @@ import { Skelecton } from '@/components/Skelecton';
 import { BookShelf, useBookShelf } from '@/hooks/useBookShelf';
 import { useContextMenu, UseContextMenuEvent } from '@/hooks/useContextMenu';
 import { isTouchable } from '@/constants';
+import { lastVisitStorage } from '@/utils/storage';
 import { openBookShelfItemActions, Offset } from '../openBookShelfItemActions';
 import { RequiredProps } from '../BookShelfItemActions';
 import { BookShelfMenu } from '../BookShelfContextMenu';
@@ -88,6 +89,7 @@ export function BookShelfItem({ data }: Props) {
   if (book) {
     const basePath = `/book/${book.name}`;
     const active = decodeURIComponent(asPath).startsWith(basePath);
+    const _lastVisit = lastVisit || lastVisitStorage.get(book.name, 1);
 
     return (
       <div
@@ -96,7 +98,7 @@ export function BookShelfItem({ data }: Props) {
           .join(' ')
           .trim()}
       >
-        <Link href={`${basePath}/chapter/${lastVisit || 1}`}>
+        <Link href={`${basePath}/chapter/${_lastVisit}`}>
           {/* Should not use <a /> since it have conflict with context menu in In iPhone safari */}
           {content(active, true)}
         </Link>

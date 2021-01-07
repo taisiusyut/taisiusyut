@@ -3,7 +3,7 @@ import { JSONParse } from './JSONParse';
 export interface IStorage<T> {
   key: string;
   get(): T;
-  get<K extends keyof T>(prop: K): T[K];
+  get<K extends keyof T>(prop: K, fallback: T[K]): T[K];
   get<K extends keyof T>(prop?: K): T | T[K];
   set<K extends keyof T>(prop: K, value: T[K]): void;
   save(value: T): void;
@@ -18,13 +18,13 @@ function createMemoryStorage<T extends {}>(
   let value = JSON.parse(JSON.stringify(defaultValue)) as T;
   return {
     key,
-    get: <K extends keyof T>(prop?: K) => {
+    get: <K extends keyof T>(prop?: K, fallback?: T[K]) => {
       if (typeof prop === 'undefined') {
         return value;
       }
 
       if (isObject(value)) {
-        return value[prop] as any;
+        return (value[prop] as any) ?? fallback;
       }
 
       throw new Error(`value is not an object`);
@@ -51,13 +51,13 @@ function createStorageFromWebStorage(webStorage: globalThis.Storage) {
     let value = JSONParse<T>(webStorage.getItem(key) || '', defaultValue);
     return {
       key,
-      get: <K extends keyof T>(prop?: K) => {
+      get: <K extends keyof T>(prop?: K, fallback?: T[K]) => {
         if (typeof prop === 'undefined') {
           return value;
         }
 
         if (isObject(value)) {
-          return value[prop] as any;
+          return (value[prop] as any) ?? fallback;
         }
 
         throw new Error(`value is not an object`);
@@ -87,13 +87,13 @@ function createStorageFromStorage(storage: IStorage<Record<string, any>>) {
       JSON.parse(JSON.stringify(defaultValue))) as T;
     return {
       key,
-      get: <K extends keyof T>(prop?: K) => {
+      get: <K extends keyof T>(prop?: K, fallback?: T[K]) => {
         if (typeof prop === 'undefined') {
           return value as T;
         }
 
         if (isObject(value)) {
-          return value[prop] as any;
+          return (value[prop] as any) ?? fallback;
         }
 
         throw new Error(`value is not an object`);
@@ -146,10 +146,16 @@ export const createAdminStorage = createStorageFromStorage(
   createTaisiusyutStorage('admin', {} as Record<string, any>)
 );
 
+// admin
 export const createChapterSotrage = createStorageFromStorage(
   createAdminStorage('chapter', {} as Record<string, any>)
 );
 
 export const createClientStorage = createStorageFromStorage(
   createTaisiusyutStorage('client', {} as Record<string, any>)
+);
+
+export const lastVisitStorage = createClientStorage(
+  'lasvisit',
+  {} as Record<string, number>
 );
