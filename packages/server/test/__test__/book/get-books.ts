@@ -61,9 +61,9 @@ async function setupBooks(token: string, status: BookStatus) {
 }
 
 const authors = [
-  createBooks({ Public: 1, Pending: 2, Finished: 1 }),
-  createBooks({ Public: 2, Pending: 2, Finished: 1 }),
-  createBooks({ Public: 2, Pending: 1, Finished: 1 })
+  createBooks({ Public: 1, Pending: 2, Finished: 1, Deleted: 1 }),
+  createBooks({ Public: 2, Pending: 2, Finished: 1, Deleted: 1 }),
+  createBooks({ Public: 2, Pending: 1, Finished: 1, Deleted: 1 })
 ].map<Author>(books => ({ books, auth: {} as Schema$Authenticated }));
 
 const mocks: Mocks = {
@@ -85,6 +85,7 @@ export function testGetBooks() {
     await app.get(BookService).clear();
     await setupRoot();
     await setupUsers();
+
     for (const author of mocks.authors) {
       const response = await createUserAndLogin(root.token, {
         role: UserRole.Author
@@ -172,6 +173,7 @@ export function testGetBooks() {
       }
     }
   );
+
   test(`client access books by status`, async () => {
     for (const status of bookStatus) {
       const response = await getBooks(client.token, { pageSize: 100, status });
@@ -190,11 +192,13 @@ export function testGetBooks() {
 
   test(`client access books by author nickname`, async () => {
     for (const author of authors) {
-      const response = await getBooks(author.auth.token, {
+      const response = await getBooks(client.token, {
         pageSize: 1000,
         authorName: author.auth.user.nickname
       });
-      expect(response.body.data).toHaveLength(author.books.total);
+      expect(response.body.data).toHaveLength(
+        author.books.stats.Public + author.books.stats.Finished
+      );
     }
   });
 }

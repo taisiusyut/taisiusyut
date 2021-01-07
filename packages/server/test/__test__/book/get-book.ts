@@ -27,7 +27,8 @@ function createGetBookTest(getBook: GetBook) {
       BookStatus.Public,
       BookStatus.Public,
       BookStatus.Private,
-      BookStatus.Finished
+      BookStatus.Finished,
+      BookStatus.Deleted
     ];
     let mockAuthor: Schema$Authenticated;
 
@@ -50,7 +51,7 @@ function createGetBookTest(getBook: GetBook) {
     });
 
     test.each(['root', 'admin', 'author', 'client'])(
-      '%s access book correctly',
+      '%s can access public/finished book and return correctly',
       async user => {
         for (const book of books) {
           const response = await getBook(getGlobalUser(user).token, book);
@@ -83,22 +84,39 @@ function createGetBookTest(getBook: GetBook) {
       }
     );
 
-    test(`author can access his/her non-public or non-finish book`, async () => {
+    test(`author can access his/her all status book`, async () => {
       for (const book of books) {
-        if (
-          book.status !== BookStatus.Public &&
-          book.status !== BookStatus.Finished
-        ) {
-          const response = await getBook(mockAuthor.token, book);
-          expect(response.status).toBe(HttpStatus.OK);
-          expect(response.body.author).not.toMatchObject({
-            id: expect.anything(),
-            email: expect.anything(),
-            username: expect.anything(),
-            password: expect.anything()
-          });
-        }
+        const response = await getBook(mockAuthor.token, book);
+        expect(response.status).toBe(HttpStatus.OK);
+        expect(response.body.author).not.toMatchObject({
+          id: expect.anything(),
+          email: expect.anything(),
+          username: expect.anything(),
+          password: expect.anything()
+        });
       }
+    });
+
+    let deletedBook: Schema$Book;
+    test.each`
+      user        | expect      | status
+      ${'root'}   | ${'can'}    | ${HttpStatus.OK}
+      ${'admin'}  | ${'can'}    | ${HttpStatus.OK}
+      ${'author'} | ${'can'}    | ${HttpStatus.OK}
+      ${'client'} | ${'cannot'} | ${HttpStatus.NOT_FOUND}
+    `(`$user $expect access deleted book`, async ({ user, status }) => {
+      if (!deletedBook) {
+        let response = await createBook(author.token);
+        response = await updateBook(root.token, response.body.id, {
+          status: BookStatus.Deleted
+        });
+        deletedBook = response.body;
+      }
+
+      expect(deletedBook).toHaveProperty('status', BookStatus.Deleted);
+
+      const response = await getBook(getGlobalUser(user).token, deletedBook);
+      expect(response.status).toBe(status);
     });
   };
 }
