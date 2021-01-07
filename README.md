@@ -2,21 +2,23 @@
 
 A project for learning full-stack development
 
+<img src="./screenshot/client-index.png" />
+
 ## Goal
 
-| Status |      -      | Tech                                            | Link                                                    | Description                         |
-| :----: | :---------: | ----------------------------------------------- | ------------------------------------------------------- | ----------------------------------- |
-|  WIP   |   Server    | [NestJS](https://nestjs.com/), Fastify, MongoDB | -                                                       |
-|  WIP   | Admin Panel | [NextJS](https://nextjs.org/)                   | [Preview](https://taisiusyut-demo.herokuapp.com/admin/) | login as `guest123` and `a12345678` |
-|  WIP   | Web Client  | [NextJS](https://nextjs.org/), PWA              | [Preview](https://taisiusyut-demo.herokuapp.com/)       |                                     |
-|   -    |     App     | React Native, Expo                              | -                                                       |
+| Status |      -      | Tech                                            | Preview                                              | Description                         |
+| :----: | :---------: | ----------------------------------------------- | ---------------------------------------------------- | ----------------------------------- |
+|  WIP   |   Server    | [NestJS](https://nestjs.com/), Fastify, MongoDB | -                                                    |
+|  WIP   | Admin Panel | [NextJS](https://nextjs.org/)                   | [Link](https://taisiusyut-demo.herokuapp.com/admin/) | login as `guest123` and `a12345678` |
+|  WIP   | Web Client  | [NextJS](https://nextjs.org/), PWA              | [Link](https://taisiusyut-demo.herokuapp.com/)       |                                     |
+|   -    |     App     | React Native, Expo                              | -                                                    |
 
 ## Development
 
 ### Mongodb
 
 Start local mongodb `mongodb://localhost:27017/` <br />
-or create a `.env.development.local` file under `packages/server` and add
+or create a `.env.local` file under `packages/server` and `packages/web` add
 
 ```
 MONGODB_URI=mongodb://YOUR_MONGODB_URL
