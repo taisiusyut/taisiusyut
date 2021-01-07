@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
+import { exhaustMap } from 'rxjs/operators';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { ClientHeader } from '@/components/client/ClientLayout';
@@ -21,6 +22,15 @@ export interface FeaturedProps {
 const SearchButton = withDesktopHeaderBtn(ButtonPopover);
 
 export function Featured({ data }: FeaturedProps) {
+  const pageSize = data.mostvisited.length;
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [books, setBooks] = useState<Book[]>(() =>
+    Array.from({ length: pageSize }).map((_, idx) => ({
+      id: String(idx)
+    }))
+  );
+
   const [request] = useState(() => async () => {
     const response = await getBooks({
       sort: { updatedAt: Order.DESC },
@@ -29,13 +39,27 @@ export function Featured({ data }: FeaturedProps) {
     return response.data;
   });
 
-  const [books, setBooks] = useState<Book[]>(() =>
-    Array.from({ length: data.mostvisited.length }).map(() => ({
-      id: String(Math.random())
-    }))
-  );
+  const [, { fetch }] = useRxAsync(request, {
+    defer: true,
+    onSuccess: setBooks,
+    mapOperator: exhaustMap
+  });
 
-  useRxAsync(request, { onSuccess: setBooks });
+  const loaded = !!books[0].name;
+
+  // only fetch api if visbile
+  useEffect(() => {
+    const el = contentRef.current;
+    if (el && !loaded) {
+      const handler = () => {
+        const visible = !!el.offsetWidth;
+        visible && fetch();
+      };
+      handler();
+      window.addEventListener('resize', handler);
+      return () => window.removeEventListener('resize', handler);
+    }
+  }, [loaded, fetch]);
 
   return (
     <>
@@ -50,7 +74,7 @@ export function Featured({ data }: FeaturedProps) {
           />
         }
       />
-      <div className={classes['content']}>
+      <div className={classes['content']} ref={contentRef}>
         <FeaturedSection title="最近更新" books={books} />
         <FeaturedSection title="最多瀏覽" books={data.mostvisited} />
         <FeaturedSection title="讀者推薦" books={data.clientSuggested} />
