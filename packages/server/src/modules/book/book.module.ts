@@ -1,6 +1,8 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Model, Query, Document, MongooseFuzzySearchingField } from 'mongoose';
+import { UserModule } from '@/modules/user/user.module';
+import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { fuzzySearch } from '@/utils/mongoose';
@@ -14,6 +16,8 @@ import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
+    UserModule,
+    forwardRef(() => ChapterModule),
     MongooseModule.forFeatureAsync([
       {
         imports: [CloudinaryModule],

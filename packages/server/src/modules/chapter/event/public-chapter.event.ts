@@ -1,9 +1,3 @@
-export class PublicChapterEvent {
-  bookID: string;
+import { Chapter } from '@/modules/chapter/schemas/chapter.schema';
 
-  chapterID: string;
-
-  constructor(payload: PublicChapterEvent) {
-    Object.assign(this, payload);
-  }
-}
+export class PublicChapterEvent extends Chapter {}

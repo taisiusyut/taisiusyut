@@ -53,6 +53,9 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   })
   status: BookStatus;
 
+  @Prop({ type: Number, required: true })
+  wordCount: number;
+
   @Transform(Number)
   createdAt: string;
 

@@ -10,8 +10,8 @@ export class BookShelfEventConsumer {
   @OnEvent(PublicChapterEvent.name, { promisify: true })
   onPublicChapater(payload: PublicChapterEvent) {
     return this.bookShelfService.updateMany(
-      { book: payload.bookID },
-      { latestChapter: payload.chapterID }
+      { book: String(payload.book) },
+      { latestChapter: String(payload._id) }
     );
   }
 }

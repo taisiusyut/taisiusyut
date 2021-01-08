@@ -238,10 +238,7 @@ export class ChapterController {
       );
     }
 
-    this.eventEmitter.emit(
-      PublicChapterEvent.name,
-      new PublicChapterEvent({ bookID, chapterID })
-    );
+    this.eventEmitter.emit(PublicChapterEvent.name, chapter);
 
     if (chapter.number > 1) {
       await this.chapterService.updateOne(

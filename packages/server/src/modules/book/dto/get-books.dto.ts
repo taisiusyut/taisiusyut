@@ -15,6 +15,9 @@ class Excluded
 
   @Exclude()
   tags?: string[];
+
+  @Exclude()
+  wordCount?: number;
 }
 
 class GetBooks

@@ -15,6 +15,9 @@ class Excluded implements Partial<Record<keyof Schema$Book, unknown>> {
   authorName?: undefined;
 
   @Exclude()
+  wordCount?: number;
+
+  @Exclude()
   createdAt?: undefined;
 
   @Exclude()

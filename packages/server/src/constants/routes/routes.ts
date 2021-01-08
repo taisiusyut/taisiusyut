@@ -29,7 +29,8 @@ export const Routes = {
     get_book_by_name: '/name/:name',
     update_book: '/:id',
     delete_book: '/:id',
-    public_finish_book: '/:id/:type(public|finish)'
+    public_finish_book: '/:id/:type(public|finish)',
+    update_word_count: '/word-count/:id'
   },
   chapter: {
     prefix: '/book/:bookID/chapter',

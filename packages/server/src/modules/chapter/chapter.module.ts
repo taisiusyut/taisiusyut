@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseFuzzySearchingField } from 'mongoose';
 import { fuzzySearch } from '@/utils/mongoose';
@@ -11,7 +11,7 @@ import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
-    BookModule,
+    forwardRef(() => BookModule),
     MongooseModule.forFeatureAsync([
       {
         name: Chapter.name,

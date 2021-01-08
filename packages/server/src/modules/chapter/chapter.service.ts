@@ -72,6 +72,26 @@ export class ChapterService extends MongooseCRUDService<Chapter> {
     return result;
   }
 
+  async getWordCount(
+    query: FilterQuery<Chapter>
+  ): Promise<{ wordCount: number; numOfChapter: number }> {
+    const [result] = await this.chapterModel
+      .aggregate()
+      .allowDiskUse(true)
+      .match(query)
+      .group({
+        _id: '$bookID',
+        numOfChapter: { $sum: 1 },
+        wordCount: { $sum: '$wordCount' }
+      })
+      .project({
+        _id: 0,
+        wordCount: 1,
+        numOfChapter: 1
+      });
+    return result;
+  }
+
   getRoleBasedQuery(user?: JWTSignPayload) {
     const query: FilterQuery<Chapter> = {};
     if (!user || user.role === UserRole.Client) {

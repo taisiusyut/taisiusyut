@@ -15,9 +15,10 @@ import {
 } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 import { FastifyRequest } from 'fastify';
+import { ChapterService } from '@/modules/chapter/chapter.service';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
-import { BookStatus } from '@/typings';
+import { BookStatus, ChapterStatus } from '@/typings';
 import { AccessPipe, Access } from '@/utils/access';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { BookService } from './book.service';
@@ -25,13 +26,17 @@ import { Book } from './schemas/book.schema';
 
 @Controller('book')
 export class BookController {
-  constructor(private readonly bookService: BookService) {}
+  constructor(
+    private readonly bookService: BookService,
+    private readonly chapterService: ChapterService
+  ) {}
 
   @Access('book_create')
   @Post(routes.book.create_book)
   create(@Req() req: FastifyRequest, @Body() createBookDto: CreateBookDto) {
     return this.bookService.create({
       ...createBookDto,
+      wordCount: 0,
       status: BookStatus.Private,
       authorName: req.user?.nickname,
       author: req.user?.user_id
@@ -131,5 +136,16 @@ export class BookController {
     }
 
     return book;
+  }
+
+  @Access('Auth')
+  @HttpCode(HttpStatus.OK)
+  @Post(routes.book.update_word_count)
+  async wordCount(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
+    const { wordCount } = await this.chapterService.getWordCount({
+      book: id,
+      status: ChapterStatus.Public
+    });
+    return this.update(req, id, { wordCount });
   }
 }

@@ -21,6 +21,9 @@ class Excluded implements Partial<Schema$Book> {
 
   @Exclude()
   updatedAt?: undefined;
+
+  @Exclude()
+  wordCount?: undefined;
 }
 
 class CreateBook
