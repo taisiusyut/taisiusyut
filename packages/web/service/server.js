@@ -9,6 +9,7 @@ const {
   BookController,
   ChapterService,
   ChapterController,
+  AuthorController,
   MongooseSerializerInterceptor
 } = require('@fullstack/server');
 
@@ -93,6 +94,7 @@ const getBookService = createGetter(BookService);
 const getBookController = createGetter(BookController);
 const getChpaterService = createGetter(ChapterService);
 const getChpaterController = createGetter(ChapterController);
+const getAuthorController = createGetter(AuthorController);
 
 const _serializer = new MongooseSerializerInterceptor({});
 
@@ -119,5 +121,6 @@ module.exports = {
   getBookService,
   getBookController,
   getChpaterService,
-  getChpaterController
+  getChpaterController,
+  getAuthorController
 };

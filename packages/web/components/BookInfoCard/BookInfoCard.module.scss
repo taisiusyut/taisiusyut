@@ -3,54 +3,51 @@
 .book {
   flex: 0 0 auto;
   overflow: hidden;
+}
 
-  .book-model {
-    @include margin-x(5px 15px);
-    float: left;
+.book-model {
+  @include margin-x(5px 15px);
+  float: left;
+  margin-bottom: 10px;
+}
+
+.header {
+  margin-bottom: 5px;
+  z-index: 1;
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: 481px) {
+    font-size: 20px;
+  }
+}
+
+.name {
+  font-weight: bold;
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+
+.author {
+  color: var(--text-light-color);
+  font-size: 0.8em;
+  margin-top: 0.25em;
+}
+
+.tags {
+  &:not(:empty) {
     margin-bottom: 10px;
   }
+}
 
-  .title {
-    @include flex(flex-end, $wrap: wrap);
-    margin-bottom: 5px;
+.description {
+  line-height: 1.5em;
+  word-break: break-all;
 
-    @media (max-width: 480px) {
-      font-size: 18px;
-    }
-
-    @media (min-width: 481px) {
-      font-size: 20px;
-    }
-
-    .name {
-      font-weight: bold;
-      margin-bottom: 0;
-      margin-right: 10px;
-    }
-
-    .author {
-      color: var(--text-light-color);
-      font-size: 0.8em;
-      margin-top: 0.25em;
-    }
-  }
-
-  .header {
-    @include dimen(calc(100% - 100px));
-    float: left;
-    z-index: 1;
-  }
-
-  .tags {
-    margin-bottom: 10px;
-  }
-
-  .description {
-    line-height: 1.5em;
-    word-break: break-all;
-
-    @media (min-width: 481px) {
-      white-space: break-spaces;
-    }
+  @media (min-width: 481px) {
+    white-space: break-spaces;
+    overflow: hidden;
   }
 }

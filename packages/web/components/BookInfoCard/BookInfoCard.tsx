@@ -1,34 +1,44 @@
-import React from 'react';
-import { Card } from '@blueprintjs/core';
+import React, { useState } from 'react';
+import { Card, ICardProps } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
-import { getBookStatusTagProps, Tags, TagsProps } from '@/components/Tags';
+import { TagsProps } from '@/components/Tags';
+import { BookTags } from './BookTags';
 import { Schema$Book } from '@/typings';
-import classes from './BookInfoCard.module.scss';
+import defaultClasses from './BookInfoCard.module.scss';
 
-interface Props extends Pick<TagsProps, 'onTagClick'> {
-  book: Partial<Schema$Book>;
+interface Props extends ICardProps, Pick<TagsProps, 'onTagClick'> {
   author?: boolean;
-  className?: string;
+  book: Partial<Schema$Book>;
+  bookModelSize?: number;
+  classes?: typeof defaultClasses;
+  flatten?: boolean;
 }
 
 export function BookInfoCard({
+  classes: _classes,
   className = '',
+  children,
+  flatten = true,
   author = true,
+  bookModelSize = 80,
   book,
-  onTagClick
+  onTagClick,
+  ...props
 }: Props) {
+  const [classes] = useState(() => ({ ...defaultClasses, ..._classes }));
+
   return (
-    <Card className={`${classes['book']} ${className}`.trim()}>
+    <Card {...props} className={`${classes['book']} ${className}`.trim()}>
       <BookModel
-        flatten
-        width={80}
+        width={bookModelSize}
+        flatten={flatten}
         className={classes['book-model']}
         cover={book.cover}
       />
 
-      <div className={classes['header']}>
-        <div className={classes['title']}>
+      <div className={classes['content']}>
+        <div className={classes['header']}>
           <span className={classes['name']}>
             <Skelecton length={3}>{book.name}</Skelecton>
           </span>
@@ -40,26 +50,15 @@ export function BookInfoCard({
             </span>
           )}
         </div>
+
+        <BookTags book={book} onTagClick={onTagClick} />
+
+        <div className={classes['description']}>
+          <Skelecton length={60}>{book.description}</Skelecton>
+        </div>
       </div>
 
-      <div className={classes['tags']}>
-        {book.status && (
-          <Tags
-            tags={[
-              {
-                ...getBookStatusTagProps(book.status),
-                interactive: false
-              },
-              ...(book.tags || [])
-            ]}
-            onTagClick={onTagClick}
-          />
-        )}
-      </div>
-
-      <div className={classes['description']}>
-        <Skelecton length={60}>{book.description}</Skelecton>
-      </div>
+      {children}
     </Card>
   );
 }

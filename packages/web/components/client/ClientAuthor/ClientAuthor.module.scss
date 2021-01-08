@@ -1,0 +1,63 @@
+@import '~styles/utils';
+
+.container {
+  @include flex($flex-direction: column);
+  @include sq-dimen(100%);
+  overflow: auto;
+  padding: 25px 20px;
+  margin-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.info {
+  .name {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .date {
+    color: var(--text-light-color);
+    font-size: 15px;
+    margin-left: 10px;
+    float: right;
+  }
+
+  .description {
+    &:not(:empty) {
+      margin-top: 10px;
+      line-height: 1.5em;
+    }
+  }
+}
+
+.books {
+  margin-top: 20px;
+
+  .head {
+    margin-left: 0.3em;
+    margin-bottom: 15px;
+    @media (min-width: 481px) {
+      font-size: 18px;
+    }
+  }
+}
+
+.book-list {
+  > * + * {
+    display: block;
+    margin-top: 25px;
+  }
+}
+
+.book-description {
+  composes: description from '../../BookInfoCard/BookInfoCard.module.scss';
+  color: var(--text-light-color);
+
+  @media (max-width: 640px) {
+    @include multi-line-ellipsis(1.5em, 3);
+  }
+}
+
+.icon {
+  margin-left: 15px;
+  margin-right: 5px;
+}

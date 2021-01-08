@@ -1,0 +1,36 @@
+import React, { useCallback } from 'react';
+import { useRxAsync } from 'use-rx-hooks';
+import { ClientHeader } from '@/components/client/ClientLayout';
+import { GoBackButton } from '@/components/GoBackButton';
+import { getAuthorByName } from '@/service';
+import { Schema$Author } from '@/typings';
+import { ClientAuthorInfo } from './ClientAuthorInfo';
+import { ClientAuthorBook } from './ClientAuthorBook';
+import classes from './ClientAuthor.module.scss';
+
+export type ClientAuthorParams = {
+  authorName: string;
+};
+
+export interface ClientAuthorProps extends ClientAuthorParams {
+  author: Schema$Author | null;
+}
+
+export function ClientAuthor({
+  authorName,
+  author: initialAuthor
+}: ClientAuthorProps) {
+  const request = useCallback(() => getAuthorByName(authorName), [authorName]);
+  const [{ data }] = useRxAsync(request, { defer: !!initialAuthor });
+  const author = data || initialAuthor;
+
+  return (
+    <>
+      <ClientHeader title="作者" left={<GoBackButton />} />
+      <div className={classes['container']}>
+        <ClientAuthorInfo author={author} />
+        <ClientAuthorBook authorName={authorName} />
+      </div>
+    </>
+  );
+}

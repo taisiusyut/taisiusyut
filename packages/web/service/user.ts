@@ -3,6 +3,7 @@ import type {
   Param$UpdateUser,
   Param$GetUsers,
   Schema$User,
+  Schema$Author,
   PaginateResult
 } from '@/typings';
 import { routes } from '@/constants';
@@ -22,3 +23,8 @@ export const getUsers = (params?: Param$GetUsers) =>
 
 export const getUser = ({ id }: { id: string }) =>
   api.get<Schema$User>(routes.get_user.generatePath({ id }));
+
+export const getAuthorByName = (authorName: string) =>
+  api.get<Schema$Author>(
+    routes.get_author_by_name.generatePath({ authorName })
+  );
