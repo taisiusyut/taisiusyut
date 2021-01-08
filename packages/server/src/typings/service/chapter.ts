@@ -23,6 +23,7 @@ export interface Schema$Chapter extends Timestamp {
   book: string;
   author: string;
   hasNext: boolean;
+  wordCount: number;
 }
 
 export interface Param$CreateChapter {

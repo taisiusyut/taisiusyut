@@ -39,6 +39,9 @@ class Excluded implements Partial<Schema$Chapter> {
 
   @Exclude()
   updatedAt?: undefined;
+
+  @Exclude()
+  wordCount?: number;
 }
 
 class UpdateChapter

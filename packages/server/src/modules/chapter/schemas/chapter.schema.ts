@@ -63,6 +63,9 @@ export class Chapter implements Schema$Chapter {
   @Prop({ type: Boolean, default: false })
   hasNext: boolean;
 
+  @Prop({ type: Number, required: true })
+  wordCount: number;
+
   @Transform(Number)
   createdAt: number;
 

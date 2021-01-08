@@ -25,6 +25,9 @@ class Excluded implements Partial<Schema$Chapter> {
   hasNext?: undefined;
 
   @Exclude()
+  wordCount?: number;
+
+  @Exclude()
   createdAt?: undefined;
 
   @Exclude()

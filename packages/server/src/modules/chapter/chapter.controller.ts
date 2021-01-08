@@ -22,6 +22,7 @@ import { Book } from '@/modules/book/schemas/book.schema';
 import { BookService } from '@/modules/book/book.service';
 import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
+import { calcWordCount } from '@/utils/caclWordCount';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
 import { PublicChapterEvent } from './event';
@@ -73,6 +74,7 @@ export class ChapterController {
 
       return this.chapterService.create({
         number: count + 1,
+        wordCount: calcWordCount(createChapterDto.content),
         ...createChapterDto,
         ...query
       });
@@ -106,6 +108,10 @@ export class ChapterController {
 
     if (user?.role === UserRole.Author) {
       chapterQuery.author = user.user_id;
+    }
+
+    if (updateChapterDto.content) {
+      updateChapterDto.wordCount = calcWordCount(updateChapterDto.content);
     }
 
     const chapter = await this.chapterService.findOneAndUpdate(

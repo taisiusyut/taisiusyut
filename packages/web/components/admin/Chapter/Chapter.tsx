@@ -3,6 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Card, Icon } from '@blueprintjs/core';
+import { calcWordCount } from '@fullstack/server/dist/utils/caclWordCount';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
   Schema$Chapter,
@@ -11,10 +12,10 @@ import {
   Param$UpdateChapter
 } from '@/typings';
 import { ApiError, createChapter, updateChapter } from '@/service';
+import { useGoBack } from '@/hooks/useGoBack';
 import { createChapterSotrage } from '@/utils/storage';
 import { Toaster } from '@/utils/toaster';
 import { ChapterForm, ChapterState } from './ChapterForm';
-import { useGoBack } from '@/hooks/useGoBack';
 
 // TODO: upload
 interface Props {
@@ -24,12 +25,6 @@ interface Props {
 }
 
 export const change$ = new Subject<ChapterState>();
-
-function getWordCount(plainText: string) {
-  const regex = /(?:\r\n|\r|\n|\s)/g; // new line, carriage return, line feed
-  const cleanString = plainText.replace(regex, '').trim(); // replace above characters w/ space
-  return cleanString.length;
-}
 
 function request(payload: Param$CreateChapter | Param$UpdateChapter) {
   return 'chapterID' in payload
@@ -76,7 +71,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
       ...storageRef.current.get()
     };
     setSaved(state);
-    setWordCount(state.content ? getWordCount(state.content) : 0);
+    setWordCount(state.content ? calcWordCount(state.content) : 0);
   }, [chapter]);
 
   // handle onchange
@@ -86,7 +81,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
       try {
         storage.save(chapter);
         setSaved(chapter);
-        setWordCount(getWordCount(chapter.content));
+        setWordCount(calcWordCount(chapter.content));
       } catch (error) {
         Toaster.apiError(error, `Save content failure`);
       }

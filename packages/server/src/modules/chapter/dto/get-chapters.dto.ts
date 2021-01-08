@@ -26,6 +26,9 @@ class Excluded
 
   @Exclude()
   hasNext?: undefined;
+
+  @Exclude()
+  wordCount?: number;
 }
 
 class GetChapters
