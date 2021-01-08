@@ -9,6 +9,7 @@ import {
 } from '@/typings';
 import { clearJwtToken, logout, registration, getJwtToken } from '@/service';
 import { Toaster } from '@/utils/toaster';
+import { lastVisitStorage } from '@/utils/storage';
 import {
   AuthState,
   LogoutOptions,
@@ -82,6 +83,8 @@ export function AuthProvider({ children }: { children?: React.ReactNode }) {
             Toaster.success({ message: 'Logout success' });
           }
           clearJwtToken();
+
+          lastVisitStorage.clear();
 
           dispatch({ type: 'LOGOUT' });
 
