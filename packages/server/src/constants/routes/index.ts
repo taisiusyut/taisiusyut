@@ -18,9 +18,13 @@ export const routes = {
   ...category.reduce((acc, key) => {
     const paths = Routes[key];
     const prefix = paths.prefix;
-    for (const key in paths) {
+    for (const _key in paths) {
+      const key = _key as AllKeys;
       if (key !== 'prefix') {
-        acc[key as AllKeys] = prefix + paths[key as keyof typeof paths];
+        if (acc[key]) {
+          throw new Error(`duplicate route key`);
+        }
+        acc[key] = prefix + paths[key as keyof typeof paths];
       }
     }
     return acc;

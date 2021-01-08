@@ -15,6 +15,7 @@ import { permissonsMap } from './permission-config';
 
 type AccessType =
   | Permission
+  | UserRole
   | 'Everyone'
   | 'Auth' // registered
   | 'Optional'; // registered or everyone
@@ -30,7 +31,8 @@ export const Access = (
 export function canAccess(role: UserRole | undefined, access: AccessType[]) {
   if (role) {
     const permissions = permissonsMap[role];
-    return access.every(a => permissions.includes(a as Permission));
+    const types: AccessType[] = [role, ...permissions];
+    return access.every(a => types.includes(a));
   }
   return false;
 }
@@ -65,9 +67,7 @@ export class AccessGuard extends AuthGuard('jwt') {
 
           const req = context.switchToHttp().getRequest<FastifyRequest>();
 
-          if (!!req.user?.role) {
-            return canAccess(req.user.role, access);
-          }
+          return canAccess(req.user?.role, access);
         }
         return false;
       })

@@ -18,6 +18,9 @@ class Excluded implements Partial<Record<keyof InsertedUserSchema, unknown>> {
   role?: undefined;
 
   @Exclude()
+  wordCount?: number;
+
+  @Exclude()
   createdAt?: undefined;
 
   @Exclude()

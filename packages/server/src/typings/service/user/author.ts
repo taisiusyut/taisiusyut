@@ -4,6 +4,7 @@ import { Schema$Client, Param$CreateClient } from './client';
 export interface Schema$Author extends Omit<Schema$Client, 'role'> {
   role: UserRole.Author;
   description?: string;
+  wordCount: number;
 }
 
 export interface Param$CreateAuthor extends Omit<Param$CreateClient, 'role'> {
@@ -12,5 +13,6 @@ export interface Param$CreateAuthor extends Omit<Param$CreateClient, 'role'> {
 }
 
 export interface Param$UpdateAuthor extends Param$UpdateClient {
+  role: UserRole.Author;
   description?: string;
 }

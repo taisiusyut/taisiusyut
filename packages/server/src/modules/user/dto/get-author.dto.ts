@@ -17,6 +17,9 @@ class Excluded implements Partial<Schema$Author> {
 
   @Exclude()
   email?: undefined;
+
+  @Exclude()
+  wordCount?: undefined;
 }
 
 export class GetAuthorDto

@@ -6,11 +6,13 @@ const admin: Permission[] = [
   'user_update',
   'user_get_all',
   'user_get',
+  'author_word_count',
 
   'book_update',
   'book_get_all',
   'book_get',
   'book_status_update',
+  'book_word_count',
 
   'chapter_update',
   'chapter_delete',
@@ -29,11 +31,14 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Root]: [...admin, 'user_delete', 'book_delete'],
   [UserRole.Admin]: admin,
   [UserRole.Author]: [
+    'author_word_count',
+
     'book_create',
     'book_update',
     'book_get_all',
     'book_get',
     'book_public_finish',
+    'book_word_count',
 
     'chapter_create',
     'chapter_update',

@@ -8,12 +8,14 @@ type CRUD<T extends string> =
 export type UserPermission =
   | CRUD<'user'>
   | 'delete-account'
-  | 'modify-password';
+  | 'modify-password'
+  | 'author_word_count';
 
 export type BookPermission =
   | CRUD<'book'>
   | 'book_public_finish'
-  | 'book_status_update';
+  | 'book_status_update'
+  | 'book_word_count';
 
 export type ChapterPermission =
   | CRUD<'chapter'>

@@ -1,6 +1,7 @@
 import { Aggregate, Document, FilterQuery } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ChapterService } from '@/modules/chapter/chapter.service';
 import {
   BookStatus,
   JWTSignPayload,
@@ -25,7 +26,8 @@ export class BookService extends MongooseCRUDService<Book> {
 
   constructor(
     @InjectModel(Book.name)
-    readonly bookModel: Model<Book>
+    readonly bookModel: Model<Book>,
+    readonly chapterService: ChapterService
   ) {
     super(bookModel);
   }
@@ -107,5 +109,25 @@ export class BookService extends MongooseCRUDService<Book> {
       }
     }
     return query;
+  }
+
+  async getWordCount(
+    query: FilterQuery<Book>
+  ): Promise<{ wordCount: number; numOfBook: number }> {
+    const [result] = await this.bookModel
+      .aggregate()
+      .allowDiskUse(true)
+      .match(query)
+      .group({
+        _id: '$_id',
+        numOfBook: { $sum: 1 },
+        wordCount: { $sum: '$wordCount' }
+      })
+      .project({
+        _id: 0,
+        wordCount: 1,
+        numOfBook: 1
+      });
+    return result;
   }
 }

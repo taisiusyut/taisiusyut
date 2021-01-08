@@ -30,7 +30,7 @@ export const Routes = {
     update_book: '/:id',
     delete_book: '/:id',
     public_finish_book: '/:id/:type(public|finish)',
-    update_word_count: '/word-count/:id'
+    book_word_count: '/word-count/:id'
   },
   chapter: {
     prefix: '/book/:bookID/chapter',
@@ -65,6 +65,7 @@ export const Routes = {
   },
   author: {
     prefix: '/author',
-    get_author_by_name: '/:authorName'
+    get_author_by_name: '/:authorName',
+    author_word_count: '/word-count/:id?'
   }
 };

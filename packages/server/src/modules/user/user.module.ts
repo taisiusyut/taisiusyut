@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseFuzzySearchingField } from 'mongoose';
 import { AuthModule } from '@/modules/auth/auth.module';
+import { BookModule } from '@/modules/book/book.module';
 import { fuzzySearch } from '@/utils/mongoose';
 import { Schema$User, UserRole } from '@/typings';
 import { UserController } from './user.controller';
@@ -17,6 +18,7 @@ import paginate from 'mongoose-paginate-v2';
   imports: [
     ConfigModule,
     forwardRef(() => AuthModule),
+    forwardRef(() => BookModule),
     MongooseModule.forFeatureAsync([
       {
         name: User.name,

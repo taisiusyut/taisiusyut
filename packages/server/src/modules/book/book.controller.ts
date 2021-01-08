@@ -18,11 +18,12 @@ import { FastifyRequest } from 'fastify';
 import { ChapterService } from '@/modules/chapter/chapter.service';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
-import { BookStatus, ChapterStatus } from '@/typings';
+import { BookStatus, ChapterStatus, UserRole } from '@/typings';
 import { AccessPipe, Access } from '@/utils/access';
 import { CreateBookDto, GetBooksDto, UpdateBookDto } from './dto';
 import { BookService } from './book.service';
 import { Book } from './schemas/book.schema';
+import { Chapter } from '../chapter/schemas/chapter.schema';
 
 @Controller('book')
 export class BookController {
@@ -138,14 +139,19 @@ export class BookController {
     return book;
   }
 
-  @Access('Auth')
+  @Access('book_word_count')
   @HttpCode(HttpStatus.OK)
-  @Post(routes.book.update_word_count)
+  @Post(routes.book.book_word_count)
   async wordCount(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
-    const { wordCount } = await this.chapterService.getWordCount({
+    const query: FilterQuery<Chapter> = {
       book: id,
       status: ChapterStatus.Public
-    });
+    };
+
+    if (req.user?.role === UserRole.Author) {
+      query.author = req.user.user_id;
+    }
+    const { wordCount } = await this.chapterService.getWordCount(query);
     return this.update(req, id, { wordCount });
   }
 }

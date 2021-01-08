@@ -2,11 +2,15 @@ import { ObjectID } from 'mongodb';
 import { Exclude, Transform } from 'class-transformer';
 import { Prop, PropOptions, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { InsertedUserSchema, UserRole, UserStatus } from '@/typings';
-import bcrypt from 'bcrypt';
 import { Group } from '@/utils/access';
+import bcrypt from 'bcrypt';
 
 function hashPassword(password: string) {
   return bcrypt.hashSync(password, 10);
+}
+class UserProps implements InsertedUserSchema {
+  description?: string;
+  wordCount?: number;
 }
 
 @Schema({
@@ -16,7 +20,9 @@ function hashPassword(password: string) {
     transform: (_model, raw) => new User(raw)
   }
 })
-export class User implements InsertedUserSchema {
+export class User
+  extends UserProps
+  implements Required<Omit<InsertedUserSchema, keyof UserProps>> {
   _id: string | ObjectID;
 
   id: string;
@@ -61,8 +67,6 @@ export class User implements InsertedUserSchema {
   })
   nickname: string;
 
-  description?: string;
-
   @Transform(Number)
   createdAt: number;
 
@@ -70,6 +74,7 @@ export class User implements InsertedUserSchema {
   updatedAt: number;
 
   constructor(payload: Partial<User>) {
+    super();
     Object.assign(this, payload);
   }
 

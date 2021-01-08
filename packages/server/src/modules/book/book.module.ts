@@ -16,7 +16,7 @@ import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
-    UserModule,
+    forwardRef(() => UserModule),
     forwardRef(() => ChapterModule),
     MongooseModule.forFeatureAsync([
       {

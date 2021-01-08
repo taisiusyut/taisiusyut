@@ -17,6 +17,9 @@ class Excluded
   password?: string;
 
   @Exclude()
+  wordCount?: number;
+
+  @Exclude()
   description?: string;
 }
 
