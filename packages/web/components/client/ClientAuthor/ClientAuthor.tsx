@@ -16,6 +16,8 @@ export interface ClientAuthorProps extends ClientAuthorParams {
   author: Schema$Author | null;
 }
 
+const targetPath = ['/book/:bookName', '/search', '/featured', '/'];
+
 export function ClientAuthor({
   authorName,
   author: initialAuthor
@@ -26,7 +28,10 @@ export function ClientAuthor({
 
   return (
     <>
-      <ClientHeader title="作者" left={<GoBackButton />} />
+      <ClientHeader
+        title="作者"
+        left={<GoBackButton targetPath={targetPath} />}
+      />
       <div className={classes['container']}>
         <ClientAuthorInfo author={author} />
         <ClientAuthorBook authorName={authorName} />

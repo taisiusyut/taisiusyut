@@ -3,6 +3,7 @@ import { Card, ICardProps } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
 import { TagsProps } from '@/components/Tags';
+import { AuthorLink } from '@/components/client/AuthorLink';
 import { BookTags } from './BookTags';
 import { Schema$Book } from '@/typings';
 import defaultClasses from './BookInfoCard.module.scss';
@@ -27,6 +28,7 @@ export function BookInfoCard({
   ...props
 }: Props) {
   const [classes] = useState(() => ({ ...defaultClasses, ..._classes }));
+  const { authorName } = book;
 
   return (
     <Card {...props} className={`${classes['book']} ${className}`.trim()}>
@@ -45,7 +47,11 @@ export function BookInfoCard({
           {author && (
             <span className={classes['author']}>
               <Skelecton length={2}>
-                {book.authorName && `${book.authorName} 著`}
+                {authorName && (
+                  <AuthorLink authorName={authorName}>
+                    {authorName} 著
+                  </AuthorLink>
+                )}
               </Skelecton>
             </span>
           )}

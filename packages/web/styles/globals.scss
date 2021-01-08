@@ -30,8 +30,8 @@ img {
   vertical-align: middle;
 }
 
-a,
-a:hover {
+a:not(.link),
+a:not(.link):hover {
   text-decoration: none;
   color: inherit;
 }
