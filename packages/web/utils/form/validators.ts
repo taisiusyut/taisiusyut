@@ -59,7 +59,7 @@ export const maxDecimal = (max: number): Validator => (_, value) =>
   isNaN(Number(value)) ||
   new RegExp(`^(\\d+|\\d+\\.\\d{0,${max}})$`).test(value)
     ? Promise.resolve()
-    : Promise.reject(`Should not more then ${max} decimal`);
+    : Promise.reject(`Should not more than ${max} decimal`);
 
 const numberComparation = (
   callback: (value: number, flag: number) => boolean

@@ -11,8 +11,10 @@ import {
   updateProfile as updateProfileAPI
 } from '@/service';
 import { UserRole, Schema$User, Param$UpdateUser } from '@/typings';
-import { SettingsSection } from './SettingsSection';
+import { MAXIMUM_AUTHOR_DESCRIPTION } from '@/constants';
 import { Toaster } from '@/utils/toaster';
+import { validators } from '@/utils/form';
+import { SettingsSection } from './SettingsSection';
 import classes from './Settings.module.scss';
 
 const { Form, FormItem, Email, Nickname, useForm } = createUserForm();
@@ -69,7 +71,16 @@ export function SettingsProfile() {
 
         {user?.role === UserRole.Author && (
           <>
-            <FormItem label="Description" name="description">
+            <FormItem
+              label="Description"
+              name="description"
+              validators={[
+                validators.maxLength(
+                  MAXIMUM_AUTHOR_DESCRIPTION,
+                  `cannot longer than ${MAXIMUM_AUTHOR_DESCRIPTION}`
+                )
+              ]}
+            >
               <ContentEditor className={classes['description']} />
             </FormItem>
           </>
