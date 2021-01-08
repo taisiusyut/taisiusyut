@@ -4,7 +4,7 @@ import { CategorySelect } from '@/components/Select';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Param$CreateBook, Param$UpdateBook } from '@/typings';
 import { createForm, validators } from '@/utils/form';
-import { MAXIMUM_TAGS, MAXIMUM_BOOK_DESCRIPTION } from '@/constants';
+import { Max_Tags, Max_Book_Description } from '@/constants';
 import { BookCoverUpload } from './BookCoverUpload';
 import classes from './Books.module.scss';
 
@@ -29,8 +29,8 @@ export const BookDescription = () => (
     validators={[
       validators.required('Please enter the book description'),
       validators.maxLength(
-        MAXIMUM_BOOK_DESCRIPTION,
-        `cannot longer than ${MAXIMUM_BOOK_DESCRIPTION}`
+        Max_Book_Description,
+        `cannot longer than ${Max_Book_Description}`
       )
     ]}
   >
@@ -54,10 +54,7 @@ export const BookTags = () => (
     label="Tags"
     valuePropName="values"
     validators={[
-      validators.maxLength(
-        MAXIMUM_TAGS,
-        `Cannot more than ${MAXIMUM_TAGS} tags`
-      )
+      validators.maxLength(Max_Tags, `Cannot more than ${Max_Tags} tags`)
     ]}
   >
     <TagInput />

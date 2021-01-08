@@ -1,7 +1,7 @@
 import { UserRole } from '@/typings';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { OmitType } from '@nestjs/mapped-types';
-import { MAXIMUM_AUTHOR_DESCRIPTION } from '@/constants';
+import { Max_Author_Description } from '@/constants';
 import { Client } from './client.schema';
 
 @Schema()
@@ -11,7 +11,7 @@ export class Author extends OmitType(Client, ['role']) {
   @Prop({
     default: '',
     type: String,
-    maxlength: MAXIMUM_AUTHOR_DESCRIPTION
+    maxlength: Max_Author_Description
   })
   description: string;
 }

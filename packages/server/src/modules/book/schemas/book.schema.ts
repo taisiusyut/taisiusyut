@@ -3,7 +3,7 @@ import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$Book, BookStatus, Category } from '@/typings';
-import { MAXIMUM_BOOK_DESCRIPTION } from '@/constants';
+import { Max_Book_Description } from '@/constants';
 import { BookAuthor } from './book-author';
 
 @Schema({
@@ -18,7 +18,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Prop({ type: String, required: true, unique: true, trim: true })
   name: string;
 
-  @Prop({ type: String, default: '', maxlength: MAXIMUM_BOOK_DESCRIPTION })
+  @Prop({ type: String, default: '', maxlength: Max_Book_Description })
   description: string;
 
   @Prop({ type: String })

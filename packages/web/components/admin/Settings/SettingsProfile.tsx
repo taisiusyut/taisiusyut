@@ -11,7 +11,7 @@ import {
   updateProfile as updateProfileAPI
 } from '@/service';
 import { UserRole, Schema$User, Param$UpdateUser } from '@/typings';
-import { MAXIMUM_AUTHOR_DESCRIPTION } from '@/constants';
+import { Max_Author_Description } from '@/constants';
 import { Toaster } from '@/utils/toaster';
 import { validators } from '@/utils/form';
 import { SettingsSection } from './SettingsSection';
@@ -76,8 +76,8 @@ export function SettingsProfile() {
               name="description"
               validators={[
                 validators.maxLength(
-                  MAXIMUM_AUTHOR_DESCRIPTION,
-                  `cannot longer than ${MAXIMUM_AUTHOR_DESCRIPTION}`
+                  Max_Author_Description,
+                  `cannot longer than ${Max_Author_Description}`
                 )
               ]}
             >

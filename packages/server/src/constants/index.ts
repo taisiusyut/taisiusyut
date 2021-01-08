@@ -2,11 +2,11 @@ export * from './password';
 export * from './username';
 export { routes } from './routes';
 
-export const MAXIMUM_TAGS = 10;
+export const Max_Tags = 10;
 
-export const MAXIMUM_AUTHOR_DESCRIPTION = 200;
+export const Max_Author_Description = 200;
 
-export const MAXIMUM_BOOK_DESCRIPTION = 200;
+export const Max_Book_Description = 200;
 
-export const MAXIMUM_BUG_REPORT_TITLE = 20;
-export const MAXIMUM_BUG_REPORT_DESCRIPTION = 100;
+export const Max_Bug_Report_Title = 20;
+export const Maximum_Bug_Report_Description = 100;
