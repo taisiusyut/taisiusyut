@@ -68,6 +68,10 @@ const getMarginY = (el: Element) => {
 export const formatChapterTitle = (chapterNo: number, bookName: string) =>
   `${bookName} | 第${chapterNo}章 | 睇小說`;
 
+const goBackButton = (
+  <GoBackButton targetPath={['/', `/book/:bookName`, '/featured']} />
+);
+
 function ClientChapterComponment({
   bookName,
   bookID,
@@ -341,10 +345,6 @@ function ClientChapterComponment({
         </div>
       );
 
-    const goBackButton = (
-      <GoBackButton targetPath={['/', `/book/${bookName}`, '/featured']} />
-    );
-
     return (
       <div
         className={[classes['container'], classes[scrollDirection]]
@@ -417,7 +417,7 @@ export function ClientChapter({
   return (
     <div className={classes['container']}>
       <ClientChapterHeader
-        goBackButton={<GoBackButton targetPath={['/', '/featured']} />}
+        goBackButton={goBackButton}
         openClientPreferences={handleOpenClientPreferences}
         openChapterListDrawer={() => void 0}
       />

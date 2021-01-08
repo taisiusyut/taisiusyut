@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import router from 'next/router';
+import { match } from 'path-to-regexp';
 import { createSessionStorage } from '@/utils/storage';
 
 interface Props {
@@ -30,6 +31,11 @@ export function useGoBack() {
   return context;
 }
 
+const isMatchUrl = (target: string, url: string) => {
+  const matches = match(target, {});
+  return !!matches(url, { decode: decodeURIComponent });
+};
+
 export function GoBackProvider({ children }: Props) {
   const records = useRef<string[]>([]);
   const actions = useMemo<GoBackActions>(() => {
@@ -43,8 +49,8 @@ export function GoBackProvider({ children }: Props) {
         if (
           previous &&
           (targetPaths.length === 0 ||
-            targetPaths.some(
-              path => decodeURIComponent(previous).replace(/\?.*/, '') === path
+            targetPaths.some(path =>
+              isMatchUrl(path, decodeURIComponent(previous).replace(/\?.*/, ''))
             ))
         ) {
           await router.push(previous);

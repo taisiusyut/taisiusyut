@@ -1,12 +1,13 @@
 import React from 'react';
 import { H4 } from '@blueprintjs/core';
 import { GoBackButton } from '@/components/GoBackButton';
+import { GoBackOptions } from '@/hooks/useGoBack';
 import { resolve } from 'styled-jsx/css';
 
 interface Props {
   title?: React.ReactNode;
   children?: React.ReactNode;
-  targetPath?: string;
+  targetPath?: GoBackOptions['targetPath'];
 }
 
 const h4 = resolve`
