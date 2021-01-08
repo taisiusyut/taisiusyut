@@ -52,6 +52,9 @@ interface UsePaginationOptions<
 
 const getParams = (path: string) => qs.parse(path.split('?')[1] || '');
 
+export const gotoPage = (pageNo: number) =>
+  setSearchParam(params => ({ ...params, pageNo }));
+
 export { DefaultCRUDActionTypes };
 
 export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
@@ -128,8 +131,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       pageNo: state.pageNo,
       pageSize: state.pageSize,
       total: state.total,
-      onPageChange: (pageNo: number) =>
-        setSearchParam(params => ({ ...params, pageNo }))
+      onPageChange: gotoPage
     };
 
     return {

@@ -1,6 +1,6 @@
-.#{$ns}-menu-item > .#{$ns}-icon,
+.#{$ns}-menu-item > .#{$ns}-icon:not([class*='intent']),
 .#{$ns}-button:not([class*='intent']) .#{$ns}-icon {
-  color: var(--text-color) !important;
+  color: inherit !important;
 }
 
 .#{$ns}-dialog.#{$ns}-dialog {

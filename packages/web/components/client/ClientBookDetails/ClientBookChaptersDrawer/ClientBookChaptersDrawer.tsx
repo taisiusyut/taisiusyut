@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import router from 'next/router';
 import { Button, Card, Icon } from '@blueprintjs/core';
 import { BookShelfToggle } from '@/components/client/BookShelf/BookShelfToggle';
@@ -6,12 +7,10 @@ import { useChapterListDrawer } from '@/components/client/ChapterListDrawer';
 import { withBreakPoint } from '@/hooks/useBreakPoints';
 import { Schema$Book } from '@/typings';
 import classes from './ClientBookChaptersDrawer.module.scss';
-import { useBookShelfState } from '@/hooks/useBookShelf';
-import { lastVisitStorage } from '@/utils/storage';
-import Link from 'next/link';
 
 export interface Props {
   book: Schema$Book;
+  lastVisit?: number;
 }
 
 export function ClientBookChaptersDrawerTrigger({
@@ -27,13 +26,15 @@ export function ClientBookChaptersDrawerTrigger({
   );
 }
 
-function NavigateButton({ book }: { book: Schema$Book }) {
-  const { byIds } = useBookShelfState();
-  const chapterNo =
-    byIds[book.id]?.lastVisit || lastVisitStorage.get(book.name, 1);
-
+function NavigateButton({
+  bookName,
+  chapterNo
+}: {
+  bookName: string;
+  chapterNo: number;
+}) {
   return (
-    <Link href={`/book/${book.name}/chapter/${chapterNo}`}>
+    <Link href={`/book/${bookName}/chapter/${chapterNo}`}>
       <Button
         fill
         intent="primary"
@@ -43,13 +44,14 @@ function NavigateButton({ book }: { book: Schema$Book }) {
   );
 }
 
-function ClientBookChaptersDrawerComponent({ book }: Props) {
+function ClientBookChaptersDrawerComponent({ book, lastVisit }: Props) {
   const [openChapterListDrawer] = useChapterListDrawer(book.id);
   return (
     <div className={classes['content']}>
       <ClientBookChaptersDrawerTrigger
         onClick={() =>
           openChapterListDrawer({
+            chapterNo: lastVisit,
             onItemClick: chapter =>
               chapter.number &&
               router.push(`/book/${book.name}/chapter/${chapter.number}`)
@@ -57,7 +59,7 @@ function ClientBookChaptersDrawerComponent({ book }: Props) {
         }
       ></ClientBookChaptersDrawerTrigger>
       <div className={classes['button-group']}>
-        <NavigateButton book={book} />
+        <NavigateButton bookName={book.name} chapterNo={lastVisit || 1} />
         <BookShelfToggle bookID={book.id} fill />
       </div>
     </div>

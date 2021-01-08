@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import router from 'next/router';
 import {
   Order,
   PaginateResult,
   Param$GetChapters,
   Schema$Chapter
 } from '@/typings';
-import { Card, Classes, Divider, Tag } from '@blueprintjs/core';
+import { Card, Classes, Divider, Icon, Tag } from '@blueprintjs/core';
 import { Pagination } from '@/components/Pagination';
 import {
+  gotoPage,
   createUsePaginationLocal,
   DefaultCRUDActionTypes
 } from '@/hooks/usePaginationLocal';
@@ -19,6 +21,7 @@ import classes from './ClientBookChaptersGrid.module.scss';
 interface Props {
   bookID: string;
   bookName: string;
+  lastVisit?: number;
   chapters: Pick<
     PaginateResult<Partial<Schema$Chapter>>,
     'data' | 'pageSize'
@@ -29,6 +32,7 @@ interface ChaptersGridProps {
   bookName?: string;
   children?: React.ReactNode;
   chapters: Partial<Schema$Chapter>[];
+  lastVisit?: number;
 }
 
 // TODO: empty chapter
@@ -40,7 +44,8 @@ const itemClassName = [Classes.MENU_ITEM, classes['chapter-item']].join(' ');
 export function ChaptersGrid({
   bookName,
   chapters,
-  children
+  children,
+  lastVisit
 }: ChaptersGridProps) {
   const maxLength = String(chapters.slice(-1)[0]?.number || '').length;
 
@@ -49,11 +54,16 @@ export function ChaptersGrid({
       <div className={classes['head']}>章節目錄</div>
       <div className={classes['grid']}>
         {chapters.map(chapter => {
+          const tagName = String(chapter.number || '').padStart(maxLength, '0');
           const content = (
             <>
-              <Tag minimal className={classes['tag']}>
-                {String(chapter.number || '').padStart(maxLength, '0')}
-              </Tag>
+              {typeof lastVisit === 'number' && lastVisit === chapter.number ? (
+                <Icon className={classes['map-maker']} icon="map-marker" />
+              ) : (
+                <Tag minimal className={classes['tag']}>
+                  {tagName}
+                </Tag>
+              )}
               <span className={classes['chapter-name']}>{chapter.name}</span>
             </>
           );
@@ -86,6 +96,7 @@ export function ChaptersGrid({
 export function ClientBookChaptersGrid({
   bookID,
   bookName,
+  lastVisit,
   chapters: initialChapters
 }: Props) {
   const [useChapters] = useState(() => {
@@ -106,10 +117,20 @@ export function ClientBookChaptersGrid({
           : state
     });
   });
-  const { data, pagination } = useChapters({ onFailure });
+  const { data, pagination, state, actions } = useChapters({ onFailure });
+
+  useEffect(() => {
+    if (
+      typeof router.query.pageNo !== 'string' &&
+      typeof lastVisit === 'number'
+    ) {
+      const pageNo = Math.ceil(lastVisit / state.pageSize);
+      pageNo > 1 && gotoPage(pageNo);
+    }
+  }, [state.pageSize, actions, lastVisit]);
 
   return (
-    <ChaptersGrid chapters={data} bookName={bookName}>
+    <ChaptersGrid chapters={data} bookName={bookName} lastVisit={lastVisit}>
       {!!pagination.total ? (
         <>
           <div className={classes['spacer']} />

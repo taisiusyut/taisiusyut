@@ -65,3 +65,7 @@
   @include sq-dimen(100%);
   @include flex(center, center);
 }
+
+:global(.#{$ns}-icon).map-maker.map-maker {
+  color: $red3 !important;
+}

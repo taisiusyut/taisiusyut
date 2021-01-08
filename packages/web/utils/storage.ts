@@ -4,6 +4,7 @@ export interface IStorage<T> {
   key: string;
   get(): T;
   get<K extends keyof T>(prop: K, fallback: T[K]): T[K];
+  get<K extends keyof T>(prop: K): T[K] | undefined;
   get<K extends keyof T>(prop?: K): T | T[K];
   set<K extends keyof T>(prop: K, value: T[K]): void;
   save(value: T): void;

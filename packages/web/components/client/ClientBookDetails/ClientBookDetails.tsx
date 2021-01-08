@@ -9,6 +9,8 @@ import {
   ClientBookError,
   useGetBookByName
 } from '@/components/client/ClientBookError';
+import { useBookShelfState } from '@/hooks/useBookShelf';
+import { lastVisitStorage } from '@/utils/storage';
 import { PaginateResult, Schema$Book, Schema$Chapter } from '@/typings';
 import { ClientBookChaptersGrid, ChaptersGrid } from './ClientBookChaptersGrid';
 import {
@@ -57,6 +59,7 @@ export function ClientBookDetailsComponent({
   chapters: initialChapters
 }: ClientBookDetailsProps) {
   const bookState = useGetBookByName(bookName, !!initialBook);
+  const shelf = useBookShelfState();
   const book = bookState.data || initialBook;
 
   // book not found / error
@@ -68,6 +71,9 @@ export function ClientBookDetailsComponent({
       </>
     );
   }
+
+  const lastVisit =
+    shelf.byIds[book.id]?.lastVisit || lastVisitStorage.get(book.name);
 
   return (
     <>
@@ -86,9 +92,10 @@ export function ClientBookDetailsComponent({
           key={book.id}
           bookID={book.id}
           bookName={book.name}
+          lastVisit={lastVisit}
           chapters={initialChapters}
         />
-        <ClientBookChaptersDrawer book={book} />
+        <ClientBookChaptersDrawer book={book} lastVisit={lastVisit} />
       </div>
     </>
   );
