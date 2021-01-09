@@ -13,9 +13,9 @@ describe('AuthController (e2e)', () => {
   describe(`(POST) Registration`, testRegistration);
   describe('(POST) Refresh Token', testRefreshToken);
   describe(`(POST) Delete Account`, testDeleteAccount);
-  describe(`(PTCH) Modify Password`, testModifyPassword);
-  describe(`(GET)  Get Profile`, testGetProfile);
-  describe(`(PTCH) Update Profile`, testUpdateProfile);
+  describe(`(PATCH) Modify Password`, testModifyPassword);
+  describe(`(GET) Get Profile`, testGetProfile);
+  describe(`(PATCH) Update Profile`, testUpdateProfile);
   describe(`Login Records`, testLoginRecords);
   describe('JWT', testJWT);
 });

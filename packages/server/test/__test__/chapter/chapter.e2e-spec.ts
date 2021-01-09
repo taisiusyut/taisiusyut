@@ -7,10 +7,10 @@ import { testPublicChapter } from './public-chapter';
 
 describe('ChapterController (e2e)', () => {
   describe('(POST) Create Chapter', testCreateChapter);
-  describe('(PTCH) Update Chapter', testUpdateChapter);
-  describe('(DEL)  Delete Chapter', testDeleteChapter);
-  describe('(GET)  Get Chapters', testGetChapters);
-  describe('(GET)  Get Chapter', testGetChapter);
-  describe('(GET)  Get Chapter By Number', testGetChapterByNo);
+  describe('(PATCH) Update Chapter', testUpdateChapter);
+  describe('(DEL) Delete Chapter', testDeleteChapter);
+  describe('(GET) Get Chapters', testGetChapters);
+  describe('(GET) Get Chapter', testGetChapter);
+  describe('(GET) Get Chapter By Number', testGetChapterByNo);
   describe('(POST) Public Chapter', testPublicChapter);
 });

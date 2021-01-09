@@ -4,6 +4,6 @@ import { testGetBugReports } from './get-bug-reports';
 
 describe('BookController (e2e)', () => {
   describe('(POST) Create Bug Report', testCreateBugReport);
-  describe('(PTCH) Update Bug Report', testUpdateBugReport);
-  describe('(GET)  Get Bug Reports', testGetBugReports);
+  describe('(PATCH) Update Bug Report', testUpdateBugReport);
+  describe('(GET) Get Bug Reports', testGetBugReports);
 });
