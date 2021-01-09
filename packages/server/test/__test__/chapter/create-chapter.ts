@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
 import { BookStatus, ChapterStatus, ChapterType, Schema$Book } from '@/typings';
+import { calcWordCount } from '@/utils/caclWordCount';
 import { createBook, updateBook } from '../../service/book';
 import { getGlobalUser, setupUsers } from '../../service/auth';
 import {
@@ -30,10 +31,15 @@ export function testCreateChapter() {
         bookID: expect.anything(),
         author: expect.anything()
       });
-      expect(response.body).toMatchObject({
+      expect(response.body).toEqual({
         ...payload,
+        id: expect.any(String),
+        hasNext: false,
+        wordCount: calcWordCount(payload.content),
         number: Number(idx) + 1,
-        status: ChapterStatus.Private
+        status: ChapterStatus.Private,
+        createdAt: expect.anything(),
+        updatedAt: expect.anything()
       });
     }
   });
@@ -59,11 +65,12 @@ export function testCreateChapter() {
   );
 
   test.each`
-    property    | value
-    ${'status'} | ${BookStatus.Public}
-    ${'book'}   | ${new ObjectId().toHexString()}
-    ${'bookID'} | ${new ObjectId().toHexString()}
-    ${'author'} | ${new ObjectId().toHexString()}
+    property       | value
+    ${'status'}    | ${BookStatus.Public}
+    ${'book'}      | ${new ObjectId().toHexString()}
+    ${'bookID'}    | ${new ObjectId().toHexString()}
+    ${'author'}    | ${new ObjectId().toHexString()}
+    ${'wordCount'} | ${999}
   `(
     '$property will not exist after the chapter created',
     async ({ property, value }: Record<string, string>) => {

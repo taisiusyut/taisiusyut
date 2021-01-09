@@ -113,13 +113,14 @@ export class BookService extends MongooseCRUDService<Book> {
 
   async getWordCount(
     query: FilterQuery<Book>
-  ): Promise<{ wordCount: number; numOfBook: number }> {
+  ): Promise<{ wordCount: number; numOfBook: number } | null> {
     const [result] = await this.bookModel
       .aggregate()
       .allowDiskUse(true)
       .match(query)
+      .option({ autopopulate: false })
       .group({
-        _id: '$_id',
+        _id: '$author',
         numOfBook: { $sum: 1 },
         wordCount: { $sum: '$wordCount' }
       })
@@ -128,6 +129,6 @@ export class BookService extends MongooseCRUDService<Book> {
         wordCount: 1,
         numOfBook: 1
       });
-    return result;
+    return result || null;
   }
 }

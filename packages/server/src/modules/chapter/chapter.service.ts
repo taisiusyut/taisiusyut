@@ -74,13 +74,13 @@ export class ChapterService extends MongooseCRUDService<Chapter> {
 
   async getWordCount(
     query: FilterQuery<Chapter>
-  ): Promise<{ wordCount: number; numOfChapter: number }> {
+  ): Promise<{ wordCount: number; numOfChapter: number } | null> {
     const [result] = await this.chapterModel
       .aggregate()
       .allowDiskUse(true)
       .match(query)
       .group({
-        _id: '$bookID',
+        _id: '$book',
         numOfChapter: { $sum: 1 },
         wordCount: { $sum: '$wordCount' }
       })
@@ -89,7 +89,7 @@ export class ChapterService extends MongooseCRUDService<Chapter> {
         wordCount: 1,
         numOfChapter: 1
       });
-    return result;
+    return result || null;
   }
 
   getRoleBasedQuery(user?: JWTSignPayload) {

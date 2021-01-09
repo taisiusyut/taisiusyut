@@ -143,15 +143,21 @@ export class BookController {
   @HttpCode(HttpStatus.OK)
   @Post(routes.book.book_word_count)
   async wordCount(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
-    const query: FilterQuery<Chapter> = {
+    const chapterQuery: FilterQuery<Chapter> = {
       book: id,
       status: ChapterStatus.Public
     };
 
     if (req.user?.role === UserRole.Author) {
-      query.author = req.user.user_id;
+      chapterQuery.author = req.user.user_id;
     }
-    const { wordCount } = await this.chapterService.getWordCount(query);
-    return this.update(req, id, { wordCount });
+
+    const result = await this.chapterService.getWordCount(chapterQuery);
+
+    if (!result) {
+      throw new BadRequestException(`invalid book id`);
+    }
+
+    return this.update(req, id, { wordCount: result.wordCount });
   }
 }

@@ -3,14 +3,15 @@ import { FastifyRequest } from 'fastify';
 import {
   Controller,
   Get,
+  Req,
+  Post,
   Param,
   NotFoundException,
-  Req,
   BadRequestException
 } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
 import { routes } from '@/constants';
-import { BookStatus, UserRole } from '@/typings';
+import { UserRole } from '@/typings';
 import { Access } from '@/utils/access';
 import { ObjectId } from '@/decorators';
 import { GetAuthorDto } from './dto/get-author.dto';
@@ -39,13 +40,14 @@ export class AuthorController {
   }
 
   @Access('author_word_count')
-  @Get(routes.author.author_word_count)
+  @Post(routes.author.author_word_count)
+  @Post(routes.author.author_word_count_no_id)
   async updateWordCount(
     @Req() { user }: FastifyRequest,
     @ObjectId({ key: 'id', optional: true })
     id?: string
   ) {
-    const authorId = user?.role === UserRole.Admin ? user.user_id : id;
+    const authorId = user?.role === UserRole.Author ? user.user_id : id;
 
     if (!authorId) {
       throw new BadRequestException(
@@ -53,17 +55,23 @@ export class AuthorController {
       );
     }
 
-    const { wordCount } = await this.bookService.getWordCount({
+    const result = await this.bookService.getWordCount({
       author: authorId,
-      $or: [{ status: BookStatus.Public }, { status: BookStatus.Finished }]
+      $or: this.bookService.publicStatus
     });
 
-    this.userService.findOneAndUpdate(
+    if (!result) {
+      throw new BadRequestException(
+        `please make sure you have at least one public book`
+      );
+    }
+
+    return this.userService.findOneAndUpdate(
       {
         _id: authorId,
         role: UserRole.Author
       },
-      { wordCount }
+      { wordCount: result.wordCount }
     );
   }
 }

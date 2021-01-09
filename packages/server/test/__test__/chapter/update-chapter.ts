@@ -23,6 +23,7 @@ import {
   getChapter,
   updateChapter
 } from '../../service/chapter';
+import { calcWordCount } from '@/utils/caclWordCount';
 
 export function testUpdateChapter() {
   let book: Schema$Book;
@@ -77,10 +78,11 @@ export function testUpdateChapter() {
   });
 
   test.each`
-    property    | value
-    ${'status'} | ${ChapterStatus.Public}
-    ${'book'}   | ${new ObjectId().toHexString()}
-    ${'author'} | ${new ObjectId().toHexString()}
+    property       | value
+    ${'status'}    | ${ChapterStatus.Public}
+    ${'book'}      | ${new ObjectId().toHexString()}
+    ${'author'}    | ${new ObjectId().toHexString()}
+    ${'wordCount'} | ${999}
   `(
     '$property will not be update by author',
     async ({ property, value }: Record<string, string>) => {
@@ -155,5 +157,20 @@ export function testUpdateChapter() {
     }
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+  });
+
+  test('wordCount will be updated if content changed', async () => {
+    const payload = [
+      chapter.content,
+      rid(Math.floor(chapter.wordCount / 2)),
+      rid(Math.floor(chapter.wordCount * 2))
+    ];
+
+    for (const content of payload) {
+      const response = await updateChapter(root.token, book.id, chapter.id, {
+        content
+      });
+      expect(response.body.wordCount).toBe(calcWordCount(content));
+    }
   });
 }

@@ -69,3 +69,10 @@ export function getBookByName(token: string, name: string) {
     .set('Authorization', `bearer ${token}`)
     .send();
 }
+
+export function calcBookWordCount(token: string, id: string) {
+  return request
+    .post(routes.book_word_count.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}
