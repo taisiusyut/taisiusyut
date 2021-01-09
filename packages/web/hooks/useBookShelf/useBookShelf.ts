@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
 import { updateBookInShelf } from '@/service';
+import { useAuthState } from '@/hooks/useAuth';
 import { StateContext, ActionContext } from './bookShelfProvider';
 
 export function useBookShelfState() {
@@ -32,6 +33,7 @@ export function useLastVisitChapter(
 ) {
   const timeout = useRef(setTimeout(() => void 0, 0));
   const [shelf, actions] = useBookShelf();
+  const { loginStatus } = useAuthState();
 
   useEffect(() => {
     if (bookID && shelf.byIds[bookID]?.lastVisit !== chapterNo) {
@@ -39,8 +41,11 @@ export function useLastVisitChapter(
       timeout.current = setTimeout(() => {
         const payload = { bookID, lastVisit: chapterNo };
         actions.update(payload);
-        updateBookInShelf(payload);
+
+        if (loginStatus === 'loggedIn') {
+          updateBookInShelf(payload).catch(() => void 0);
+        }
       }, 1000);
     }
-  }, [chapterNo, bookID, actions, shelf.byIds]);
+  }, [chapterNo, bookID, loginStatus, actions, shelf.byIds]);
 }
