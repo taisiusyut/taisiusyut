@@ -50,7 +50,7 @@
 }
 
 .book-model {
-  float: left;
+  composes: book-model from '../../BookInfoCard/BookInfoCard.module.scss';
   margin-top: 5px;
 }
 

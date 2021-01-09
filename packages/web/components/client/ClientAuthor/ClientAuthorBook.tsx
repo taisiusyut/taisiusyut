@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 interface ClientAuthorBookProps {
   authorName: string;
+  books: Schema$Book[] | null;
 }
 
 const placeholder = Array.from<void, Partial<Schema$Book>>(
@@ -15,7 +16,10 @@ const placeholder = Array.from<void, Partial<Schema$Book>>(
   (_, index) => ({ id: String(index) })
 );
 
-export function ClientAuthorBook({ authorName }: ClientAuthorBookProps) {
+export function ClientAuthorBook({
+  books: initialBooks,
+  authorName
+}: ClientAuthorBookProps) {
   const request = useCallback(
     () =>
       getBooks({
@@ -25,13 +29,15 @@ export function ClientAuthorBook({ authorName }: ClientAuthorBookProps) {
       }).then(response => response.data),
     [authorName]
   );
-  const [{ data = placeholder }] = useRxAsync(request, { defer: false });
+  const defer = !!initialBooks && !!initialBooks.length;
+  const [{ data = placeholder }] = useRxAsync(request, { defer });
+  const books = initialBooks || data;
 
   return (
     <>
       <div className={classes['head']}>全部作品</div>
       <div className={classes['books']}>
-        {data.map(book => {
+        {books.map(book => {
           const content = (
             <BookInfoCard
               key={book.id}

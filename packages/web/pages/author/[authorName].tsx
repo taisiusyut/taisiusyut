@@ -7,8 +7,12 @@ import {
   ClientAuthorParams
 } from '@/components/client/ClientAuthor';
 import { Meta } from '@/components/Meta';
-import { getAuthorController, serialize } from '@/service/server';
-import { Schema$Author } from '@/typings';
+import {
+  getAuthorController,
+  getBookController,
+  serialize
+} from '@/service/server';
+import { Schema$Author, Schema$Book } from '@/typings';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
@@ -29,14 +33,25 @@ export const getStaticProps: GetStaticProps<
     );
   }
 
-  const authorController = await getAuthorController();
-  const author = await authorController.getByAuthorName(authorName);
+  const [authorController, bookController] = await Promise.all([
+    getAuthorController(),
+    getBookController()
+  ]);
+  const author = await authorController
+    .getByAuthorName(authorName)
+    .then(author => serialize<Schema$Author>(author) || null)
+    .catch(() => null);
+  const books = await bookController
+    .getAll({} as any, { authorName })
+    .then(response => serialize<Schema$Book[] | null>(response.data))
+    .catch(() => null);
 
   return {
     revalidate: 60 * 60,
     props: {
       authorName,
-      author: serialize<Schema$Author>(author) || null
+      author,
+      books
     }
   };
 };
