@@ -45,7 +45,7 @@ export function Featured({ data }: FeaturedProps) {
     mapOperator: exhaustMap
   });
 
-  const loaded = !!books[0].name;
+  const loaded = !!books[0]?.name;
   const { asPath } = useRouter();
 
   // only fetch api if visbile
