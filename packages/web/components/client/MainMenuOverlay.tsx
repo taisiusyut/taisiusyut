@@ -103,7 +103,7 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       <ListItem
         icon={<Github />}
         rightElement={chevron}
-        onClick={() => window.open(`https://github.com/Pong420/fullstack`)}
+        onClick={() => window.open(`https://github.com/Pong420/taisiusyut`)}
       >
         Github
       </ListItem>

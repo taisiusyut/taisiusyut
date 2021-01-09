@@ -3,7 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Card, Icon } from '@blueprintjs/core';
-import { calcWordCount } from '@fullstack/server/dist/utils/caclWordCount';
+import { calcWordCount } from '@taisiusyut/server/dist/utils/caclWordCount';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
   Schema$Chapter,

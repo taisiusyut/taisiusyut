@@ -1,4 +1,4 @@
-export * from '@fullstack/server/dist/constants';
+export * from '@taisiusyut/server/dist/constants';
 
 // https://stackoverflow.com/a/4819886
 export function isTouchable() {

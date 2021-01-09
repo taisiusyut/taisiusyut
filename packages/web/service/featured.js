@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { BookStatus, Order } = require('@fullstack/server/dist/typings');
+const { BookStatus, Order } = require('@taisiusyut/server/dist/typings');
 const { getBookService, serialize } = require('./server');
 
 const featuredDest = path.resolve(process.cwd(), './.next/featured.json');

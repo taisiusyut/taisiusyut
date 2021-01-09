@@ -4,4 +4,4 @@
 
 docker exec -i mongo \
   mongodump \
-  -d fullstack --archive > $1.dump
+  -d taisiusyut --archive > $1.dump

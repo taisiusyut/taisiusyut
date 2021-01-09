@@ -1,1 +1,1 @@
-export * from '@fullstack/server/dist/typings';
+export * from '@taisiusyut/server/dist/typings';

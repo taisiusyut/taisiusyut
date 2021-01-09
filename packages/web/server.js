@@ -3,7 +3,7 @@
 const path = require('path');
 const { default: next } = require('next');
 const { NestFactory } = require('@nestjs/core');
-const { AppModule, fastifyAdapter, setupApp } = require('@fullstack/server');
+const { AppModule, fastifyAdapter, setupApp } = require('@taisiusyut/server');
 
 /**
  * @param {object} option

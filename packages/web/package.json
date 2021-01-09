@@ -1,5 +1,5 @@
 {
-  "name": "@fullstack/web",
+  "name": "@taisiusyut/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,8 +11,8 @@
   "dependencies": {
     "@blueprintjs/core": "3.36.0",
     "@blueprintjs/datetime": "^3.20.0",
-    "@fullstack/server": "1.0.0",
-    "@fullstack/style": "1.0.0",
+    "@taisiusyut/server": "1.0.0",
+    "@taisiusyut/style": "1.0.0",
     "@next/bundle-analyzer": "^10.0.4",
     "axios": "^0.21.1",
     "cross-env": "^7.0.3",

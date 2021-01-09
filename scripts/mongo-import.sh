@@ -4,5 +4,5 @@
 
 docker exec -i mongo
 docker cp $1 mongo:/tmp/$1
-docker exec -i mongo mongoimport -h localhost:27017 -d fullstack -c $2 --file /tmp/$1
+docker exec -i mongo mongoimport -h localhost:27017 -d taisiusyut -c $2 --file /tmp/$1
 

@@ -1,17 +1,17 @@
 {
   "private": true,
-  "name": "fullstack",
+  "name": "taisiusyut",
   "version": "1.0.0",
   "license": "MIT",
   "author": "Pong <samfunghp@gmail.com>",
   "repository": {
-    "url": "https://github.com/Pong420/fullstack"
+    "url": "https://github.com/Pong420/taisiusyut"
   },
   "scripts": {
     "start": "yarn web start",
-    "server": "yarn workspace @fullstack/server",
-    "style": "yarn workspace @fullstack/style",
-    "web": "yarn workspace @fullstack/web",
+    "server": "yarn workspace @taisiusyut/server",
+    "style": "yarn workspace @taisiusyut/style",
+    "web": "yarn workspace @taisiusyut/web",
     "component": "node ./scripts/component.js",
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build --stream",

@@ -6,7 +6,7 @@ import { CookieSerializeOptions } from 'fastify-cookie';
 import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { RefreshToken } from './schemas/refreshToken.schema';
 
-export const REFRESH_TOKEN_COOKIES = 'fullstack_refresh_token';
+export const REFRESH_TOKEN_COOKIES = 'taisiusyut_refresh_token';
 
 @Injectable()
 export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {

@@ -11,7 +11,7 @@ const {
   ChapterController,
   AuthorController,
   MongooseSerializerInterceptor
-} = require('@fullstack/server');
+} = require('@taisiusyut/server');
 
 // eslint-disable-next-line no-console
 const log = console.log.bind(console.log);
