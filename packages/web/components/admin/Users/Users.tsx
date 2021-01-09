@@ -28,7 +28,7 @@ const useUserPagination = createUsePaginationLocal('id', getUsers, {
   initializer: (state, reducer) =>
     reducer(state, {
       type: DefaultCRUDActionTypes.LIST,
-      payload: Array.from({ length: state.pageSize }).map((_, idx) => ({
+      payload: Array.from({ length: state.pageSize }, (_, idx) => ({
         id: String(idx)
       }))
     })

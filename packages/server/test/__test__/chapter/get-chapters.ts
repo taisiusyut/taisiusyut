@@ -78,11 +78,11 @@ export function testGetChapters() {
       { status: ChapterStatus.Private, type: ChapterType.Free },
       { status: ChapterStatus.Private, type: ChapterType.Pay }
     ],
-    Array.from({ length: 4 }).map(() => ({
+    Array.from({ length: 4 }, () => ({
       status: randomStatus(),
       type: randomType()
     })),
-    Array.from({ length: 4 }).map(() => ({
+    Array.from({ length: 4 }, () => ({
       status: randomStatus(),
       type: randomType()
     }))

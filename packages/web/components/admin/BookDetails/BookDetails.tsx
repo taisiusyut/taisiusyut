@@ -48,7 +48,7 @@ export function BookDetails({ book, onSuccess }: Props) {
         initializer: (state, reducer) =>
           reducer(state, {
             type: DefaultCRUDActionTypes.PAGINATE,
-            payload: Array.from({ length: 10 }).map(() => ({
+            payload: Array.from({ length: 10 }, () => ({
               id: String(Math.random())
             }))
           })

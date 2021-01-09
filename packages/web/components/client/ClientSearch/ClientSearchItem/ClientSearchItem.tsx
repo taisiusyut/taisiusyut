@@ -32,13 +32,13 @@ export function ClientSearchItem({ book, className: id }: Props) {
           <Skelecton length={3}>{book?.name}</Skelecton>
         </div>
         <div className={classes['book-author']}>
-          <Skelecton length={4}>
+          <Skelecton length={3}>
             {book?.authorName && `${book.authorName} 著`}
           </Skelecton>
         </div>
 
         <div className={classes['book-updated-at']}>
-          <Skelecton length={5}>
+          <Skelecton length={4}>
             {book.updatedAt &&
               `上次更新: ${dayjs(book.updatedAt).format('YYYY-MM-DD')}`}
           </Skelecton>
@@ -46,7 +46,7 @@ export function ClientSearchItem({ book, className: id }: Props) {
       </div>
       <div className={classes['book-status']}>
         <Skelecton length={1}>
-          <BookStatusTag status={book.status} />
+          {book.status && <BookStatusTag status={book.status} />}
         </Skelecton>
       </div>
     </div>

@@ -12,7 +12,7 @@ import {
 import { createUseCRUDReducer } from '@/hooks/crud-reducer';
 import { getBooks } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import { Store } from './ClientSearchInput';
+import { Search } from './ClientSearchInput';
 import { Book } from './ClientSearchItem';
 
 const pageSize = 10;
@@ -27,7 +27,7 @@ const useBookReducer = createUseCRUDReducer<Book, 'id'>('id', {
 
 export const createId = (idx: number) => `search-result-${idx}`;
 
-export function useSearchResult(search: Store) {
+export function useSearchResult(search: Search) {
   const [state, actions] = useBookReducer();
   const scrollerRef = useRef<HTMLDivElement>(null);
 

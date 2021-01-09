@@ -8,7 +8,7 @@ import {
   useForm,
   transoform,
   ClientSearchInput,
-  Store
+  Search
 } from './ClientSearchInput';
 import { ClientSearchItem } from './ClientSearchItem';
 import { ClientSearchNotFound } from './ClientSearchNotFound';
@@ -29,7 +29,7 @@ export function ClientSearch({ onLeave }: Props) {
   );
   const { state, scrollerRef } = useSearchResult(search);
 
-  const handleSearch = (search: Store) => {
+  const handleSearch = (search: Search) => {
     setSearch(search);
     router.push(
       {

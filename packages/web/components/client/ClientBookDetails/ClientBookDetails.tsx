@@ -41,7 +41,7 @@ const headerProps: HeaderProps = {
   )
 };
 
-const chapterPlaceHolders = Array.from({ length: 30 }).map((_, idx) => ({
+const chapterPlaceHolders = Array.from({ length: 30 }, (_, idx) => ({
   id: String(idx)
 }));
 

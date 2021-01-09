@@ -10,10 +10,9 @@ interface ClientAuthorBookProps {
   authorName: string;
 }
 
-const placeholder = Array.from({ length: 5 }).map<Partial<Schema$Book>>(
-  (_, index) => ({
-    id: String(index)
-  })
+const placeholder = Array.from<void, Partial<Schema$Book>>(
+  { length: 5 },
+  (_, index) => ({ id: String(index) })
 );
 
 export function ClientAuthorBook({ authorName }: ClientAuthorBookProps) {

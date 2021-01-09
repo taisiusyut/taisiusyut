@@ -9,12 +9,12 @@ import { Param$GetBooks } from '@/typings';
 
 type Key = keyof Param$GetBooks;
 
-export interface Store {
+export interface Search {
   type: Key;
   value: string;
 }
 
-interface Props extends FormProps<Store> {}
+interface Props extends FormProps<Search> {}
 
 const options: { value: Key; label: string }[] = [
   { value: 'search', label: '全部' },
@@ -23,7 +23,7 @@ const options: { value: Key; label: string }[] = [
   { value: 'tag', label: '標籤' }
 ];
 
-export const transoform = (query: Record<string, any>): Store => {
+export const transoform = (query: Record<string, any>): Search => {
   const types: Key[] = ['name', 'authorName', 'tag'];
   for (const type of types) {
     if (typeof query[type] === 'string') {
@@ -33,7 +33,7 @@ export const transoform = (query: Record<string, any>): Store => {
   return { type: 'search', value: query.search };
 };
 
-const { Form, FormItem, useForm } = createForm<Store>({ noStyle: true });
+const { Form, FormItem, useForm } = createForm<Search>({ noStyle: true });
 
 export { useForm };
 

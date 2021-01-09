@@ -26,7 +26,7 @@ export function Featured({ data }: FeaturedProps) {
 
   const contentRef = useRef<HTMLDivElement>(null);
   const [books, setBooks] = useState<Book[]>(() =>
-    Array.from({ length: pageSize }).map((_, idx) => ({
+    Array.from({ length: pageSize }, (_, idx) => ({
       id: String(idx)
     }))
   );
