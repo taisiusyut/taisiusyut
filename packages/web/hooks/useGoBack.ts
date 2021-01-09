@@ -54,11 +54,12 @@ export function GoBackProvider({ children }: Props) {
             ))
         ) {
           await router.push(previous);
+        } else {
+          // filter out dynamic route format
+          const fallback = targetPaths.find(p => p.indexOf(':') === -1) || '/';
+          await router.push(fallback);
         }
 
-        // filter out dynamic route format
-        const fallback = targetPaths.find(p => p.indexOf(':') === -1) || '/';
-        await router.push(fallback);
         records.current = records.current.slice(0, -2);
       },
       setRecords: handler => {
