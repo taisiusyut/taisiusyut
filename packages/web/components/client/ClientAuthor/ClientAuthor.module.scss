@@ -49,6 +49,11 @@
   }
 }
 
+.book-model {
+  float: left;
+  margin-top: 5px;
+}
+
 .book-description {
   composes: description from '../../BookInfoCard/BookInfoCard.module.scss';
   color: var(--text-light-color);

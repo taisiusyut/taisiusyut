@@ -41,6 +41,7 @@ export function ClientAuthorBook({ authorName }: ClientAuthorBookProps) {
               bookModelSize={60}
               classes={{
                 tags: classes['book-tags'],
+                'book-model': classes['book-model'],
                 description: classes['book-description']
               }}
               interactive
