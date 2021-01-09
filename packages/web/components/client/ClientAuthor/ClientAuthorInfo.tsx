@@ -13,14 +13,17 @@ export function ClientAuthorInfo({ author }: ClientAuthorInfoProps) {
   const { nickname, description, createdAt } = author || {};
   return (
     <Card className={classes['info']}>
-      <span className={classes['name']}>
-        <Skelecton length={4}>{nickname}</Skelecton>
-      </span>
-      <span className={classes['date']}>
-        <Skelecton length={6}>
-          {createdAt && `${dayjs(createdAt).format('YYYY-MM-DD')} 加入`}
-        </Skelecton>
-      </span>
+      <div className={classes['row']}>
+        <div className={classes['name']}>
+          <Skelecton length={4}>{nickname}</Skelecton>
+        </div>
+        <div className={classes['date']}>
+          <Skelecton length={6}>
+            {createdAt && `${dayjs(createdAt).format('YYYY-MM-DD')} 加入`}
+          </Skelecton>
+        </div>
+      </div>
+
       <div className={classes['description']}>
         <Skelecton length={60} disabled={typeof description === 'string'}>
           {description}

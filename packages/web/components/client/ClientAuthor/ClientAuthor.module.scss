@@ -9,6 +9,11 @@
 }
 
 .info {
+  .row {
+    @include flex(flex-end, space-between);
+    line-height: 1em;
+  }
+
   .name {
     font-size: 18px;
     font-weight: bold;
@@ -18,7 +23,6 @@
     color: var(--text-light-color);
     font-size: 15px;
     margin-left: 10px;
-    float: right;
   }
 
   .description {
@@ -29,19 +33,16 @@
   }
 }
 
-.books {
-  margin-top: 20px;
+.head {
+  @include margin-y(15px);
+  margin-left: 0.3em;
 
-  .head {
-    margin-left: 0.3em;
-    margin-bottom: 15px;
-    @media (min-width: 481px) {
-      font-size: 18px;
-    }
+  @media (min-width: 481px) {
+    font-size: 18px;
   }
 }
 
-.book-list {
+.books {
   > * + * {
     display: block;
     margin-top: 25px;

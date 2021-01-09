@@ -29,23 +29,22 @@ export function ClientAuthorBook({ authorName }: ClientAuthorBookProps) {
   const [{ data = placeholder }] = useRxAsync(request, { defer: false });
 
   return (
-    <div className={classes['books']}>
+    <>
       <div className={classes['head']}>全部作品</div>
-      <div className={classes['book-list']}>
+      <div className={classes['books']}>
         {data.map(book => {
           const content = (
             <BookInfoCard
-              interactive
               key={book.id}
               book={book}
               author={false}
               flatten={false}
-              bookModelSize={70}
-              className={classes['book']}
+              bookModelSize={60}
               classes={{
                 tags: classes['book-tags'],
                 description: classes['book-description']
               }}
+              interactive
             />
           );
 
@@ -54,13 +53,13 @@ export function ClientAuthorBook({ authorName }: ClientAuthorBookProps) {
           }
 
           return (
-            <Link href={`/book/${book.name}`}>
+            <Link key={book.id} href={`/book/${book.name}`}>
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a>{content}</a>
             </Link>
           );
         })}
       </div>
-    </div>
+    </>
   );
 }
