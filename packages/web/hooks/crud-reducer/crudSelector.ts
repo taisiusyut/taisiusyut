@@ -24,6 +24,7 @@ export function paginateSelector<S extends CRUDState<any, any>>({
 }: S): PaginateState<S> {
   const start = (pageNo - 1) * pageSize;
   const _list = list.slice(start, start + pageSize);
+  const _ids = ids.slice(start, start + pageSize);
 
   // all data should be checked.
   // so if one of the data deleted and indicates a new request is required.
@@ -33,7 +34,7 @@ export function paginateSelector<S extends CRUDState<any, any>>({
 
   return {
     list: _list,
-    ids,
+    ids: _ids,
     pageNo,
     pageSize,
     total,

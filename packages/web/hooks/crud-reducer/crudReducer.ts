@@ -31,7 +31,7 @@ export type CRUDReducer<
 ) => CRUDState<I, Prefill>;
 
 export interface CreateCRUDReducerOptions<
-  Prefill extends any = null,
+  Prefill extends boolean = true,
   M extends CRUDActionTypes = CRUDActionTypes
 > {
   prefill?: Prefill;
@@ -219,17 +219,17 @@ export const createCRUDReducer: CreateCRUDReducer = <
       const byIds = { ...state.byIds };
       delete byIds[id];
 
-      const total = state.total - 1;
+      const total = Math.max(0, state.total - 1);
 
       // naviagte to preview page if current is not exists
-      const totalPage = Math.ceil(total / state.pageSize);
+      const totalPage = Math.ceil(total / state.pageSize) || 1;
       const pageNo = Math.min(totalPage, state.pageNo);
 
       return {
         ...state,
         byIds,
         pageNo,
-        total: state.total - 1,
+        total,
         ids: removeFromArray(state.ids, index),
         list: removeFromArray(state.list, index)
       };
@@ -267,12 +267,12 @@ export const createCRUDReducer: CreateCRUDReducer = <
       const total = state.total + 1;
 
       // naviagte to the new item pageNo
-      const pageNo = Math.ceil(index / state.pageSize);
+      const pageNo = Math.ceil((index + 1) / state.pageSize);
 
       return {
         ...state,
-        pageNo,
         total,
+        pageNo,
         ids: insert(state.ids, [id]),
         list: insert(state.list, [payload]),
         byIds: { ...state.byIds, [id]: payload }
