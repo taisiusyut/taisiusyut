@@ -77,25 +77,6 @@ async function getServerInstance(type, defaultInstance) {
   return getServerInstance(type, defaultInstance);
 }
 
-/**
- * @function
- * @template T
- * @param {import('@nestjs/common').Type<T>} payload
- * @returns {(defaultInstance?: import('@nestjs/common').INestApplication) => Promise<T>}
- */
-function createGetter(payload) {
-  return async function getter(defaultInstance) {
-    const result = await getServerInstance(payload, defaultInstance);
-    return result;
-  };
-}
-
-const getBookService = createGetter(BookService);
-const getBookController = createGetter(BookController);
-const getChpaterService = createGetter(ChapterService);
-const getChpaterController = createGetter(ChapterController);
-const getAuthorController = createGetter(AuthorController);
-
 const _serializer = new MongooseSerializerInterceptor({});
 
 /**
@@ -113,6 +94,24 @@ function serialize(payload, options) {
   });
   return result;
 }
+
+/**
+ * @function
+ * @template T
+ * @param {import('@nestjs/common').Type<T>} payload
+ * @returns {(defaultInstance?: import('@nestjs/common').INestApplication) => Promise<T>}
+ */
+function createGetter(payload) {
+  return async function getter(defaultInstance) {
+    return getServerInstance(payload, defaultInstance);
+  };
+}
+
+const getBookService = createGetter(BookService);
+const getBookController = createGetter(BookController);
+const getChpaterService = createGetter(ChapterService);
+const getChpaterController = createGetter(ChapterController);
+const getAuthorController = createGetter(AuthorController);
 
 module.exports = {
   createInstance,

@@ -14,7 +14,8 @@ const isExpired = (jwtToken: Schema$Authenticated) =>
 
 export async function getJwtToken(payload?: Param$Login) {
   if (!jwtToken || isExpired(jwtToken)) {
-    jwtToken = await (payload ? login(payload) : refreshToken());
+    const request = payload ? login(payload) : refreshToken();
+    jwtToken = await request;
   }
   return jwtToken;
 }

@@ -14,6 +14,11 @@ interface LayoutProps {
   disableScrollRestoration?: boolean;
 }
 
+interface UnthorizedProps {
+  redirect?: string;
+  role?: UserRole;
+}
+
 interface ExtendAppProps extends AppProps {
   Component: AppProps['Component'] & {
     access?: UserRole[];
@@ -23,13 +28,7 @@ interface ExtendAppProps extends AppProps {
   };
 }
 
-function Unthorized({
-  redirect,
-  role
-}: {
-  redirect?: string;
-  role?: UserRole;
-}) {
+function Unthorized({ redirect, role }: UnthorizedProps) {
   useEffect(() => {
     const isAdminPage = router.asPath.startsWith(`/admin`);
     const pathname = redirect || isAdminPage ? '/admin/login' : '/';
@@ -49,9 +48,7 @@ function AppContent(props: ExtendAppProps) {
   const access = Component.access;
 
   useEffect(() => {
-    if (!window.dataLayer) {
-      window.dataLayer = [];
-    }
+    window.dataLayer = window.dataLayer || [];
   }, []);
 
   if (access && process.env.NEXT_PUBLIC_GUEST) {

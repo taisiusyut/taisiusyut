@@ -12,8 +12,6 @@ interface Props extends Pick<FeaturedProps, 'data'> {}
 
 const revalidate = 60 * 60;
 
-// TODO: check revalidate
-
 export const getStaticProps: GetStaticProps<Props> = async context => {
   const result = await getClientFeaturedPageData();
 

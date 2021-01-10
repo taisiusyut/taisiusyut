@@ -5,7 +5,7 @@ import { GoBackButton } from '@/components/GoBackButton';
 export default function FAQPage() {
   return (
     <>
-      <ClientHeader title="FAQ" left={<GoBackButton />} />
+      <ClientHeader title="常見問題" left={<GoBackButton />} />
       <div
         style={{
           height: `100%`,

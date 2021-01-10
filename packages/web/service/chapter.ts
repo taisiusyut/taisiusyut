@@ -8,30 +8,27 @@ import {
 } from '@/typings';
 import { api } from './api';
 
+export interface Pram$GetChapter {
+  bookID: string;
+  chapterID: string;
+}
+export interface Pram$GetChapterByName {
+  bookID: string;
+  chapterNo: number;
+}
+
 export const getChapters = ({ bookID, ...params }: Param$GetChapters = {}) =>
   api.get<PaginateResult<Schema$Chapter>>(
     routes.get_chapters.generatePath({ bookID }),
     { params }
   );
 
-export const getChapter = ({
-  bookID,
-  chapterID
-}: {
-  bookID: string;
-  chapterID: string;
-}) =>
+export const getChapter = ({ bookID, chapterID }: Pram$GetChapter) =>
   api.get<Schema$Chapter>(
     routes.get_chapter.generatePath({ bookID, chapterID })
   );
 
-export const getChapterByNo = ({
-  bookID,
-  chapterNo
-}: {
-  bookID: string;
-  chapterNo: number;
-}) =>
+export const getChapterByNo = ({ bookID, chapterNo }: Pram$GetChapterByName) =>
   api.get<Schema$Chapter>(
     routes.get_chapter_by_no.generatePath({ bookID, chapterNo })
   );

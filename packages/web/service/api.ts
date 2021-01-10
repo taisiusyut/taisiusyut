@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, CustomAxiosInstance } from 'axios';
 
-function extendedAxiosInstance(
+function createCustomAxiosInstance(
   config: AxiosRequestConfig
 ): CustomAxiosInstance {
   const instance = axios.create(config);
@@ -12,6 +12,6 @@ function extendedAxiosInstance(
   return instance;
 }
 
-export const api = extendedAxiosInstance({
+export const api = createCustomAxiosInstance({
   baseURL: '/api'
 });

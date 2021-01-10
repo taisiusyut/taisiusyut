@@ -19,7 +19,7 @@ function createSetSearchParam() {
 
     router.push(
       {
-        pathname: router.asPath.split('?')[0], // seems required for dynamic route
+        pathname: router.asPath.split('?')[0], // seems require for dynamic route
         search: decodeURIComponent(
           qs.stringify(newState as qs.ParsedUrlQueryInput)
         )

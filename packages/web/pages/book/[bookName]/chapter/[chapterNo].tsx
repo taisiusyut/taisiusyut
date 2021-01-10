@@ -72,17 +72,14 @@ export const getStaticProps: GetStaticProps<Props, Params> = async context => {
 
 export default function ClientChapterPage(props: Props) {
   const { bookName, chapter } = props;
-  let head: React.ReactNode = null;
 
-  if (chapter) {
-    head = (
-      <Meta
-        keywords={bookName}
-        title={formatChapterTitle(chapter.number, bookName)}
-        description={chapter.content.trim().slice(0, 100)}
-      />
-    );
-  }
+  const head = chapter ? (
+    <Meta
+      keywords={bookName}
+      title={formatChapterTitle(chapter.number, bookName)}
+      description={chapter.content.trim().slice(0, 100)}
+    />
+  ) : null;
 
   return (
     <>

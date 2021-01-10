@@ -36,6 +36,7 @@
       flag ? 'paging' : 'single'
     );
   };
+
   /** @type {Preferences}} */
   var preferences = {};
   try {

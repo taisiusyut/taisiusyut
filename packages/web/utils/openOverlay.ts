@@ -14,7 +14,7 @@ export function createOpenOverlay<T extends Partial<OverlayProps>>(
   ) {
     const div = document.createElement('div');
     document.body.appendChild(div);
-    // eslint-disable-next-line no-use-before-define
+
     let currentConfig: Omit<T, keyof OverlayProps> & Partial<OverlayProps> = {
       ...config,
       onClose: (...args) => {

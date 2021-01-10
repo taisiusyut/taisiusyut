@@ -57,9 +57,13 @@ export const getStaticProps: GetStaticProps<
 };
 
 export function AuthorPage(props: ClientAuthorProps) {
+  const head: React.ReactNode = props.author ? (
+    <Meta title={`${props.author.nickname} | 睇小說`} />
+  ) : null;
+
   return (
     <>
-      <Meta title={`${props.authorName} | 睇小說`} />
+      {head}
       <ClientAuthor {...props} />
     </>
   );

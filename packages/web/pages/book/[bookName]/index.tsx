@@ -87,17 +87,13 @@ export const getStaticProps: GetStaticProps<
 
 export default function ClientBookDetailsPage(props: Props) {
   const { book } = props;
-  let head: React.ReactNode = null;
-
-  if (book) {
-    head = (
-      <Meta
-        title={`${book.name} | ${book.authorName} | 睇小說`}
-        keywords={book.name}
-        description={book.description}
-      />
-    );
-  }
+  const head = book ? (
+    <Meta
+      title={`${book.name} | ${book.authorName} | 睇小說`}
+      keywords={book.name}
+      description={book.description}
+    />
+  ) : null;
 
   return (
     <>
