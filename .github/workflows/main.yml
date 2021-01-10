@@ -10,15 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Setup repo
         uses: actions/checkout@v2
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
 
       - name: Cache yarn cache
         uses: actions/cache@v2
@@ -35,7 +31,16 @@ jobs:
         with:
           path: |
             node_modules
-            */*/node_modules
+            **/**/node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Cache nextjs build dir
+        id: cache-next-build-dir
+        uses: actions/cache@v2
+        with:
+          path: packages/web/.next
           key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
