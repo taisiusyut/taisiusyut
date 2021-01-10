@@ -45,9 +45,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: packages/web/.next
-          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+          key: ${{ runner.os }}-next-build
 
       - name: Setup Node
         uses: actions/setup-node@v2-beta
