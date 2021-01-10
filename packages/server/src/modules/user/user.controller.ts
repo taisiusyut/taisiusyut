@@ -18,7 +18,6 @@ import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
 import { UserRole, UserStatus } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
-import { Condition } from '@/utils/mongoose';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
 
@@ -32,20 +31,12 @@ export class UserController {
 
   @Access('user_get_all')
   @Get(routes.user.get_users)
-  getAll(@Req() req: FastifyRequest, @Query(AccessPipe) query: GetUsersDto) {
-    let condition: Condition[] = [];
-
-    if (req.user) {
-      condition = [
-        ...condition,
-        { $or: this.userService.roles[req.user.role] },
-        { $nor: [{ username: req.user.username }] } // Exclude self
-      ];
-    }
-
+  getAll(@Req() { user }: FastifyRequest, @Query(AccessPipe) dto: GetUsersDto) {
+    const roles = user?.role && this.userService.roles[user?.role];
     return this.userService.paginate({
-      ...query,
-      condition
+      ...dto,
+      ...(roles ? { $or: roles } : {}),
+      username: { $ne: user?.username }
     });
   }
 

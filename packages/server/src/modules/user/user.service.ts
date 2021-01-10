@@ -19,6 +19,9 @@ export class UserService extends MongooseCRUDService<User> {
     // admin cannot access root or other admin
     [UserRole.Admin]: filterRole(
       role => ![UserRole.Root, UserRole.Admin].includes(role)
+    ),
+    [UserRole.Guest]: filterRole(
+      role => ![UserRole.Root, UserRole.Admin].includes(role)
     )
   };
 

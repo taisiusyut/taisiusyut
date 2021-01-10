@@ -11,8 +11,7 @@ export function testGetUsers() {
 
   test('get users by root', async () => {
     const response = await getUsers(root.token);
-    expect(response.error).toBeFalse();
-
+    expect(response.status).toBe(HttpStatus.OK);
     expect(response.body.data).toContainObject({ role: UserRole.Admin });
     expect(response.body.data).toContainObject({ role: UserRole.Author });
     expect(response.body.data).toContainObject({ role: UserRole.Client });
@@ -21,7 +20,7 @@ export function testGetUsers() {
 
   test('get users by admin', async () => {
     const response = await getUsers(admin.token);
-    expect(response.error).toBeFalse();
+    expect(response.status).toBe(HttpStatus.OK);
     expect(response.body.data).toContainObject({ role: UserRole.Author });
     expect(response.body.data).toContainObject({ role: UserRole.Client });
     expect(response.body.data).not.toContainObject({ role: UserRole.Root });
