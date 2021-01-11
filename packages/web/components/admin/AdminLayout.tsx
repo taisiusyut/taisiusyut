@@ -22,7 +22,7 @@ export function AdminLayout({ children }: Props) {
               background-color: var(--secondary-color);
               font-size: $pt-font-size;
               font-weight: 400;
-              font-family: 'Muli', #{$pt-font-family};
+              font-family: 'Muli', #{$base-font-family};
             }
 
             .layout-body {
