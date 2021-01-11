@@ -3,7 +3,6 @@
 .search {
   @include flex($flex-direction: column);
   @include sq-dimen(100%);
-  @include shadow-border();
   background-color: var(--primary-color);
 }
 
@@ -52,7 +51,7 @@
   }
 
   @mixin single-page {
-    @include fixed($header-height, null, 0);
+    @include fixed($header-height - 1, null, 0);
     z-index: 10;
   }
 
