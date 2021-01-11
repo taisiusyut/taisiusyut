@@ -30,8 +30,8 @@ export function AdminLayout({ children }: Props) {
               @include margin-x(auto);
               @include flex();
               max-width: $max-width;
-              height: 100vh;
-              height: calc(var(--vh, 1vh) * 100);
+              min-height: 100vh;
+              min-height: calc(var(--vh, 1vh) * 100);
             }
 
             .layout-content {
