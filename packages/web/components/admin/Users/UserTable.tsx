@@ -1,5 +1,5 @@
 import React from 'react';
-import { Schema$User, UserRole, Order } from '@/typings';
+import { Schema$User, UserRole } from '@/typings';
 import { Table, TableProps, SortableHeader } from '@/components/Table';
 import { UserStatusTag } from '@/components/Tags';
 import dayjs from 'dayjs';
@@ -49,21 +49,13 @@ const userColumns: Columns = [
     id: 'createdAt',
     accessor: ({ createdAt }) =>
       createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => (
-      <SortableHeader field="createdAt" defaultOrder={Order.DESC}>
-        Created At
-      </SortableHeader>
-    )
+    Header: () => <SortableHeader field="createdAt">Created At</SortableHeader>
   },
   {
     id: 'updatedAt',
     accessor: ({ updatedAt }) =>
       updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => (
-      <SortableHeader field="updatedAt" defaultOrder={Order.DESC}>
-        Updated At
-      </SortableHeader>
-    )
+    Header: () => <SortableHeader field="updatedAt">Updated At</SortableHeader>
   }
 ];
 

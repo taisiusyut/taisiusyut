@@ -1,31 +1,32 @@
 import React from 'react';
 import router from 'next/router';
-import { Icon } from '@blueprintjs/core';
+import { Icon, IIconProps } from '@blueprintjs/core';
 import { Order } from '@/typings';
 import { JSONParse } from '@/utils/JSONParse';
 import { setSearchParam } from '@/utils/setSearchParam';
 import classes from './Table.module.scss';
 
-interface Props
-  extends React.DetailedHTMLProps<
-    React.ThHTMLAttributes<HTMLTableHeaderCellElement>,
-    HTMLTableHeaderCellElement
-  > {
+type TableHeaderProps = React.DetailedHTMLProps<
+  React.ThHTMLAttributes<HTMLTableHeaderCellElement>,
+  HTMLTableHeaderCellElement
+>;
+
+interface Props extends TableHeaderProps {
   field: string;
-  defaultOrder: Order;
 }
 
-export function SortableHeader({
-  field,
-  children,
-  defaultOrder,
-  ...props
-}: Props) {
+function getIcon(order: Order): IIconProps['icon'] {
+  if (order === Order.DESC) return 'arrow-down';
+  if (order === Order.ASC) return 'arrow-up';
+  return 'swap-vertical';
+}
+
+export function SortableHeader({ field, children, ...props }: Props) {
   const sort = JSONParse<Record<string, unknown>>(
     router.query['sort'] as string,
     {}
   );
-  const order = Number(sort[field] || defaultOrder);
+  const order = Number(sort[field]);
 
   return (
     <div
@@ -43,12 +44,7 @@ export function SortableHeader({
     >
       <div className={classes['th']}>
         {children}
-        {
-          <Icon
-            iconSize={12}
-            icon={order === Order.DESC ? 'arrow-down' : 'arrow-up'}
-          />
-        }
+        {<Icon iconSize={12} icon={getIcon(order)} />}
       </div>
     </div>
   );
