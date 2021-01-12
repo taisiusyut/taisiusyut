@@ -8,6 +8,7 @@ interface Props {
   title?: React.ReactNode;
   children?: React.ReactNode;
   targetPath?: GoBackOptions['targetPath'];
+  className?: string;
 }
 
 const h4 = resolve`
@@ -23,9 +24,14 @@ const button = resolve`
   }
 `;
 
-export function PageHeader({ title, targetPath, children }: Props) {
+export function PageHeader({
+  title,
+  targetPath,
+  children,
+  className = ''
+}: Props) {
   return (
-    <div className="header">
+    <div className={`header ${className}`.trim()}>
       <div className="title">
         {targetPath && (
           <GoBackButton targetPath={targetPath} className={button.className} />

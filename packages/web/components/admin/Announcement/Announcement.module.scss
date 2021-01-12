@@ -1,0 +1,11 @@
+@import '~styles/utils';
+
+.container {
+  :global(.bp3-card) {
+    height: 280px;
+  }
+}
+
+.title {
+  margin-bottom: 15px;
+}

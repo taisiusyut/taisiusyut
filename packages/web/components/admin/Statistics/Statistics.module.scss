@@ -1,0 +1,15 @@
+@import '~styles/utils';
+
+.container {
+  margin-top: 20px;
+}
+
+.title {
+  margin-bottom: 15px;
+}
+
+.grid {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(3, 1fr);
+}

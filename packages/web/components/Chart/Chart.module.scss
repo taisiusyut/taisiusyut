@@ -1,0 +1,50 @@
+@import '~styles/utils';
+
+.canvas {
+  @include relative();
+  &:before {
+    @include dimen(100%, 0);
+    content: '';
+    display: block;
+    padding-bottom: 154/300 * 100%;
+  }
+  canvas {
+    @include absolute(0, 0, 0, 0);
+  }
+}
+
+.chart-title {
+  color: var(--text-light-color);
+  font-size: 13px;
+}
+
+.chart-sub-title {
+  @include flex(flex-end);
+  @include margin-y(10px 20px);
+  color: var(--text-color);
+  font-size: 20px;
+}
+
+.chart-value {
+  display: block;
+  margin-right: 0.3rem;
+  line-height: 1rem;
+}
+
+.chart-icon {
+  svg {
+    @include sq-dimen(1em);
+    fill: currentColor;
+  }
+}
+
+.chart-icon,
+.chart-pect {
+  color: $green5;
+  font-size: 0.6em;
+}
+
+.chart-pect {
+  line-height: 1em;
+  margin-left: 0.15em;
+}
