@@ -308,6 +308,17 @@ function ClientChapterComponment({
 
   useLastVisitChapter(bookID, currentChapter);
 
+  // disable scroll resotration for page refresh
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      const defaultScrollRestoration = window.history.scrollRestoration;
+      window.history.scrollRestoration = 'manual';
+      return () => {
+        window.history.scrollRestoration = defaultScrollRestoration;
+      };
+    }
+  }, []);
+
   if (bookID) {
     const chapterName =
       data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
