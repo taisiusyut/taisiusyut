@@ -87,15 +87,14 @@
     if (fontSize || lineHeight) {
       /** @type {HTMLElement[]} */
       var els = Array.prototype.slice.call(
-        document.querySelectorAll(`[id^="chapter-"]`)
+        document.querySelectorAll('[id^="chapter-"]')
       );
       els.forEach(function (el) {
         // prettier-ignore
-        el.setAttribute('style', 'font-size: ' + (fontSize || 18) + 'px; line-height: ' + (lineHeight || '1.5em'))
+        el.setAttribute('style', 'font-size: ' + (fontSize || 18) + 'px; line-height: ' + (lineHeight || '1.5em'));
       });
     }
   }
-  handleChapterContentStyle();
 
   // https://stackoverflow.com/a/13382873
   function getScrollbarWidth() {
@@ -122,5 +121,7 @@
     if (getScrollbarWidth()) {
       document.documentElement.setAttribute('custom-scrollbar', '');
     }
+
+    handleChapterContentStyle();
   });
 })();
