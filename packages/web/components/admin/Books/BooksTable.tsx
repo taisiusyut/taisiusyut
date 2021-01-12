@@ -1,5 +1,5 @@
 import React from 'react';
-import { Schema$Book, Order, Category } from '@/typings';
+import { Schema$Book, Category } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { BookModel } from '@/components/BookModel';
 import { Tags, BookStatusTag } from '@/components/Tags';
@@ -9,7 +9,19 @@ type BookTableProps = Omit<TableProps<Partial<Schema$Book>>, 'columns'> & {
   isAuthor: boolean;
 };
 
-const bookColumns: Column<Partial<Schema$Book>>[] = [
+type Columns = (Column<Partial<Schema$Book>> & {
+  authorOnly?: boolean;
+})[];
+
+const noWrap: React.CSSProperties = { whiteSpace: 'nowrap' };
+const numFormat = new Intl.NumberFormat();
+
+function NumberFormat({ value }: { value?: number }) {
+  const num = typeof value === 'number' ? numFormat.format(value) : value;
+  return <div style={{ textAlign: 'center' }}>{num}</div>;
+}
+
+const bookColumns: Columns = [
   {
     id: 'cover',
     Header: 'Cover',
@@ -35,7 +47,8 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
   {
     id: 'authorName',
     Header: 'Author',
-    accessor: book => book.authorName
+    accessor: book => book.authorName,
+    authorOnly: true
   },
   {
     id: 'category',
@@ -57,28 +70,38 @@ const bookColumns: Column<Partial<Schema$Book>>[] = [
       ) : null
   },
   {
+    id: 'word-count',
+    accessor: 'wordCount',
+    Cell: props => <NumberFormat {...props} />,
+    Header: () => (
+      <SortableHeader field="wordCount" style={noWrap}>
+        Word Count
+      </SortableHeader>
+    )
+  },
+  {
+    id: 'collection',
+    accessor: 'numOfCollection',
+    Cell: props => <NumberFormat {...props} />,
+    Header: () => (
+      <SortableHeader field="numOfCollection">Collection</SortableHeader>
+    )
+  },
+  {
     id: 'createdAt',
     accessor: ({ createdAt }) =>
       createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => (
-      <SortableHeader field="createdAt" defaultOrder={Order.DESC}>
-        Created At
-      </SortableHeader>
-    )
+    Header: () => <SortableHeader field="createdAt">Created At</SortableHeader>
   },
   {
     id: 'updatedAt',
     accessor: ({ updatedAt }) =>
       updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => (
-      <SortableHeader field="updatedAt" defaultOrder={Order.DESC}>
-        Updated At
-      </SortableHeader>
-    )
+    Header: () => <SortableHeader field="updatedAt">Updated At</SortableHeader>
   }
 ];
 
-const bookColumnsForAuthor = bookColumns.filter(col => col.id !== 'author');
+const bookColumnsForAuthor = bookColumns.filter(col => !col.authorOnly);
 
 export function BooksTable({ isAuthor, ...props }: BookTableProps) {
   return (
