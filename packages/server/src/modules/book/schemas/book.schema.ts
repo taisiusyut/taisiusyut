@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Types } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -13,6 +14,8 @@ import { BookAuthor } from './book-author';
   }
 })
 export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
+  _id: ObjectId;
+
   id: string;
 
   @Prop({ type: String, required: true, unique: true, trim: true })
@@ -53,8 +56,11 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   })
   status: BookStatus;
 
-  @Prop({ type: Number, required: true })
+  @Prop({ type: Number, required: true, min: 0 })
   wordCount: number;
+
+  @Prop({ type: Number, required: true, min: 0 })
+  numOfCollection?: number;
 
   @Transform(Number)
   createdAt: string;

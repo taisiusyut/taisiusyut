@@ -18,6 +18,9 @@ class Excluded
 
   @Exclude()
   wordCount?: number;
+
+  @Exclude()
+  numOfCollection?: number;
 }
 
 class GetBooks

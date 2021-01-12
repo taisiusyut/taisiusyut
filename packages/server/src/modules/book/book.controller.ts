@@ -38,6 +38,7 @@ export class BookController {
     return this.bookService.create({
       ...createBookDto,
       wordCount: 0,
+      numOfCollection: 0,
       status: BookStatus.Private,
       authorName: req.user?.nickname,
       author: req.user?.user_id

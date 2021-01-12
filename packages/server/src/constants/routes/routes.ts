@@ -67,6 +67,8 @@ export const Routes = {
     prefix: '/author',
     get_author_by_name: '/:authorName',
     author_word_count: '/word-count/:id',
-    author_word_count_no_id: '/word-count/'
+    author_word_count_no_id: '/word-count/',
+    update_book_collection: '/collection/:id',
+    update_book_collection_no_id: '/collection/'
   }
 };

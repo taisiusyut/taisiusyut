@@ -40,6 +40,7 @@ export interface Schema$Book extends Timestamp {
   author: Schema$BookAuthor | null;
   status?: BookStatus;
   wordCount: number;
+  numOfCollection: number;
 }
 
 export interface Param$CreateBook {

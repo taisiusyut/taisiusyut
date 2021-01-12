@@ -7,6 +7,7 @@ const admin: Permission[] = [
   'user_get_all',
   'user_get',
   'author_word_count',
+  'update_book_collection',
 
   'book_update',
   'book_get_all',
@@ -32,6 +33,7 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
   [UserRole.Admin]: admin,
   [UserRole.Author]: [
     'author_word_count',
+    'update_book_collection',
 
     'book_create',
     'book_update',

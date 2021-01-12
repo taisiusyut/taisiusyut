@@ -9,7 +9,8 @@ export type UserPermission =
   | CRUD<'user'>
   | 'delete-account'
   | 'modify-password'
-  | 'author_word_count';
+  | 'author_word_count'
+  | 'update_book_collection';
 
 export type BookPermission =
   | CRUD<'book'>
