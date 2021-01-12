@@ -67,16 +67,16 @@ export class ChapterController {
     );
 
     if (bookExists) {
-      const query: FilterQuery<Chapter> = { book: bookID, author };
+      const query: Partial<Chapter> = { book: bookID, author };
       const count = await this.chapterService.countDocuments(query);
 
       createChapterDto.content = createChapterDto.content.trimEnd();
 
       return this.chapterService.create({
-        number: count + 1,
-        wordCount: calcWordCount(createChapterDto.content),
         ...createChapterDto,
-        ...query
+        ...query,
+        number: count + 1,
+        wordCount: calcWordCount(createChapterDto.content)
       });
     }
 

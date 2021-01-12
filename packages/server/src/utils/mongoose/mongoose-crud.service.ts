@@ -25,7 +25,7 @@ export abstract class MongooseCRUDService<
 > {
   constructor(private readonly model: PaginateModel<D>) {}
 
-  async create(createDto: unknown): Promise<D> {
+  async create(createDto: Partial<Omit<T, '_id' | 'toJSON'>>): Promise<D> {
     const created = new this.model(createDto);
     return created.save();
   }
@@ -81,7 +81,12 @@ export abstract class MongooseCRUDService<
     changes: UpdateQuery<D>,
     options: ModelUpdateOptions = {}
   ) {
-    return this.model.updateOne(query, changes, options);
+    return this.model.updateOne(query, changes, {
+      runValidators: true,
+      setDefaultsOnInsert: true,
+      omitUndefined: true,
+      ...options
+    });
   }
 
   updateMany(
@@ -159,7 +164,7 @@ export abstract class MongooseCRUDService<
       }
     );
 
-    return (result as unknown) as PaginateResult<T>;
+    return (result as unknown) as PaginateResult<D>;
   }
 
   exists(query: FilterQuery<D>): Promise<boolean> {
