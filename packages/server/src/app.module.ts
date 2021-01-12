@@ -1,3 +1,4 @@
+import path from 'path';
 import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -38,7 +39,7 @@ interface Configs {
         `.env.${process.env.NODE_ENV || 'development'}`,
         '.env.local',
         '.env'
-      ],
+      ].map(pathname => path.resolve(__dirname, pathname)),
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
