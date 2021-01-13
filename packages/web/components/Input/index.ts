@@ -3,3 +3,4 @@ export * from './NumericInput';
 export * from './Password';
 export * from './SearchInput';
 export * from './TagInput';
+export * from './DateRangeInput';

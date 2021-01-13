@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import router from 'next/router';
 import { Button, Popover, IPopoverProps, H4 } from '@blueprintjs/core';
-import { DateRangeInput } from '@blueprintjs/datetime';
 import { ButtonPopover } from '@/components/ButtonPopover';
+import { DateRangeInput } from '@/components/Input/DateRangeInput';
 import { Input, SearchInput } from '@/components/Input';
 import {
   createForm,
@@ -14,8 +14,6 @@ import {
 import { setSearchParam } from '@/utils/setSearchParam';
 import { setRef } from '@/utils/setRef';
 import classes from './Filter.module.scss';
-import dayjs from 'dayjs';
-import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
 
 interface FilterInputProps {
   deps?: undefined;
@@ -213,11 +211,7 @@ export function createFilter<T extends Record<string, any>>(
     return (
       <FormItem {...props}>
         <DateRangeInput
-          allowSingleDayRange
-          shortcuts={false}
           className={classes['date-range-input']}
-          formatDate={date => dayjs(date).format('YYYY-MM-DD')}
-          parseDate={str => new Date(str)}
           popoverProps={{ fill: true }}
         />
       </FormItem>
