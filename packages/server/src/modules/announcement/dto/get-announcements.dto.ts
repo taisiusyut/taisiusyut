@@ -2,7 +2,7 @@ import { IsEnum, IsOptional } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import {
   Schema$Announcement,
-  Param$GetAnnouncement,
+  Param$GetAnnouncements,
   AnnouncementType
 } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
@@ -29,7 +29,7 @@ class GetAnnouncement
   extends Excluded
   implements
     Partial<Omit<Schema$Announcement, keyof Excluded>>,
-    Partial<Omit<Param$GetAnnouncement, keyof Excluded>> {
+    Partial<Omit<Param$GetAnnouncements, keyof Excluded>> {
   @IsOptional()
   @DateRange()
   start?: number;
@@ -47,4 +47,4 @@ export class GetAnnouncementsDto
   extends GetAnnouncement
   implements
     Required<Omit<Schema$Announcement, keyof GetAnnouncement>>,
-    Required<Omit<Param$GetAnnouncement, keyof GetAnnouncement>> {}
+    Required<Omit<Param$GetAnnouncements, keyof GetAnnouncement>> {}

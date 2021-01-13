@@ -13,10 +13,10 @@ export interface Schema$Announcement extends Timestamp {
   type: AnnouncementType;
 }
 
-export interface Param$GetAnnouncement extends Pagination {
+export interface Param$GetAnnouncements extends Pagination {
   start?: number;
   end?: number;
-  type: AnnouncementType;
+  type?: AnnouncementType;
 }
 
 export interface Param$CreateAnnouncement {
@@ -28,6 +28,7 @@ export interface Param$CreateAnnouncement {
 }
 
 export interface Param$UpdateAnnouncement {
+  id: string;
   title?: string;
   description?: string;
   start?: number;

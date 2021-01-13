@@ -1,10 +1,11 @@
-import { IsString, IsEnum, IsInt } from 'class-validator';
+import { IsEnum, IsInt } from 'class-validator';
+import { Exclude } from 'class-transformer';
 import {
   Schema$Announcement,
   Param$CreateAnnouncement,
   AnnouncementType
 } from '@/typings';
-import { Exclude } from 'class-transformer';
+import { IsTitle, IsDescription } from './index';
 
 class Excluded implements Partial<Schema$Announcement> {
   @Exclude()
@@ -30,10 +31,10 @@ export class CreateAnnouncementDto
   implements
     Required<Omit<Schema$Announcement, keyof CreateAnnouncement>>,
     Required<Omit<Param$CreateAnnouncement, keyof CreateAnnouncement>> {
-  @IsString()
+  @IsTitle()
   title: string;
 
-  @IsString()
+  @IsDescription()
   description: string;
 
   @IsInt()
