@@ -1,7 +1,52 @@
 // https://github.com/CapMousse/Graph.js/blob/master/src/graph.js
 
+export interface GraphCreate {
+  data: number[];
+  target: HTMLCanvasElement;
+
+  paddingBottom?: number;
+  paddingLeft?: number;
+  paddingRight?: number;
+  paddingTop?: number;
+  showCircle?: boolean;
+  circle?: string;
+  circleSize?: number;
+  background?: string;
+  showZeroLine?: boolean;
+  centerZero?: boolean;
+  zeroLineColor?: string;
+  lineColor?: string;
+  lineWidth?: number;
+  showBounds?: boolean;
+  bounds?: string;
+  boundsHeight?: number;
+  boundsFont?: string;
+  showLegend?: boolean;
+  legend?: any;
+  legendColor?: string;
+  legendHeight?: number;
+  legendFont?: string;
+}
+
+interface GraphOptions extends Required<GraphCreate> {
+  context: CanvasRenderingContext2D;
+}
+
 export class Graph {
-  constructor(options) {
+  options: GraphOptions;
+
+  maxValue = 0;
+  minValue = 0;
+
+  middle = 0;
+  verticalScale = 1;
+  horizontalScale = 1;
+
+  max = 0;
+  width = 0;
+  height = 0;
+
+  constructor(options: GraphCreate) {
     this.options = {
       paddingBottom: 0,
       paddingLeft: 0,
@@ -24,12 +69,9 @@ export class Graph {
       legend: false,
       legendColor: '#8888EE',
       legendHeight: 14,
-      legendFont: 'Arial'
-    };
-
-    if (options) {
-      this.options = { ...this.options, ...options };
-    }
+      legendFont: 'Arial',
+      ...options
+    } as GraphOptions;
 
     if (
       typeof this.options.data !== 'object' &&
@@ -46,7 +88,8 @@ export class Graph {
       throw new Error('Canvas not defined');
     }
 
-    this.options.context = this.options.target.getContext('2d');
+    // eslint-disable-next-line
+    this.options.context = this.options.target.getContext('2d')!;
 
     this.init();
     this.draw();
@@ -57,22 +100,24 @@ export class Graph {
    * @param  {index} index
    * @return {array}
    */
-  getPointCoordinates(index) {
+  getPointCoordinates(index: number) {
     const x = this.options.paddingLeft + index * this.horizontalScale;
     const y =
       this.middle +
       this.options.paddingTop -
       this.verticalScale * this.options.data[index];
 
-    return [x, y];
+    return [x, y] as const;
   }
 
   /**
    * Init graph
    */
   init() {
-    this.options.target.height = this.options.target.parentElement.offsetHeight;
-    this.options.target.width = this.options.target.parentElement.offsetWidth;
+    this.options.target.height =
+      this.options.target.parentElement?.offsetHeight || 0;
+    this.options.target.width =
+      this.options.target.parentElement?.offsetWidth || 0;
 
     if (this.options.showLegend) {
       this.options.paddingLeft =
@@ -218,17 +263,11 @@ export class Graph {
 
     this.options.context.strokeStyle = this.options.lineColor;
     this.options.context.lineWidth = this.options.lineWidth;
-    this.options.context.moveTo.apply(
-      this.options.context,
-      this.getPointCoordinates(0)
-    );
+    this.options.context.moveTo(...this.getPointCoordinates(0));
     this.options.context.beginPath();
 
     for (let i = 0; i <= dataLength; i++) {
-      this.options.context.lineTo.apply(
-        this.options.context,
-        this.getPointCoordinates(i)
-      );
+      this.options.context.lineTo(...this.getPointCoordinates(i));
     }
 
     this.options.context.stroke();
@@ -275,14 +314,14 @@ export class Graph {
     this.options.context.textBaseline = 'middle';
     this.options.context.textAlign = 'center';
     this.options.context.fillText(
-      topBound,
+      String(topBound),
       this.options.paddingLeft -
         (this.options.showLegend ? this.options.paddingLeft / 2 : 0),
       this.options.paddingTop -
         (this.options.showLegend ? 0 : this.options.boundsHeight)
     );
     this.options.context.fillText(
-      bottomBound,
+      String(bottomBound),
       this.options.paddingLeft -
         (this.options.showLegend ? this.options.paddingLeft / 2 : 0),
       this.options.target.height -

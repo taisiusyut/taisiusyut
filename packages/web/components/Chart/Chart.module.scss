@@ -2,49 +2,61 @@
 
 .canvas {
   @include relative();
+
   &:before {
     @include dimen(100%, 0);
     content: '';
     display: block;
-    padding-bottom: 154/300 * 100%;
+    padding-bottom: 75/300 * 100%;
   }
+
   canvas {
     @include absolute(0, 0, 0, 0);
+    @include sq-dimen(100%);
   }
 }
 
-.chart-title {
+.title {
   color: var(--text-light-color);
   font-size: 13px;
 }
 
-.chart-sub-title {
+.sub-title {
   @include flex(flex-end);
   @include margin-y(10px 20px);
   color: var(--text-color);
   font-size: 20px;
 }
 
-.chart-value {
+.value {
   display: block;
   margin-right: 0.3rem;
   line-height: 1rem;
 }
 
-.chart-icon {
+.arrow {
   svg {
     @include sq-dimen(1em);
     fill: currentColor;
   }
 }
 
-.chart-icon,
-.chart-pect {
-  color: $green5;
+.arrow,
+.changes {
   font-size: 0.6em;
 }
 
-.chart-pect {
+.changes {
   line-height: 1em;
   margin-left: 0.15em;
+}
+
+.red {
+  color: $red3;
+}
+.green {
+  color: $green3;
+}
+.gray {
+  color: var(--text-light-color);
 }
