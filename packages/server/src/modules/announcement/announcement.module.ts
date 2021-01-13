@@ -6,13 +6,17 @@ import {
 } from './schemas/announcement.schema';
 import { AnnouncementService } from './announcement.service';
 import { AnnouncementController } from './announcement.controller';
+import paginate from 'mongoose-paginate-v2';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
+    MongooseModule.forFeatureAsync([
       {
         name: Announcement.name,
-        schema: AnnouncementSchema
+        useFactory: async () => {
+          AnnouncementSchema.plugin(paginate);
+          return AnnouncementSchema;
+        }
       }
     ])
   ],

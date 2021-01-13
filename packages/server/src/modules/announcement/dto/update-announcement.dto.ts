@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsInt } from 'class-validator';
+import { IsString, IsEnum, IsInt, IsOptional } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import {
   Schema$Announcement,
@@ -23,15 +23,19 @@ class UpdateAnnouncement
     Partial<Omit<Schema$Announcement, keyof Excluded>>,
     Partial<Omit<Param$UpdateAnnouncement, keyof Excluded>> {
   @IsString()
+  @IsOptional()
   title?: string;
 
   @IsString()
+  @IsOptional()
   description?: string;
 
   @IsInt()
+  @IsOptional()
   start?: number;
 
   @IsInt()
+  @IsOptional()
   end?: number;
 
   @IsEnum(AnnouncementType)

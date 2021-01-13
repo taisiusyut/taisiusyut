@@ -13,7 +13,7 @@ import { ObjectId } from '@/decorators';
 import { AnnouncementService } from './announcement.service';
 import {
   CreateAnnouncementDto,
-  GetAnnouncementDto,
+  GetAnnouncementsDto,
   UpdateAnnouncementDto
 } from './dto';
 
@@ -40,8 +40,8 @@ export class AnnouncementController {
   }
 
   @Access('announcement_get_all')
-  @Get(routes.announcement.delete_announcement)
-  getAll(@Query() queryDto: GetAnnouncementDto) {
+  @Get(routes.announcement.get_announcements)
+  getAll(@Query() queryDto: GetAnnouncementsDto) {
     return this.announcementService.paginate(queryDto);
   }
 }
