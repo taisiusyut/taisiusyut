@@ -1,6 +1,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 
 export * from './auth';
+export * from './announcement';
 export * from './book';
 export * from './bug-report';
 export * from './chapter';

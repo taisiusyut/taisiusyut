@@ -28,7 +28,10 @@ export type PaymentPermission = CRUD<'payment'> | 'payment_get_by_user';
 
 export type CloudinaryPermission = 'cloudinary_sign';
 
+export type AnnouncementPermission = CRUD<'announcement'>;
+
 export type Permission =
+  | AnnouncementPermission
   | UserPermission
   | BookPermission
   | ChapterPermission

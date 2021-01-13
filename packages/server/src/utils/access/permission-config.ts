@@ -25,7 +25,13 @@ const admin: Permission[] = [
   'payment_get_by_user',
 
   'delete-account',
-  'modify-password'
+  'modify-password',
+
+  'announcement_create',
+  'announcement_update',
+  'announcement_delete',
+  'announcement_get_all',
+  'announcement_get'
 ];
 
 export const permissonsMap: Record<UserRole, Permission[]> = {
@@ -53,7 +59,9 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
 
     'cloudinary_sign',
 
-    'modify-password'
+    'modify-password',
+
+    'announcement_get_all'
   ],
   [UserRole.Client]: ['payment_create', 'modify-password'],
   [UserRole.Guest]: [

@@ -70,5 +70,12 @@ export const Routes = {
     author_word_count_no_id: '/word-count/',
     update_book_collection: '/collection/:id',
     update_book_collection_no_id: '/collection/'
+  },
+  announcement: {
+    prefix: '/announcement',
+    get_announcements: '',
+    create_announcement: '',
+    update_announcement: '/:id',
+    delete_announcement: '/:id'
   }
 };

@@ -14,6 +14,7 @@ import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { PaymentModule } from '@/modules/payment/payment.module';
 import { BookShelfModule } from './modules/book-shelf/book-shelf.module';
 import { BugReportModule } from './modules/bug-report/bug-report.module';
+import { AnnouncementModule } from './modules/announcement/announcement.module';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 
@@ -54,7 +55,8 @@ interface Configs {
         DEFAULT_PASSWORD: Joi.string().default('12345678'),
         MONGODB_URI: Joi.string().optional()
       })
-    })
+    }),
+    AnnouncementModule
   ],
   providers: [
     {
