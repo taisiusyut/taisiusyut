@@ -1,0 +1,34 @@
+@import '~styles/utils';
+
+.announcement {
+  @include flex($flex-direction: column);
+  // @include sq-dimen(100%);
+  min-height: 100%;
+  flex: 1 1 auto;
+
+  > :global(*) {
+    flex: 1 1 auto;
+  }
+}
+
+.header {
+  flex: 0 0 auto;
+}
+
+.table {
+  @include flex($flex-direction: column);
+  flex: 1 1 auto;
+  margin-top: 20px;
+}
+
+.form {
+  width: 400px;
+}
+
+.description {
+  $line-height: 1.8em;
+  height: auto;
+  line-height: $line-height;
+  min-height: $line-height * 4;
+  padding: 0.5em 0.7em;
+}

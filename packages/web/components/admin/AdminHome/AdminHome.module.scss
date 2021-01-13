@@ -1,1 +1,23 @@
 @import '~styles/utils';
+
+.board {
+  margin-top: 10px;
+  .row {
+    @include flex(flex-start, space-between);
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 1.5em;
+    margin-top: 10px;
+    white-space: break-spaces;
+  }
+
+  .date {
+    color: var(--text-light-color);
+  }
+}
