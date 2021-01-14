@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import {
   MixedConfirmOverlay,
@@ -7,9 +7,10 @@ import {
 import { createUserForm } from '@/components/UserForm';
 import { Toaster } from '@/utils/toaster';
 import { getProfile, updateProfile as updateProfileAPI } from '@/service';
-import { Param$UpdateUser } from '@/typings';
+import { Param$UpdateUser, Schema$User } from '@/typings';
 import { AuthState, AuthActions } from '@/hooks/useAuth';
 import { createOpenOverlay } from '@/utils/openOverlay';
+import { useState } from 'react';
 
 interface Props extends MixedOverlayProps {
   auth: AuthState;
@@ -18,19 +19,23 @@ interface Props extends MixedOverlayProps {
 
 const title = '更改帳號資料';
 
-const onFailure = Toaster.apiError.bind(Toaster, `Update profile failure`);
-
 const { Form, Nickname, Email, useForm } = createUserForm();
+
+const getProfileFailure = Toaster.apiError.bind(Toaster, `Get profile failure`);
 
 export const openProfileUpdateOverlay = createOpenOverlay(ProfileUpdateOverlay);
 
 export function ProfileUpdateOverlay({ auth, actions, ...props }: Props) {
   const [form] = useForm();
+  const [onSuccess] = useState(() => (user: Schema$User) => {
+    form.setFieldsValue(user);
+    actions.updateProfile(user);
+  });
 
   useRxAsync(getProfile, {
     defer: !!auth.user?.email,
-    onSuccess: actions.updateProfile,
-    onFailure
+    onSuccess,
+    onFailure: getProfileFailure
   });
 
   async function onConfirm() {
@@ -57,10 +62,6 @@ export function ProfileUpdateOverlay({ auth, actions, ...props }: Props) {
     }
   }
 
-  useEffect(() => {
-    form.setFieldsValue(auth.user ? auth.user : {});
-  }, [form, auth.user]);
-
   return (
     <MixedConfirmOverlay
       {...props}
@@ -70,7 +71,7 @@ export function ProfileUpdateOverlay({ auth, actions, ...props }: Props) {
       cancelText="取消"
       onConfirm={onConfirm}
     >
-      <Form form={form}>
+      <Form form={form} initialValues={auth.user || {}}>
         <Nickname />
         <Email />
       </Form>
