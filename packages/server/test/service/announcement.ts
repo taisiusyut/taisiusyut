@@ -17,8 +17,8 @@ export function createAnnouncementDto(
   return {
     title: rid(10),
     description: rid(20),
-    start: start.get('dates'),
-    end: end.get('dates'),
+    start: start.toDate().getTime(),
+    end: end.toDate().getTime(),
     type: AnnouncementType.Public,
     ...payload
   };

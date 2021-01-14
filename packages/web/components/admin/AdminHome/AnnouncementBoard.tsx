@@ -3,15 +3,17 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Card } from '@blueprintjs/core';
 import { getAnnouncements } from '@/service';
 import { Skelecton } from '@/components/Skelecton';
-import classes from './AdminHome.module.scss';
-import dayjs from 'dayjs';
+import { PageHeader } from '@/components/admin/PageHeader';
 import { Order } from '@/typings';
-import { PageHeader } from '../PageHeader';
+import dayjs from 'dayjs';
+import classes from './AdminHome.module.scss';
 
 const request = () =>
-  getAnnouncements({ pageSize: 1, sort: { end: Order.DESC } }).then(
-    response => response.data[0]
-  );
+  getAnnouncements({
+    pageSize: 1,
+    before: +new Date(),
+    sort: { end: Order.DESC }
+  }).then(response => response.data[0]);
 
 export function AnnouncementBoardContent() {
   const [{ data, loading }] = useRxAsync(request);

@@ -1,5 +1,5 @@
-import { IsEnum, IsOptional } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { IsEnum, IsInt, IsOptional } from 'class-validator';
+import { Exclude, Transform } from 'class-transformer';
 import {
   Schema$Announcement,
   Param$GetAnnouncements,
@@ -32,15 +32,20 @@ class GetAnnouncement
     Partial<Omit<Param$GetAnnouncements, keyof Excluded>> {
   @IsOptional()
   @DateRange()
-  start?: number;
+  start?: any;
 
   @IsOptional()
   @DateRange()
-  end?: number;
+  end?: any;
 
   @IsOptional()
   @IsEnum(AnnouncementType)
   type?: AnnouncementType;
+
+  @IsInt()
+  @IsOptional()
+  @Transform(Number)
+  before?: number;
 }
 
 export class GetAnnouncementsDto

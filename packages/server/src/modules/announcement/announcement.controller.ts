@@ -41,7 +41,10 @@ export class AnnouncementController {
 
   @Access('announcement_get_all')
   @Get(routes.announcement.get_announcements)
-  getAll(@Query() queryDto: GetAnnouncementsDto) {
-    return this.announcementService.paginate(queryDto);
+  getAll(@Query() { before, ...queryDto }: GetAnnouncementsDto) {
+    return this.announcementService.paginate({
+      ...queryDto,
+      ...(before ? { end: { $gte: before } } : {})
+    });
   }
 }
