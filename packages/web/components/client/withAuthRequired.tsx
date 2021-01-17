@@ -19,7 +19,8 @@ export interface OnClick {
 const { useForm } = createUserForm();
 
 const dialogProps: Partial<ConfirmDialogProps> = {
-  icon: 'user'
+  icon: 'user',
+  style: { width: 320 }
 };
 
 function Warning() {
@@ -29,6 +30,7 @@ function Warning() {
         width: 280,
         lineHeight: '1.5em',
         textAlign: 'center',
+        margin: 'auto',
         marginBottom: 30
       }}
     >
