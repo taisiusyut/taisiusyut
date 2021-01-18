@@ -33,9 +33,6 @@
   &:global(.#{$ns}-drawer) {
     :global(.#{$ns}-dialog-footer) {
       margin-bottom: 20px;
-      > div {
-        margin-bottom: env(safe-area-inset-bottom, 0);
-      }
     }
   }
 }
