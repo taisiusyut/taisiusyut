@@ -22,6 +22,13 @@ interface Configs {
   MONGODB_URI?: string;
 }
 
+const envFilePath = [
+  `.env.${process.env.NODE_ENV || 'development'}.local`,
+  `.env.${process.env.NODE_ENV || 'development'}`,
+  '.env.local',
+  '.env'
+].map(pathname => path.resolve(process.cwd(), pathname));
+
 @Module({
   imports: [
     AuthModule,
@@ -35,12 +42,7 @@ interface Configs {
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        `.env.${process.env.NODE_ENV || 'development'}.local`,
-        `.env.${process.env.NODE_ENV || 'development'}`,
-        '.env.local',
-        '.env'
-      ].map(pathname => path.resolve(__dirname, pathname)),
+      envFilePath,
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
