@@ -7,9 +7,12 @@ import {
   DefaultCRUDActionTypes
 } from '@/hooks/usePaginationLocal';
 import { Order, Param$GetAnnouncements } from '@/typings';
+import { Toaster } from '@/utils/toaster';
 import { CreateAnnouncement } from './CreateAnnouncement';
 import { AnnouncementTable } from './AnnouncementTable';
 import classes from './Announcements.module.scss';
+
+const onFailure = Toaster.apiError.bind(Toaster, `get announcements failure`);
 
 const useAnnouncements = createUsePaginationLocal(
   'id',
@@ -27,7 +30,7 @@ const useAnnouncements = createUsePaginationLocal(
 );
 
 export function Announcements() {
-  const { state, actions } = useAnnouncements();
+  const { state, actions } = useAnnouncements({ onFailure });
 
   return (
     <Card className={classes['announcement']}>
