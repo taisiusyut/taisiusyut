@@ -70,7 +70,10 @@ export const permissonsMap: Record<UserRole, Permission[]> = {
 
     'chapter_get_all',
 
-    'payment_get_all'
+    'payment_get_all',
+
+    'announcement_get_all',
+    'announcement_get'
   ]
 };
 
