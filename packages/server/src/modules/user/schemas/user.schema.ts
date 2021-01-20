@@ -23,7 +23,7 @@ class UserProps implements InsertedUserSchema {
 export class User
   extends UserProps
   implements Required<Omit<InsertedUserSchema, keyof UserProps>> {
-  _id: string | ObjectID;
+  _id: ObjectID;
 
   id: string;
 

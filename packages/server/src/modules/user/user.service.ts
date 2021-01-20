@@ -1,6 +1,6 @@
+import { FilterQuery } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery } from 'mongoose';
 import { MongooseCRUDService, Model } from '@/utils/mongoose';
 import { JWTSignPayload, UserRole, UserStatus } from '@/typings';
 import { User } from './schemas/user.schema';
@@ -37,8 +37,11 @@ export class UserService extends MongooseCRUDService<User> {
     return super.create(payload);
   }
 
-  getRoleBasedQuery(user?: JWTSignPayload, query: FilterQuery<User> = {}) {
-    const id = query._id;
+  getRoleBasedQuery(
+    user?: JWTSignPayload,
+    query: FilterQuery<Omit<User, '_id'>> = {}
+  ) {
+    const id = String(query._id);
 
     if (typeof id !== 'string') {
       throw new Error(`id should be string`);

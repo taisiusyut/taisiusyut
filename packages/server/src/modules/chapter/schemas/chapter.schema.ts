@@ -1,3 +1,4 @@
+import { ObjectID } from 'mongodb';
 import { Types } from 'mongoose';
 import { Type, Exclude, Transform } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
@@ -12,7 +13,7 @@ import { Schema$Chapter, ChapterStatus, ChapterType } from '@/typings';
   }
 })
 export class Chapter implements Schema$Chapter {
-  _id: string;
+  _id: ObjectID;
 
   id: string;
 

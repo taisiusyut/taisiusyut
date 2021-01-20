@@ -150,7 +150,8 @@ export class ChapterController {
     // do not select these properties
     let projection: { [K in keyof Chapter]?: number } = {
       content: 0,
-      hasNext: 0
+      hasNext: 0,
+      wordCount: 0
     };
 
     if (!timestamp) {

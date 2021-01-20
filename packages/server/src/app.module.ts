@@ -1,4 +1,6 @@
 import path from 'path';
+import mongoose from 'mongoose';
+import Joi from '@hapi/joi';
 import { Module, DynamicModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,11 +14,9 @@ import { BookModule } from '@/modules/book/book.module';
 import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { CloudinaryModule } from '@/modules/cloudinary/cloudinary.module';
 import { PaymentModule } from '@/modules/payment/payment.module';
-import { BookShelfModule } from './modules/book-shelf/book-shelf.module';
-import { BugReportModule } from './modules/bug-report/bug-report.module';
-import { AnnouncementModule } from './modules/announcement/announcement.module';
-import mongoose from 'mongoose';
-import Joi from '@hapi/joi';
+import { BookShelfModule } from '@/modules/book-shelf/book-shelf.module';
+import { BugReportModule } from '@/modules/bug-report/bug-report.module';
+import { AnnouncementModule } from '@/modules/announcement/announcement.module';
 
 interface Configs {
   MONGODB_URI?: string;
@@ -39,6 +39,7 @@ const envFilePath = [
     PaymentModule,
     BookShelfModule,
     BugReportModule,
+    AnnouncementModule,
     EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -57,8 +58,7 @@ const envFilePath = [
         DEFAULT_PASSWORD: Joi.string().default('12345678'),
         MONGODB_URI: Joi.string().optional()
       })
-    }),
-    AnnouncementModule
+    })
   ],
   providers: [
     {

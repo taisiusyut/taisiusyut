@@ -1,20 +1,25 @@
 import { FilterQuery, Types } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { PickType } from '@nestjs/mapped-types';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { Chapter } from '@/modules/chapter/schemas/chapter.schema';
 import { BookStatus, Schema$Book, Schema$BookShelf } from '@/typings';
 
-type ShelfBook = Schema$BookShelf['book'];
 type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
 
-export const bookUnSelect: {
-  [X in Exclude<keyof Schema$Book, keyof NonNullable<ShelfBook>>]: 0;
+class ShelfBook
+  extends PickType(Book, ['id', 'name', 'authorName', 'status'])
+  implements NonNullable<Schema$BookShelf['book']> {}
+
+export const bookSelect: {
+  [X in keyof ShelfBook]: 1;
 } = {
-  author: 0,
-  tags: 0,
-  description: 0
+  id: 1,
+  name: 1,
+  authorName: 1,
+  status: 1
 };
 
 export const latestChapterSelect: {
@@ -55,11 +60,11 @@ export class BookShelf
     autopopulate: {
       maxDepth: 1,
       match: bookQuery,
-      select: bookUnSelect
+      select: bookSelect
     }
   })
-  @Type(() => Book)
-  book: string | Book;
+  @Type(() => ShelfBook)
+  book: string | ShelfBook;
 
   @Prop({ type: Boolean, default: false })
   pin?: boolean;

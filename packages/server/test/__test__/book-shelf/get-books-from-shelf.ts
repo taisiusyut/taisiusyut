@@ -4,7 +4,7 @@ import { BookStatus, Schema$Book } from '@/typings';
 import { addBookToShelf, getBooksFromShelf } from '../../service/book-shelf';
 import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, publicBook, updateBook } from '../../service/book';
-import { bookUnSelect } from '@/modules/book-shelf/schemas';
+import { bookSelect } from '@/modules/book-shelf/schemas';
 
 export function testGetBooksFromShelf() {
   const books: Schema$Book[] = [];
@@ -38,12 +38,12 @@ export function testGetBooksFromShelf() {
     const auth = getGlobalUser(user);
     const response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(length);
-    expect(response.body).not.toContain({
-      book: Object.keys(bookUnSelect).reduce(
+    expect(response.body[0].book).toEqual(
+      Object.keys(bookSelect).reduce(
         (result, k) => ({ ...result, [k]: expect.anything() }),
-        {} as Record<keyof typeof bookUnSelect, any>
+        {} as Record<keyof typeof bookSelect, any>
       )
-    });
+    );
   });
 
   test(`deleted book in shelf will not be null`, async () => {
