@@ -37,11 +37,3 @@
   --item-hover-color: #393939;
   --item-active-color: #555;
 }
-
-@each $name, $color in $base-colors {
-  [data-accent-color^='#{"" + $name}'] {
-    --accent-color: #{get-color($name)};
-    --accent-color-hover: #{get-color($name, hover)};
-    --accent-color-active: #{get-color($name, active)};
-  }
-}

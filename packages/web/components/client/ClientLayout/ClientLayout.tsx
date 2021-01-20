@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useGoBack } from '@/hooks/useGoBack';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
 import { BreakPointsProvider } from '@/hooks/useBreakPoints';
+import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 import {
   ClientPreferencesProvider,
   useClientPreferencesState
@@ -17,17 +18,15 @@ export interface ClientLayoutProps {
   disableScrollRestoration?: boolean;
 }
 
-const scrollRestoration: Record<string, number> = {};
-
 const breakPoint = 768;
 
 function ClientLayoutContent({
   children,
   disableScrollRestoration = false
 }: ClientLayoutProps) {
-  const { asPath, events } = useRouter();
-  const { pagingDisplay } = useClientPreferencesState();
+  const { asPath } = useRouter();
   const { goBack } = useGoBack();
+  const { pagingDisplay } = useClientPreferencesState();
 
   const [isSearching, setIsSearching] = useState(asPath.startsWith('/search'));
 
@@ -46,33 +45,7 @@ function ClientLayoutContent({
     );
 
   // scroll restoration for single page display
-  useEffect(() => {
-    if (!disableScrollRestoration) {
-      // check shallow for `ClientBookChapter.tsx`
-      const routeChangeStart = (
-        _url: string,
-        options: { shallow?: boolean }
-      ) => {
-        if (!options.shallow) {
-          scrollRestoration[asPath] = window.scrollY;
-        }
-      };
-      const routeChangeComplete = (
-        url: string,
-        options: { shallow?: boolean }
-      ) => {
-        if (!options.shallow) {
-          window.scrollTo(0, scrollRestoration[url] || 0);
-        }
-      };
-      events.on('routeChangeStart', routeChangeStart);
-      events.on('routeChangeComplete', routeChangeComplete);
-      return () => {
-        events.off('routeChangeStart', routeChangeStart);
-        events.off('routeChangeComplete', routeChangeComplete);
-      };
-    }
-  }, [asPath, events, disableScrollRestoration]);
+  useScrollRestoration(disableScrollRestoration);
 
   useEffect(
     () =>
