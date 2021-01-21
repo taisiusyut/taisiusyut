@@ -58,9 +58,8 @@ export class BookShelf
     ref: Book.name,
     required: true,
     autopopulate: {
-      maxDepth: 1,
       match: bookQuery,
-      select: bookSelect
+      select: { ...bookSelect, author: 0 }
     }
   })
   @Type(() => ShelfBook)
