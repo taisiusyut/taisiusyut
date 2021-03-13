@@ -71,7 +71,7 @@ class UpdateChapter
 
   @IsOptional()
   @IsBoolean()
-  @Transform(value =>
+  @Transform(({ value }) =>
     typeof value === 'undefined' ? value : JSON.parse(value)
   )
   hasNext?: boolean;

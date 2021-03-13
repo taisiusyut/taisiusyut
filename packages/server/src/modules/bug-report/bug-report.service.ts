@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery } from 'mongoose';
-import { MongooseCRUDService, Model } from '@/utils/mongoose';
+import { MongooseCRUDService, PaginateModel, Document } from '@/utils/mongoose';
 import { JWTSignPayload, UserRole } from '@/typings';
 import { BugReport } from './schemas';
 
@@ -9,7 +9,7 @@ import { BugReport } from './schemas';
 export class BugReportService extends MongooseCRUDService<BugReport> {
   constructor(
     @InjectModel(BugReport.name)
-    readonly bugReportModel: Model<BugReport>
+    readonly bugReportModel: PaginateModel<BugReport & Document>
   ) {
     super(bugReportModel);
   }

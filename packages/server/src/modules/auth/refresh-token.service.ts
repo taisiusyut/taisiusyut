@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from 'fastify-cookie';
-import { MongooseCRUDService, Model } from '@/utils/mongoose';
+import { MongooseCRUDService, PaginateModel, Document } from '@/utils/mongoose';
 import { RefreshToken } from './schemas/refreshToken.schema';
 
 export const REFRESH_TOKEN_COOKIES = 'taisiusyut_refresh_token';
@@ -12,7 +12,7 @@ export const REFRESH_TOKEN_COOKIES = 'taisiusyut_refresh_token';
 export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
   constructor(
     @InjectModel(RefreshToken.name)
-    readonly refreshTokenModel: Model<RefreshToken>,
+    readonly refreshTokenModel: PaginateModel<RefreshToken & Document>,
     private readonly configService: ConfigService
   ) {
     super(refreshTokenModel);

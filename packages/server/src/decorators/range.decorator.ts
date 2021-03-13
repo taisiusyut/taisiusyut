@@ -18,7 +18,7 @@ export function DateRange(): ReturnType<typeof applyDecorators> {
     ValidateNested(),
     Type(() => MongoDateRange) as MethodDecorator,
     Transform(
-      (payload: IDateRange): MongoDateRange => {
+      (payload: { value: IDateRange }): MongoDateRange => {
         if (Array.isArray(payload)) {
           const [$gte, $lte] = payload.map(Number);
           return { $gte, $lte };
@@ -31,7 +31,7 @@ export function DateRange(): ReturnType<typeof applyDecorators> {
 
 export function NumberRannge(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
-    Transform((payload: [number | string, number | string]) => {
+    Transform((payload: { value: [number | string, number | string] }) => {
       if (Array.isArray(payload)) {
         const [$gte, $lte] = payload.map(Number);
         return { $gte, $lte };

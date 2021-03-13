@@ -1,7 +1,7 @@
 import { FilterQuery } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { MongooseCRUDService, Model } from '@/utils/mongoose';
+import { MongooseCRUDService, PaginateModel, Document } from '@/utils/mongoose';
 import { JWTSignPayload, UserRole, UserStatus } from '@/typings';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto';
@@ -27,7 +27,7 @@ export class UserService extends MongooseCRUDService<User> {
 
   constructor(
     @InjectModel(User.name)
-    readonly userModel: Model<User>
+    readonly userModel: PaginateModel<User & Document>
   ) {
     super(userModel);
   }

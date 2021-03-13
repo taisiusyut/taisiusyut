@@ -32,13 +32,13 @@ class UpdateBookInShelf
     Partial<Omit<Param$UpdateBookInShelf, keyof Excluded>> {
   @IsOptional()
   @IsBoolean()
-  @Transform(value => value && JSON.parse(value))
+  @Transform(({ value }) => value && JSON.parse(value))
   pin?: boolean;
 
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Transform(value => value && JSON.parse(value))
+  @Transform(({ value }) => value && JSON.parse(value))
   lastVisit?: number;
 }
 

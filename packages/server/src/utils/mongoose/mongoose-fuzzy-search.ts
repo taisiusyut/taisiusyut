@@ -2,15 +2,15 @@ import {
   Model,
   Document,
   Schema,
+  UpdateQuery,
   MongooseFuzzySearchingOptions
 } from 'mongoose';
-import { UpdateQuery } from 'mongoose';
 import mongooFuzzySearching from 'mongoose-fuzzy-searching';
 
 // fuzzy searching plugin block the custom `toJSON`.
 // So we need to override it again...
 export function fuzzySearch<T extends Record<string, unknown>>(
-  schema: Schema<T>,
+  schema: Schema<T & Document>,
   pluginOptions: MongooseFuzzySearchingOptions<T>
 ): void {
   const customToJSON = schema.get('toJSON');
@@ -22,7 +22,7 @@ export function fuzzySearch<T extends Record<string, unknown>>(
   schema.set('toJSON', {
     ...pluginToJSON,
     ...customToJSON,
-    transform: (model, data) => {
+    transform: (model: unknown, data: unknown) => {
       data = pluginToJSON.transform(model, data);
 
       if (customToJSON.transform) {

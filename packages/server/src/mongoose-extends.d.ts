@@ -11,4 +11,8 @@ declare module 'mongoose' {
   interface SchemaType {
     discriminator<U extends Document>(name: string, schema: Schema): Model<U>;
   }
+
+  interface Aggregate {
+    project(...args: any[]): this;
+  }
 }

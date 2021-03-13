@@ -62,7 +62,7 @@ class GetChapters
 
   @IsOptional()
   @IsBoolean()
-  @Transform(value => value && JSON.parse(value))
+  @Transform(({ value }) => value && JSON.parse(value))
   timestamp?: boolean;
 }
 

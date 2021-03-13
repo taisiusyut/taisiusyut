@@ -5,9 +5,8 @@ import {
   PaginateOptions,
   FilterQuery,
   UpdateQuery,
+  QueryOptions,
   QueryFindOneAndUpdateOptions,
-  QueryFindOptions,
-  QueryFindBaseOptions,
   ModelUpdateOptions
 } from 'mongoose';
 import { nGrams } from 'mongoose-fuzzy-searching/helpers';
@@ -17,7 +16,9 @@ import { QueryDto } from './mongoose-query.dto';
 
 export const TEXT_SCORE = 'TEXT_SCORE';
 
-export type Model<T> = PaginateModel<T & Document>;
+// export type Model<T> = PaginateModel<T & Document>;
+
+export { PaginateModel, Document };
 
 export abstract class MongooseCRUDService<
   T,
@@ -25,7 +26,7 @@ export abstract class MongooseCRUDService<
 > {
   constructor(private readonly model: PaginateModel<D>) {}
 
-  async create(createDto: Partial<Omit<T, '_id' | 'toJSON'>>): Promise<D> {
+  async create(createDto: Partial<Omit<T, '_id' | 'toJSON'>>) {
     const created = new this.model(createDto);
     return created.save();
   }
@@ -99,7 +100,7 @@ export abstract class MongooseCRUDService<
 
   async findOne(
     query: FilterQuery<D>,
-    options: QueryFindBaseOptions = {},
+    options: QueryOptions = {},
     projection: any = ''
   ): Promise<D | null> {
     return this.model.findOne(query, projection, options);
@@ -108,7 +109,7 @@ export abstract class MongooseCRUDService<
   async findAll(
     query: FilterQuery<D> = {},
     projection: any | null = null,
-    options: QueryFindOptions = {}
+    options: QueryOptions = {}
   ): Promise<D[]> {
     return this.model.find(query, projection, options);
   }
@@ -127,7 +128,7 @@ export abstract class MongooseCRUDService<
     } = query;
 
     if (fullMatches.id) {
-      (fullMatches as FilterQuery<D>)._id = fullMatches.id;
+      Object.assign(fullMatches, { _id: fullMatches.id });
       delete fullMatches.id;
     }
 

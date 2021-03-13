@@ -24,7 +24,7 @@ class Base implements QuerySchema {
   pageSize?: number;
 
   @IsOptional()
-  @Transform(value => {
+  @Transform(({ value }) => {
     // try catch for `access.pipe.ts`
     try {
       return JSON.parse(value);

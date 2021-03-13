@@ -1,4 +1,4 @@
-import { Aggregate, Document, FilterQuery } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ChapterService } from '@/modules/chapter/chapter.service';
@@ -9,7 +9,7 @@ import {
   Schema$Tags,
   UserRole
 } from '@/typings';
-import { MongooseCRUDService, Model } from '@/utils/mongoose';
+import { MongooseCRUDService, PaginateModel, Document } from '@/utils/mongoose';
 import { Book } from './schemas/book.schema';
 
 const allBookStatus = Object.values(BookStatus).filter(
@@ -26,7 +26,7 @@ export class BookService extends MongooseCRUDService<Book> {
 
   constructor(
     @InjectModel(Book.name)
-    readonly bookModel: Model<Book>,
+    readonly bookModel: PaginateModel<Book & Document>,
     readonly chapterService: ChapterService
   ) {
     super(bookModel);
@@ -36,9 +36,9 @@ export class BookService extends MongooseCRUDService<Book> {
     return status === BookStatus.Public || status === BookStatus.Finished;
   }
 
-  categories(): Aggregate<Schema$Category[]> {
+  categories() {
     return this.bookModel
-      .aggregate()
+      .aggregate<Schema$Category>()
       .allowDiskUse(true)
       .group({ _id: '$category', total: { $sum: 1 } })
       .project({
@@ -48,9 +48,9 @@ export class BookService extends MongooseCRUDService<Book> {
       });
   }
 
-  tags(): Aggregate<Schema$Tags[]> {
+  tags() {
     return this.bookModel
-      .aggregate()
+      .aggregate<Schema$Tags>()
       .allowDiskUse(true)
       .unwind('$tags')
       .group({ _id: '$tags', total: { $sum: 1 } })
