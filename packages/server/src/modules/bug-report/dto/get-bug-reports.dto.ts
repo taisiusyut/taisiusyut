@@ -41,13 +41,13 @@ class GetBugReports
 
   @IsOptional()
   @IsEnum(BugReportStatus)
-  @Transform(value => value && Number(value))
+  @Transform(({ value }) => value && Number(value))
   @Group(['Root', 'Admin'])
   status?: BugReportStatus;
 
   @IsOptional()
   @IsEnum(BugReportStatus)
-  @Transform(value => value && Number(value))
+  @Transform(({ value }) => value && Number(value))
   type?: BugReportType;
 }
 

@@ -15,12 +15,12 @@ class Base implements QuerySchema {
 
   @IsNumber()
   @IsOptional()
-  @Transform(value => value && Number(value))
+  @Transform(({ value }) => value && Number(value))
   pageNo?: number;
 
   @IsNumber()
   @IsOptional()
-  @Transform(value => value && Number(value))
+  @Transform(({ value }) => value && Number(value))
   pageSize?: number;
 
   @IsOptional()

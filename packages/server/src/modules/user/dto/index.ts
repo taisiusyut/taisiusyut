@@ -19,9 +19,9 @@ export function IsUserRole(): ReturnType<typeof applyDecorators> {
 export function IsUserStatus(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
     IsEnum(UserStatus),
-    Transform(v =>
-      typeof v !== 'undefined' ? Number(v) : undefined
-    ) as MethodDecorator
+    Transform(({ value }) => {
+      return typeof value !== 'undefined' ? Number(value) : undefined;
+    }) as MethodDecorator
   );
 }
 

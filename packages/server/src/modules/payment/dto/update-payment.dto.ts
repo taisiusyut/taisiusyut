@@ -29,7 +29,7 @@ export class UpdatePayment
     Partial<Omit<Param$UpdatePayment, keyof Excluded>> {
   @IsOptional()
   @IsEnum(PaymentStatus)
-  @Transform(value => value && Number(value))
+  @Transform(({ value }) => value && Number(value))
   status?: PaymentStatus;
 }
 

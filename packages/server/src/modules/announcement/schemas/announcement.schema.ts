@@ -26,11 +26,11 @@ export class Announcement implements Schema$Announcement {
   description: string;
 
   @Prop({ type: Number, required: true })
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   start: number;
 
   @Prop({ type: Number, required: true })
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   end: number;
 
   @Prop({
@@ -40,10 +40,10 @@ export class Announcement implements Schema$Announcement {
   })
   type: AnnouncementType;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: number;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: number;
 
   constructor(payload: Partial<Announcement>) {

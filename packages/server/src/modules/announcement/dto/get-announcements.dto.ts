@@ -44,7 +44,7 @@ class GetAnnouncement
 
   @IsInt()
   @IsOptional()
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   before?: number;
 }
 

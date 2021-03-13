@@ -62,10 +62,10 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Prop({ type: Number, required: true, min: 0 })
   numOfCollection?: number;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: string;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: string;
 
   constructor(payload: Partial<Book>) {

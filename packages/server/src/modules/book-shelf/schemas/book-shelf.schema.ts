@@ -81,10 +81,10 @@ export class BookShelf
   })
   latestChapter?: string | null;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: string;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: string;
 
   constructor(payload: Partial<BookShelf>) {

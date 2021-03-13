@@ -46,10 +46,10 @@ export class BugReport implements Record<keyof Schema$BugReport, any> {
   @Group(['Root', 'Admin', 'Guest'])
   user: User | string;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: string;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: string;
 
   constructor(payload: Partial<BugReport>) {

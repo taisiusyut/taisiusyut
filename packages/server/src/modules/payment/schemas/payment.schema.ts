@@ -55,10 +55,10 @@ export class Payment implements Schema$Payment {
   })
   status: PaymentStatus;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: string;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: string;
 
   constructor(payload: Partial<Payment>) {

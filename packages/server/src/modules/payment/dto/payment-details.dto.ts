@@ -18,7 +18,7 @@ export class PaymentDetailsDto
   implements Required<Omit<InsertedPaymentDetails, keyof PaymentDetails>> {
   @IsOptional()
   @IsEnum(PaymentType)
-  @Transform(value => value && Number(value))
+  @Transform(({ value }) => value && Number(value))
   type: PaymentType;
 
   @IsOptional()

@@ -67,10 +67,10 @@ export class User
   })
   nickname: string;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: number;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: number;
 
   constructor(payload: Partial<User>) {

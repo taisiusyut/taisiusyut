@@ -67,10 +67,10 @@ export class Chapter implements Schema$Chapter {
   @Prop({ type: Number, required: true })
   wordCount: number;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   createdAt: number;
 
-  @Transform(Number)
+  @Transform(({ value }) => value && Number(value))
   updatedAt: number;
 
   constructor(payload: Partial<Chapter>) {

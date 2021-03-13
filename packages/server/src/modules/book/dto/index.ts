@@ -18,7 +18,7 @@ export function IsBookName(): ReturnType<typeof applyDecorators> {
 export function IsCategory(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
     IsEnum(Category),
-    Transform(value => value && Number(value)) as MethodDecorator
+    Transform(({ value }) => value && Number(value)) as MethodDecorator
   );
 }
 
@@ -31,8 +31,8 @@ export function IsTags(): ReturnType<typeof applyDecorators> {
     IsArray(),
     IsString({ each: true }),
     ArrayMaxSize(Max_Tags),
-    Transform(arr =>
-      (Array.isArray(arr) ? arr : [arr]).map((s: unknown) =>
+    Transform(({ value }) =>
+      (Array.isArray(value) ? value : [value]).map((s: unknown) =>
         typeof s === 'string' ? s.toLowerCase() : s
       )
     ) as MethodDecorator

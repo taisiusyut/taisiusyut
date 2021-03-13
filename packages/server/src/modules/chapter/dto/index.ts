@@ -23,14 +23,14 @@ export function IsContent(): ReturnType<typeof applyDecorators> {
 export function IsChapterType(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
     IsEnum(ChapterType),
-    Transform(value => value && Number(value)) as MethodDecorator
+    Transform(({ value }) => value && Number(value)) as MethodDecorator
   );
 }
 
 export function IsChapterStatus(): ReturnType<typeof applyDecorators> {
   return applyDecorators(
     IsEnum(ChapterStatus),
-    Transform(value => value && Number(value)) as MethodDecorator
+    Transform(({ value }) => value && Number(value)) as MethodDecorator
   );
 }
 
@@ -40,7 +40,7 @@ export function IsPrice(): ReturnType<typeof applyDecorators> {
     IsInt(),
     Min(0),
     Max(10),
-    Transform(value => value && Number(value)) as MethodDecorator
+    Transform(({ value }) => value && Number(value)) as MethodDecorator
   );
 }
 
