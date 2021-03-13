@@ -28,7 +28,7 @@ export function handleMongoError(
         return [
           'BAD_REQUEST',
           'keyValue' in error
-            ? `${Object.keys((error as any).keyValue).join(',')} already used`
+            ? `Duplicated ${Object.keys((error as any).keyValue).join(',')}`
             : error.message
         ];
     }
