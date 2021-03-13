@@ -10,13 +10,16 @@ import {
   Delete,
   NotFoundException,
   ForbiddenException,
-  BadRequestException
+  BadRequestException,
+  InternalServerErrorException,
+  HttpCode,
+  HttpStatus
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenService } from '@/modules/auth/refresh-token.service';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
-import { UserRole, UserStatus } from '@/typings';
+import { Schema$User, UserRole, UserStatus } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
@@ -140,5 +143,16 @@ export class UserController {
     await this.refreshTokenService.deleteMany({ user_id: id });
 
     return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Access(UserRole.Client)
+  @Post(routes.user.author_request)
+  authorReuqest(@Req() req: FastifyRequest) {
+    if (!req.user) {
+      throw new InternalServerErrorException(`user is ${req.user}`);
+    }
+    const update: Partial<Schema$User> = { role: UserRole.Author };
+    return this.update(req, req.user?.user_id, update as UpdateUserDto);
   }
 }

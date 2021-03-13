@@ -57,3 +57,10 @@ export function deleteUser(token: string, id: string) {
     .set('Authorization', `bearer ${token}`)
     .send();
 }
+
+export function authorRequest(token: string) {
+  return request
+    .post(routes.author_request)
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}

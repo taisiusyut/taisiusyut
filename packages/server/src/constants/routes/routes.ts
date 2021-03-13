@@ -19,7 +19,8 @@ export const Routes = {
     get_users: '',
     get_user: '/:id',
     update_user: '/:id',
-    delete_user: '/:id'
+    delete_user: '/:id',
+    author_request: '/author_request'
   },
   book: {
     prefix: '/book',
