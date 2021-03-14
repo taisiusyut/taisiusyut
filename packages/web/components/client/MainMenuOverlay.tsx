@@ -1,6 +1,6 @@
 import React from 'react';
 import router from 'next/router';
-import { Icon, Spinner } from '@blueprintjs/core';
+import { Icon } from '@blueprintjs/core';
 import {
   ListItem,
   ListSpacer,
@@ -20,11 +20,12 @@ import {
 } from '@/components/client/ClientPreferencesOverlay';
 import { Github } from '@/components/Icon/Github';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
+import { AuthorRequest } from '@/components/client/AuthorRequest';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
 import pkg from '@/package.json';
-import { useRxAsync } from 'use-rx-hooks';
+import { UserRole } from '@/typings';
 
 interface MainMenuDialogProps extends ListViewDialogProps {}
 
@@ -35,24 +36,6 @@ interface OnClick {
 const AuthrizedListItem = withAuthRequired(ListItem);
 
 const chevron = <Icon icon="chevron-right" />;
-const spinner = <Spinner size={18} />;
-
-const delay = (ms: number) => new Promise(_ => setTimeout(_, ms));
-const req = () => delay(1000);
-
-function AuthorRequest() {
-  const [{ loading }, { fetch }] = useRxAsync(req, { defer: true });
-
-  return (
-    <ListItem
-      icon="draw"
-      rightElement={loading ? spinner : chevron}
-      onClick={loading ? undefined : fetch}
-    >
-      成為作者
-    </ListItem>
-  );
-}
 
 export const MainMenuOverlayIcon = 'menu';
 export const MainMenuOverlayTitle = '主選單';
@@ -108,6 +91,22 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         搜索書籍
       </ListItem>
 
+      {auth.user?.role === UserRole.Client ? (
+        <AuthorRequest
+          icon="draw"
+          rightElement={chevron}
+          updateProfile={authActions.updateProfile}
+        />
+      ) : (
+        <ListItem
+          icon="draw"
+          rightElement={chevron}
+          onClick={() => router.push('/admin')}
+        >
+          寫文
+        </ListItem>
+      )}
+
       <ListItem
         icon="help"
         rightElement={chevron}
@@ -126,10 +125,6 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       >
         Github
       </ListItem>
-
-      <ListSpacer />
-
-      <AuthorRequest />
 
       <ListSpacer />
 

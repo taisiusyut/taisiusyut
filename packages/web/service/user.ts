@@ -28,3 +28,6 @@ export const getAuthorByName = (authorName: string) =>
   api.get<Schema$Author>(
     routes.get_author_by_name.generatePath({ authorName })
   );
+
+export const authorRequest = () =>
+  api.post<Schema$Author>(routes.author_request);
