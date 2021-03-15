@@ -23,6 +23,7 @@ import { Schema$User, UserRole, UserStatus } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
 import { UserService } from './user.service';
 import { CreateUserDto, GetUsersDto, UpdateUserDto } from './dto';
+import { User } from './schemas/user.schema';
 
 @Controller(routes.user.prefix)
 export class UserController {
@@ -148,11 +149,29 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @Access(UserRole.Client)
   @Post(routes.user.author_request)
-  authorReuqest(@Req() req: FastifyRequest) {
+  async authorReuqest(@Req() req: FastifyRequest): Promise<User> {
+    const tokenFromCookies = this.refreshTokenService.getCookie(req);
+
     if (!req.user) {
       throw new InternalServerErrorException(`user is ${req.user}`);
     }
+
+    if (!tokenFromCookies) {
+      throw new BadRequestException(`token not found`);
+    }
+
     const update: Partial<Schema$User> = { role: UserRole.Author };
-    return this.update(req, req.user?.user_id, update as UpdateUserDto);
+    const payload = await this.update(
+      req,
+      req.user?.user_id,
+      update as UpdateUserDto
+    );
+
+    await this.refreshTokenService.findOneAndUpdate(
+      { refreshToken: tokenFromCookies },
+      { role: UserRole.Author }
+    );
+
+    return payload;
   }
 }
