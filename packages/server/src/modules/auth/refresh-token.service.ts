@@ -37,7 +37,9 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
     init();
   }
 
-  getCookieOpts(): CookieSerializeOptions {
+  getCookieOpts(
+    options?: Partial<CookieSerializeOptions>
+  ): CookieSerializeOptions {
     const minutes = this.configService.get<number>(
       'REFRESH_TOKEN_EXPIRES_IN_MINUTES'
     );
@@ -48,9 +50,11 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
       );
 
     return {
-      maxAge: minutes * 60 * 1000,
+      path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production'
+      maxAge: minutes * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      ...options
     };
   }
 
@@ -61,9 +65,13 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
   setCookie(
     reply: FastifyReply,
     token: string,
-    options: CookieSerializeOptions = this.getCookieOpts()
+    options?: Partial<CookieSerializeOptions>
   ) {
-    return reply.setCookie(REFRESH_TOKEN_COOKIES, token, options);
+    return reply.setCookie(
+      REFRESH_TOKEN_COOKIES,
+      token,
+      this.getCookieOpts(options)
+    );
   }
 
   deleteToken(req: FastifyRequest) {
