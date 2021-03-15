@@ -38,7 +38,7 @@ export function testAuthorRequest() {
     expect(response.status).toBe(HttpStatus.OK);
     expect(response.body).toHaveProperty('role', UserRole.Author);
 
-    response = await refreshToken(`${REFRESH_TOKEN_COOKIES}=${cookie.value}`);
+    response = await refreshToken(cookie.value);
 
     expect(response.body.user).toHaveProperty('role', UserRole.Author);
   });

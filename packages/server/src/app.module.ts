@@ -2,7 +2,12 @@ import path from 'path';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 import { Module, DynamicModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import {
+  ConfigModule,
+  ConfigService,
+  configValidation,
+  Config
+} from '@/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseSerializerInterceptor } from '@/utils/mongoose';
@@ -17,10 +22,6 @@ import { PaymentModule } from '@/modules/payment/payment.module';
 import { BookShelfModule } from '@/modules/book-shelf/book-shelf.module';
 import { BugReportModule } from '@/modules/bug-report/bug-report.module';
 import { AnnouncementModule } from '@/modules/announcement/announcement.module';
-
-interface Configs {
-  MONGODB_URI?: string;
-}
 
 const envFilePath = [
   `.env.${process.env.NODE_ENV || 'development'}.local`,
@@ -44,20 +45,7 @@ const envFilePath = [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath,
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string()
-          .valid('development', 'production', 'test')
-          .default('development'),
-        CLOUDINARY_URL: Joi.string().optional().allow('').default(''),
-        JWT_SECRET: Joi.string().default('JWT_SECRET'),
-        JWT_TOKEN_EXPIRES_IN_MINUTES: Joi.number().min(1).default(15),
-        REFRESH_TOKEN_EXPIRES_IN_MINUTES: Joi.number()
-          .min(1)
-          .default(7 * 24 * 60),
-        DEFAULT_USERNAME: Joi.string().default('admin'),
-        DEFAULT_PASSWORD: Joi.string().default('12345678'),
-        MONGODB_URI: Joi.string().optional()
-      })
+      validationSchema: Joi.object(configValidation)
     })
   ],
   providers: [
@@ -72,7 +60,7 @@ const envFilePath = [
   ]
 })
 export class AppModule {
-  static init({ MONGODB_URI }: Configs = {}): DynamicModule {
+  static init({ MONGODB_URI }: Config = {}): DynamicModule {
     return {
       module: AppModule,
       imports: [

@@ -10,7 +10,7 @@ import {
   createUser,
   UpdateUserDto
 } from './user';
-import { extractCookies } from './cookies';
+import { setCookies, extractCookies } from './cookies';
 
 export async function login(payload: Param$Login): Promise<Response> {
   return request.post(routes.login).send(payload);
@@ -52,8 +52,9 @@ export async function createUserAndLogin(
     : login(user);
 }
 
-export function refreshToken(cookie: string) {
-  return request.post(routes.refresh_token).set('Cookie', [cookie]).send();
+export function refreshToken(value: string) {
+  const test = request.post(routes.refresh_token);
+  return setCookies(test, [{ key: REFRESH_TOKEN_COOKIES, value }]).send();
 }
 
 export function logout() {
@@ -142,12 +143,12 @@ export function getUserProfile(token: string) {
     .send();
 }
 
-export function logoutOthers(token: string, cookie: string) {
-  return request
+export function logoutOthers(token: string, value: string) {
+  const test = request
     .post(routes.logout_others)
-    .set('Cookie', [cookie])
-    .set('Authorization', `bearer ${token}`)
-    .send();
+    .set('Authorization', `bearer ${token}`);
+
+  return setCookies(test, [{ key: REFRESH_TOKEN_COOKIES, value }]).send();
 }
 
 const configService = app.get<ConfigService>(ConfigService);

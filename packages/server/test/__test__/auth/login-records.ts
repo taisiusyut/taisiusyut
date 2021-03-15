@@ -50,21 +50,17 @@ export function testLoginRecords() {
   test(`user can logout ohters token`, async () => {
     let response = await logoutOthers(
       responses[0].body.token,
-      `${REFRESH_TOKEN_COOKIES}=${cookies[0].value}`
+      cookies[0].value
     );
     expect(response.status).toBe(HttpStatus.OK);
 
     // others token should be invalid
     for (let i = 1; i < cookies.length; i++) {
-      const response = await refreshToken(
-        `${REFRESH_TOKEN_COOKIES}=${cookies[i].value}`
-      );
+      const response = await refreshToken(cookies[i].value);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     }
 
-    response = await refreshToken(
-      `${REFRESH_TOKEN_COOKIES}=${cookies[0].value}`
-    );
+    response = await refreshToken(cookies[0].value);
     expect(response.status).toBe(HttpStatus.OK);
   });
 }

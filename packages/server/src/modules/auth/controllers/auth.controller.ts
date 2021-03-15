@@ -48,13 +48,15 @@ export class AuthController {
   @Post(routes.auth.login)
   @UseGuards(AuthGuard('local'))
   async login(
-    @Req() { user, headers, cookies }: FastifyRequest,
+    @Req() req: FastifyRequest,
     @Res() reply: FastifyReply
   ): Promise<FastifyReply> {
+    const { user, headers } = req;
+
     if (!user) throw new InternalServerErrorException(`user is ${user}`);
 
     const signResult = this.authService.signJwt(user);
-    const tokenFromCookies = this.refreshTokenService.getCookie({ cookies });
+    const tokenFromCookies = this.refreshTokenService.getCookie(req);
     const refreshToken = tokenFromCookies || uuidv4();
 
     try {

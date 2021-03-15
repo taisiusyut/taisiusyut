@@ -1,5 +1,4 @@
 import { HttpStatus } from '@nestjs/common';
-import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import { UserService } from '@/modules/user/user.service';
 import { Schema$Authenticated } from '@/typings';
 import {
@@ -28,7 +27,7 @@ export function testRefreshToken() {
   test('refresh', async () => {
     let response = await createUserAndLogin(defaultRoot.token);
     const cookie = validateCookies(response);
-    refreshTokenVal = `${REFRESH_TOKEN_COOKIES}=${cookie.value}`;
+    refreshTokenVal = cookie.value;
 
     response = await refreshToken(refreshTokenVal);
     expect(response.status).toBe(HttpStatus.OK);

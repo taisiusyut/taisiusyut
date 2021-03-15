@@ -32,6 +32,7 @@ export default class NestNodeEnvironment extends NodeEnvironment {
       this.global.request = request;
     } catch (error) {
       console.error(error);
+      await mongoose.connection.close();
       await this.mongod.stop();
     }
   }

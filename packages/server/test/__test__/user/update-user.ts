@@ -114,9 +114,7 @@ export function testUpdateUser() {
         expect(response.status).toBe(HttpStatus.OK);
         expect(response.body).toHaveProperty('status', status);
 
-        response = await refreshToken(
-          `${REFRESH_TOKEN_COOKIES}=${cookie.value}`
-        );
+        response = await refreshToken(cookie.value);
         expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       }
     });

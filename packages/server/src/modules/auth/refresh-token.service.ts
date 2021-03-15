@@ -51,6 +51,7 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
 
     return {
       path: '/',
+      signed: true,
       httpOnly: true,
       maxAge: minutes * 60 * 1000,
       secure: process.env.NODE_ENV === 'production',
@@ -58,8 +59,9 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
     };
   }
 
-  getCookie(req: Pick<FastifyRequest, 'cookies'>) {
-    return req.cookies[REFRESH_TOKEN_COOKIES];
+  getCookie(req: FastifyRequest) {
+    const result = req.unsignCookie(REFRESH_TOKEN_COOKIES);
+    return result.value || req.cookies[REFRESH_TOKEN_COOKIES];
   }
 
   setCookie(
@@ -67,11 +69,13 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
     token: string,
     options?: Partial<CookieSerializeOptions>
   ) {
-    return reply.setCookie(
-      REFRESH_TOKEN_COOKIES,
-      token,
-      this.getCookieOpts(options)
-    );
+    options = this.getCookieOpts(options);
+
+    if (token) {
+      return reply.setCookie(REFRESH_TOKEN_COOKIES, token, options);
+    }
+
+    return reply.clearCookie(REFRESH_TOKEN_COOKIES, options);
   }
 
   deleteToken(req: FastifyRequest) {

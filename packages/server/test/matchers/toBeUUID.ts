@@ -12,13 +12,13 @@ export function toBeUUID(
       message: () =>
         `expected ${this.utils.printReceived(
           received
-        )} is not an uuid ${version}}`,
+        )} is not an uuid ${version}`,
       pass: true
     };
   } else {
     return {
       message: () =>
-        `expected ${this.utils.printReceived(received)} is an uuid ${version}}`,
+        `expected ${this.utils.printReceived(received)} is an uuid ${version}`,
       pass: false
     };
   }

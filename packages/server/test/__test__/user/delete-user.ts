@@ -55,7 +55,7 @@ export function testDeleteUser() {
       response = await deleteUser(executeUser.token, targetUser.user.user_id);
       expect(response.status).toBe(HttpStatus.OK);
 
-      response = await refreshToken(`${REFRESH_TOKEN_COOKIES}=${cookie.value}`);
+      response = await refreshToken(cookie.value);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
 
       response = await login(userDto);
