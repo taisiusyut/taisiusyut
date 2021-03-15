@@ -15,7 +15,7 @@ import {
   HttpCode,
   HttpStatus
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@/config';
 import { RefreshTokenService } from '@/modules/auth/refresh-token.service';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';

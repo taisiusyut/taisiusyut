@@ -1,5 +1,5 @@
 import { SuperAgentRequest, Response } from 'superagent';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@/config';
 import { DeleteAccountDto, ModifyPasswordDto } from '@/modules/auth/dto';
 import { REFRESH_TOKEN_COOKIES } from '@/modules/auth/refresh-token.service';
 import { routes } from '@/constants/routes';

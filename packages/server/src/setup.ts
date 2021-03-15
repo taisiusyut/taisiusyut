@@ -4,6 +4,7 @@ import {
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@/config';
 import { UserRole } from '@/typings';
 import { MongooseExceptionFilter } from '@/utils/mongoose';
 import { allPermissions } from '@/utils/access';
@@ -26,6 +27,8 @@ export const fastifyAdapter = () =>
 const groups = [...Object.values(UserRole), ...allPermissions];
 
 export function setupApp(app: NestFastifyApplication): void {
+  const configService = app.get(ConfigService);
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -37,7 +40,7 @@ export function setupApp(app: NestFastifyApplication): void {
   app.useGlobalFilters(new MongooseExceptionFilter());
 
   app.register(compression, { encodings: ['gzip', 'deflate'] });
-  app.register(cookieParser);
+  app.register(cookieParser, { secret: configService.get('COOKIE_SECRET') });
   app.register(helmet);
 
   if (process.env.NODE_ENV === 'production') {

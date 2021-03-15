@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@/config';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { CookieSerializeOptions } from 'fastify-cookie';
 import { MongooseCRUDService, PaginateModel, Document } from '@/utils/mongoose';

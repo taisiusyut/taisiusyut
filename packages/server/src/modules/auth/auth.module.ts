@@ -1,8 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@/config';
 import { UserModule } from '@/modules/user/user.module';
 import { LocalStrategy, JwtStrategy } from './strategy';
 import {

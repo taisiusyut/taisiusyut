@@ -3,8 +3,8 @@ import {
   BadRequestException,
   InternalServerErrorException
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@/config';
 import { UserService } from '@/modules/user/user.service';
 import { UserRole, JWTSignPayload, JWTSignResult, UserStatus } from '@/typings';
 import { RefreshTokenService } from './refresh-token.service';

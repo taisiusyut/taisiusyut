@@ -1,6 +1,6 @@
 import { EMPTY } from 'rxjs';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService } from '@/config';
 import { Param$CloudinarySign, Schema$CloudinarySign } from '@/typings';
 import cloudinary from 'cloudinary';
 
