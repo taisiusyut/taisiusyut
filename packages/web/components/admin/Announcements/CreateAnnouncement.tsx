@@ -12,7 +12,7 @@ export function CreateAnnouncement({ onSuccess }: Props) {
   function handleClick() {
     openAnnouncementDialog({
       icon: 'document',
-      title: 'Create Announcement',
+      title: '新增公告',
       onConfirm: async payload => {
         const response = await createAnnouncement(payload);
         onSuccess(response);

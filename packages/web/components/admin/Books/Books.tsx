@@ -53,7 +53,7 @@ export function Books() {
 
   return (
     <Card>
-      <PageHeader title="Books">
+      <PageHeader title="書籍列表">
         <div className={classes['button-group']}>
           {user?.role === UserRole.Author && (
             <CreateBook
@@ -71,23 +71,23 @@ export function Books() {
       </PageHeader>
 
       <Filter initialValues={state.params} className={classes['fitler']}>
-        <FilterInput name="id" label="Book ID" />
-        <FilterInput name="name" label="Name" />
-        <FilterInput name="tag" label="Tag" />
+        <FilterInput name="id" label="書籍ID" />
+        <FilterInput name="name" label="名稱" />
+        <FilterInput name="tag" label="標籤" />
         {user?.role !== UserRole.Author && (
           <>
-            <FilterInput name="author" label="Author ID" />
-            <FilterInput name="authorName" label="Author name" />
+            <FilterInput name="author" label="作者ID" />
+            <FilterInput name="authorName" label="作者名稱" />
           </>
         )}
-        <FormItem name="category" label="Category">
+        <FormItem name="category" label="類別">
           <CategorySelect />
         </FormItem>
-        <FormItem name="status" label="Status">
+        <FormItem name="status" label="狀態">
           <BookStatusSelect />
         </FormItem>
-        <FilterDateRange name="createdAt" label="Created At" />
-        <FilterDateRange name="updatedAt" label="Updated At" />
+        <FilterDateRange name="createdAt" label="創建時間" />
+        <FilterDateRange name="updatedAt" label="更新時間" />
       </Filter>
 
       <BooksTable

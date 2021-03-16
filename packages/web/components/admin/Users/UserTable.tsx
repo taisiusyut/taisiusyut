@@ -11,7 +11,7 @@ const userColumns: Columns = [
   {
     id: 'index',
     accessor: (_, index) => index + 1,
-    Header: () => <div style={{ textAlign: 'center' }}>Index</div>,
+    Header: () => <div style={{ textAlign: 'center' }}>序號</div>,
     Cell: ({ value }: { value: number }) => (
       <div style={{ textAlign: 'center' }}>{value}</div>
     )
@@ -19,7 +19,7 @@ const userColumns: Columns = [
   {
     id: 'status',
     accessor: 'status',
-    Header: 'Status',
+    Header: '狀態',
     Cell: ({ value: status }) => {
       return status ? <UserStatusTag status={status} /> : null;
     }
@@ -27,11 +27,11 @@ const userColumns: Columns = [
   {
     id: 'username',
     accessor: 'username',
-    Header: 'Username'
+    Header: '用戶名稱'
   },
   {
-    Header: 'Role',
     id: 'role',
+    Header: 'Role',
     accessor: ({ role }) => {
       if (typeof role !== 'undefined') {
         const str = UserRole[role];
@@ -42,20 +42,20 @@ const userColumns: Columns = [
   {
     id: 'nickname',
     accessor: 'nickname',
-    Header: 'Nickname'
+    Header: '暱稱'
   },
-  { Header: 'Email', id: 'email', accessor: 'email' },
+  { Header: '電郵', id: 'email', accessor: 'email' },
   {
     id: 'createdAt',
     accessor: ({ createdAt }) =>
       createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="createdAt">Created At</SortableHeader>
+    Header: () => <SortableHeader field="createdAt">創建時間</SortableHeader>
   },
   {
     id: 'updatedAt',
     accessor: ({ updatedAt }) =>
       updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="updatedAt">Updated At</SortableHeader>
+    Header: () => <SortableHeader field="updatedAt">更新時間</SortableHeader>
   }
 ];
 

@@ -24,7 +24,7 @@ const {
 } = createUserForm();
 
 const icon: IconName = 'new-person';
-const title = 'Create User';
+const title = '新增用戶';
 
 export function CreateUser({ onCreate }: CreateUserProps) {
   const [form] = useForm();
@@ -34,9 +34,9 @@ export function CreateUser({ onCreate }: CreateUserProps) {
     try {
       const user = await createUser(payload);
       onCreate(user);
-      Toaster.success({ message: 'Create user success' });
+      Toaster.success({ message: 'create user success' });
     } catch (error) {
-      Toaster.apiError('Create user failure', error);
+      Toaster.apiError('create user failure', error);
       throw error;
     }
   }

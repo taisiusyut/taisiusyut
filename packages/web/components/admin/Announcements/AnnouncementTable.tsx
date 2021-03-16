@@ -12,7 +12,7 @@ type Columns = Props['columns'];
 const announcemenColumns: Columns = [
   {
     id: 'status',
-    Header: 'Status',
+    Header: '狀態',
     accessor: ({ end }) =>
       end &&
       (end > +new Date() ? (
@@ -26,34 +26,34 @@ const announcemenColumns: Columns = [
   {
     id: 'title',
     accessor: 'title',
-    Header: 'Title'
+    Header: '標題'
   },
   {
     id: 'type',
-    Header: 'Type',
+    Header: '類型',
     accessor: ({ type }) => type && AnnouncementType[type]
   },
   {
     id: 'start',
-    Header: () => <SortableHeader field="start">Start Date</SortableHeader>,
+    Header: () => <SortableHeader field="start">開始日期</SortableHeader>,
     accessor: ({ start }) => start && dayjs(start).format('YYYY-MM-DD HH:mm:ss')
   },
   {
     id: 'end',
-    Header: () => <SortableHeader field="end">End Date</SortableHeader>,
+    Header: () => <SortableHeader field="end">結束日期</SortableHeader>,
     accessor: ({ end }) => end && dayjs(end).format('YYYY-MM-DD HH:mm:ss')
   },
   {
     id: 'createdAt',
     accessor: ({ createdAt }) =>
       createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="createdAt">Created At</SortableHeader>
+    Header: () => <SortableHeader field="createdAt">創建時間</SortableHeader>
   },
   {
     id: 'updatedAt',
     accessor: ({ updatedAt }) =>
       updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="updatedAt">Updated At</SortableHeader>
+    Header: () => <SortableHeader field="updatedAt">更新時間</SortableHeader>
   }
 ];
 

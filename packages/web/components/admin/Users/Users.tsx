@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, H4 } from '@blueprintjs/core';
+import { Card, H4 } from '@blueprintjs/core';
 import {
   createUsePaginationLocal,
   DefaultCRUDActionTypes
@@ -9,11 +9,11 @@ import { UserRoleSelect, UserStatusSelect } from '@/components/Select';
 import { Schema$User, Param$GetUsers, Order } from '@/typings';
 import { getUsers } from '@/service';
 import { Toaster } from '@/utils/toaster';
+import { useAuthState } from '@/hooks/useAuth';
 import { CreateUser } from './CreateUser';
 import { UserTable } from './UserTable';
 import { openUsersMenu } from './UsersMenu';
 import classes from './Users.module.scss';
-import { useAuthState } from '@/hooks/useAuth';
 
 const {
   FormItem,
@@ -45,9 +45,8 @@ export function Users() {
     <div className={classes['users']}>
       <Card>
         <div className={classes['header']}>
-          <H4>Users</H4>
+          <H4>用戶列表</H4>
           <div className={classes['button-group']}>
-            <Button>Export</Button>
             <CreateUser
               onCreate={user =>
                 actions.insert(
@@ -62,18 +61,18 @@ export function Users() {
         </div>
 
         <Filter initialValues={state.params} className={classes['fitler']}>
-          <FilterInput name="id" label="User ID" />
-          <FilterInput name="username" label="Username" />
-          <FilterInput name="email" label="Email" />
-          <FilterInput name="nickname" label="Nickname" />
+          <FilterInput name="id" label="用戶ID" />
+          <FilterInput name="username" label="用戶名稱" />
+          <FilterInput name="email" label="電郵" />
+          <FilterInput name="nickname" label="暱稱" />
           <FormItem name="role" label="Role">
             <UserRoleSelect />
           </FormItem>
-          <FormItem name="status" label="Status">
+          <FormItem name="status" label="狀態">
             <UserStatusSelect />
           </FormItem>
-          <FilterDateRange name="createdAt" label="Created At" />
-          <FilterDateRange name="updatedAt" label="Updated At" />
+          <FilterDateRange name="createdAt" label="創建時間" />
+          <FilterDateRange name="updatedAt" label="更新時間" />
         </Filter>
 
         <UserTable

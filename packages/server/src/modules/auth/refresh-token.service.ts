@@ -52,6 +52,7 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
     return {
       path: '/',
       signed: true,
+      sameSite: true,
       httpOnly: true,
       maxAge: minutes * 60 * 1000,
       secure: process.env.NODE_ENV === 'production',

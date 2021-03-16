@@ -91,21 +91,22 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         搜索書籍
       </ListItem>
 
-      {auth.user?.role === UserRole.Client ? (
-        <AuthorRequest
-          icon="draw"
-          rightElement={chevron}
-          updateProfile={authActions.updateProfile}
-        />
-      ) : (
-        <ListItem
-          icon="draw"
-          rightElement={chevron}
-          onClick={() => router.push('/admin')}
-        >
-          寫文
-        </ListItem>
-      )}
+      {auth.user &&
+        (auth.user.role === UserRole.Client ? (
+          <AuthorRequest
+            icon="draw"
+            rightElement={chevron}
+            updateProfile={authActions.updateProfile}
+          />
+        ) : (
+          <ListItem
+            icon="draw"
+            rightElement={chevron}
+            onClick={() => router.push('/admin')}
+          >
+            寫文
+          </ListItem>
+        ))}
 
       <ListItem
         icon="help"
@@ -119,11 +120,14 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       </ListItem>
 
       <ListItem
-        icon="application"
+        icon="info-sign"
         rightElement={chevron}
-        onClick={() => router.push(`/tnc`)}
+        onClick={() => {
+          props.onClose();
+          router.push(`/tnc`);
+        }}
       >
-        條款及細則
+        使用條款及免責聲明
       </ListItem>
 
       <ListItem

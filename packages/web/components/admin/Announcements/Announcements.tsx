@@ -34,7 +34,7 @@ export function Announcements() {
 
   return (
     <Card className={classes['announcement']}>
-      <PageHeader title="Announcements" className={classes['header']}>
+      <PageHeader title="公告" className={classes['header']}>
         <CreateAnnouncement onSuccess={actions.create} />
       </PageHeader>
       <AnnouncementTable
