@@ -80,6 +80,7 @@ interface BasicFormItemProps<S extends {} = Store>
 
 type Deps<S> = Array<NamePath<S>>;
 type FormItemPropsDeps<S extends {} = Store> =
+  | { deps?: Deps<S> }
   | {
       deps?: Deps<S>;
       children?: ReactElement;

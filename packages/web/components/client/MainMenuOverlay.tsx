@@ -119,6 +119,14 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       </ListItem>
 
       <ListItem
+        icon="application"
+        rightElement={chevron}
+        onClick={() => router.push(`/tnc`)}
+      >
+        條款及細則
+      </ListItem>
+
+      <ListItem
         icon={<Github />}
         rightElement={chevron}
         onClick={() => window.open(`https://github.com/Pong420/taisiusyut`)}

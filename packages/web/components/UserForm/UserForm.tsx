@@ -12,12 +12,13 @@ import { UserRoleSelect } from '../Select';
 type UserFormSchema = Param$CreateUser &
   Partial<Omit<Param$UpdateUser, 'id'>> &
   Partial<Omit<Param$UpdateAuthor, 'id'>> &
-  Param$ModifyPassword;
+  Param$ModifyPassword & {
+    tnc: boolean;
+  };
 
 export type UserFormProps = FormProps<UserFormSchema>;
 export type UserFormInstance = NonNullable<FormProps<UserFormSchema>['form']>;
 export type UserFormItemProps = FormItemProps<UserFormSchema> & {
-  deps?: undefined;
   large?: boolean;
 };
 

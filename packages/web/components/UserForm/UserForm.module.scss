@@ -1,0 +1,13 @@
+@import '~styles/utils';
+
+a.tnc-link {
+  &,
+  &:hover {
+    color: $pt-intent-primary;
+    font-weight: bold;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
