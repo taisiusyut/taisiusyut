@@ -10,6 +10,7 @@ import {
 } from '@/hooks/useClientPreferences';
 import { BookShelf } from '../BookShelf';
 import { ClientSearch } from '../ClientSearch';
+import { ClientReports } from '../ClientReports';
 import { BottomNavigation } from '../BottomNavigation';
 import classes from './ClientLayout.module.scss';
 
@@ -20,6 +21,29 @@ export interface ClientLayoutProps {
 
 const breakPoint = 768;
 
+// const otherContentPaths = ['/search', '/reports'];
+function shouldShowOtherContent(asPath: string) {
+  return ['/search', '/reports'].some(path => asPath.startsWith(path));
+}
+
+function OtherContent({
+  asPath,
+  onLeave
+}: {
+  asPath: string;
+  onLeave: () => void;
+}) {
+  const pathname = asPath.replace(/^\/|\?.*/g, '');
+  switch (pathname) {
+    case 'search':
+      return <ClientSearch onLeave={onLeave} />;
+    case 'reports':
+      return <ClientReports onLeave={onLeave} />;
+    default:
+      return null;
+  }
+}
+
 function ClientLayoutContent({
   children,
   disableScrollRestoration = false
@@ -28,20 +52,21 @@ function ClientLayoutContent({
   const { goBack } = useGoBack();
   const { pagingDisplay } = useClientPreferencesState();
 
-  const [isSearching, setIsSearching] = useState(asPath.startsWith('/search'));
-
   const isHome = /^\/(\?.*)?$/.test(asPath);
   const isFeatured = /^\/featured(\?.*)?$/.test(asPath);
   const isSearch = asPath.startsWith('/search');
+  const isOtherContent = shouldShowOtherContent(asPath);
 
-  const hideBookShelf = (!pagingDisplay && !isHome) || isSearching;
-  const hideSearchPanel = (!pagingDisplay && !isSearch) || !isSearching;
-  const showRightPanel = pagingDisplay || (!isHome && !isSearch);
+  const [otherContent, setOtherContent] = useState(isSearch);
+
+  const hideBookShelf = (!pagingDisplay && !isHome) || otherContent;
+  const hideOtherContent = (!pagingDisplay && !isOtherContent) || !otherContent;
+  const showRightPanel = pagingDisplay || (!isHome && !isOtherContent);
   const mountBottomNav = isHome || isFeatured || isSearch;
 
-  const leaveSearchPanel = () =>
+  const leaveOtherContent = () =>
     goBack({ targetPath: ['/', '/featured'] }).then(() =>
-      setIsSearching(false)
+      setOtherContent(false)
     );
 
   // scroll restoration for single page display
@@ -49,10 +74,12 @@ function ClientLayoutContent({
 
   useEffect(
     () =>
-      setIsSearching(isSearching =>
-        window.innerWidth > breakPoint ? isSearching || isSearch : isSearch
+      setOtherContent(otherContent =>
+        window.innerWidth > breakPoint
+          ? otherContent || isOtherContent
+          : isOtherContent
       ),
-    [asPath, isSearch]
+    [asPath, isOtherContent]
   );
 
   return (
@@ -70,8 +97,8 @@ function ClientLayoutContent({
         <div className={classes['left-panel']} hidden={hideBookShelf}>
           <BookShelf />
         </div>
-        <div className={classes['left-panel']} hidden={hideSearchPanel}>
-          <ClientSearch onLeave={leaveSearchPanel} />
+        <div className={classes['left-panel']} hidden={hideOtherContent}>
+          <OtherContent asPath={asPath} onLeave={leaveOtherContent} />
         </div>
         {showRightPanel && (
           <div className={classes['right-panel']}>{children}</div>

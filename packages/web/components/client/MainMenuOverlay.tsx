@@ -91,6 +91,17 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         搜索書籍
       </ListItem>
 
+      <ListItem
+        icon="annotation"
+        rightElement={chevron}
+        onClick={() => {
+          props.onClose();
+          router.push('/reports');
+        }}
+      >
+        回報問題/建議
+      </ListItem>
+
       {auth.user &&
         (auth.user.role === UserRole.Client ? (
           <AuthorRequest
