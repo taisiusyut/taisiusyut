@@ -5,13 +5,33 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
 
+/** @typedef {typeof import('webpack')} Webapck */
+/** @typedef {import('webpack').Configuration} Configuration */
+
 module.exports = withPlugins(
   [
     //
     [withBundleAnalyzer]
   ],
   withPWA({
-    webpack: (config, { webpack }) => {
+    /**
+     * @param {Configuration} config
+     * @param {{webpack: Webapck}} options
+     * @returns {Configuration}
+     */
+    webpack: (config, { webpack, defaultLoaders }) => {
+      config.module.rules.push({
+        test: /\.mdx?/,
+        use: [
+          defaultLoaders.babel,
+          {
+            loader: '@mdx-js/loader',
+            options: {}
+          }
+        ]
+      });
+
+      // reduce biundle size of `@blueprintjs/core`
       config.plugins.push(
         new webpack.NormalModuleReplacementPlugin(
           /.*\/generated\/iconSvgPaths.*/,

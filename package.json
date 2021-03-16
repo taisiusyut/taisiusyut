@@ -49,11 +49,6 @@
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --rule 'no-console: [\"error\", { allow: [\"warn\", \"error\"] }]' --max-warnings=0",

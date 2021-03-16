@@ -1,5 +1,6 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
+/// <reference types="@mdx-js/loader" />
 
 declare module '*.css';
 
@@ -23,4 +24,9 @@ declare namespace React {
     jsx?: boolean;
     global?: boolean;
   }
+}
+
+declare module '*.md' {
+  let MDXComponent: (props) => JSX.Element;
+  export default MDXComponent;
 }
