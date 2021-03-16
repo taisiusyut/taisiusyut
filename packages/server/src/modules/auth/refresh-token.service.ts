@@ -60,8 +60,9 @@ export class RefreshTokenService extends MongooseCRUDService<RefreshToken> {
   }
 
   getCookie(req: FastifyRequest) {
-    const result = req.unsignCookie(REFRESH_TOKEN_COOKIES);
-    return result.value || req.cookies[REFRESH_TOKEN_COOKIES];
+    const value = req.cookies[REFRESH_TOKEN_COOKIES] || '';
+    const result = req.unsignCookie(value);
+    return result.value || value;
   }
 
   setCookie(

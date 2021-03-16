@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { isMongoId } from 'class-validator';
+import { isMongoId, isUUID } from 'class-validator';
 import { v4 as uuidv4 } from 'uuid';
 import { routes } from '@/constants';
 import { Schema$Authenticated, UserRole, UserStatus } from '@/typings';
@@ -57,8 +57,9 @@ export class AuthController {
 
     const signResult = this.authService.signJwt(user);
     const tokenFromCookies = this.refreshTokenService.getCookie(req);
-    const refreshToken = tokenFromCookies || uuidv4();
-
+    const refreshToken = isUUID(tokenFromCookies, 4)
+      ? tokenFromCookies
+      : uuidv4();
     try {
       await this.refreshTokenService.findOneAndUpdate(
         { refreshToken },
