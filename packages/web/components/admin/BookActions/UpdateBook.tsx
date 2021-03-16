@@ -4,7 +4,6 @@ import {
   Form,
   BookName,
   BookDescription,
-  BookCategory,
   BookTags,
   BookCover
 } from '@/components/admin/Books/BookForm';
@@ -23,7 +22,6 @@ export function UpdateBookDialog(props: BookActionDialogProps) {
         <div style={{ display: 'flex' }}>
           <div style={{ flex: '1 1 auto' }}>
             <BookName />
-            <BookCategory />
           </div>
           <div style={{ marginLeft: 15 }}>
             <BookCover />

@@ -8,7 +8,7 @@ import {
 } from '@/hooks/usePaginationLocal';
 import { PageHeader } from '@/components/admin/PageHeader';
 import { createFilter } from '@/components/Filter';
-import { BookStatusSelect, CategorySelect } from '@/components/Select';
+import { BookStatusSelect } from '@/components/Select';
 import { Order, UserRole, Param$GetBooks } from '@/typings';
 import { getBooks } from '@/service';
 import { Toaster } from '@/utils/toaster';
@@ -80,9 +80,6 @@ export function Books() {
             <FilterInput name="authorName" label="作者名稱" />
           </>
         )}
-        <FormItem name="category" label="類別">
-          <CategorySelect />
-        </FormItem>
         <FormItem name="status" label="狀態">
           <BookStatusSelect />
         </FormItem>

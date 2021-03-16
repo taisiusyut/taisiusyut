@@ -1,7 +1,7 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { Exclude, Transform } from 'class-transformer';
 import { Category, Schema$Book, Param$UpdateBook, BookStatus } from '@/typings';
-import { IsDescription, IsTags, IsBookName, IsCategory } from './';
+import { IsDescription, IsTags, IsBookName } from './';
 import { Group } from '@/utils/access';
 
 class Excluded implements Partial<Record<keyof Schema$Book, unknown>> {
@@ -25,6 +25,9 @@ class Excluded implements Partial<Record<keyof Schema$Book, unknown>> {
 
   @Exclude()
   updatedAt?: undefined;
+
+  @Exclude()
+  category?: Category;
 }
 
 class UpdateBook
@@ -39,10 +42,6 @@ class UpdateBook
   @IsOptional()
   @IsString()
   cover?: string | null;
-
-  @IsOptional()
-  @IsCategory()
-  category?: Category;
 
   @IsOptional()
   @IsDescription()

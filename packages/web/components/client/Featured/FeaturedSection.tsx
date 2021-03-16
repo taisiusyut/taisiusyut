@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Card, H5 } from '@blueprintjs/core';
 import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
-import { Schema$Book, Category } from '@/typings';
+import { Schema$Book } from '@/typings';
 import { useBoolean } from '@/hooks/useBoolean';
 import classes from './Featured.module.scss';
 
@@ -36,11 +36,6 @@ function SectionItem({ book }: { book: Book }) {
         <div className={classes['book-author']}>
           <Skelecton length={3}>
             {book?.authorName && `${book.authorName} 著`}
-          </Skelecton>
-        </div>
-        <div className={classes['book-category']}>
-          <Skelecton length={2}>
-            {book.category && Category[book.category]}
           </Skelecton>
         </div>
       </div>

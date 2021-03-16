@@ -29,7 +29,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
 
   @Prop({
     type: Number,
-    required: true,
+    required: false,
     enum: Object.values(Category).filter(v => typeof v === 'number')
   })
   category: Category;

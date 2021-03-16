@@ -10,7 +10,6 @@ import {
   Form,
   BookName,
   BookDescription,
-  BookCategory,
   BookTags,
   BookCover
 } from './BookForm';
@@ -51,7 +50,6 @@ export function CreateBook({ onCreate }: CreateBookProps) {
       <div style={{ display: 'flex' }}>
         <div style={{ flex: '1 1 auto' }}>
           <BookName />
-          <BookCategory />
         </div>
         <div style={{ marginLeft: 15 }}>
           <BookCover />

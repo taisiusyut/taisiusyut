@@ -1,7 +1,7 @@
 import { IsOptional, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
-import { Category, Schema$Book, Param$CreateBook } from '@/typings';
-import { IsDescription, IsTags, IsBookName, IsCategory } from './';
+import { Schema$Book, Param$CreateBook } from '@/typings';
+import { IsDescription, IsTags, IsBookName } from './';
 
 class Excluded implements Partial<Schema$Book> {
   @Exclude()
@@ -27,6 +27,9 @@ class Excluded implements Partial<Schema$Book> {
 
   @Exclude()
   numOfCollection?: undefined;
+
+  @Exclude()
+  category?: undefined;
 }
 
 class CreateBook
@@ -54,7 +57,4 @@ export class CreateBookDto
     Required<Omit<Param$CreateBook, keyof CreateBook>> {
   @IsBookName()
   name: string;
-
-  @IsCategory()
-  category: Category;
 }

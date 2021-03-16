@@ -1,5 +1,5 @@
 import React from 'react';
-import { Schema$Book, Category } from '@/typings';
+import { Schema$Book } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { BookModel } from '@/components/BookModel';
 import { Tags, BookStatusTag } from '@/components/Tags';
@@ -49,11 +49,6 @@ const bookColumns: Columns = [
     Header: '作者',
     accessor: book => book.authorName,
     authorOnly: true
-  },
-  {
-    id: 'category',
-    Header: '類別',
-    accessor: book => book.category && Category[book.category]
   },
   {
     id: 'tags',
