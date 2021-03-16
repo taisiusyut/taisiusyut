@@ -6,11 +6,13 @@ interface Props {
   modelClassName?: string;
   width?: number;
   cover?: string | null;
+  name?: string;
   flatten?: boolean;
 }
 
 export function BookModel({
   cover,
+  name,
   className = '',
   modelClassName = '',
   flatten,
@@ -27,7 +29,7 @@ export function BookModel({
           .trim()}
       >
         <div className="front">
-          {cover && (
+          {cover ? (
             <Image
               layout="fixed"
               alt="book cover"
@@ -36,6 +38,8 @@ export function BookModel({
               height={(width * 4) / 3}
               draggable={false}
             />
+          ) : (
+            <div className="name">{name?.slice(0, 4)}</div>
           )}
         </div>
         <div className="back" />
@@ -70,6 +74,21 @@ export function BookModel({
 
             &.flatten {
               transform: rotateY(0deg) rotateX(0deg);
+            }
+
+            .front:not(:empty) {
+              padding: 7.5%;
+            }
+
+            .front .name:not(:empty) {
+              writing-mode: vertical-rl;
+              white-space: break-spaces;
+              font-size: 10px;
+              background-color: #fff;
+              margin-left: auto;
+              margin-right: 0;
+              padding: 2px;
+              color: #333;
             }
 
             .front {
@@ -118,7 +137,7 @@ export function BookModel({
               border-right: 0;
             }
 
-            div {
+            > div {
               @include sq-dimen(100%);
               @include position(0, 0, 0, 0);
 
