@@ -30,8 +30,8 @@ export function createConfirmDialog<P extends IDialogProps>(
     onClose,
     onConfirm,
     onCancel,
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
+    confirmText = '確認',
+    cancelText = '取消',
     intent = 'primary',
     ...props
   }: P & ConfirmDialogProps) {

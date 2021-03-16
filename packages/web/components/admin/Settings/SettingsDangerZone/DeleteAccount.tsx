@@ -24,7 +24,7 @@ function PasswordForm(props: FormProps<Param$DeleteAccount>) {
   );
 }
 
-const title = 'Delete Account';
+const title = '刪除帳號';
 export function DeleteAccount() {
   const [form] = useForm();
   const { logout } = useAuthActions();

@@ -8,7 +8,7 @@ import { useAuthActions } from '@/hooks/useAuth';
 
 const { useForm } = createUserForm();
 
-const title = 'Modify Password';
+const title = '修改密碼';
 export function ModifyPassword() {
   const [form] = useForm();
   const { logout } = useAuthActions();

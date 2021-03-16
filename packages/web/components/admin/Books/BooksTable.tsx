@@ -24,7 +24,7 @@ function NumberFormat({ value }: { value?: number }) {
 const bookColumns: Columns = [
   {
     id: 'cover',
-    Header: 'Cover',
+    Header: '封面',
     accessor: book => {
       const width = 60;
       return (
@@ -37,27 +37,27 @@ const bookColumns: Columns = [
   {
     id: 'name',
     accessor: 'name',
-    Header: 'Name'
+    Header: '名稱'
   },
   {
     id: 'status',
-    Header: 'Status',
+    Header: '狀態',
     accessor: ({ status }) => <BookStatusTag status={status} />
   },
   {
     id: 'authorName',
-    Header: 'Author',
+    Header: '作者',
     accessor: book => book.authorName,
     authorOnly: true
   },
   {
     id: 'category',
-    Header: 'Category',
+    Header: '類別',
     accessor: book => book.category && Category[book.category]
   },
   {
     id: 'tags',
-    Header: 'Tags',
+    Header: '',
     accessor: book =>
       book.tags ? (
         book.tags.length ? (
@@ -75,7 +75,7 @@ const bookColumns: Columns = [
     Cell: props => <NumberFormat {...props} />,
     Header: () => (
       <SortableHeader field="wordCount" style={noWrap}>
-        Word Count
+        字數
       </SortableHeader>
     )
   },
@@ -83,21 +83,19 @@ const bookColumns: Columns = [
     id: 'collection',
     accessor: 'numOfCollection',
     Cell: props => <NumberFormat {...props} />,
-    Header: () => (
-      <SortableHeader field="numOfCollection">Collection</SortableHeader>
-    )
+    Header: () => <SortableHeader field="numOfCollection">收藏</SortableHeader>
   },
   {
     id: 'createdAt',
     accessor: ({ createdAt }) =>
       createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="createdAt">Created At</SortableHeader>
+    Header: () => <SortableHeader field="createdAt">創建時間</SortableHeader>
   },
   {
     id: 'updatedAt',
     accessor: ({ updatedAt }) =>
       updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="updatedAt">Updated At</SortableHeader>
+    Header: () => <SortableHeader field="updatedAt">更新時間</SortableHeader>
   }
 ];
 

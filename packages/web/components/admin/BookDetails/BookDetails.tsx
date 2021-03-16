@@ -63,7 +63,7 @@ export function BookDetails({ book, onSuccess }: Props) {
   return (
     <div>
       <Card>
-        <PageHeader targetPath={`/admin/book`} title="Book Details">
+        <PageHeader targetPath={`/admin/book`} title="書籍詳情">
           <BookActions book={book} onSuccess={onSuccess} role={user?.role} />
         </PageHeader>
       </Card>
@@ -75,28 +75,28 @@ export function BookDetails({ book, onSuccess }: Props) {
       />
 
       <Card className={classes['chapters']}>
-        <PageHeader title="Chapters">
+        <PageHeader title="章節列表">
           {isAuthor && (
             <ButtonPopover
               minimal
               icon="plus"
-              content="New Chapter"
+              content="新增章節"
               onClick={() => gotoChapter(book.id)}
             />
           )}
         </PageHeader>
 
         <Filter initialValues={state.params} className={classes['filter']}>
-          <FilterInput name="id" label="Chapter ID" />
-          <FilterInput name="name" label="Name" />
-          <FormItem name="status" label="Status">
+          <FilterInput name="id" label="章節ID" />
+          <FilterInput name="name" label="名稱" />
+          <FormItem name="status" label="狀態">
             <ChapterStatusSelect />
           </FormItem>
-          <FormItem name="type" label="Type">
+          <FormItem name="type" label="類型">
             <ChapterTypeSelect />
           </FormItem>
-          <FilterDateRange name="createdAt" label="Created At" />
-          <FilterDateRange name="updatedAt" label="Updated At" />
+          <FilterDateRange name="createdAt" label="創建時間" />
+          <FilterDateRange name="updatedAt" label="更新時間" />
         </Filter>
 
         <ChapterTable

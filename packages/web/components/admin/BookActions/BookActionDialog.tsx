@@ -20,10 +20,12 @@ export interface BookActionDialogProps
     OnSuccess,
     ConfirmDialogProps {
   prefix: string;
+  label: string;
 }
 
 export function BookActionDialog({
   prefix,
+  label,
   request,
   book,
   onSuccess,
@@ -43,7 +45,5 @@ export function BookActionDialog({
     }
   }
 
-  return (
-    <ConfirmDialog {...props} title={`${prefix} Book`} onConfirm={onConfirm} />
-  );
+  return <ConfirmDialog {...props} title={label} onConfirm={onConfirm} />;
 }

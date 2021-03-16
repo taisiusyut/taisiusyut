@@ -34,6 +34,7 @@ function request(payload: Param$CreateChapter | Param$UpdateChapter) {
 
 export function Chapter({ bookID, chapterID, chapter }: Props) {
   const prefix = chapterID ? 'Update' : 'Create';
+  const title = chapterID ? '更新章節' : '新增章節';
 
   const storageRef = useRef(
     createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
@@ -104,10 +105,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
 
   return (
     <Card>
-      <PageHeader
-        title={`${prefix} Chapter`}
-        targetPath={`/admin/book/${bookID}`}
-      >
+      <PageHeader title={title} targetPath={`/admin/book/${bookID}`}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {saved ? (
             <Icon icon="saved" iconSize={14}></Icon>
@@ -115,7 +113,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
             <Icon icon="refresh" iconSize={12}></Icon>
           )}
           &nbsp;
-          {saved ? 'Saved' : 'Saving...'}
+          {saved ? '已儲存' : '儲存中...'}
         </div>
       </PageHeader>
 

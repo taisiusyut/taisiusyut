@@ -22,7 +22,7 @@ export interface OnCreate {
 interface CreateBookProps extends OnCreate {}
 
 const icon: IconName = 'book';
-const title = 'Create Book';
+const title = '新增書籍';
 
 //The maximum is inclusive and the minimum is inclusive
 const getRandomIntInclusive = (min: number, max: number) => {

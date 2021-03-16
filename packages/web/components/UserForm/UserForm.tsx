@@ -16,6 +16,10 @@ type UserFormSchema = Param$CreateUser &
 
 export type UserFormProps = FormProps<UserFormSchema>;
 export type UserFormInstance = NonNullable<FormProps<UserFormSchema>['form']>;
+export type UserFormItemProps = FormItemProps<UserFormSchema> & {
+  deps?: undefined;
+  large?: boolean;
+};
 
 export const userValidators = {
   username: validators.username,
@@ -25,12 +29,12 @@ export const userValidators = {
 export function createUserForm({
   large = false,
   ...itemProps
-}: FormItemProps<UserFormSchema> & { large?: boolean } = {}) {
+}: UserFormItemProps = {}) {
   const components = createForm<UserFormSchema>(itemProps);
   const { FormItem } = components;
 
-  const Username = (props: FormItemProps<UserFormSchema> = {}) => (
-    <FormItem {...(props as unknown)} name="username" label="Username">
+  const Username = ({ label = 'Username', ...props }: UserFormItemProps) => (
+    <FormItem {...props} name="username" label={label}>
       <Input large={large} autoComplete="username" />
     </FormItem>
   );
@@ -38,12 +42,13 @@ export function createUserForm({
   const Password = ({
     visible,
     autoComplete,
+    label = 'Password',
     ...props
-  }: FormItemProps<UserFormSchema> & {
+  }: UserFormItemProps & {
     visible?: boolean;
     autoComplete?: InputProps['autoComplete'];
   } = {}) => (
-    <FormItem {...(props as unknown)} name="password" label="Password">
+    <FormItem {...props} name="password" label={label}>
       <PasswordInput
         large={large}
         visible={visible}
@@ -69,10 +74,11 @@ export function createUserForm({
     </FormItem>
   );
 
-  const Email = () => (
+  const Email = ({ label = 'Email', ...props }: UserFormItemProps = {}) => (
     <FormItem
+      {...props}
       name="email"
-      label="Email"
+      label={label}
       validators={[
         validators.required('Please input an email'),
         validators.emailFormat()
@@ -82,14 +88,17 @@ export function createUserForm({
     </FormItem>
   );
 
-  const Nickname = () => (
-    <FormItem name="nickname" label="Nickname">
+  const Nickname = ({
+    label = 'Nickname',
+    ...props
+  }: UserFormItemProps = {}) => (
+    <FormItem {...props} name="nickname" label={label}>
       <Input large={large} />
     </FormItem>
   );
 
-  const UserRole = () => (
-    <FormItem name="role" label="Role">
+  const UserRole = ({ label = 'Role', ...props }: UserFormItemProps = {}) => (
+    <FormItem {...props} name="role" label={label}>
       <UserRoleSelect large={large} />
     </FormItem>
   );

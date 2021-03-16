@@ -57,7 +57,7 @@ export function SettingsProfile() {
   });
 
   return (
-    <SettingsSection title="Profile" className={classes['profile']}>
+    <SettingsSection title="個人資料" className={classes['profile']}>
       <Form
         form={form}
         key={JSON.stringify(user)}
@@ -66,13 +66,13 @@ export function SettingsProfile() {
           user && profile.update({ id: user.user_id, ...payload })
         }
       >
-        <Nickname />
-        <Email />
+        <Nickname label="暱稱" />
+        <Email label="電郵" />
 
         {user?.role === UserRole.Author && (
           <>
             <FormItem
-              label="Description"
+              label="個人簡介"
               name="description"
               validators={[
                 validators.maxLength(

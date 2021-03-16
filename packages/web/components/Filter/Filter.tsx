@@ -28,6 +28,8 @@ function toDateRange(payload?: string[]) {
   return payload?.map(s => new Date(s));
 }
 
+const title = `篩選`;
+
 export function createFilter<T extends Record<string, any>>(
   itemProps?: FormItemProps<T>
 ) {
@@ -59,7 +61,7 @@ export function createFilter<T extends Record<string, any>>(
 
       return (
         <div>
-          <H4 style={{ marginBottom: 20 }}>Filter</H4>
+          <H4 style={{ marginBottom: 20 }}>{title}</H4>
 
           <Form
             {...props}
@@ -183,7 +185,7 @@ export function createFilter<T extends Record<string, any>>(
           }
         >
           <ButtonPopover
-            content="Filter"
+            content={title}
             elementRef={buttonRef}
             intent={filtered ? 'primary' : 'none'}
             icon={filtered ? 'filter-keep' : 'filter'}

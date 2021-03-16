@@ -18,14 +18,15 @@ export function BookActions({ role, book, onSuccess }: BookActionsProps) {
   const items = useMemo(() => {
     const create = (
       prefix: string,
+      label: string,
       Component: React.ComponentType<BookActionDialogProps>
     ) => {
       return (
         <MenuItem
           key={prefix}
-          text={prefix}
+          text={label}
           onClick={() =>
-            createOpenOverlay(Component)({ prefix, book, onSuccess })
+            createOpenOverlay(Component)({ prefix, book, label, onSuccess })
           }
         />
       );
@@ -38,25 +39,29 @@ export function BookActions({ role, book, onSuccess }: BookActionsProps) {
     if (book.status) {
       if (role === UserRole.Root || role === UserRole.Admin) {
         if (book.status === BookStatus.Deleted) {
-          items.push(create('Recover', RecoverBookDialog));
+          items.push(create('Recover', '恢復書籍', RecoverBookDialog));
 
           if (role === UserRole.Root) {
             items.push(
-              create('Permanently Delete', DeleteBookPermanentlyDialog)
+              create(
+                'Permanently Delete',
+                '永久刪除',
+                DeleteBookPermanentlyDialog
+              )
             );
           }
         } else {
-          items.push(create('Delete', DeleteBookDialog));
+          items.push(create('Delete', '刪除書籍', DeleteBookDialog));
         }
       } else if (
         role === UserRole.Author &&
         book.status !== BookStatus.Deleted
       ) {
-        items.push(create('Update', UpdateBookDialog));
+        items.push(create('Update', '更新書籍', UpdateBookDialog));
         book.status === BookStatus.Public &&
-          items.push(create('Finish', FinishBookDialog));
+          items.push(create('Finish', '完結書籍', FinishBookDialog));
         book.status === BookStatus.Private &&
-          items.push(create('Publish', PublishBookDialog));
+          items.push(create('Publish', '發布', PublishBookDialog));
       }
     }
 

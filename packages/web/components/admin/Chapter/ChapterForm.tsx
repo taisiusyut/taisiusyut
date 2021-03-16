@@ -22,11 +22,9 @@ export function ChapterForm({ loading, wordCount, ...props }: Props) {
 
   const contentLabel = (
     <div className={classes['content-label']}>
-      Content
+      內容
       <div>
-        {typeof wordCount === 'number'
-          ? `${wordCount} words`
-          : 'calculating ...'}
+        {typeof wordCount === 'number' ? `${wordCount} 字` : 'calculating ...'}
       </div>
     </div>
   );
@@ -40,7 +38,7 @@ export function ChapterForm({ loading, wordCount, ...props }: Props) {
     >
       <FormItem
         name="name"
-        label="Name"
+        label="名稱"
         validators={[validators.required('Please enter a chapter name')]}
       >
         <Input />
@@ -63,10 +61,10 @@ export function ChapterForm({ loading, wordCount, ...props }: Props) {
           disabled={loading}
           onClick={() => formRef.current?.resetFields()}
         >
-          Reset
+          重設
         </Button>
         <Button type="submit" intent="primary" loading={loading}>
-          Submit
+          提交
         </Button>
       </div>
     </Form>

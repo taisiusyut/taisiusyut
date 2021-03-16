@@ -14,13 +14,13 @@ const itemsOptions: ItemOptions[] = [
   {
     href: '/admin',
     icon: 'home',
-    text: 'Home',
+    text: '首頁',
     access: [UserRole.Root, UserRole.Admin, UserRole.Author]
   },
   {
     href: '/admin/book',
     icon: 'book',
-    text: 'Books',
+    text: '書籍',
     access: [UserRole.Root, UserRole.Admin, UserRole.Author],
     isActive: (_, router) => {
       return router.pathname.startsWith('/admin/book');
@@ -29,19 +29,19 @@ const itemsOptions: ItemOptions[] = [
   {
     href: '/admin/announcements',
     icon: 'document',
-    text: 'Announcements',
+    text: '公告',
     access: [UserRole.Root, UserRole.Admin]
   },
   {
     href: '/admin/users',
     icon: 'user',
-    text: 'Users',
+    text: '用戶',
     access: [UserRole.Root, UserRole.Admin]
   },
   {
     href: '/admin/settings',
     icon: 'cog',
-    text: 'Settings',
+    text: '設定',
     access: [UserRole.Root, UserRole.Admin, UserRole.Author]
   }
 ];

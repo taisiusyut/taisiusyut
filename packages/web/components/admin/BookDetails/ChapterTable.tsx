@@ -9,27 +9,27 @@ type BookTableProps = Omit<TableProps<Partial<Schema$Chapter>>, 'columns'> & {};
 const chapterColumns: Column<Partial<Schema$Chapter>>[] = [
   {
     id: 'number',
-    Header: 'Number',
+    Header: 'No.',
     accessor: chapter => chapter.number
   },
   {
     id: 'name',
     accessor: 'name',
-    Header: 'Name'
+    Header: '名稱'
   },
   {
     id: 'status',
-    Header: 'Status',
+    Header: '狀態',
     accessor: ({ status }) => <ChapterStatusTag status={status} />
   },
   {
     id: 'type',
-    Header: 'Type',
+    Header: '類型',
     accessor: ({ type }) => type && ChapterType[type]
   },
   {
     id: 'price',
-    Header: 'Price',
+    Header: '價錢',
     accessor: chapter =>
       Object.keys(chapter).length
         ? chapter.price || <div>&nbsp;&nbsp;&nbsp;-</div>
@@ -39,13 +39,13 @@ const chapterColumns: Column<Partial<Schema$Chapter>>[] = [
     id: 'createdAt',
     accessor: ({ createdAt }) =>
       createdAt && dayjs(createdAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="createdAt">Created At</SortableHeader>
+    Header: () => <SortableHeader field="createdAt">創建時間</SortableHeader>
   },
   {
     id: 'updatedAt',
     accessor: ({ updatedAt }) =>
       updatedAt && dayjs(updatedAt).format('YYYY-MM-DD HH:mm:ss'),
-    Header: () => <SortableHeader field="updatedAt">Updated At</SortableHeader>
+    Header: () => <SortableHeader field="updatedAt">更新時間</SortableHeader>
   }
 ];
 

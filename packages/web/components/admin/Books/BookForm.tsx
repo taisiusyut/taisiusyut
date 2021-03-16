@@ -3,19 +3,22 @@ import { Input, TagInput } from '@/components/Input';
 import { CategorySelect } from '@/components/Select';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Param$CreateBook, Param$UpdateBook } from '@/typings';
-import { createForm, validators } from '@/utils/form';
+import { createForm, validators, FormItemProps } from '@/utils/form';
 import { Max_Tags, Max_Book_Description } from '@/constants';
 import { BookCoverUpload } from './BookCoverUpload';
 import classes from './Books.module.scss';
 
 type BookFormSchema = Param$CreateBook | Param$UpdateBook;
+export type BookFormItemProps = FormItemProps<BookFormSchema> & {
+  deps?: undefined;
+};
 
 export const { Form, FormItem, useForm } = createForm<BookFormSchema>();
 
 export const BookName = () => (
   <FormItem
     name="name"
-    label="Name"
+    label="名稱"
     validators={[validators.required('Please enter the book name')]}
   >
     <Input />
@@ -25,7 +28,7 @@ export const BookName = () => (
 export const BookDescription = () => (
   <FormItem
     name="description"
-    label="Description"
+    label="描述"
     validators={[
       validators.required('Please enter the book description'),
       validators.maxLength(
@@ -41,7 +44,7 @@ export const BookDescription = () => (
 export const BookCategory = () => (
   <FormItem
     name="category"
-    label="Category"
+    label="類別"
     validators={[validators.required('Please select a book category')]}
   >
     <CategorySelect fill />
@@ -51,7 +54,7 @@ export const BookCategory = () => (
 export const BookTags = () => (
   <FormItem
     name="tags"
-    label="Tags"
+    label="標籤"
     valuePropName="values"
     validators={[
       validators.maxLength(Max_Tags, `Cannot more than ${Max_Tags} tags`)
@@ -62,7 +65,7 @@ export const BookTags = () => (
 );
 
 export const BookCover = () => (
-  <FormItem name="cover" label="Cover ( 3 : 4 )">
+  <FormItem name="cover" label="封面 ( 3 : 4 )">
     <BookCoverUpload />
   </FormItem>
 );
