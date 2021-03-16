@@ -11,12 +11,12 @@ interface ItemOptions extends SidebarItemProps {
 }
 
 const itemsOptions: ItemOptions[] = [
-  {
-    href: '/admin',
-    icon: 'home',
-    text: '首頁',
-    access: [UserRole.Root, UserRole.Admin, UserRole.Author]
-  },
+  // {
+  //   href: '/admin',
+  //   icon: 'home',
+  //   text: '首頁',
+  //   access: [UserRole.Root, UserRole.Admin, UserRole.Author]
+  // },
   {
     href: '/admin/book',
     icon: 'book',
