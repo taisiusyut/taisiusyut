@@ -58,7 +58,7 @@ export class BugReportController {
     return bugReport;
   }
 
-  @Access('Auth')
+  @Access('Everyone')
   @Get(routes.bug_report.get_bug_reports)
   async getAll(
     @Req() { user }: FastifyRequest,
@@ -72,7 +72,7 @@ export class BugReportController {
     return this.bugReportService.paginate(query);
   }
 
-  @Access('Auth')
+  @Access('Everyone')
   @Get(routes.bug_report.get_bug_report)
   async get(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
     const query = this.bugReportService.getRoleBasedQuery(user, { _id: id });

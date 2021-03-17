@@ -6,6 +6,7 @@ import { AuthProvider, useAuthState } from '@/hooks/useAuth';
 import { GoBackProvider } from '@/hooks/useGoBack';
 import { UserRole } from '@/typings';
 import { Toaster } from '@/utils/toaster';
+import '@/day';
 import '@/styles/globals.scss';
 import 'typeface-muli';
 
