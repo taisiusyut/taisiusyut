@@ -98,6 +98,9 @@ export function useClientReports() {
         })
       )
       .subscribe(payload => {
+        if (payload.pageNo === 1) {
+          actions.reset();
+        }
         actions.paginate(payload);
       });
     return () => subscription.unsubscribe();
