@@ -8,11 +8,11 @@ export function testCreateBugReport() {
   });
 
   test('create bug report success', async () => {
-    const users = [undefined, root, admin, author, client];
+    const users = [root, admin, author, client];
+
     for (const user of users) {
       const payload = createBugReportDto();
-      const token = user && user.token;
-      const response = await createBugReport(token, payload);
+      const response = await createBugReport(user.token, payload);
       const isAdmin =
         user?.user.role === UserRole.Root || user?.user.role === UserRole.Admin;
 
@@ -21,6 +21,7 @@ export function testCreateBugReport() {
         ...(isAdmin ? { user: expect.any(String) } : {}),
         status: BugReportStatus.Open,
         id: expect.any(String),
+        version: expect.any(String),
         createdAt: expect.any(Number),
         updatedAt: expect.any(Number)
       });

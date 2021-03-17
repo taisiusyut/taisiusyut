@@ -15,7 +15,7 @@ export function testUpdateBugReport() {
   beforeAll(async () => {
     await setupUsers();
 
-    const users = [undefined, author, client];
+    const users = [author, client];
     for (const user of users) {
       const payload = createBugReportDto();
       const token = user && user.token;
@@ -41,7 +41,7 @@ export function testUpdateBugReport() {
 
       expect(response.body).toEqual({
         ...reports[idx],
-        ...(isAdmin && idx !== 0 ? { user: expect.any(String) } : {}),
+        ...(isAdmin ? { user: expect.any(String) } : {}),
         updatedAt: expect.any(Number)
       });
     }
@@ -62,8 +62,8 @@ export function testUpdateBugReport() {
     '$property will not update by author/client',
     async ({ property, value }) => {
       const payload = [
-        [author, reports[1]],
-        [client, reports[2]]
+        [author, reports[0]],
+        [client, reports[1]]
       ] as const;
 
       for (const [auth, report] of payload) {

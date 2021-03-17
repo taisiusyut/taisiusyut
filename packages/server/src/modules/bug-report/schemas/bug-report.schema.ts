@@ -20,7 +20,7 @@ export class BugReport implements Record<keyof Schema$BugReport, any> {
   @Prop({ type: String, trim: true, required: true })
   description: string;
 
-  @Prop({ type: String, trim: true })
+  @Prop({ type: String, trim: true, required: true })
   version: string;
 
   @Prop({
@@ -40,6 +40,7 @@ export class BugReport implements Record<keyof Schema$BugReport, any> {
   @Prop({
     type: Types.ObjectId,
     ref: User.name,
+    required: true,
     autopopulate: { maxDepth: 1 }
   })
   @Type(() => User)

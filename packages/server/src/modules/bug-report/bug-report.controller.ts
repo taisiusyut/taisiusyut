@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { FastifyRequest } from 'fastify';
 import {
   Controller,
@@ -20,11 +22,18 @@ import {
 } from './dto';
 import { BugReportStatus } from '@/typings';
 
+const pkg = JSON.parse(
+  fs.readFileSync(
+    path.resolve(__dirname, '../../../../web/package.json'),
+    'utf-8'
+  )
+);
+
 @Controller(routes.bug_report.prefix)
 export class BugReportController {
   constructor(private readonly bugReportService: BugReportService) {}
 
-  @Access('Optional')
+  @Access('Auth')
   @Post(routes.bug_report.create_bug_report)
   create(
     @Req() req: FastifyRequest,
@@ -33,7 +42,8 @@ export class BugReportController {
     return this.bugReportService.create({
       ...createBookDto,
       status: BugReportStatus.Open,
-      user: req.user?.user_id
+      user: req.user?.user_id,
+      version: pkg.version
     });
   }
 

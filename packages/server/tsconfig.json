@@ -16,6 +16,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "resolveJsonModule": true,
     "strictPropertyInitialization": false,
     "paths": {
       "@/*": ["./src/*"]
