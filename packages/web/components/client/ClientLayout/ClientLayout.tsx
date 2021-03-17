@@ -9,9 +9,8 @@ import {
   useClientPreferencesState
 } from '@/hooks/useClientPreferences';
 import { BookShelf } from '../BookShelf';
-import { ClientSearch } from '../ClientSearch';
-import { ClientReports } from '../ClientReports';
 import { BottomNavigation } from '../BottomNavigation';
+import { OtherContent, shouldShowOtherContent } from './OtherContent';
 import classes from './ClientLayout.module.scss';
 
 export interface ClientLayoutProps {
@@ -19,74 +18,71 @@ export interface ClientLayoutProps {
   disableScrollRestoration?: boolean;
 }
 
+function getState(asPath: string) {
+  const isSearch = asPath.startsWith('/search');
+  const isHome = /^\/(\?.*)?$/.test(asPath);
+  const isFeatured = /^\/featured(\?.*)?$/.test(asPath);
+  const mountBottomNav = isHome || isFeatured || isSearch;
+  return {
+    isHome,
+    isFeatured,
+    isSearch,
+    mountBottomNav,
+    isOtherContent: shouldShowOtherContent(asPath)
+  };
+}
+
 const breakPoint = 768;
-
-// const otherContentPaths = ['/search', '/reports'];
-function shouldShowOtherContent(asPath: string) {
-  return ['/search', '/reports'].some(path => asPath.startsWith(path));
-}
-
-function OtherContent({
-  asPath,
-  onLeave
-}: {
-  asPath: string;
-  onLeave: () => void;
-}) {
-  const pathname = asPath.replace(/^\/|\?.*/g, '');
-  switch (pathname) {
-    case 'search':
-      return <ClientSearch onLeave={onLeave} />;
-    case 'reports':
-      return <ClientReports onLeave={onLeave} />;
-    default:
-      return null;
-  }
-}
 
 function ClientLayoutContent({
   children,
   disableScrollRestoration = false
 }: ClientLayoutProps) {
-  const { asPath } = useRouter();
+  const { asPath, events } = useRouter();
   const { goBack } = useGoBack();
   const { pagingDisplay } = useClientPreferencesState();
 
-  const isHome = /^\/(\?.*)?$/.test(asPath);
-  const isFeatured = /^\/featured(\?.*)?$/.test(asPath);
-  const isSearch = asPath.startsWith('/search');
-  const isOtherContent = shouldShowOtherContent(asPath);
+  const [
+    { isHome, isSearching, isOtherContent, mountBottomNav },
+    setState
+  ] = useState(() => {
+    const state = getState(asPath);
+    return { ...state, isSearching: state.isSearch };
+  });
 
-  const [otherContent, setOtherContent] = useState(isSearch);
+  const showOtherContent = isOtherContent || isSearching;
+  const showRightPanel = pagingDisplay || !(isHome && isSearching);
+  const hideBookShelf = pagingDisplay ? showOtherContent : isHome;
 
-  const hideBookShelf = (!pagingDisplay && !isHome) || otherContent;
-  const hideOtherContent = (!pagingDisplay && !isOtherContent) || !otherContent;
-  const showRightPanel = pagingDisplay || (!isHome && !isOtherContent);
-  const mountBottomNav = isHome || isFeatured || isSearch;
-
-  const leaveOtherContent = () =>
+  const [leaveOtherContent] = useState(() => () =>
     goBack({ targetPath: ['/', '/featured'] }).then(() =>
-      setOtherContent(false)
-    );
+      setState(state => ({ ...state, isSearching: false }))
+    )
+  );
 
   // scroll restoration for single page display
   useScrollRestoration(disableScrollRestoration);
 
-  useEffect(
-    () =>
-      setOtherContent(otherContent =>
-        window.innerWidth > breakPoint
-          ? otherContent || isOtherContent
-          : isOtherContent
-      ),
-    [asPath, isOtherContent]
-  );
+  useEffect(() => {
+    const handler = (pathname: string) => {
+      const newState = getState(pathname);
+      setState(state => ({
+        ...getState(pathname),
+        isSearching:
+          window.innerWidth > breakPoint
+            ? state.isSearching || newState.isOtherContent
+            : state.isSearching
+      }));
+    };
+    events.on('routeChangeComplete', handler);
+    return () => events.off('routeChangeComplete', handler);
+  }, [events]);
 
   return (
     <div
       className={[
         classes['layout'],
-        isHome || isSearch ? classes['show-left-panel'] : ''
+        isHome || isOtherContent ? classes['show-left-panel'] : ''
       ]
         .join(' ')
         .trim()}
@@ -97,8 +93,12 @@ function ClientLayoutContent({
         <div className={classes['left-panel']} hidden={hideBookShelf}>
           <BookShelf />
         </div>
-        <div className={classes['left-panel']} hidden={hideOtherContent}>
-          <OtherContent asPath={asPath} onLeave={leaveOtherContent} />
+        <div className={classes['left-panel']} hidden={!showOtherContent}>
+          <OtherContent
+            asPath={asPath}
+            isSearching={isSearching}
+            onLeave={leaveOtherContent}
+          />
         </div>
         {showRightPanel && (
           <div className={classes['right-panel']}>{children}</div>
