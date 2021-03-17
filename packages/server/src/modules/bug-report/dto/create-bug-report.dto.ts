@@ -1,5 +1,5 @@
 import { IsEnum } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import {
   Schema$BugReport,
   Param$CreateBugReport,
@@ -45,5 +45,6 @@ export class CreateBugReportDto
   description: string;
 
   @IsEnum(BugReportType)
+  @Transform(({ value }) => value && Number(value))
   type: BugReportType;
 }

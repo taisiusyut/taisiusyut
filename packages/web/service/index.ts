@@ -3,6 +3,7 @@ export * from './announcement';
 export * from './auth';
 export * from './book';
 export * from './book-shelf';
+export * from './bug-report';
 export * from './chapter';
 export * from './jwt';
 export * from './user';

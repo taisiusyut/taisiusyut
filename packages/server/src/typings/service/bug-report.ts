@@ -11,10 +11,8 @@ export enum BugReportStatus {
 
 export enum BugReportType {
   UI = 1,
-  Account,
   Book,
   Chapter,
-  Payment,
   Other
 }
 
