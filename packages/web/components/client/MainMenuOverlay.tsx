@@ -24,8 +24,8 @@ import { AuthorRequest } from '@/components/client/AuthorRequest';
 import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
-import pkg from '@/package.json';
 import { UserRole } from '@/typings';
+import pkg from '@/package.json';
 
 interface MainMenuDialogProps extends ListViewDialogProps {}
 
@@ -91,33 +91,21 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         搜索書籍
       </ListItem>
 
-      <ListItem
-        icon="annotation"
-        rightElement={chevron}
-        onClick={() => {
-          props.onClose();
-          router.push('/reports');
-        }}
-      >
-        回報問題/建議
-      </ListItem>
-
-      {auth.user &&
-        (auth.user.role === UserRole.Client ? (
-          <AuthorRequest
-            icon="draw"
-            rightElement={chevron}
-            updateProfile={authActions.updateProfile}
-          />
-        ) : (
-          <ListItem
-            icon="draw"
-            rightElement={chevron}
-            onClick={() => router.push('/admin')}
-          >
-            寫文
-          </ListItem>
-        ))}
+      {!auth.user || auth.user.role === UserRole.Client ? (
+        <AuthorRequest
+          icon="draw"
+          rightElement={chevron}
+          updateProfile={authActions.updateProfile}
+        />
+      ) : (
+        <ListItem
+          icon="draw"
+          rightElement={chevron}
+          onClick={() => router.push('/admin')}
+        >
+          寫文
+        </ListItem>
+      )}
 
       <ListItem
         icon="help"
