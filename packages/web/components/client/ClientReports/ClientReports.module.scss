@@ -1,10 +1,22 @@
 @import '~styles/utils';
 
+.reports-panel {
+  @include flex($flex-direction: column);
+  height: 100%;
+  overflow: hidden;
+}
+
+.reports-panel-content {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
 .item {
   @include relative();
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  padding: 20px 25px 20px 20px;
 
   + .item {
     &:before {
@@ -31,36 +43,27 @@
   }
 }
 
-.item-body {
-  @include flex();
-  overflow: hidden;
-  padding: 20px;
+.item-header {
+  min-height: 24px;
+  line-height: 24px;
 }
 
-.item-content {
-  flex: 1 1 auto;
-  overflow: hidden;
-  padding-right: 15px;
+.item-status {
+  float: right;
 }
 
 .item-description {
   @include multi-line-ellipsis(1.4em, 3);
-  margin-top: 0.3em;
+  margin-top: 0.5em;
 }
 
 .item-date {
   margin-top: 1em;
+  text-align: right;
 }
 
 .item-description,
 .item-date {
   font-size: 0.8em;
   color: var(--text-light-color);
-}
-
-.item-status {
-  flex: 0 0 auto;
-  margin-left: 10px;
-  min-width: 3em;
-  min-height: 20px;
 }

@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ClientHeader } from '@/components/client/ClientLayout';
+import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { openMixedConfirmOverlay } from '@/components/MixedOverlay';
-import { createBugReport, getBugReport } from '@/service';
-import {
-  createUseCRUDReducer,
-  DefaultCRUDActionTypes
-} from '@/hooks/crud-reducer';
+import { createBugReport } from '@/service';
+import { BugReportType } from '@/typings';
 import { ClientReportWarning } from './ClientReportWarning';
 import { ClientReportForm, useForm } from './ClientReportForm';
-import { BugReport, ClientReportItem } from './ClientReportItem';
+import { ClientReportItem } from './ClientReportItem';
+import { useClientReports } from './useClientReports';
 import classes from './ClientReports.module.scss';
 
 export interface ClientReportsProps {
@@ -19,29 +18,16 @@ export interface ClientReportsProps {
 const icon = 'annotation';
 const title = '問題/建議';
 
-const pageSize = 10;
-const placeholder = Array.from<void, BugReport>(
-  { length: pageSize },
-  (_, idx) => ({
-    id: String(idx)
-  })
-);
-
-const useBugReports = createUseCRUDReducer<BugReport, 'id'>('id', {
-  initializer: (state, reducer) =>
-    reducer(
-      { ...state, pageSize },
-      { type: DefaultCRUDActionTypes.LIST, payload: placeholder }
-    )
-});
+const AuthRequiredButton = withAuthRequired(ButtonPopover);
 
 export function ClientReports({ onLeave }: ClientReportsProps) {
   const [form] = useForm();
-  const [state, actions] = useBugReports();
+  const { state, actions, scrollerRef } = useClientReports();
 
   async function submitNewReport() {
     const payload = await form.validateFields();
-    await createBugReport(payload);
+    const report = await createBugReport(payload);
+    actions.insert(report, 0);
   }
 
   const openNewReport = () => {
@@ -54,7 +40,14 @@ export function ClientReports({ onLeave }: ClientReportsProps) {
       children: (
         <>
           <ClientReportWarning />
-          <ClientReportForm form={form} />
+          <ClientReportForm
+            form={form}
+            initialValues={{
+              type: BugReportType.Other,
+              title: '廣係綠麼務由',
+              description: `深工公治兩社數小成，應怎兩機未角前飛？部她書年長大證男直少哥它總白視所子不北直康起我很市業表，的星場聲部質！的教產林見主；早想臺使化，好度朋散古者已了動山，間他成金日；`
+            }}
+          />
         </>
       )
     });
@@ -65,25 +58,18 @@ export function ClientReports({ onLeave }: ClientReportsProps) {
   );
 
   const newReportButton = (
-    <ButtonPopover minimal icon={icon} content="新增" onClick={openNewReport} />
+    <AuthRequiredButton
+      minimal
+      icon={icon}
+      content="新增"
+      onClick={openNewReport}
+    />
   );
 
-  useEffect(() => {
-    async function fetch() {
-      try {
-        const response = await getBugReport();
-        actions.paginate(response);
-      } catch (error) {
-        //
-      }
-    }
-    fetch();
-  }, [actions]);
-
   return (
-    <div className={classes['client-reports']}>
+    <div className={classes['reports-panel']}>
       <ClientHeader title={title} left={cloeButton} right={newReportButton} />
-      <div>
+      <div className={classes['reports-panel-content']} ref={scrollerRef}>
         {state.list.map(report => (
           <ClientReportItem key={report.id} report={report} />
         ))}

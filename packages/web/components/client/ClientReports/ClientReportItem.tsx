@@ -2,6 +2,7 @@ import { BugReportStatusTag } from '@/components/Tags';
 import { Schema$BugReport } from '@/typings';
 import classes from './ClientReports.module.scss';
 import dayjs from 'dayjs';
+import { Skelecton } from '@/components/Skelecton';
 
 export type BugReport = Partial<Schema$BugReport> & { id: string };
 
@@ -14,17 +15,23 @@ export function ClientReportItem({ report }: ClientReportItemProps) {
 
   return (
     <div className={classes['item']}>
-      <div className={classes['item-body']}>
-        <div className={classes['item-content']}>
-          <div className={classes['item-title']}>{title}</div>
-          <div className={classes['item-description']}>{description}</div>
-          <div className={classes['item-date']}>
-            更新時間: {dayjs(updatedAt).fromNow()}
-          </div>
+      <div className={classes['item-header']}>
+        <div className={classes['item-status']}>
+          <Skelecton length={1}>
+            {status && <BugReportStatusTag status={status} />}
+          </Skelecton>
         </div>
-        <div>
-          <BugReportStatusTag status={status} />
-        </div>
+        <Skelecton length={2}>{title}</Skelecton>
+      </div>
+
+      <div className={classes['item-description']}>
+        <Skelecton length={18}>{description}</Skelecton>
+      </div>
+
+      <div className={classes['item-date']}>
+        <Skelecton length={3}>
+          {updatedAt && `更新時間: ${dayjs(updatedAt).fromNow()}`}
+        </Skelecton>
       </div>
     </div>
   );

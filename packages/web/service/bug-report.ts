@@ -1,5 +1,6 @@
 import { routes } from '@/constants';
 import {
+  PaginateResult,
   Param$CreateBugReport,
   Param$GetBugReports,
   Schema$BugReport
@@ -10,6 +11,8 @@ export const createBugReport = async (payload: Param$CreateBugReport) => {
   return api.post<Schema$BugReport>(routes.create_bug_report, payload);
 };
 
-export const getBugReport = async (params?: Param$GetBugReports) => {
-  return api.get<Schema$BugReport[]>(routes.get_bug_reports, { params });
+export const getBugReports = async (params?: Param$GetBugReports) => {
+  return api.get<PaginateResult<Schema$BugReport>>(routes.get_bug_reports, {
+    params
+  });
 };
