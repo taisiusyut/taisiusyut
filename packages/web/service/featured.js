@@ -28,29 +28,31 @@ async function getClientFeaturedPageData() {
   if (!result) {
     const bookService = await getBookService();
     const limit = 6;
-    const response = await Promise.all([
-      bookService.random(limit),
-      bookService.random(limit),
-      bookService.random(limit),
-      bookService.findAll({ status: BookStatus.Finished }, null, {
-        sort: { updatedAt: Order.DESC },
-        limit
-      })
-    ]);
 
-    /** @type {Result['data']['mostvisited'][]} */
+    /** @type {Result['data'][keyof Result['data']][]} */
     const [
+      random,
       mostvisited,
       clientSuggested,
       adminSuggested,
       finished
-    ] = response.map(books => {
-      return books.map(doc => serialize(doc));
-    });
+    ] = await Promise.all([
+      bookService.random(12),
+      bookService.random(0),
+      bookService.random(0),
+      bookService.random(0),
+      bookService.findAll({ status: BookStatus.Finished }, null, {
+        sort: { updatedAt: Order.DESC },
+        limit
+      })
+    ]).then(response =>
+      response.map(books => books.map(doc => serialize(doc)))
+    );
 
     result = {
       updatedAt: new Date().getTime(),
       data: {
+        random,
         mostvisited,
         adminSuggested,
         clientSuggested,

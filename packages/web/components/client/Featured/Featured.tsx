@@ -12,6 +12,7 @@ import classes from './Featured.module.scss';
 
 export interface FeaturedProps {
   data: {
+    random: Schema$Book[];
     mostvisited: Schema$Book[];
     adminSuggested: Schema$Book[];
     clientSuggested: Schema$Book[];
@@ -21,10 +22,7 @@ export interface FeaturedProps {
 
 const SearchButton = withDesktopHeaderBtn(ButtonPopover);
 
-export function Featured({ data }: FeaturedProps) {
-  const pageSize = data.mostvisited.length;
-
-  const contentRef = useRef<HTMLDivElement>(null);
+function useRecentUpdate(pageSize: number) {
   const [books, setBooks] = useState<Book[]>(() =>
     Array.from({ length: pageSize }, (_, idx) => ({
       id: String(idx)
@@ -34,7 +32,7 @@ export function Featured({ data }: FeaturedProps) {
   const [request] = useState(() => async () => {
     const response = await getBooks({
       sort: { updatedAt: Order.DESC },
-      pageSize: data.mostvisited.length
+      pageSize
     });
     return response.data;
   });
@@ -45,8 +43,16 @@ export function Featured({ data }: FeaturedProps) {
     mapOperator: exhaustMap
   });
 
-  const loaded = !!books[0]?.name;
+  return { books, fetch };
+}
+
+export function Featured({ data }: FeaturedProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
   const { asPath } = useRouter();
+
+  const pageSize = data.mostvisited.length || 6;
+  const { books, fetch } = useRecentUpdate(pageSize);
+  const loaded = !!books[0]?.name;
 
   // only fetch api if visbile
   useEffect(() => {
@@ -77,6 +83,7 @@ export function Featured({ data }: FeaturedProps) {
       />
       <div className={classes['content']} ref={contentRef}>
         <FeaturedSection title="最近更新" books={books} />
+        <FeaturedSection title="隨機推薦" books={data.random} />
         <FeaturedSection title="最多瀏覽" books={data.mostvisited} />
         <FeaturedSection title="讀者推薦" books={data.clientSuggested} />
         <FeaturedSection title="編輯推薦" books={data.adminSuggested} />
