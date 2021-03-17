@@ -46,7 +46,7 @@ export interface Schema$Book extends Timestamp {
 export interface Param$CreateBook {
   name: string;
   description?: string;
-  category: Category;
+  category?: Category;
   tags?: string[];
   cover?: string;
 }

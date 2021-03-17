@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
-import { BookStatus, Category } from '@/typings';
+import { BookStatus } from '@/typings';
 import { rid } from '@/utils/rid';
 import { getGlobalUser, setupUsers } from '../../service/auth';
 import { createBook, createBookDto, getBook } from '../../service/book';
@@ -16,11 +16,9 @@ export function testCreateBook() {
     const params = [
       createBookDto({}),
       createBookDto({ description: rid(10) }),
-      createBookDto({ category: Category['玄幻'] }),
       createBookDto({ tags: tags() }),
       createBookDto({
         description: rid(10),
-        category: Category['仙俠'],
         tags: tags()
       })
     ];

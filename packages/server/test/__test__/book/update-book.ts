@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
-import { BookStatus, Category, Schema$Book, UserRole } from '@/typings';
+import { BookStatus, Schema$Book, UserRole } from '@/typings';
 import { UpdateBookDto } from '@/modules/book/dto';
 import { rid } from '@/utils/rid';
 import {
@@ -22,12 +22,10 @@ export function testUpdateBook() {
 
   const updatePayload: UpdateBookDto[] = [
     { name: rid(10) },
-    { category: Category['玄幻'] },
     { description: rid(5) },
     { tags: tags() },
     createBookDto({
       description: rid(10),
-      category: Category['奇幻'],
       tags: tags()
     })
   ];
