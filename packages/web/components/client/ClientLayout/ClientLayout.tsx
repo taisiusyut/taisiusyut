@@ -86,7 +86,7 @@ function ClientLayoutContent({
       setState(state => ({
         ...newState,
         isSearching: largeScreen
-          ? state.isSearching || newState.showOtherLeftPanel
+          ? state.isSearching || newState.isSearch
           : state.isSearching
       }));
     };

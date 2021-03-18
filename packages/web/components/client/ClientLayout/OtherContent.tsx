@@ -12,7 +12,7 @@ export function OtherContent({
   onLeave,
   isSearching
 }: OtherContentProps) {
-  const pathname = asPath.replace(/^\/|\/.*/g, '');
+  const pathname = asPath.replace(/^\/|(\/|\?).*/g, '');
   switch (pathname) {
     case 'reports':
       return <ClientReports onLeave={onLeave} />;
