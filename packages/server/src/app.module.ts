@@ -41,12 +41,7 @@ const envFilePath = [
     BookShelfModule,
     BugReportModule,
     AnnouncementModule,
-    EventEmitterModule.forRoot(),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath,
-      validationSchema: Joi.object(configValidation)
-    })
+    EventEmitterModule.forRoot()
   ],
   providers: [
     {
@@ -60,10 +55,19 @@ const envFilePath = [
   ]
 })
 export class AppModule {
-  static init({ MONGODB_URI }: Config = {}): DynamicModule {
+  static init({
+    MONGODB_URI,
+    WEB_VERSION = 'unknown'
+  }: Config = {}): DynamicModule {
     return {
       module: AppModule,
       imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+          envFilePath,
+          validationSchema: Joi.object(configValidation),
+          load: [() => ({ WEB_VERSION })]
+        }),
         MongooseModule.forRootAsync({
           imports: [ConfigModule],
           inject: [ConfigService],

@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { FastifyRequest } from 'fastify';
 import {
   Controller,
@@ -11,6 +9,7 @@ import {
   Query,
   NotFoundException
 } from '@nestjs/common';
+import { ConfigService } from '@/config';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
 import { Access, AccessPipe } from '@/utils/access';
@@ -22,16 +21,12 @@ import {
 } from './dto';
 import { BugReportStatus } from '@/typings';
 
-const pkg = JSON.parse(
-  fs.readFileSync(
-    path.resolve(__dirname, '../../../../web/package.json'),
-    'utf-8'
-  )
-);
-
 @Controller(routes.bug_report.prefix)
 export class BugReportController {
-  constructor(private readonly bugReportService: BugReportService) {}
+  constructor(
+    private readonly bugReportService: BugReportService,
+    private readonly configService: ConfigService
+  ) {}
 
   @Access('Auth')
   @Post(routes.bug_report.create_bug_report)
@@ -43,7 +38,7 @@ export class BugReportController {
       ...createBookDto,
       status: BugReportStatus.Open,
       user: req.user?.user_id,
-      version: pkg.version
+      version: this.configService.get('WEB_VERSION')
     });
   }
 

@@ -7,7 +7,7 @@ const PORT = Number(process.env.PORT) || 5000;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule.init(),
+    AppModule.init({ WEB_VERSION: 'development' }),
     fastifyAdapter()
   );
 

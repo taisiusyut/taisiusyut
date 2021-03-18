@@ -16,7 +16,8 @@ export const configValidation = {
     .default(7 * 24 * 60),
   DEFAULT_USERNAME: Joi.string().default('admin'),
   DEFAULT_PASSWORD: Joi.string().default('12345678'),
-  MONGODB_URI: Joi.string().optional()
+  MONGODB_URI: Joi.string().optional(),
+  WEB_VERSION: Joi.string()
 };
 
 // type T1 =  new (internalConfig?: Config)
