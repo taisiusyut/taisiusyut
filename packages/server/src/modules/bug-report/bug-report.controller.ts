@@ -23,10 +23,7 @@ import {
 import { BugReportStatus } from '@/typings';
 
 const pkg = JSON.parse(
-  fs.readFileSync(
-    path.resolve(__dirname, '../../../../web/package.json'),
-    'utf-8'
-  )
+  fs.readFileSync(path.resolve(process.cwd(), '../web/package.json'), 'utf-8')
 );
 
 @Controller(routes.bug_report.prefix)
