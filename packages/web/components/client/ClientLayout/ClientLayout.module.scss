@@ -93,14 +93,6 @@
 
 @mixin single-page {
   .layout {
-    &.show-left-panel .right-panel {
-      display: none;
-    }
-
-    &:not(.show-left-panel) .left-panel {
-      display: none;
-    }
-
     .header {
       @include fixed(-1px, null, 0);
       z-index: 10;

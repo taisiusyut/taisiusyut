@@ -7,16 +7,12 @@ interface OtherContentProps {
   isSearching: boolean;
 }
 
-export function shouldShowOtherContent(asPath: string) {
-  return ['/search', '/reports'].some(path => asPath.startsWith(path));
-}
-
 export function OtherContent({
   asPath,
   onLeave,
   isSearching
 }: OtherContentProps) {
-  const pathname = asPath.replace(/^\/|\?.*/g, '');
+  const pathname = asPath.replace(/^\/|\/.*/g, '');
   switch (pathname) {
     case 'reports':
       return <ClientReports onLeave={onLeave} />;
