@@ -67,3 +67,26 @@
   font-size: 0.8em;
   color: var(--text-light-color);
 }
+
+.detial-content {
+  padding: 25px;
+}
+
+.detial-content-item {
+  @include flex(center, flex-start, wrap);
+  margin-bottom: 10px;
+}
+
+.detial-content-item-label {
+  @include flex(center, space-between);
+  padding-right: 5px;
+  &::after {
+    content: ':';
+  }
+}
+
+.detial-content-desc {
+  > * + * {
+    margin-top: 5px;
+  }
+}

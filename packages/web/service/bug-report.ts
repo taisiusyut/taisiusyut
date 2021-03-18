@@ -16,3 +16,7 @@ export const getBugReports = async (params?: Param$GetBugReports) => {
     params
   });
 };
+
+export const getBugReport = async (id: string) => {
+  return api.get<Schema$BugReport>(routes.get_bug_report.generatePath({ id }));
+};
