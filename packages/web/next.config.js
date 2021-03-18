@@ -20,6 +20,13 @@ module.exports = withPlugins(
      * @returns {Configuration}
      */
     webpack: (config, { webpack, defaultLoaders }) => {
+      // for packages/server/src/modules/bug-report/bug-report.controller.ts
+      config.node = {
+        ...config.node,
+        __dirname: false,
+        __filename: false
+      };
+
       config.module.rules.push({
         test: /\.mdx?/,
         use: [
