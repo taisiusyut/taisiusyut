@@ -14,10 +14,10 @@ interface Props {
   book: Partial<Book>;
 }
 
+const className = classes['item'];
+
 export function ClientSearchItem({ book }: Props) {
   const { asPath } = useRouter();
-
-  const className = classes['item'];
 
   const content = (flatten: boolean) => (
     <div className={classes['item-body']}>
@@ -38,8 +38,7 @@ export function ClientSearchItem({ book }: Props) {
 
         <div className={classes['book-updated-at']}>
           <Skelecton length={4}>
-            {book.updatedAt &&
-              `上次更新: ${dayjs(book.updatedAt).format('YYYY-MM-DD')}`}
+            {book.updatedAt && `上次更新: ${dayjs(book.updatedAt).fromNow()}`}
           </Skelecton>
         </div>
       </div>

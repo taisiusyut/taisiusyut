@@ -99,7 +99,7 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
           router.push('/reports');
         }}
       >
-        回報問題/建議
+        問題/建議
       </ListItem>
 
       {!auth.user || auth.user.role === UserRole.Client ? (
