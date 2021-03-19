@@ -103,11 +103,7 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       </ListItem>
 
       {!auth.user || auth.user.role === UserRole.Client ? (
-        <AuthorRequest
-          icon="draw"
-          rightElement={chevron}
-          updateProfile={authActions.updateProfile}
-        />
+        <AuthorRequest icon="draw" rightElement={chevron} />
       ) : (
         <ListItem
           icon="draw"
