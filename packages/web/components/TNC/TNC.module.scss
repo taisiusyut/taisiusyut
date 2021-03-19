@@ -1,0 +1,50 @@
+@import '~styles/utils';
+
+@mixin list {
+  ul,
+  ol {
+    line-height: 1.5em;
+    margin-top: 0;
+    padding-left: 1.5em;
+  }
+
+  li {
+    margin-bottom: 2em;
+    padding-left: 0.5em;
+  }
+}
+
+.tnc {
+  @include list;
+  padding: 20px 20px 50px;
+}
+
+.overlay {
+  @include list;
+
+  &:global(.#{$ns}-dialog) {
+    width: 400px;
+
+    :global(.#{$ns}-dialog-body) {
+      max-height: 600px;
+      overflow: auto;
+    }
+  }
+
+  :global(.#{$ns}-dialog-body) {
+    margin: 0;
+    padding: 20px 20px 20px 10px;
+  }
+}
+
+a.link {
+  &,
+  &:hover {
+    color: $pt-intent-primary;
+    font-weight: bold;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

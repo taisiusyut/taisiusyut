@@ -1,8 +1,7 @@
 import React from 'react';
-import { Checkbox } from '@blueprintjs/core';
+import { TNCCheckbox } from '@/components/TNC/TNCCheckbox';
 import { createUserForm, userValidators, UserFormProps } from './UserForm';
 import { validators } from '@/utils/form';
-import classes from './UserForm.module.scss';
 
 interface Props extends UserFormProps {
   head?: React.ReactNode;
@@ -45,16 +44,10 @@ export function RegistrationForm({ head, children, ...props }: Props) {
 
       <FormItem
         name="tnc"
-        valuePropName="checked"
         validateTrigger="onSubmit"
         validators={[validators.required('請閱讀並同意使用條款及私隱政策')]}
       >
-        <Checkbox>
-          我同意
-          <a href="/tnc" target="blank" className={classes['tnc-link']}>
-            使用條款及私隱政策
-          </a>
-        </Checkbox>
+        <TNCCheckbox />
       </FormItem>
 
       {children}
