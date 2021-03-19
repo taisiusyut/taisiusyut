@@ -26,19 +26,13 @@ export function SettingsDangerZone() {
   return (
     <SettingsSection title="Danger Zone" className={classes['danger-zone']}>
       <div className={classes['danger-zone-content']}>
-        <Row
-          title="修改密碼"
-          desc="To protect the information in your account, it is suggested to change your password periodically."
-        >
+        <Row title="修改密碼" desc="為保護你的帳號，建議定期修改你的密碼">
           <ModifyPassword />
         </Row>
 
         <Divider />
 
-        <Row
-          title="刪除帳號"
-          desc="Once you delete this account, there is no going back. Please be certain."
-        >
+        <Row title="刪除帳號" desc="當帳號刪除後，無法復原，請考慮清楚">
           <DeleteAccount />
         </Row>
       </div>

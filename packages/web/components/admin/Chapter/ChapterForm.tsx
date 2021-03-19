@@ -24,7 +24,7 @@ export function ChapterForm({ loading, wordCount, ...props }: Props) {
     <div className={classes['content-label']}>
       內容
       <div>
-        {typeof wordCount === 'number' ? `${wordCount} 字` : 'calculating ...'}
+        {typeof wordCount === 'number' ? `${wordCount} 字` : '計算中...'}
       </div>
     </div>
   );

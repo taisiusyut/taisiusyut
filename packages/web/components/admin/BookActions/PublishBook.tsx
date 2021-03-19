@@ -7,8 +7,7 @@ export function PublishBookDialog(props: BookActionDialogProps) {
   return (
     <BookActionDialog {...props} intent="danger" request={publishBook}>
       <div className={classes['dialog']}>
-        Published book cannot set to private again. Are you sure to publish the
-        book 「{props.book.name}」?
+        書籍發佈後，無法再隱藏書籍，確認發佈「{props.book.name}」嗎?
       </div>
     </BookActionDialog>
   );

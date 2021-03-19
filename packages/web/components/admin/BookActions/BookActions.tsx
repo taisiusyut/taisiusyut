@@ -61,7 +61,7 @@ export function BookActions({ role, book, onSuccess }: BookActionsProps) {
         book.status === BookStatus.Public &&
           items.push(create('Finish', '完結書籍', FinishBookDialog));
         book.status === BookStatus.Private &&
-          items.push(create('Publish', '發布', PublishBookDialog));
+          items.push(create('Publish', '發佈書籍', PublishBookDialog));
       }
     }
 
