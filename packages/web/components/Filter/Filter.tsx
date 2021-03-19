@@ -141,8 +141,10 @@ export function createFilter<T extends Record<string, any>>(
     useEffect(() => setIsOpen(false), []);
 
     useEffect(() => {
-      initialValues && formRef.current?.setFieldsValue(initialValues);
-      setFiltered(hasFilter(initialValues));
+      if (initialValues) {
+        formRef.current?.setFieldsValue(initialValues);
+        setFiltered(hasFilter(formRef.current?.getFieldsValue()));
+      }
     }, [initialValues]);
 
     return (
