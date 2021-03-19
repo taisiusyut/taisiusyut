@@ -69,23 +69,24 @@
 }
 
 .detial-content {
-  padding: 25px;
+  padding: 20px;
 }
 
 .detial-content-item {
-  @include flex(center, flex-start, wrap);
+  @include flex(center, flex-start);
   margin-bottom: 10px;
 }
 
 .detial-content-item-label {
   @include flex(center, space-between);
-  padding-right: 5px;
+  padding-right: 10px;
   &::after {
     content: ':';
   }
 }
 
 .detial-content-desc {
+  line-height: 1.5em;
   > * + * {
     margin-top: 5px;
   }

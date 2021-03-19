@@ -1,19 +1,29 @@
 import { Input, TextArea } from '@/components/Input';
 import { BugReportTypeSelect } from '@/components/Select/BugReportTypeSelect';
 import { createForm, FormProps, validators } from '@/utils/form';
-import { Param$CreateBugReport } from '@/typings';
+import { Param$CreateBugReport, Param$UpdateBugReport } from '@/typings';
 import { Max_Bug_Report_Title, Max_Bug_Report_Description } from '@/constants';
 
-export type ClientReportFormProps = FormProps<Param$CreateBugReport>;
+type Schema = Param$CreateBugReport & Param$UpdateBugReport;
 
-const { Form, FormItem, useForm } = createForm<Param$CreateBugReport>();
+export type ClientReportFormProps = FormProps<Schema>;
+
+const { Form, FormItem, useForm } = createForm<Schema>();
 
 export { useForm };
 
 export function ClientReportForm(props: ClientReportFormProps) {
   return (
     <Form {...props}>
-      <FormItem name="type" label="類型">
+      <FormItem name="id" noStyle>
+        <input hidden />
+      </FormItem>
+
+      <FormItem
+        name="type"
+        label="類型"
+        validators={[validators.required('請選擇類型')]}
+      >
         <BugReportTypeSelect />
       </FormItem>
 

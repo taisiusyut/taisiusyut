@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
+import { Card } from '@blueprintjs/core';
+import { ButtonPopover } from '@/components/ButtonPopover';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
 import { BugReportStatusTag } from '@/components/Tags';
 import { bugReportTypelabels } from '@/components/Select';
-import { getBugReport } from '@/service';
-import { useEffect, useState } from 'react';
+import { getBugReport, updateBugReport } from '@/service';
 import { BugReportStatus, Schema$BugReport } from '@/typings';
+import { useClientReportAction } from './useClientReportAction';
 import classes from './ClientReports.module.scss';
 
 export interface ClientReportDetailProps {
@@ -26,6 +28,11 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
   const [report, setReport] = useState<Schema$BugReport | null>(null);
   const [, { fetch }] = useRxAsync(getBugReport, { onSuccess: setReport });
 
+  const openReportDialog = useClientReportAction({
+    request: updateBugReport,
+    onSuccess: setReport
+  });
+
   let headerProps: HeaderProps = {};
   let content: React.ReactNode = null;
 
@@ -33,12 +40,21 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
     headerProps = {
       ...headerProps,
       title: report.title,
-      left: <GoBackButton targetPath="/reports" />
+      left: <GoBackButton targetPath="/reports" />,
+      right: [
+        <ButtonPopover
+          minimal
+          key="0"
+          icon="edit"
+          content="編輯"
+          onClick={() => openReportDialog({ initialValues: report })}
+        />
+      ]
     };
 
     content = (
       <div className={classes['detial-content']}>
-        <div className={classes['detial-content-head']}>
+        <Card className={classes['detial-content-head']}>
           <Item label="狀態">
             <BugReportStatusTag status={report.status} />
           </Item>
@@ -52,11 +68,11 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
           >
             {report.version}
           </Item>
-        </div>
-        <div className={classes['detial-content-desc']}>
-          <div>描述:</div>
-          <div>{report.description}</div>
-        </div>
+          <div className={classes['detial-content-desc']}>
+            <div>描述:</div>
+            <div>{report.description}</div>
+          </div>
+        </Card>
       </div>
     );
   }

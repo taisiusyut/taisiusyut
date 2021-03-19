@@ -34,6 +34,7 @@ export interface Param$CreateBugReport {
 }
 
 export interface Param$UpdateBugReport {
+  id: string;
   title?: string;
   description?: string;
   status?: BugReportStatus;
