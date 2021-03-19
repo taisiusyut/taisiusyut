@@ -35,6 +35,10 @@
     margin: 0;
     padding: 20px 20px 20px 10px;
   }
+
+  :global(.#{$ns}-dialog-footer) {
+    padding-top: 15px;
+  }
 }
 
 a.link {

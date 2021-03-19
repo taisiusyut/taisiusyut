@@ -8,8 +8,10 @@ import classes from './TNC.module.scss';
 interface TNCCheckboxProps extends ControlProps<boolean> {}
 
 export function TNCCheckbox({ value, onChange }: TNCCheckboxProps) {
+  const _onChange = onChange || (() => void 0);
+
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    onChange && onChange(event.target.checked);
+    _onChange(event.target.checked);
   }
 
   function handleClick(event: MouseEvent<HTMLElement>) {
@@ -18,11 +20,11 @@ export function TNCCheckbox({ value, onChange }: TNCCheckboxProps) {
       title: '使用條款及私隱政策',
       icon: 'info-sign',
       confirmText: '同意',
+      cancelText: '拒絕',
       className: classes['overlay'],
       children: <TNC />,
-      onConfirm: async () => {
-        onChange && onChange(true);
-      }
+      onConfirm: async () => _onChange(true),
+      onCancel: () => _onChange(false)
     });
   }
 
