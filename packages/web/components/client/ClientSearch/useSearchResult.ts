@@ -25,8 +25,6 @@ const useBookReducer = createUseCRUDReducer<Book, 'id'>('id', {
   initializer: state => ({ ...state, pageSize })
 });
 
-export const createId = (idx: number) => `search-result-${idx}`;
-
 export function useSearchResult(search: Search) {
   const [state, actions] = useBookReducer();
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -60,8 +58,12 @@ export function useSearchResult(search: Search) {
           startWith([0, 0]),
           map(([scrollTop, offsetHeight]) => {
             const nextIndex = pageNo * pageSize;
-            const target = document.querySelector<HTMLElement>(
-              `.${createId(nextIndex)}`
+            const elements: Element[] = Array.prototype.slice.call(
+              scroller.children,
+              nextIndex
+            );
+            const target = elements.find(
+              (e): e is HTMLElement => e instanceof HTMLElement
             );
             if (target && scrollTop + offsetHeight >= target.offsetTop) {
               pageNo += 1;

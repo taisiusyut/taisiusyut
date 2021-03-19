@@ -11,14 +11,13 @@ import dayjs from 'dayjs';
 export type Book = Partial<Schema$Book> & { id: string };
 
 interface Props {
-  className: string;
   book: Partial<Book>;
 }
 
-export function ClientSearchItem({ book, className: id }: Props) {
+export function ClientSearchItem({ book }: Props) {
   const { asPath } = useRouter();
 
-  const className = [id, classes['item']];
+  const className = classes['item'];
 
   const content = (flatten: boolean) => (
     <div className={classes['item-body']}>
@@ -64,7 +63,7 @@ export function ClientSearchItem({ book, className: id }: Props) {
     return (
       <div
         onClick={handleClick}
-        className={[...className, active ? classes['active'] : '']
+        className={[className, active ? classes['active'] : '']
           .join(' ')
           .trim()}
       >
@@ -75,5 +74,5 @@ export function ClientSearchItem({ book, className: id }: Props) {
     );
   }
 
-  return <div className={className.join(' ').trim()}>{content(false)}</div>;
+  return <div className={className}>{content(false)}</div>;
 }

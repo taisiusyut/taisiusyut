@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { withDesktopHeaderBtn } from '@/components/BlankButton';
-import { useSearchResult, createId } from './useSearchResult';
+import { useSearchResult } from './useSearchResult';
 import {
   useForm,
   transoform,
@@ -45,8 +45,8 @@ export function ClientSearch({ onLeave }: Props) {
     <SearchButton minimal icon="cross" content="取消搜索" onClick={onLeave} />
   );
 
-  const items = state.list.map((book, idx) => (
-    <ClientSearchItem key={book.id} book={book} className={createId(idx)} />
+  const items = state.list.map(book => (
+    <ClientSearchItem key={book.id} book={book} />
   ));
 
   const notFound = state.list.length === 0 && search.value?.trim() && (
