@@ -34,21 +34,37 @@ function shouldShowLeftPanel(asPath: string, pagingDisplay: boolean) {
   );
 }
 
-function getState(asPath: string, pagingDisplay: boolean) {
+function getState(
+  asPath: string,
+  usePagingDisplay: boolean,
+  isSearching?: boolean
+) {
   const isHome = isPathEqual('/', asPath);
   const isSearch = isPathMatch('/search', asPath);
   const isFeatured = isPathEqual('/featured', asPath);
   const mountBottomNav = isHome || isFeatured || isSearch;
-  const showOtherLeftPanel = shouldShowLeftPanel(asPath, pagingDisplay);
-  const showBookShelf = pagingDisplay ? !showOtherLeftPanel : isHome;
-  const showRightPanel = pagingDisplay ? true : !isHome && !showOtherLeftPanel;
 
-  return {
+  const common = {
     isSearch,
-    mountBottomNav,
-    showOtherLeftPanel,
-    showBookShelf,
-    showRightPanel
+    mountBottomNav
+  };
+
+  if (usePagingDisplay) {
+    const showBookShelf =
+      !shouldShowLeftPanel(asPath, usePagingDisplay) && !isSearching;
+    return {
+      ...common,
+      showLeftPanel: true,
+      showRightPanel: true,
+      showBookShelf
+    };
+  }
+  const showLeftPanel = isHome || shouldShowLeftPanel(asPath, usePagingDisplay);
+  return {
+    ...common,
+    showLeftPanel,
+    showRightPanel: !showLeftPanel,
+    showBookShelf: isHome
   };
 }
 
@@ -62,18 +78,14 @@ function ClientLayoutContent({
   const { goBack } = useGoBack();
   const { pagingDisplay } = useClientPreferencesState();
 
-  const [state, setState] = useState(() => {
-    const state = getState(asPath, pagingDisplay);
-    return { ...state, isSearching: state.isSearch };
-  });
-  const { showRightPanel, mountBottomNav, isSearching } = state;
-  const showBookShelf = state.showBookShelf && !isSearching;
-  const showOtherLeftPanel = state.showOtherLeftPanel || isSearching;
+  const [
+    { isSearch, showLeftPanel, showBookShelf, showRightPanel, mountBottomNav },
+    setState
+  ] = useState(getState(asPath, pagingDisplay));
+  const [isSearching, setIsSearching] = useState(isSearch);
 
   const [leaveOtherContent] = useState(() => () =>
-    goBack({ targetPath: ['/', '/featured'] }).then(() =>
-      setState(state => ({ ...state, isSearching: false }))
-    )
+    goBack({ targetPath: ['/', '/featured'] }).then(() => setIsSearching(false))
   );
 
   // scroll restoration for single page display
@@ -81,14 +93,12 @@ function ClientLayoutContent({
 
   useEffect(() => {
     const handler = (pathname: string) => {
-      const largeScreen = window.innerWidth > breakPoint;
-      const newState = getState(pathname, pagingDisplay && largeScreen);
-      setState(state => ({
-        ...newState,
-        isSearching: largeScreen
-          ? state.isSearching || newState.isSearch
-          : state.isSearching
-      }));
+      const usePagingDisplay = pagingDisplay && window.innerWidth > breakPoint;
+      const newState = getState(pathname, usePagingDisplay, isSearching);
+      setState(newState);
+      setIsSearching(isSearching =>
+        usePagingDisplay ? isSearching || newState.isSearch : isSearching
+      );
     };
     const resize = () => handler(router.asPath);
 
@@ -100,7 +110,7 @@ function ClientLayoutContent({
       events.off('routeChangeComplete', handler);
       window.removeEventListener('resize', resize);
     };
-  }, [events, pagingDisplay]);
+  }, [events, pagingDisplay, isSearching]);
 
   return (
     <div className={[classes['layout']].join(' ').trim()}>
@@ -109,11 +119,14 @@ function ClientLayoutContent({
             because the first-time rendering and scroll position restoration will not smooth */}
         <div
           className={classes['left-panel']}
-          hidden={!showBookShelf || isSearching}
+          hidden={!showLeftPanel || !showBookShelf}
         >
           <BookShelf />
         </div>
-        <div className={classes['left-panel']} hidden={!showOtherLeftPanel}>
+        <div
+          className={classes['left-panel']}
+          hidden={!showLeftPanel || showBookShelf}
+        >
           <OtherContent
             asPath={asPath}
             isSearching={isSearching}
