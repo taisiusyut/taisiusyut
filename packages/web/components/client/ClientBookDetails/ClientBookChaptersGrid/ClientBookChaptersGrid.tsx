@@ -11,6 +11,7 @@ import { Card, Classes, Divider, Icon, Tag } from '@blueprintjs/core';
 import { Pagination } from '@/components/Pagination';
 import {
   gotoPage,
+  parseQuery,
   createUsePaginationLocal,
   DefaultCRUDActionTypes
 } from '@/hooks/usePaginationLocal';
@@ -22,10 +23,7 @@ interface Props {
   bookID: string;
   bookName: string;
   lastVisit?: number;
-  chapters: Pick<
-    PaginateResult<Partial<Schema$Chapter>>,
-    'data' | 'pageSize'
-  > | null;
+  chapters: PaginateResult<Schema$Chapter> | null;
 }
 
 interface ChaptersGridProps {
@@ -34,8 +32,6 @@ interface ChaptersGridProps {
   chapters: Partial<Schema$Chapter>[];
   lastVisit?: number;
 }
-
-// TODO: empty chapter
 
 const onFailure = Toaster.apiError.bind(Toaster, `Get chapters failure`);
 
@@ -104,26 +100,21 @@ export function ClientBookChaptersGrid({
       getChapters({ ...params, bookID, sort: { createdAt: Order.ASC } });
     return createUsePaginationLocal('id', request, {
       defaultState: { pageSize: initialChapters?.pageSize },
-      initializer: (state, reducer) =>
-        initialChapters
-          ? {
-              ...reducer(state, {
-                type: DefaultCRUDActionTypes.PAGINATE,
-                payload: initialChapters
-              }),
-              // the `pageNo` in initialChapters is alway 1 as getStaticProps
-              pageNo: state.pageNo
-            }
-          : state
+      initializer: initialChapters
+        ? (state, reducer) =>
+            reducer(state, {
+              type: DefaultCRUDActionTypes.PAGINATE,
+              payload: initialChapters
+            })
+        : undefined
     });
   });
   const { data, pagination, state, actions } = useChapters({ onFailure });
 
+  // goto the page of last visit chapter if query has not pageNo
   useEffect(() => {
-    if (
-      typeof router.query.pageNo !== 'string' &&
-      typeof lastVisit === 'number'
-    ) {
+    const query = parseQuery(router.asPath);
+    if (typeof query.pageNo === 'undefined' && typeof lastVisit === 'number') {
       const pageNo = Math.ceil(lastVisit / state.pageSize);
       pageNo > 1 && gotoPage(pageNo);
     }

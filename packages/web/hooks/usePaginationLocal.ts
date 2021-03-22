@@ -50,7 +50,7 @@ interface UsePaginationOptions<
   ) => CRUDState<I, Prefill>;
 }
 
-const getParams = (path: string) => qs.parse(path.split('?')[1] || '');
+export const parseQuery = (path: string) => qs.parse(path.split('?')[1] || '');
 
 export const gotoPage = (pageNo: number) =>
   setSearchParam(params => ({ ...params, pageNo }));
@@ -74,12 +74,6 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
   request: <P>(params?: P) => Promise<PaginateResult<I>>,
   { initializer, ...curdOptions }: UsePaginationOptions<I, K, boolean> = {}
 ): UsePaginationLocal<I, K, boolean> {
-  const initialParams = getParams(
-    typeof window !== 'undefined' ? window.location.href : ''
-  );
-  delete initialParams['pageNo'];
-  delete initialParams['pageSIze'];
-
   const [initialState, reducer] = createCRUDReducer<I, K>(key, {
     ...curdOptions,
     actionTypes: DefaultCRUDActionTypes
@@ -91,7 +85,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     const [state, dispatch] = useReducer(reducer, initialState, state => {
       const withParam = reducer(state, {
         type: DefaultCRUDActionTypes.PARAMS,
-        payload: getParams(asPath)
+        payload: parseQuery(asPath)
       });
       return initializer ? initializer(withParam, reducer) : withParam;
     });
@@ -111,12 +105,13 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
     const { hasData, list } = useMemo(() => paginateSelector(state), [state]);
 
     useEffect(() => {
-      actions.params(getParams(asPath));
+      actions.params(parseQuery(asPath));
     }, [actions, asPath]);
 
     useEffect(() => {
-      // sync pageNo since it may change as CRUD actions
-      if (router.query.pageNo && Number(router.query.pageNo) !== pageNo) {
+      // sync pageNo since it may change by some CRUD actions
+      const queryPageNo = Number(router.query.pageNo);
+      if (!isNaN(queryPageNo) && queryPageNo !== pageNo) {
         setSearchParam(params => ({ ...params, pageNo }));
       }
     }, [pageNo]);
