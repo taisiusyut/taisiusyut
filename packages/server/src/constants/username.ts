@@ -7,3 +7,11 @@ export const USERNAME_MAX_LENGTH_MESSAGE = `Username cannot more then ${USERNAME
 export const USERNAME_REGEX = /^[a-zA-Z0-9_]*$/;
 export const USERNAME_REGEX_MESSAGE =
   'Username can only contain alphanumeric characters (letters A-Z, numbers 0-9)';
+
+export const USERNAME_BLACKLIST = ['admin'];
+export const USERNAME_BLACKLIST_REGEX = new RegExp(
+  `^(?!.*(${USERNAME_BLACKLIST.join('|')}))`,
+  'gi'
+);
+export const USERNAME_BLACKLIST_REGEX_MESSAGE =
+  'Username contain blacklisted word';
