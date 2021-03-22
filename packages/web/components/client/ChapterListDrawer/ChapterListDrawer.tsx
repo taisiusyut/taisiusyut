@@ -48,7 +48,7 @@ export function useChapterListDrawer(bookID?: string) {
   async function openDrawer(
     props: Pick<ChapterListDrawerContentProps, 'chapterNo' | 'onItemClick'>
   ) {
-    const loaded = !chapters[0].name;
+    const loaded = !!(chapters.length && chapters[0].name);
     const _handler = openChapterListDrawer({
       ...props,
       chapters,
