@@ -77,7 +77,7 @@
   overflow: auto;
 }
 
-.right-panel {
+.right-panel:not([hidden]) {
   @include dimen(100%);
   @include flex($flex-direction: column);
   @include relative();

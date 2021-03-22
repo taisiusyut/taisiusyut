@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import router, { useRouter } from 'next/router';
 import { useGoBack } from '@/hooks/useGoBack';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
-import { BreakPointsProvider } from '@/hooks/useBreakPoints';
+import { BreakPointsProvider, useBreakPoints } from '@/hooks/useBreakPoints';
 import { useScrollRestoration } from '@/hooks/useScrollRestoration';
 import {
   ClientPreferencesProvider,
@@ -45,6 +45,7 @@ function getState(
   const mountBottomNav = isHome || isFeatured || isSearch;
 
   const common = {
+    isHome,
     isSearch,
     mountBottomNav
   };
@@ -60,6 +61,7 @@ function getState(
     };
   }
   const showLeftPanel = isHome || shouldShowLeftPanel(asPath, usePagingDisplay);
+
   return {
     ...common,
     showLeftPanel,
@@ -68,8 +70,6 @@ function getState(
   };
 }
 
-const breakPoint = 768;
-
 function ClientLayoutContent({
   children,
   disableScrollRestoration = false
@@ -77,11 +77,19 @@ function ClientLayoutContent({
   const { asPath, events } = useRouter();
   const { goBack } = useGoBack();
   const { pagingDisplay } = useClientPreferencesState();
+  const [breakPoint, mounted] = useBreakPoints();
 
   const [
-    { isSearch, showLeftPanel, showBookShelf, showRightPanel, mountBottomNav },
+    {
+      isHome,
+      isSearch,
+      showLeftPanel,
+      showBookShelf,
+      showRightPanel,
+      mountBottomNav
+    },
     setState
-  ] = useState(getState(asPath, pagingDisplay));
+  ] = useState(getState(asPath, true));
   const [isSearching, setIsSearching] = useState(isSearch);
 
   const [leaveOtherContent] = useState(() => () =>
@@ -93,24 +101,20 @@ function ClientLayoutContent({
 
   useEffect(() => {
     const handler = (pathname: string) => {
-      const usePagingDisplay = pagingDisplay && window.innerWidth > breakPoint;
+      const usePagingDisplay = pagingDisplay && breakPoint > 768;
       const newState = getState(pathname, usePagingDisplay, isSearching);
       setState(newState);
       setIsSearching(isSearching =>
         usePagingDisplay ? isSearching || newState.isSearch : isSearching
       );
     };
-    const resize = () => handler(router.asPath);
-
-    window.addEventListener('resize', resize);
-    events.on('routeChangeComplete', handler);
 
     handler(router.asPath);
+    events.on('routeChangeComplete', handler);
     return () => {
       events.off('routeChangeComplete', handler);
-      window.removeEventListener('resize', resize);
     };
-  }, [events, pagingDisplay, isSearching]);
+  }, [events, pagingDisplay, isSearching, breakPoint]);
 
   return (
     <div className={[classes['layout']].join(' ').trim()}>
@@ -119,13 +123,13 @@ function ClientLayoutContent({
             because the first-time rendering and scroll position restoration will not smooth */}
         <div
           className={classes['left-panel']}
-          hidden={!showLeftPanel || !showBookShelf}
+          hidden={!isHome && (!mounted || !showLeftPanel || !showBookShelf)}
         >
           <BookShelf />
         </div>
         <div
           className={classes['left-panel']}
-          hidden={!showLeftPanel || showBookShelf}
+          hidden={!mounted || !showLeftPanel || showBookShelf}
         >
           <OtherContent
             asPath={asPath}
