@@ -1,22 +1,41 @@
 import { Input, TextArea } from '@/components/Input';
-import { BugReportTypeSelect } from '@/components/Select/BugReportTypeSelect';
+import {
+  BugReportTypeSelect,
+  BugReportStatusSelect
+} from '@/components/Select';
 import { createForm, FormProps, validators } from '@/utils/form';
-import { Param$CreateBugReport, Param$UpdateBugReport } from '@/typings';
+import {
+  UserRole,
+  BugReportStatus,
+  Param$CreateBugReport,
+  Param$UpdateBugReport
+} from '@/typings';
 import { Max_Bug_Report_Title, Max_Bug_Report_Description } from '@/constants';
 
 type Schema = Param$CreateBugReport & Param$UpdateBugReport;
 
-export type ClientReportFormProps = FormProps<Schema>;
+export type ClientReportFormProps = FormProps<Schema> & {
+  role?: UserRole;
+  status?: BugReportStatus;
+};
 
 const { Form, FormItem, useForm } = createForm<Schema>();
 
 export { useForm };
 
-export function ClientReportForm(props: ClientReportFormProps) {
+export function ClientReportForm({
+  role,
+  status,
+  ...props
+}: ClientReportFormProps) {
   return (
     <Form {...props}>
       <FormItem name="id" noStyle>
         <input hidden />
+      </FormItem>
+
+      <FormItem name="status" label="狀態">
+        <BugReportStatusSelect role={role} status={status} />
       </FormItem>
 
       <FormItem

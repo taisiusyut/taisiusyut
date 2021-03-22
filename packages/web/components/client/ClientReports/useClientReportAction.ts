@@ -9,6 +9,7 @@ import {
 } from './ClientReportForm';
 import { ClientReportWarning } from './ClientReportWarning';
 import { Toaster } from '@/utils/toaster';
+import { useAuthState } from '@/hooks/useAuth';
 
 interface Create {
   request: typeof createBugReport | typeof updateBugReport;
@@ -24,6 +25,7 @@ export const title = '問題/建議';
 
 export function useClientReportAction({ request, onSuccess }: Create) {
   const [form] = useForm();
+  const { user } = useAuthState();
 
   async function onConfirm() {
     const payload = await form.validateFields();
@@ -47,7 +49,11 @@ export function useClientReportAction({ request, onSuccess }: Create) {
         React.Fragment,
         {},
         React.createElement(ClientReportWarning),
-        React.createElement(ClientReportForm, { ...formProps, form })
+        React.createElement(ClientReportForm, {
+          ...formProps,
+          role: user?.role,
+          form
+        })
       )
     });
   };

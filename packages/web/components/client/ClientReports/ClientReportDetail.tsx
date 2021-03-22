@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { Card } from '@blueprintjs/core';
-import { ButtonPopover } from '@/components/ButtonPopover';
+import { ButtonPopover, ButtonPopoverProps } from '@/components/ButtonPopover';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
 import { BugReportStatusTag } from '@/components/Tags';
@@ -37,19 +37,27 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
   let content: React.ReactNode = null;
 
   if (report) {
+    const buttons: ButtonPopoverProps[] = [
+      {
+        icon: 'edit',
+        content: '編輯',
+        onClick: () =>
+          openReportDialog({ initialValues: report, status: report.status })
+      },
+      {
+        icon: 'trash',
+        content: '刪除',
+        onClick: () => openReportDialog({ initialValues: report })
+      }
+    ];
+
     headerProps = {
       ...headerProps,
       title: report.title,
       left: <GoBackButton targetPath="/reports" />,
-      right: [
-        <ButtonPopover
-          minimal
-          key="0"
-          icon="edit"
-          content="編輯"
-          onClick={() => openReportDialog({ initialValues: report })}
-        />
-      ]
+      right: buttons.map((props, idx) => (
+        <ButtonPopover {...props} key={String(idx)} minimal />
+      ))
     };
 
     content = (

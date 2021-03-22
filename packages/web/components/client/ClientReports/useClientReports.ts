@@ -33,8 +33,6 @@ const useBugReports = createUseCRUDReducer<BugReport, 'id'>('id', {
     )
 });
 
-export const createId = (idx: number) => `report-${idx}`;
-
 export function useClientReports() {
   const [state, actions] = useBugReports();
   const scrollerRef = useRef<HTMLDivElement>(null);

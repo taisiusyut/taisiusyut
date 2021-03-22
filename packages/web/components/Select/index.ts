@@ -1,4 +1,5 @@
 export * from './BookStatusSelect';
+export * from './BugReportStatusSelect';
 export * from './BugReportTypeSelect';
 export * from './CategorySelect';
 export * from './ChapterTypeSelect';

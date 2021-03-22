@@ -3,7 +3,7 @@ import { ClientHeader } from '@/components/client/ClientLayout';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { createBugReport } from '@/service';
-import { BugReportType } from '@/typings';
+import { BugReportStatus, BugReportType } from '@/typings';
 import { ClientReportItem } from './ClientReportItem';
 import { useClientReportAction, icon, title } from './useClientReportAction';
 import { useClientReports } from './useClientReports';
@@ -26,9 +26,12 @@ export function ClientReports({ onLeave }: ClientReportsProps) {
   const openNewReport = () => {
     openReportDialog({
       initialValues: {
-        type: BugReportType.Other,
-        title: '廣係綠麼務由',
-        description: `深工公治兩社數小成，應怎兩機未角前飛？部她書年長大證男直少哥它總白視所子不北直康起我很市業表，的星場聲部質！的教產林見主；早想臺使化，好度朋散古者已了動山，間他成金日；`
+        status: BugReportStatus.Open,
+        ...(process.env.NODE_ENV === 'development' && {
+          type: BugReportType.Other,
+          title: '廣係綠麼務由',
+          description: `深工公治兩社數小成，應怎兩機未角前飛？部她書年長大證男直少哥它總白視所子不北直康起我很市業表，的星場聲部質！的教產林見主；早想臺使化，好度朋散古者已了動山，間他成金日；`
+        })
       }
     });
   };
