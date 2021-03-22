@@ -1,5 +1,6 @@
 import Joi from '@hapi/joi';
 import { ConfigService as DefaultConfigService } from '@nestjs/config';
+import { ValidationHeader } from '@/constants';
 
 export type Config = { [x in keyof typeof configValidation]?: any };
 
@@ -17,7 +18,8 @@ export const configValidation = {
   DEFAULT_USERNAME: Joi.string().default('admin'),
   DEFAULT_PASSWORD: Joi.string().default('12345678'),
   MONGODB_URI: Joi.string().optional(),
-  WEB_VERSION: Joi.string()
+  WEB_VERSION: Joi.string(),
+  VALIDATION_HEADER: Joi.string().default(ValidationHeader)
 };
 
 // type T1 =  new (internalConfig?: Config)

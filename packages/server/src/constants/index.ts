@@ -13,3 +13,5 @@ export const Max_Bug_Report_Description = 100;
 
 export const Max_Announcement_Title = 20;
 export const Max_Announcement_Description = 300;
+
+export const ValidationHeader = `taisiusyut-validation-header`;

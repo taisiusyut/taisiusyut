@@ -6,6 +6,11 @@ const { NestFactory } = require('@nestjs/core');
 const { AppModule, fastifyAdapter, setupApp } = require('@taisiusyut/server');
 const pkg = require('./package.json');
 
+/** @type {string[]} */
+const blackListedUserAgent = (process.env.BLACK_LISTED_UA || '')
+  .split(',')
+  .filter(Boolean);
+
 /**
  * @param {object} option
  * @param {number} option.port
@@ -28,12 +33,30 @@ async function startServer({ dev, port }) {
 
     nest.use(
       /**
-       * @param {*} req
-       * @param {*} res
+       * @param {import('http').IncomingMessage} req
+       * @param {import('http').ServerResponse} res
        * @param {() => void} next
        */
       (req, res, next) => {
-        if (req.url.startsWith('/api')) {
+        const userAgent = req.headers['user-agent'];
+        if (
+          !userAgent ||
+          blackListedUserAgent.some(ua => userAgent.indexOf(ua) !== -1)
+        ) {
+          const statusCode = 403;
+          const body = JSON.stringify({
+            statusCode,
+            message: 'Forbidden'
+          });
+          return res
+            .writeHead(statusCode, {
+              'Content-Length': Buffer.byteLength(body),
+              'Content-Type': 'application/json'
+            })
+            .end(body);
+        }
+
+        if (req.url && req.url.startsWith('/api')) {
           next();
         } else {
           res.app = nest;

@@ -5,11 +5,14 @@ import {
   Inject,
   SetMetadata,
   ExecutionContext,
-  CustomDecorator
+  CustomDecorator,
+  ForbiddenException
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@/config';
 import { UserRole } from '@/typings';
+import { ValidationHeader } from '@/constants';
 import { Permission } from './permission-types';
 import { permissonsMap } from './permission-config';
 
@@ -38,7 +41,10 @@ export function canAccess(role: UserRole | undefined, access: AccessType[]) {
 }
 
 export class AccessGuard extends AuthGuard('jwt') {
-  constructor(@Inject(Reflector) private reflector: Reflector) {
+  constructor(
+    @Inject(Reflector) private reflector: Reflector,
+    private configService: ConfigService
+  ) {
     super();
   }
 
@@ -47,6 +53,17 @@ export class AccessGuard extends AuthGuard('jwt') {
       AccessMetakey,
       [context.getHandler(), context.getClass()]
     ) || ['Auth'];
+
+    const http = context.switchToHttp();
+    const req = http.getRequest() as FastifyRequest;
+
+    if (
+      !req.headers.referer ||
+      req.headers[ValidationHeader] !==
+        this.configService.get('VALIDATION_HEADER')
+    ) {
+      throw new ForbiddenException();
+    }
 
     if (access.includes('Everyone')) {
       return of(true);
