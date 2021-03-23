@@ -1,6 +1,8 @@
 import { applyDecorators } from '@nestjs/common';
-import { IsString, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsString, MaxLength } from 'class-validator';
 import { Max_Bug_Report_Title, Max_Bug_Report_Description } from '@/constants';
+import { BugReportStatus } from '@/typings';
 
 export function IsTitle(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), MaxLength(Max_Bug_Report_Title));
@@ -8,6 +10,13 @@ export function IsTitle(): ReturnType<typeof applyDecorators> {
 
 export function IsDescription(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), MaxLength(Max_Bug_Report_Description));
+}
+
+export function IsBugReportStatus(): ReturnType<typeof applyDecorators> {
+  return applyDecorators(
+    IsEnum(BugReportStatus),
+    Transform(({ value }) => value && Number(value))
+  );
 }
 
 export * from './create-bug-report.dto';

@@ -8,6 +8,7 @@ import {
 } from '@/typings';
 import { QueryDto } from '@/utils/mongoose';
 import { Group } from '@/utils/access';
+import { IsBugReportStatus } from './index';
 
 class Excluded
   extends QueryDto
@@ -40,8 +41,7 @@ class GetBugReports
   user?: string;
 
   @IsOptional()
-  @IsEnum(BugReportStatus)
-  @Transform(({ value }) => value && Number(value))
+  @IsBugReportStatus()
   @Group(['Root', 'Admin'])
   status?: BugReportStatus;
 

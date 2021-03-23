@@ -6,7 +6,7 @@ import {
   BugReportStatus,
   BugReportType
 } from '@/typings';
-import { IsTitle, IsDescription } from './index';
+import { IsTitle, IsDescription, IsBugReportStatus } from './index';
 import { Group } from '@/utils/access';
 
 class Excluded implements Partial<Schema$BugReport> {
@@ -41,8 +41,8 @@ class UpdateBugReport
   @Group(['Root', 'Admin'])
   version?: string;
 
-  @IsEnum(BugReportStatus)
   @IsOptional()
+  @IsBugReportStatus()
   status?: BugReportStatus;
 
   @IsEnum(BugReportType)
