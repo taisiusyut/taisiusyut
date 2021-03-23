@@ -1,5 +1,5 @@
 import React from 'react';
-import { Schema$Chapter, ChapterType } from '@/typings';
+import { Schema$Chapter } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { ChapterStatusTag } from '@/components/Tags';
 import dayjs from 'dayjs';
@@ -21,19 +21,6 @@ const chapterColumns: Column<Partial<Schema$Chapter>>[] = [
     id: 'status',
     Header: '狀態',
     accessor: ({ status }) => <ChapterStatusTag status={status} />
-  },
-  {
-    id: 'type',
-    Header: '類型',
-    accessor: ({ type }) => type && ChapterType[type]
-  },
-  {
-    id: 'price',
-    Header: '價錢',
-    accessor: chapter =>
-      Object.keys(chapter).length
-        ? chapter.price || <div>&nbsp;&nbsp;&nbsp;-</div>
-        : null
   },
   {
     id: 'createdAt',
