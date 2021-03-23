@@ -112,7 +112,7 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       // sync pageNo since it may change by some CRUD actions
       const queryPageNo = Number(router.query.pageNo);
       if (!isNaN(queryPageNo) && queryPageNo !== pageNo) {
-        setSearchParam(params => ({ ...params, pageNo }));
+        setSearchParam(params => ({ ...params, pageNo: queryPageNo }));
       }
     }, [pageNo]);
 
