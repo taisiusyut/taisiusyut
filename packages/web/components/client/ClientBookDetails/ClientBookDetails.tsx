@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import router from 'next/router';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
 import { BookInfoCard } from '@/components/BookInfoCard';
@@ -61,6 +61,15 @@ export function ClientBookDetailsComponent({
   const bookState = useGetBookByName(bookName, !!initialBook);
   const shelf = useBookShelfState();
   const book = bookState.data || initialBook;
+  const [lastVisit, setLastVisit] = useState<number>();
+
+  useEffect(() => {
+    if (book) {
+      setLastVisit(
+        shelf.byIds[book.id]?.lastVisit || lastVisitStorage.get(book.name)
+      );
+    }
+  }, [shelf, book]);
 
   // book not found / error
   if (!book) {
@@ -71,9 +80,6 @@ export function ClientBookDetailsComponent({
       </>
     );
   }
-
-  const lastVisit =
-    shelf.byIds[book.id]?.lastVisit || lastVisitStorage.get(book.name);
 
   return (
     <>
