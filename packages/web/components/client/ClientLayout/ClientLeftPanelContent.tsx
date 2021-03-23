@@ -1,5 +1,5 @@
 import { ClientSearch } from '../ClientSearch';
-import { ClientReports } from '../ClientReports';
+import { ClientReportsPanel } from '../ClientReports';
 
 interface OtherContentProps {
   asPath: string;
@@ -7,7 +7,7 @@ interface OtherContentProps {
   isSearching: boolean;
 }
 
-export function OtherContent({
+export function ClientLeftPanelContent({
   asPath,
   onLeave,
   isSearching
@@ -15,7 +15,7 @@ export function OtherContent({
   const pathname = asPath.replace(/^\/|(\/|\?).*/g, '');
   switch (pathname) {
     case 'reports':
-      return <ClientReports onLeave={onLeave} />;
+      return <ClientReportsPanel onLeave={onLeave} />;
   }
 
   if (isSearching || pathname === 'search') {

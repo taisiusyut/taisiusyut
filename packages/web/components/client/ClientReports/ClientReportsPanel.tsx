@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { ButtonPopover } from '@/components/ButtonPopover';
@@ -8,7 +9,6 @@ import { ClientReportItem } from './ClientReportItem';
 import { useClientReportDialog, icon, title } from './useClientReportDialog';
 import { useClientReports } from './useClientReports';
 import classes from './ClientReports.module.scss';
-import { useRouter } from 'next/router';
 
 export interface ClientReportsProps {
   onLeave: () => void;
@@ -16,7 +16,7 @@ export interface ClientReportsProps {
 
 const AuthRequiredButton = withAuthRequired(ButtonPopover);
 
-export function ClientReports({ onLeave }: ClientReportsProps) {
+export function ClientReportsPanel({ onLeave }: ClientReportsProps) {
   const { state, actions, scrollerRef } = useClientReports();
   const router = useRouter();
   const deletedReportId: string | null =

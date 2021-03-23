@@ -1,1 +1,1 @@
-export * from './ClientReports';
+export * from './ClientReportsPanel';

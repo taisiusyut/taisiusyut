@@ -10,7 +10,7 @@ import {
 } from '@/hooks/useClientPreferences';
 import { BookShelf } from '../BookShelf';
 import { BottomNavigation } from '../BottomNavigation';
-import { OtherContent } from './OtherContent';
+import { ClientLeftPanelContent } from './ClientLeftPanelContent';
 import classes from './ClientLayout.module.scss';
 
 export interface ClientLayoutProps {
@@ -131,7 +131,7 @@ function ClientLayoutContent({
           className={classes['left-panel']}
           hidden={!mounted || !showLeftPanel || showBookShelf}
         >
-          <OtherContent
+          <ClientLeftPanelContent
             asPath={asPath}
             isSearching={isSearching}
             onLeave={leaveOtherContent}
