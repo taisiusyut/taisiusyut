@@ -29,18 +29,12 @@ export class BugReportService extends MongooseCRUDService<BugReport> {
   }
 
   getBugReportStatus(status: BugReportStatus) {
-    if (status === BugReportStatus.Open) {
+    if (status === BugReportStatus.Open || status === BugReportStatus.Closed) {
       return [BugReportStatus.Open, BugReportStatus.Closed];
-    }
-    if (status === BugReportStatus.Closed) {
-      return [BugReportStatus.Closed, BugReportStatus.ReOpen];
-    }
-    if (status === BugReportStatus.ReOpen) {
-      return [BugReportStatus.ReOpen, BugReportStatus.Closed];
     }
     if (status === BugReportStatus.Fixed) {
       return [
-        BugReportStatus.ReOpen,
+        BugReportStatus.Open,
         BugReportStatus.Fixed,
         BugReportStatus.Closed
       ];

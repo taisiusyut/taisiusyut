@@ -2,7 +2,6 @@ import { Pagination, Timestamp, Search, DateRangeQuery } from './';
 
 export enum BugReportStatus {
   Open = 1,
-  ReOpen,
   Closed,
   Fixed,
   Invalid,
