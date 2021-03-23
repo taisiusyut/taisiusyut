@@ -11,7 +11,6 @@ export function getBugReportStatusTagProps(
 ): ITagProps {
   switch (status) {
     case BugReportStatus.Open:
-    case BugReportStatus.ReOpen:
       return { intent: 'success' };
     case BugReportStatus.Closed:
       return { intent: 'danger' };

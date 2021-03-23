@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Card } from '@blueprintjs/core';
@@ -48,9 +48,14 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
   const [, { fetch }] = useRxAsync(getBugReport, { onSuccess: setReport });
   const { user } = useAuthState();
 
+  const onSuccess = useCallback((report: Schema$BugReport) => {
+    setReport(report);
+    router.push({ query: { update: JSON.stringify(report) } }, router.asPath);
+  }, []);
+
   const openReportDialog = useClientReportDialog({
     request: updateBugReport,
-    onSuccess: setReport
+    onSuccess
   });
 
   let headerProps: HeaderProps = {};

@@ -34,9 +34,11 @@ export function ClientReportForm({
         <input hidden />
       </FormItem>
 
-      <FormItem name="status" label="狀態">
-        <BugReportStatusSelect role={role} status={status} />
-      </FormItem>
+      {status && (
+        <FormItem name="status" label="狀態">
+          <BugReportStatusSelect role={role} status={status} />
+        </FormItem>
+      )}
 
       <FormItem
         name="type"

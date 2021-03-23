@@ -4,7 +4,8 @@ import { ClientHeader } from '@/components/client/ClientLayout';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { createBugReport } from '@/service';
-import { BugReportStatus, BugReportType } from '@/typings';
+import { BugReportStatus, Schema$BugReport } from '@/typings';
+import { JSONParse } from '@/utils/JSONParse';
 import { ClientReportItem } from './ClientReportItem';
 import { useClientReportDialog, icon, title } from './useClientReportDialog';
 import { useClientReports } from './useClientReports';
@@ -18,12 +19,7 @@ const AuthRequiredButton = withAuthRequired(ButtonPopover);
 
 export function ClientReportsPanel({ onLeave }: ClientReportsProps) {
   const { state, actions, scrollerRef } = useClientReports();
-  const router = useRouter();
-  const deletedReportId: string | null =
-    router.asPath === '/reports' &&
-    typeof router.query.deletedReportId === 'string'
-      ? router.query.deletedReportId
-      : null;
+  const { query } = useRouter();
 
   const openReportDialog = useClientReportDialog({
     request: createBugReport,
@@ -33,12 +29,7 @@ export function ClientReportsPanel({ onLeave }: ClientReportsProps) {
   const openNewReport = () => {
     openReportDialog({
       initialValues: {
-        status: BugReportStatus.Open,
-        ...(process.env.NODE_ENV === 'development' && {
-          type: BugReportType.Other,
-          title: '廣係綠麼務由',
-          description: `深工公治兩社數小成，應怎兩機未角前飛？部她書年長大證男直少哥它總白視所子不北直康起我很市業表，的星場聲部質！的教產林見主；早想臺使化，好度朋散古者已了動山，間他成金日；`
-        })
+        status: BugReportStatus.Open
       }
     });
   };
@@ -57,11 +48,18 @@ export function ClientReportsPanel({ onLeave }: ClientReportsProps) {
   );
 
   useEffect(() => {
-    if (deletedReportId) {
+    const { deletedReportId, update } = query;
+
+    if (deletedReportId && typeof deletedReportId === 'string') {
       actions.delete({ id: deletedReportId });
       scrollerRef.current?.scrollTo(0, 0);
     }
-  }, [deletedReportId, actions, scrollerRef]);
+
+    if (update && typeof update === 'string') {
+      const report = JSONParse<Schema$BugReport>(update);
+      if (report) actions.update(report);
+    }
+  }, [query, actions, scrollerRef]);
 
   return (
     <div className={classes['reports-panel']}>
