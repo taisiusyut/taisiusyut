@@ -2,9 +2,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { AppModule } from './app.module';
 import { setupApp, fastifyAdapter, NestFastifyApplication } from './setup';
+import { ValidationHeader } from './constants';
 import NodeEnvironment from 'jest-environment-node';
-import supertest from 'supertest';
 import mongoose from 'mongoose';
+import supertest from 'supertest';
+
+// console.log(Object.keys(supertest.Test));
+const defaultSet = (supertest as any).Test.prototype.set;
+(supertest as any).Test.prototype.set = function (
+  field: string,
+  value: string
+) {
+  defaultSet.call(this, 'referer', 'referer');
+  defaultSet.call(this, ValidationHeader, ValidationHeader);
+  return defaultSet.call(this, field, value);
+};
 
 export default class NestNodeEnvironment extends NodeEnvironment {
   mongod = new MongoMemoryServer();
