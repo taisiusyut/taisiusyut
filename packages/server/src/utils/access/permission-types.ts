@@ -14,13 +14,13 @@ export type UserPermission =
 
 export type BookPermission =
   | CRUD<'book'>
-  | 'book_public_finish'
+  | 'book_publish_finish'
   | 'book_status_update'
   | 'book_word_count';
 
 export type ChapterPermission =
   | CRUD<'chapter'>
-  | 'chapter_public'
+  | 'chapter_publish'
   | 'chapter_private'
   | 'chapter_status_update';
 

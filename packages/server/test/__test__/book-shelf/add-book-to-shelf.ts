@@ -10,10 +10,10 @@ import {
 import {
   createBook,
   updateBook,
-  publicBook,
+  publishBook,
   getBook
 } from '../../service/book';
-import { createChapter, publicChapter } from '../../service/chapter';
+import { createChapter, publishChapter } from '../../service/chapter';
 
 export function testAddBookToShelf() {
   const length = 4;
@@ -27,9 +27,9 @@ export function testAddBookToShelf() {
       const response = await createBook(author.token);
       books.push(response.body);
     }
-    let response = await publicBook(author.token, books[1].id);
+    let response = await publishBook(author.token, books[1].id);
     books[1] = response.body;
-    response = await publicBook(author.token, books[2].id);
+    response = await publishBook(author.token, books[2].id);
     books[2] = response.body;
 
     for (const book of books) {
@@ -37,7 +37,7 @@ export function testAddBookToShelf() {
       chapters.push(response.body);
     }
 
-    chapters[2] = await publicChapter(
+    chapters[2] = await publishChapter(
       author.token,
       books[2].id,
       chapters[2].id

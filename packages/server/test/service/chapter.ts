@@ -46,14 +46,14 @@ export function updateChapter(
     .send(payload);
 }
 
-export function publicChapter(
+export function publishChapter(
   token: string,
   bookID: string,
   chapterID: string
 ) {
   return request
     .post(
-      routes.public_chapter.generatePath({
+      routes.publish_chapter.generatePath({
         bookID,
         chapterID
       })

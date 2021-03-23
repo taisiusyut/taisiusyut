@@ -114,12 +114,12 @@ export class BookController {
     return this.bookService.paginate(query);
   }
 
-  @Access('book_public_finish')
+  @Access('book_publish_finish')
   @HttpCode(HttpStatus.OK)
-  @Post(routes.book.public_finish_book)
-  async public(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
+  @Post(routes.book.publish_finish_book)
+  async publish(@Req() req: FastifyRequest<any>, @ObjectId('id') id: string) {
     const currStatus =
-      req.params.type === 'public' ? BookStatus.Private : BookStatus.Public;
+      req.params.type === 'publish' ? BookStatus.Private : BookStatus.Public;
 
     const book = await this.bookService.findOneAndUpdate(
       { _id: id, authorName: req.user?.nickname, status: currStatus },

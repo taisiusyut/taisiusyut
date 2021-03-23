@@ -30,7 +30,7 @@ export const Routes = {
     get_book_by_name: '/name/:name',
     update_book: '/:id',
     delete_book: '/:id',
-    public_finish_book: '/:id/:type(public|finish)',
+    publish_finish_book: '/:id/:type(publish|finish)',
     book_word_count: '/word-count/:id'
   },
   chapter: {
@@ -41,7 +41,7 @@ export const Routes = {
     get_chapter_by_no: '/number/:chapterNo',
     update_chapter: '/:chapterID',
     delete_chapter: '/:chapterID',
-    public_chapter: '/:chapterID/public'
+    publish_chapter: '/:chapterID/publish'
   },
   payment: {
     prefix: '/payment',

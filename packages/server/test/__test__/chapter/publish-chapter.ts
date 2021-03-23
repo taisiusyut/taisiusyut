@@ -6,22 +6,22 @@ import {
   Schema$Chapter,
   UserRole
 } from '@/typings';
-import { createBook, publicBook } from '../../service/book';
+import { createBook, publishBook } from '../../service/book';
 import { createUserAndLogin, setupUsers } from '../../service/auth';
 import {
   getChapter,
-  publicChapter,
+  publishChapter,
   createChapter
 } from '../../service/chapter';
 
-export function testPublicChapter() {
+export function testPublishChapter() {
   let book: Schema$Book;
 
   beforeAll(async () => {
     await setupUsers();
     let response = await createBook(author.token);
     book = response.body;
-    response = await publicBook(author.token, book.id);
+    response = await publishBook(author.token, book.id);
     book = response.body;
   });
 
@@ -37,12 +37,12 @@ export function testPublicChapter() {
     const otherAutor: Schema$Authenticated = response.body;
 
     // other author cannot make chapter public
-    response = await publicChapter(otherAutor.token, book.id, chapter.id);
+    response = await publishChapter(otherAutor.token, book.id, chapter.id);
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body.status).not.toBe(ChapterStatus.Public);
 
-    // public chapter success
-    response = await publicChapter(author.token, book.id, chapter.id);
+    // publish chapter success
+    response = await publishChapter(author.token, book.id, chapter.id);
     expect(response.body).toMatchObject({
       status: ChapterStatus.Public,
       hasNext: false,
@@ -52,7 +52,7 @@ export function testPublicChapter() {
     response = await createChapter(author.token, book.id);
     const chapter2: Schema$Chapter = response.body;
 
-    response = await publicChapter(author.token, book.id, chapter2.id);
+    response = await publishChapter(author.token, book.id, chapter2.id);
     expect(response.body).toMatchObject({
       status: ChapterStatus.Public,
       hasNext: false,
@@ -72,7 +72,7 @@ export function testPublicChapter() {
     const chapter: Schema$Chapter = response.body;
     expect(chapter).not.toHaveProperty('status', ChapterStatus.Public);
 
-    response = await publicChapter(client.token, book.id, chapter.id);
+    response = await publishChapter(client.token, book.id, chapter.id);
     expect(response.status).toBe(HttpStatus.FORBIDDEN);
     expect(response.body.status).not.toBe(ChapterStatus.Public);
   });

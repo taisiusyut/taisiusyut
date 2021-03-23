@@ -28,16 +28,16 @@ export function updateBook(
     .send(payload);
 }
 
-export function publicBook(token: string, id: string) {
+export function publishBook(token: string, id: string) {
   return request
-    .post(routes.public_finish_book.generatePath({ id, type: 'public' }))
+    .post(routes.publish_finish_book.generatePath({ id, type: 'publish' }))
     .set('Authorization', `bearer ${token}`)
     .send();
 }
 
 export function finishBook(token: string, id: string) {
   return request
-    .post(routes.public_finish_book.generatePath({ id, type: 'finish' }))
+    .post(routes.publish_finish_book.generatePath({ id, type: 'finish' }))
     .set('Authorization', `bearer ${token}`)
     .send();
 }

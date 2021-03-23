@@ -52,5 +52,5 @@ export const updateChapter = ({
 
 export const publishChapter = ({ bookID, chapterID }: Param$PublishChapter) =>
   api.post<Schema$Chapter>(
-    routes.public_chapter.generatePath({ bookID, chapterID })
+    routes.publish_chapter.generatePath({ bookID, chapterID })
   );

@@ -5,7 +5,7 @@ import {
   getGlobalUser,
   setupUsers
 } from '../../service/auth';
-import { createBook, getBook, publicBook } from '../../service/book';
+import { createBook, getBook, publishBook } from '../../service/book';
 import { checkBookCollectionCount } from '../../service/author';
 import { addBookToShelf } from '../../service/book-shelf';
 import { HttpStatus } from '@nestjs/common';
@@ -28,7 +28,7 @@ export function testUpdateBookCollection() {
 
     let response = await createBook(localAuthor.token);
     book = response.body;
-    response = await publicBook(localAuthor.token, book.id);
+    response = await publishBook(localAuthor.token, book.id);
     book = response.body;
 
     clients = [];

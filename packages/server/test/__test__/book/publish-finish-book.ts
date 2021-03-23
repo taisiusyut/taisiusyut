@@ -4,16 +4,16 @@ import {
   Schema$Book,
   UserRole
 } from '@/typings';
-import { createBook, finishBook, publicBook } from '../../service/book';
+import { createBook, finishBook, publishBook } from '../../service/book';
 import { createUserAndLogin, setupUsers } from '../../service/auth';
 import { HttpStatus } from '@nestjs/common';
 
-export function testPublicAndFinishBook() {
+export function testPublishAndFinishBook() {
   beforeAll(async () => {
     await setupUsers();
   });
 
-  test('author can update book status to public/finish', async () => {
+  test('author can update book status to publish/finish', async () => {
     let response = await createBook(author.token);
     const book: Schema$Book = response.body;
     expect(book).toHaveProperty('status', BookStatus.Private);
@@ -29,13 +29,13 @@ export function testPublicAndFinishBook() {
     });
     const otherAutor: Schema$Authenticated = response.body;
 
-    // other author cannot make  book public
-    response = await publicBook(otherAutor.token, book.id);
+    // other author cannot make book public
+    response = await publishBook(otherAutor.token, book.id);
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body.status).not.toBe(BookStatus.Public);
 
-    // public book success
-    response = await publicBook(author.token, book.id);
+    // publish book success
+    response = await publishBook(author.token, book.id);
     expect(response.body).toHaveProperty('status', BookStatus.Public);
 
     // other author cannot make  book fibnish

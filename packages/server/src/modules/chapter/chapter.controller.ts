@@ -25,7 +25,7 @@ import { Access, AccessPipe } from '@/utils/access';
 import { calcWordCount } from '@/utils/caclWordCount';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
-import { PublicChapterEvent } from './event';
+import { PublishChapterEvent } from './event';
 import { CreateChapterDto, GetChaptersDto, UpdateChapterDto } from './dto';
 
 @Controller(routes.chapter.prefix)
@@ -211,15 +211,15 @@ export class ChapterController {
     return this.handleGetChapter(req, bookID, { number: chapterNo });
   }
 
-  @Access('chapter_public')
+  @Access('chapter_publish')
   @HttpCode(HttpStatus.OK)
-  @Post(routes.chapter.public_chapter)
-  async public(
+  @Post(routes.chapter.publish_chapter)
+  async publish(
     @Req() req: FastifyRequest<any>,
     @ObjectId('bookID') bookID: string,
     @ObjectId('chapterID') chapterID: string
   ) {
-    // TODO: chapter cannot public if book is not public ?
+    // TODO: chapter cannot publish if book is not public ?
 
     const chapter = await this.chapterService.findOneAndUpdate(
       {
@@ -239,7 +239,7 @@ export class ChapterController {
       );
     }
 
-    this.eventEmitter.emit(PublicChapterEvent.name, chapter);
+    this.eventEmitter.emit(PublishChapterEvent.name, chapter);
 
     if (chapter.number > 1) {
       await this.chapterService.updateOne(

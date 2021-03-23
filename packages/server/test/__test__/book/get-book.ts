@@ -51,7 +51,7 @@ function createGetBookTest(getBook: GetBook) {
     });
 
     test.each(['root', 'admin', 'author', 'client'])(
-      '%s can access public/finished book and return correctly',
+      '%s can access public/finish book and return correctly',
       async user => {
         for (const book of books) {
           const response = await getBook(getGlobalUser(user).token, book);

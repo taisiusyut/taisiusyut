@@ -3,7 +3,7 @@ import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
 import { BookStatus, Schema$Book } from '@/typings';
 import { addBookToShelf, getBooksFromShelf } from '../../service/book-shelf';
 import { getGlobalUser, setupUsers } from '../../service/auth';
-import { createBook, publicBook, updateBook } from '../../service/book';
+import { createBook, publishBook, updateBook } from '../../service/book';
 import { bookSelect } from '@/modules/book-shelf/schemas';
 
 export function testGetBooksFromShelf() {
@@ -17,7 +17,7 @@ export function testGetBooksFromShelf() {
     for (let i = 0; i < length; i++) {
       const response = await createBook(author.token);
       const book = response.body;
-      await publicBook(author.token, book.id);
+      await publishBook(author.token, book.id);
       books.push(book);
     }
 

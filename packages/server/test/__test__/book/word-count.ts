@@ -11,7 +11,7 @@ import {
 import { rid } from '@/utils/rid';
 import {
   createChapter,
-  publicChapter,
+  publishChapter,
   updateChapter
 } from '../../service/chapter';
 import {
@@ -23,7 +23,7 @@ import {
   calcBookWordCount,
   createBook,
   getBook,
-  publicBook
+  publishBook
 } from '../../service/book';
 
 export function testWordCount() {
@@ -34,7 +34,7 @@ export function testWordCount() {
   const publicChapters = async () => {
     if (chapters.every(c => c.status === ChapterStatus.Public)) return;
     for (let i = 0; i < chapters.length; i++) {
-      const response = await publicChapter(
+      const response = await publishChapter(
         localAuthor.token,
         book.id,
         chapters[i].id
@@ -61,7 +61,7 @@ export function testWordCount() {
 
     let response = await createBook(localAuthor.token);
     book = response.body;
-    response = await publicBook(localAuthor.token, book.id);
+    response = await publishBook(localAuthor.token, book.id);
     book = response.body;
     expect(book.wordCount).toBe(0);
 

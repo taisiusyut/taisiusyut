@@ -15,7 +15,7 @@ import {
   setupUsers
 } from '../../service/auth';
 import { createBook } from '../../service/book';
-import { createChapter, publicChapter } from '../../service/chapter';
+import { createChapter, publishChapter } from '../../service/chapter';
 import {
   createPayment,
   getPayments,
@@ -50,7 +50,7 @@ export function testGetPayments() {
         type: ChapterType.Pay
       });
       let chapter = response.body;
-      response = await publicChapter(
+      response = await publishChapter(
         localAuthor.token,
         book.id,
         response.body.id

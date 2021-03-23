@@ -8,7 +8,7 @@ import {
   updateBookInShelf
 } from '../../service/book-shelf';
 import { getGlobalUser, setupUsers } from '../../service/auth';
-import { createBook, publicBook } from '../../service/book';
+import { createBook, publishBook } from '../../service/book';
 
 export function testUpdateBookInShelf() {
   const length = 1;
@@ -22,7 +22,7 @@ export function testUpdateBookInShelf() {
     for (let i = 0; i < length; i++) {
       const response = await createBook(author.token);
       const book = response.body;
-      await publicBook(author.token, book.id);
+      await publishBook(author.token, book.id);
       books.push(book);
     }
 

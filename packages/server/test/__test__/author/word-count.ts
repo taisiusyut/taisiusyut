@@ -11,7 +11,7 @@ import {
 import { rid } from '@/utils/rid';
 import {
   createChapter,
-  publicChapter,
+  publishChapter,
   updateChapter
 } from '../../service/chapter';
 import {
@@ -19,7 +19,7 @@ import {
   getGlobalUser,
   setupUsers
 } from '../../service/auth';
-import { createBook, publicBook } from '../../service/book';
+import { createBook, publishBook } from '../../service/book';
 import { calcAuthorWordCount } from '../../service/author';
 import { getUser } from '../../service/user';
 
@@ -30,7 +30,7 @@ export function testAuthorWordCount() {
 
   const publicChapters = async () => {
     for (let i = 0; i < chapters.length; i++) {
-      const response = await publicChapter(
+      const response = await publishChapter(
         localAuthor.token,
         book.id,
         chapters[i].id
@@ -56,7 +56,7 @@ export function testAuthorWordCount() {
 
     let response = await createBook(localAuthor.token);
     book = response.body;
-    response = await publicBook(localAuthor.token, book.id);
+    response = await publishBook(localAuthor.token, book.id);
     book = response.body;
     expect(book.wordCount).toBe(0);
 

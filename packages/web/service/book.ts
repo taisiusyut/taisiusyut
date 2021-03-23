@@ -32,12 +32,12 @@ export const updateBook = ({ id, ...payload }: Param$UpdateBook) =>
 
 export const publishBook = ({ id }: { id: string }) =>
   api.post<Schema$Book>(
-    routes.public_finish_book.generatePath({ id, type: 'public' })
+    routes.publish_finish_book.generatePath({ id, type: 'publish' })
   );
 
 export const finishBook = ({ id }: { id: string }) =>
   api.post<Schema$Book>(
-    routes.public_finish_book.generatePath({ id, type: 'finish' })
+    routes.publish_finish_book.generatePath({ id, type: 'finish' })
   );
 
 export const deleteBook = ({ id }: { id: string }) =>

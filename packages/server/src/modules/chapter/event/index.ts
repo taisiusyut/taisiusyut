@@ -1,1 +1,1 @@
-export * from './public-chapter.event';
+export * from './publish-chapter.event';
