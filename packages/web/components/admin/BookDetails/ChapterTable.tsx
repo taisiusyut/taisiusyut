@@ -1,10 +1,9 @@
-import React from 'react';
 import { Schema$Chapter } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { ChapterStatusTag } from '@/components/Tags';
 import dayjs from 'dayjs';
 
-type BookTableProps = Omit<TableProps<Partial<Schema$Chapter>>, 'columns'> & {};
+type BookTableProps = Omit<TableProps<Partial<Schema$Chapter>>, 'columns'>;
 
 const chapterColumns: Column<Partial<Schema$Chapter>>[] = [
   {

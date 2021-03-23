@@ -4,6 +4,7 @@ import {
   Param$GetChapters,
   Param$CreateChapter,
   Param$UpdateChapter,
+  Param$PublishChapter,
   Schema$Chapter
 } from '@/typings';
 import { api } from './api';
@@ -47,4 +48,9 @@ export const updateChapter = ({
   api.patch<Schema$Chapter>(
     routes.update_chapter.generatePath({ bookID, chapterID }),
     payload
+  );
+
+export const publishChapter = ({ bookID, chapterID }: Param$PublishChapter) =>
+  api.post<Schema$Chapter>(
+    routes.public_chapter.generatePath({ bookID, chapterID })
   );

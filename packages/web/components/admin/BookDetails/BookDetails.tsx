@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import router from 'next/router';
 import { Card } from '@blueprintjs/core';
 import { createFilter } from '@/components/Filter';
 import { BookInfoCard } from '@/components/BookInfoCard';
@@ -11,11 +10,12 @@ import {
   createUsePaginationLocal,
   DefaultCRUDActionTypes
 } from '@/hooks/usePaginationLocal';
-import { UserRole, Param$GetChapters } from '@/typings';
+import { UserRole, Param$GetChapters, Schema$Chapter } from '@/typings';
 import { getChapters } from '@/service';
 import { Toaster } from '@/utils/toaster';
 import { BookActions, BookActionsProps } from '../BookActions';
 import { ChapterTable } from './ChapterTable';
+import { openChapterMenu, gotoChapter } from './ChapterMenu';
 import classes from './BookDetails.module.scss';
 
 interface Props extends BookActionsProps {}
@@ -28,14 +28,6 @@ const {
 } = createFilter<Param$GetChapters>();
 
 const onFailure = Toaster.apiError.bind(Toaster, `Get chapters failure`);
-
-const gotoChapter = (bookID: string, chapterID?: string) => {
-  let pathname = `/admin/book/${bookID}/chapters`;
-  if (chapterID) {
-    pathname += `/${chapterID}`;
-  }
-  return router.push(pathname);
-};
 
 export function BookDetails({ book, onSuccess }: Props) {
   const { user } = useAuthState();
@@ -56,7 +48,7 @@ export function BookDetails({ book, onSuccess }: Props) {
     )
   );
 
-  const { state, pagination } = useChapters({ onFailure });
+  const { state, actions, pagination } = useChapters({ onFailure });
 
   const isAuthor = user?.role === UserRole.Author;
 
@@ -100,17 +92,21 @@ export function BookDetails({ book, onSuccess }: Props) {
         </Filter>
 
         <ChapterTable
-          pagination={pagination}
           data={state.list}
-          onRowClick={
-            isAuthor
-              ? row => {
-                  if (!!row.original.name) {
-                    gotoChapter(book.id, row.original.id);
-                  }
-                }
-              : undefined
-          }
+          pagination={pagination}
+          onRowClick={(row, event) => {
+            row.toggleRowSelected();
+            if (Object.keys(row.original).length > 0) {
+              openChapterMenu({
+                actions,
+                bookID: book.id,
+                title: row.original.name,
+                offset: { top: event.pageY, left: event.pageX },
+                onClose: () => row.toggleRowSelected(),
+                chapter: row.original as Schema$Chapter
+              });
+            }
+          }}
         />
       </Card>
     </div>

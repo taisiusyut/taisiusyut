@@ -54,3 +54,7 @@ export interface Param$GetChapters extends Pagination, Search {
   updatedAt?: DateRange;
   timestamp?: boolean;
 }
+export interface Param$PublishChapter {
+  bookID: string;
+  chapterID: string;
+}
