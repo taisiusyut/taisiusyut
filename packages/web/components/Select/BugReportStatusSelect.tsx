@@ -19,12 +19,22 @@ export function BugReportStatusSelect({
       return allStatus;
     }
     if (status === BugReportStatus.Open) {
-      return [status, BugReportStatus.Closed];
+      return [BugReportStatus.Open, BugReportStatus.Closed];
     }
     if (status === BugReportStatus.Closed) {
-      return [status, BugReportStatus.ReOpen];
+      return [BugReportStatus.Closed, BugReportStatus.ReOpen];
     }
-    return [BugReportStatus.Open];
+    if (status === BugReportStatus.ReOpen) {
+      return [BugReportStatus.ReOpen, BugReportStatus.Closed];
+    }
+    if (status === BugReportStatus.Fixed) {
+      return [
+        BugReportStatus.ReOpen,
+        BugReportStatus.Fixed,
+        BugReportStatus.Closed
+      ];
+    }
+    return [];
   }, [status, role]);
 
   return (

@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Card } from '@blueprintjs/core';
 import { ButtonPopover, ButtonPopoverProps } from '@/components/ButtonPopover';
 import { GoBackButton } from '@/components/GoBackButton';
 import { ClientHeader, HeaderProps } from '@/components/client/ClientLayout';
+import { openConfirmDialog } from '@/components/ConfirmDialog';
 import { BugReportStatusTag } from '@/components/Tags';
 import { bugReportTypelabels } from '@/components/Select';
-import { getBugReport, updateBugReport } from '@/service';
-import { BugReportStatus, Schema$BugReport } from '@/typings';
-import { useClientReportAction } from './useClientReportAction';
+import { deleteBugReport, getBugReport, updateBugReport } from '@/service';
+import { BugReportStatus, Schema$BugReport, UserRole } from '@/typings';
+import { Toaster } from '@/utils/toaster';
+import { useClientReportDialog } from './useClientReportDialog';
 import classes from './ClientReports.module.scss';
+import { useAuthState } from '@/hooks/useAuth';
 
 export interface ClientReportDetailProps {
   reportId: string | null;
@@ -24,11 +28,27 @@ const Item: React.FC<{ label: string }> = ({ label, children }) => {
   );
 };
 
+const openDeleteBugReportDialog = (report: Schema$BugReport) => {
+  return new Promise<void>((resolve, reject) => {
+    openConfirmDialog({
+      intent: 'danger',
+      icon: 'trash',
+      title: '刪除問題/建議',
+      children: `確認刪除「${report.title}」嗎？`,
+      onConfirm: () =>
+        deleteBugReport(report.id)
+          .then(() => resolve())
+          .catch(reject)
+    });
+  });
+};
+
 export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
   const [report, setReport] = useState<Schema$BugReport | null>(null);
   const [, { fetch }] = useRxAsync(getBugReport, { onSuccess: setReport });
+  const { user } = useAuthState();
 
-  const openReportDialog = useClientReportAction({
+  const openReportDialog = useClientReportDialog({
     request: updateBugReport,
     onSuccess: setReport
   });
@@ -37,19 +57,38 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
   let content: React.ReactNode = null;
 
   if (report) {
-    const buttons: ButtonPopoverProps[] = [
-      {
-        icon: 'edit',
-        content: '編輯',
-        onClick: () =>
-          openReportDialog({ initialValues: report, status: report.status })
-      },
-      {
-        icon: 'trash',
-        content: '刪除',
-        onClick: () => openReportDialog({ initialValues: report })
-      }
-    ];
+    const buttons: ButtonPopoverProps[] =
+      user?.role === UserRole.Root ||
+      user?.role === UserRole.Admin ||
+      user?.nickname === report.user
+        ? [
+            {
+              icon: 'edit',
+              content: '編輯',
+              onClick: () =>
+                openReportDialog({
+                  initialValues: report,
+                  status: report.status
+                })
+            },
+            {
+              icon: 'trash',
+              content: '刪除',
+              onClick: () =>
+                openDeleteBugReportDialog(report)
+                  .then(() =>
+                    router.push(
+                      {
+                        pathname: '/reports',
+                        query: { deletedReportId: report.id }
+                      },
+                      '/reports'
+                    )
+                  )
+                  .catch(error => Toaster.apiError('刪除問題/建議失敗', error))
+            }
+          ]
+        : [];
 
     headerProps = {
       ...headerProps,

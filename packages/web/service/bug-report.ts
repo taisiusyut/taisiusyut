@@ -31,3 +31,7 @@ export const getBugReports = async (params?: Param$GetBugReports) => {
 export const getBugReport = async (id: string) => {
   return api.get<Schema$BugReport>(routes.get_bug_report.generatePath({ id }));
 };
+
+export const deleteBugReport = async (id: string) => {
+  api.delete<void>(routes.delete_bug_report.generatePath({ id }));
+};

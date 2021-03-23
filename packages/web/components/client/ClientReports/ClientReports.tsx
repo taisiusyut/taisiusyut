@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ClientHeader } from '@/components/client/ClientLayout';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { createBugReport } from '@/service';
 import { BugReportStatus, BugReportType } from '@/typings';
 import { ClientReportItem } from './ClientReportItem';
-import { useClientReportAction, icon, title } from './useClientReportAction';
+import { useClientReportDialog, icon, title } from './useClientReportDialog';
 import { useClientReports } from './useClientReports';
 import classes from './ClientReports.module.scss';
+import { useRouter } from 'next/router';
 
 export interface ClientReportsProps {
   onLeave: () => void;
@@ -17,8 +18,14 @@ const AuthRequiredButton = withAuthRequired(ButtonPopover);
 
 export function ClientReports({ onLeave }: ClientReportsProps) {
   const { state, actions, scrollerRef } = useClientReports();
+  const router = useRouter();
+  const deletedReportId: string | null =
+    router.asPath === '/reports' &&
+    typeof router.query.deletedReportId === 'string'
+      ? router.query.deletedReportId
+      : null;
 
-  const openReportDialog = useClientReportAction({
+  const openReportDialog = useClientReportDialog({
     request: createBugReport,
     onSuccess: report => actions.insert(report, 0)
   });
@@ -48,6 +55,13 @@ export function ClientReports({ onLeave }: ClientReportsProps) {
       onClick={openNewReport}
     />
   );
+
+  useEffect(() => {
+    if (deletedReportId) {
+      actions.delete({ id: deletedReportId });
+      scrollerRef.current?.scrollTo(0, 0);
+    }
+  }, [deletedReportId, actions, scrollerRef]);
 
   return (
     <div className={classes['reports-panel']}>

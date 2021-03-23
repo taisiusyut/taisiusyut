@@ -4,10 +4,9 @@ import { EMPTY, fromEvent, merge } from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
-  mergeMap,
   startWith,
   map,
-  tap
+  concatMap
 } from 'rxjs/operators';
 import {
   createUseCRUDReducer,
@@ -64,6 +63,9 @@ export function useClientReports() {
       .pipe(
         startWith([0, 0]),
         map(([scrollTop, offsetHeight]) => {
+          if (scrollTop === 0) {
+            pageNo = 1;
+          }
           const nextIndex = pageNo * pageSize;
           const elements: Element[] = Array.prototype.slice.call(
             scroller.children,
@@ -78,15 +80,7 @@ export function useClientReports() {
           return pageNo;
         }),
         distinctUntilChanged(),
-        tap(pageNo => {
-          if (pageNo === 1) {
-            // reset scroll position
-            window.scrollTo(0, 0);
-            scroller.scrollTop = 0;
-            actions.list(placeholder);
-          }
-        }),
-        mergeMap(pageNo => getBugReports({ pageNo, pageSize })),
+        concatMap(pageNo => getBugReports({ pageNo, pageSize })),
         catchError((error: AxiosError) => {
           if (error.config.params?.pageNo === 1) {
             actions.list([]);
@@ -101,6 +95,7 @@ export function useClientReports() {
         }
         actions.paginate(payload);
       });
+
     return () => subscription.unsubscribe();
   }, [actions]);
 

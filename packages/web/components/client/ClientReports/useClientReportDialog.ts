@@ -23,7 +23,7 @@ export interface UseBugReportActionProps {
 export const icon = 'annotation';
 export const title = '問題/建議';
 
-export function useClientReportAction({ request, onSuccess }: Create) {
+export function useClientReportDialog({ request, onSuccess }: Create) {
   const [form] = useForm();
   const { user } = useAuthState();
 
