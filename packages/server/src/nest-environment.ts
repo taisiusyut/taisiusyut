@@ -1,21 +1,28 @@
+import methods from 'methods'; // supertest dependcy
+import mongoose from 'mongoose';
+import supertest from 'supertest';
+import NodeEnvironment from 'jest-environment-node';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { AppModule } from './app.module';
 import { setupApp, fastifyAdapter, NestFastifyApplication } from './setup';
 import { ValidationHeader } from './constants';
-import NodeEnvironment from 'jest-environment-node';
-import mongoose from 'mongoose';
-import supertest from 'supertest';
 
-// console.log(Object.keys(supertest.Test));
-const defaultSet = (supertest as any).Test.prototype.set;
-(supertest as any).Test.prototype.set = function (
-  field: string,
-  value: string
-) {
-  defaultSet.call(this, 'referer', 'referer');
-  defaultSet.call(this, ValidationHeader, ValidationHeader);
-  return defaultSet.call(this, field, value);
+// set default headers, for access guard
+const createRequest = (app: any) => {
+  const test = supertest(app);
+  methods.forEach(method => {
+    const defaultMethod = test[method as keyof typeof test] as (
+      ...args: any
+    ) => supertest.SuperAgentTest;
+    (test as any)[method] = function (...args: any[]) {
+      const request = defaultMethod.call(this, ...args);
+      request.set('referer', 'referer');
+      request.set(ValidationHeader, ValidationHeader);
+      return request;
+    };
+  });
+  return test;
 };
 
 export default class NestNodeEnvironment extends NodeEnvironment {
@@ -38,7 +45,7 @@ export default class NestNodeEnvironment extends NodeEnvironment {
       await app.init();
       await app.getHttpAdapter().getInstance().ready();
 
-      const request = supertest(app.getHttpServer());
+      const request = createRequest(app.getHttpServer());
 
       this.global.app = app;
       this.global.request = request;
