@@ -34,7 +34,9 @@ function request(payload: Param$CreateChapter | Param$UpdateChapter) {
 
 export function Chapter({ bookID, chapterID, chapter }: Props) {
   const prefix = chapterID ? 'Update' : 'Create';
-  const title = chapterID ? '更新章節' : '新增章節';
+  const [title, submitText] = chapterID
+    ? ['更新章節', '更新']
+    : ['新增章節', '確認'];
 
   const storageRef = useRef(
     createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
@@ -135,6 +137,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
         onFinish={payload =>
           fetch({ bookID, ...payload, ...(chapterID && { chapterID }) })
         }
+        submitText={submitText}
       />
     </Card>
   );

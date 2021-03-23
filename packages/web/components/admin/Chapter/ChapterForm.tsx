@@ -11,13 +11,19 @@ export type ChapterState = Schema$Chapter;
 interface Props extends FormProps<ChapterState> {
   loading?: boolean;
   wordCount?: number | null;
+  submitText: string;
 }
 
 const { Form, FormItem, useForm } = createForm<ChapterState>();
 
 export { useForm };
 
-export function ChapterForm({ loading, wordCount, ...props }: Props) {
+export function ChapterForm({
+  loading,
+  wordCount,
+  submitText,
+  ...props
+}: Props) {
   const formRef = useRef<FormInstance<ChapterState>>(null);
 
   const contentLabel = (
@@ -64,7 +70,7 @@ export function ChapterForm({ loading, wordCount, ...props }: Props) {
           重設
         </Button>
         <Button type="submit" intent="primary" loading={loading}>
-          提交
+          {submitText}
         </Button>
       </div>
     </Form>
