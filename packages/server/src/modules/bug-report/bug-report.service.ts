@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery } from 'mongoose';
 import { MongooseCRUDService, PaginateModel, Document } from '@/utils/mongoose';
-import { JWTSignPayload, UserRole } from '@/typings';
+import { BugReportStatus, JWTSignPayload, UserRole } from '@/typings';
 import { BugReport } from './schemas';
 
 @Injectable()
@@ -26,5 +26,25 @@ export class BugReportService extends MongooseCRUDService<BugReport> {
       query.user = user?.user_id;
     }
     return query;
+  }
+
+  getBugReportStatus(status: BugReportStatus) {
+    if (status === BugReportStatus.Open) {
+      return [BugReportStatus.Open, BugReportStatus.Closed];
+    }
+    if (status === BugReportStatus.Closed) {
+      return [BugReportStatus.Closed, BugReportStatus.ReOpen];
+    }
+    if (status === BugReportStatus.ReOpen) {
+      return [BugReportStatus.ReOpen, BugReportStatus.Closed];
+    }
+    if (status === BugReportStatus.Fixed) {
+      return [
+        BugReportStatus.ReOpen,
+        BugReportStatus.Fixed,
+        BugReportStatus.Closed
+      ];
+    }
+    return [];
   }
 }

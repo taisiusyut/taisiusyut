@@ -62,7 +62,8 @@ export const Routes = {
     create_bug_report: '',
     get_bug_reports: '',
     get_bug_report: '/:id',
-    update_bug_report: '/:id'
+    update_bug_report: '/:id',
+    delete_bug_report: '/:id'
   },
   author: {
     prefix: '/author',

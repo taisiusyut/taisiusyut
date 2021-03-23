@@ -54,3 +54,10 @@ export function getBugReport(token: string, id: string) {
     .set('Authorization', `bearer ${token}`)
     .send();
 }
+
+export function deleteBugReport(token: string, id: string) {
+  return request
+    .delete(routes.delete_bug_report.generatePath({ id }))
+    .set('Authorization', `bearer ${token}`)
+    .send();
+}

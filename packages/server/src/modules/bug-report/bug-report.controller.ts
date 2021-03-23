@@ -7,11 +7,14 @@ import {
   Post,
   Patch,
   Query,
-  NotFoundException
+  NotFoundException,
+  BadRequestException,
+  Delete
 } from '@nestjs/common';
 import { ConfigService } from '@/config';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
+import { BugReportStatus, UserRole } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
 import { BugReportService } from './bug-report.service';
 import {
@@ -19,7 +22,6 @@ import {
   GetBugReportsDto,
   UpdateBugReportDto
 } from './dto';
-import { BugReportStatus } from '@/typings';
 
 @Controller(routes.bug_report.prefix)
 export class BugReportController {
@@ -51,16 +53,30 @@ export class BugReportController {
   ) {
     const query = this.bugReportService.getRoleBasedQuery(user, { _id: id });
 
-    const bugReport = await this.bugReportService.findOneAndUpdate(
-      query,
-      updateBugReportDto
-    );
+    const bugReport = await this.bugReportService.findOne(query);
 
     if (!bugReport) {
       throw new NotFoundException(`report not found`);
     }
 
-    return bugReport;
+    const isAdmin =
+      user?.role === UserRole.Root || user?.role === UserRole.Admin;
+    const newStatus = updateBugReportDto.status;
+
+    if (
+      newStatus &&
+      !isAdmin &&
+      !this.bugReportService
+        .getBugReportStatus(bugReport.status)
+        .includes(newStatus)
+    ) {
+      throw new BadRequestException(`InValid status`);
+    }
+
+    return this.bugReportService.findOneAndUpdate(query, {
+      ...updateBugReportDto,
+      version: this.configService.get('WEB_VERSION')
+    });
   }
 
   @Access('Everyone')
@@ -89,5 +105,12 @@ export class BugReportController {
     }
 
     return bugReport;
+  }
+
+  @Access('Auth')
+  @Delete(routes.bug_report.delete_bug_report)
+  async delete(@Req() { user }: FastifyRequest, @ObjectId('id') id: string) {
+    const query = this.bugReportService.getRoleBasedQuery(user, { _id: id });
+    await this.bugReportService.delete(query);
   }
 }

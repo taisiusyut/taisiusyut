@@ -26,7 +26,7 @@ export default class NestNodeEnvironment extends NodeEnvironment {
     try {
       const MONGODB_URI = await this.mongod.getUri();
       const moduleFixture: TestingModule = await Test.createTestingModule({
-        imports: [AppModule.init({ MONGODB_URI })]
+        imports: [AppModule.init({ MONGODB_URI, WEB_VERSION: 'test' })]
       }).compile();
 
       const app = moduleFixture.createNestApplication<NestFastifyApplication>(

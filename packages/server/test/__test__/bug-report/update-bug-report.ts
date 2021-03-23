@@ -10,11 +10,14 @@ import {
 } from '../../service/bug-report';
 
 export function testUpdateBugReport() {
-  const reports: Schema$BugReport[] = [];
+  let reports: Schema$BugReport[] = [];
 
   beforeAll(async () => {
     await setupUsers();
+  });
 
+  beforeEach(async () => {
+    reports = [];
     const users = [author, client];
     for (const user of users) {
       const payload = createBugReportDto();
@@ -42,10 +45,36 @@ export function testUpdateBugReport() {
       expect(response.body).toEqual({
         ...reports[idx],
         ...(isAdmin ? { user: expect.any(String) } : {}),
-        updatedAt: expect.any(Number)
+        updatedAt: expect.any(Number),
+        version: expect.any(String)
       });
     }
   });
+
+  test.each(['author', 'client'])(
+    '%s can update his/her bug report ',
+    async user => {
+      const auth = getGlobalUser(user);
+      const report = reports[user === 'author' ? 0 : 1];
+
+      if (!report) {
+        throw new Error(`report not found`);
+      }
+
+      const changes = {
+        title: rid(10),
+        status: BugReportStatus.Closed
+      };
+      const response = await updateBugReport(auth.token, report.id, changes);
+
+      expect(response.body).toEqual({
+        ...report,
+        ...changes,
+        updatedAt: expect.any(Number),
+        version: expect.any(String)
+      });
+    }
+  );
 
   test('anonymous cannot update bug report ', async () => {
     const changes = { title: rid(10) };
@@ -57,7 +86,6 @@ export function testUpdateBugReport() {
     property     | value
     ${'user'}    | ${new ObjectId().toHexString()}
     ${'version'} | ${'1.0.0'}
-    ${'status'}  | ${BugReportStatus.Closed}
   `(
     '$property will not update by author/client',
     async ({ property, value }) => {

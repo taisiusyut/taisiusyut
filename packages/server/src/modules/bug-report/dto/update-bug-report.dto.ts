@@ -43,7 +43,6 @@ class UpdateBugReport
 
   @IsEnum(BugReportStatus)
   @IsOptional()
-  @Group(['Root', 'Admin'])
   status?: BugReportStatus;
 
   @IsEnum(BugReportType)
