@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { BugReportStatus, Schema$BugReport, UserRole } from '@/typings';
+import { BugReportStatus, Schema$BugReport } from '@/typings';
 import { rid } from '@/utils/rid';
 import { HttpStatus } from '@nestjs/common';
 import { getGlobalUser, setupUsers } from '../../service/auth';
@@ -29,8 +29,6 @@ export function testUpdateBugReport() {
 
   test.each(['root', 'admin'])('%s can update bug report ', async user => {
     const auth = getGlobalUser(user);
-    const isAdmin =
-      auth?.user.role === UserRole.Root || auth?.user.role === UserRole.Admin;
 
     for (const [idx, report] of reports.entries()) {
       const changes = {
@@ -44,10 +42,12 @@ export function testUpdateBugReport() {
 
       expect(response.body).toEqual({
         ...reports[idx],
-        ...(isAdmin ? { user: expect.any(String) } : {}),
+        user: expect.any(String),
         updatedAt: expect.any(Number),
         version: expect.any(String)
       });
+
+      expect(response.body.user).not.toBeUUID(4);
     }
   });
 

@@ -3,7 +3,6 @@ import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$BugReport, BugReportStatus, BugReportType } from '@/typings';
-import { Group } from '@/utils/access';
 
 @Schema({
   timestamps: true,
@@ -44,7 +43,7 @@ export class BugReport implements Record<keyof Schema$BugReport, any> {
     autopopulate: { maxDepth: 1 }
   })
   @Type(() => User)
-  @Group(['Root', 'Admin', 'Guest'])
+  @Transform(({ value }) => (value instanceof User ? value.nickname : value))
   user: User | string;
 
   @Transform(({ value }) => value && Number(value))

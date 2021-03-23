@@ -32,16 +32,18 @@ export class BugReportController {
 
   @Access('Auth')
   @Post(routes.bug_report.create_bug_report)
-  create(
+  async create(
     @Req() req: FastifyRequest,
     @Body() createBookDto: CreateBugReportDto
   ) {
-    return this.bugReportService.create({
+    const report = await this.bugReportService.create({
       ...createBookDto,
       status: BugReportStatus.Open,
       user: req.user?.user_id,
       version: this.configService.get('WEB_VERSION')
     });
+
+    return report;
   }
 
   @Access('Auth')

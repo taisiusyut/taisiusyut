@@ -6,7 +6,7 @@ import { Schema$BugReport } from '@/typings';
 import { BugReport, BugReportSchema } from './schemas/bug-report.schema';
 import { BugReportService } from './bug-report.service';
 import { BugReportController } from './bug-report.controller';
-// import autopopulate from 'mongoose-autopopulate';
+import autopopulate from 'mongoose-autopopulate';
 import paginate from 'mongoose-paginate-v2';
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import paginate from 'mongoose-paginate-v2';
           ];
 
           BugReportSchema.plugin(fuzzySearch, { fields });
-          // BugReportSchema.plugin(autopopulate);
+          BugReportSchema.plugin(autopopulate);
           BugReportSchema.plugin(paginate);
 
           return BugReportSchema;
