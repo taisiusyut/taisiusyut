@@ -2,9 +2,6 @@ import React, { useContext } from 'react';
 import { Schema$BugReport } from '@/typings';
 import { ProviderProps } from '@/utils/composeProviders';
 import {
-  CRUDActionCreators,
-  CRUDState,
-  Dispatched,
   DefaultCRUDActionTypes,
   createUseCRUDReducer
 } from '@/hooks/crud-reducer';
@@ -13,8 +10,9 @@ export type BugReport = (Schema$BugReport | Partial<Schema$BugReport>) & {
   id: string;
 };
 
-export type BugReportState = CRUDState<BugReport, true>;
-export type BugReportActions = Dispatched<CRUDActionCreators<BugReport, 'id'>>;
+type UseCURD = ReturnType<typeof useCRUDReducer>;
+export type BugReportState = UseCURD[0];
+export type BugReportActions = UseCURD[1];
 
 export const StateContext = React.createContext<BugReportState | undefined>(
   undefined

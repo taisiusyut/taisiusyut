@@ -1,26 +1,18 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { defer } from 'rxjs';
 import { useAuthState } from '@/hooks/useAuth';
 import { getBookShelf } from '@/service';
 import { Schema$BookShelf, Order } from '@/typings';
 import { Toaster } from '@/utils/toaster';
-import {
-  bindDispatch,
-  getCRUDActionsCreator,
-  createCRUDReducer,
-  CRUDActionCreators,
-  CRUDState,
-  Dispatched
-} from '../crud-reducer';
+import { createUseCRUDReducer } from '@/hooks/crud-reducer';
 
 export type BookShelf = (Schema$BookShelf | Partial<Schema$BookShelf>) & {
   bookID: string;
 };
 
-export type BookShelfState = CRUDState<BookShelf, false>;
-export type BookShelfActions = Dispatched<
-  CRUDActionCreators<BookShelf, 'bookID'>
->;
+type UseCURD = ReturnType<typeof useCRUDReducer>;
+export type BookShelfState = UseCURD[0];
+export type BookShelfActions = UseCURD[1];
 
 export const StateContext = React.createContext<BookShelfState | undefined>(
   undefined
@@ -31,25 +23,16 @@ export const ActionContext = React.createContext<BookShelfActions | undefined>(
 
 export const placeholder = Array.from<unknown, BookShelf>(
   { length: 10 },
-  () => ({
-    bookID: String(Math.random())
-  })
+  () => ({ bookID: String(Math.random()) })
 );
 
-const [initialState, reducer] = createCRUDReducer<BookShelf, 'bookID'>(
-  'bookID',
-  { prefill: false }
-);
-
-const [crudActions] = getCRUDActionsCreator<BookShelf, 'bookID'>()();
+const useCRUDReducer = createUseCRUDReducer<BookShelf, 'bookID'>('bookID', {
+  prefill: false
+});
 
 export function BookShelfProvider({ children }: { children: React.ReactNode }) {
   const { loginStatus } = useAuthState();
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [actions] = useState({
-    dispatch,
-    ...bindDispatch(crudActions, dispatch)
-  });
+  const [state, actions] = useCRUDReducer();
 
   useEffect(() => {
     switch (loginStatus) {

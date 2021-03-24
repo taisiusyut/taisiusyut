@@ -102,7 +102,17 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
       onSuccess: actions.paginate
     });
 
-    const { hasData, list } = useMemo(() => paginateSelector(state), [state]);
+    const [{ hasData, list }, pagination] = useMemo(() => {
+      const paginateState = paginateSelector(state);
+      const pagination: PaginationProps = {
+        pageNo: state.pageNo,
+        pageSize: state.pageSize,
+        total: state.total,
+        onPageChange: gotoPage
+      };
+
+      return [paginateState, pagination] as const;
+    }, [state]);
 
     useEffect(() => {
       actions.params(parseQuery(asPath));
@@ -121,13 +131,6 @@ export function createUsePaginationLocal<I, K extends AllowedNames<I, string>>(
         fetch({ pageNo, pageSize, ...params });
       }
     }, [hasData, pageNo, pageSize, params, fetch]);
-
-    const pagination: PaginationProps = {
-      pageNo: state.pageNo,
-      pageSize: state.pageSize,
-      total: state.total,
-      onPageChange: gotoPage
-    };
 
     return {
       data: list,
