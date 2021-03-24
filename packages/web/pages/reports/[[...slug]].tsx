@@ -8,7 +8,8 @@ import {
 import {
   ClientReportsPanel,
   ClientReportDetail,
-  ClientReportDetailProps
+  ClientReportDetailProps,
+  ClientReportProvider
 } from '@/components/client/ClientReports';
 
 type Param = {
@@ -39,7 +40,8 @@ export default function ClientReportPage(props: ClientReportDetailProps) {
 }
 
 const layoutProps: ClientLayoutProps = {
-  leftPanel: ClientReportsPanel
+  leftPanel: ClientReportsPanel,
+  providers: [ClientReportProvider]
 };
 
 ClientReportPage.layout = ClientLayout;

@@ -1,4 +1,3 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import router from 'next/router';
 import { useRxAsync } from 'use-rx-hooks';
 import { Card } from '@blueprintjs/core';
@@ -11,9 +10,10 @@ import { bugReportTypelabels } from '@/components/Select';
 import { deleteBugReport, getBugReport, updateBugReport } from '@/service';
 import { BugReportStatus, Schema$BugReport, UserRole } from '@/typings';
 import { Toaster } from '@/utils/toaster';
-import { useClientReportDialog } from './useClientReportDialog';
-import classes from './ClientReports.module.scss';
 import { useAuthState } from '@/hooks/useAuth';
+import { useClientReportDialog } from './useClientReportDialog';
+import { useClientReports } from './useClientReports';
+import classes from './ClientReports.module.scss';
 
 export interface ClientReportDetailProps {
   reportId: string | null;
@@ -28,40 +28,49 @@ const Item: React.FC<{ label: string }> = ({ label, children }) => {
   );
 };
 
-const openDeleteBugReportDialog = (report: Schema$BugReport) => {
-  return new Promise<void>((resolve, reject) => {
-    openConfirmDialog({
-      intent: 'danger',
-      icon: 'trash',
-      title: '刪除問題/建議',
-      children: `確認刪除「${report.title}」嗎？`,
-      onConfirm: () =>
-        deleteBugReport(report.id)
-          .then(() => resolve())
-          .catch(reject)
-    });
-  });
-};
-
 export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
-  const [report, setReport] = useState<Schema$BugReport | null>(null);
-  const [, { fetch }] = useRxAsync(getBugReport, { onSuccess: setReport });
+  const [state, actions] = useClientReports();
+  const report = state.byIds[reportId || ''] as Schema$BugReport | undefined;
   const { user } = useAuthState();
-
-  const onSuccess = useCallback((report: Schema$BugReport) => {
-    setReport(report);
-    router.push({ query: { update: JSON.stringify(report) } }, router.asPath);
-  }, []);
 
   const openReportDialog = useClientReportDialog({
     request: updateBugReport,
-    onSuccess
+    onSuccess: actions.update
+  });
+
+  useRxAsync(getBugReport, {
+    defer: !!report,
+    onSuccess: actions.update
   });
 
   let headerProps: HeaderProps = {};
   let content: React.ReactNode = null;
 
   if (report) {
+    const handleEdit = () =>
+      openReportDialog({
+        initialValues: report,
+        status: report.status
+      });
+
+    const handleDelete = () => {
+      openConfirmDialog({
+        intent: 'danger',
+        icon: 'trash',
+        title: '刪除問題/建議',
+        children: `確認刪除「${report.title}」嗎？`,
+        onConfirm: async () => {
+          try {
+            await deleteBugReport(report.id);
+            await router.push('/reports');
+            actions.delete(report);
+          } catch (error) {
+            Toaster.apiError('刪除問題/建議失敗', error);
+          }
+        }
+      });
+    };
+
     const buttons: ButtonPopoverProps[] =
       user?.role === UserRole.Root ||
       user?.role === UserRole.Admin ||
@@ -70,27 +79,12 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
             {
               icon: 'edit',
               content: '編輯',
-              onClick: () =>
-                openReportDialog({
-                  initialValues: report,
-                  status: report.status
-                })
+              onClick: handleEdit
             },
             {
               icon: 'trash',
               content: '刪除',
-              onClick: () =>
-                openDeleteBugReportDialog(report)
-                  .then(() =>
-                    router.push(
-                      {
-                        pathname: '/reports',
-                        query: { deletedReportId: report.id }
-                      },
-                      '/reports'
-                    )
-                  )
-                  .catch(error => Toaster.apiError('刪除問題/建議失敗', error))
+              onClick: handleDelete
             }
           ]
         : [];
@@ -128,13 +122,6 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (reportId) {
-      fetch(reportId);
-    }
-    setReport(null);
-  }, [fetch, reportId]);
 
   return (
     <>

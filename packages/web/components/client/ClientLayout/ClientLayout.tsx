@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import router, { useRouter } from 'next/router';
 import { useGoBack } from '@/hooks/useGoBack';
 import { BookShelfProvider } from '@/hooks/useBookShelf';
@@ -8,6 +8,7 @@ import {
   ClientPreferencesProvider,
   useClientPreferencesState
 } from '@/hooks/useClientPreferences';
+import { composeProviders, ProviderProps } from '@/utils/composeProviders';
 import { BookShelf } from '../BookShelf';
 import { BottomNavigation } from '../BottomNavigation';
 import classes from './ClientLayout.module.scss';
@@ -17,8 +18,9 @@ export interface ClientLeftPanelProps {
 }
 
 export interface ClientLayoutProps {
-  children?: ReactNode;
+  children?: React.ReactElement;
   leftPanel?: React.ComponentType<ClientLeftPanelProps>;
+  providers?: React.ComponentType<ProviderProps>[];
   disableScrollRestoration?: boolean;
 }
 
@@ -121,13 +123,20 @@ function ClientLayoutContent({
 }
 
 export function ClientLayout(props: ClientLayoutProps) {
+  const Provider = useMemo(
+    () =>
+      composeProviders(
+        ClientPreferencesProvider,
+        BookShelfProvider,
+        BreakPointsProvider,
+        ...(props.providers || [])
+      ),
+    [props.providers]
+  );
+
   return (
-    <ClientPreferencesProvider>
-      <BookShelfProvider>
-        <BreakPointsProvider>
-          <ClientLayoutContent {...props} />
-        </BreakPointsProvider>
-      </BookShelfProvider>
-    </ClientPreferencesProvider>
+    <Provider>
+      <ClientLayoutContent {...props} />
+    </Provider>
   );
 }

@@ -8,7 +8,7 @@ import React, {
 import { createClientStorage } from '@/utils/storage';
 
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export interface Preferences {
