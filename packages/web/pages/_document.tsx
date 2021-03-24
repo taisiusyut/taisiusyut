@@ -16,7 +16,13 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html lang="zh-hk">
+      <Html
+        lang="zh-hk"
+        className="bp3-dark"
+        data-theme="dark"
+        data-width="fixed"
+        data-display="paging"
+      >
         <Head>
           <script
             dangerouslySetInnerHTML={{

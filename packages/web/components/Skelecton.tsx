@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 export interface SkelectonProps {
   length: number;
@@ -26,14 +26,11 @@ export function Skelecton({
   children,
   disabled = false
 }: SkelectonProps) {
-  const content = useMemo(
-    () => Array.from({ length }).reduce<string>(s => s + fill, ''),
-    [length, fill]
-  );
-
   return children || disabled ? (
     <>{children}</>
   ) : (
-    <span style={skelectonStyle}>{content}</span>
+    <span style={skelectonStyle}>
+      {Array.from({ length }).reduce<string>(s => s + fill, '')}
+    </span>
   );
 }

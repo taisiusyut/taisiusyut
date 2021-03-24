@@ -34,11 +34,7 @@ const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
 
 const headerProps: HeaderProps = {
   title: '書籍詳情',
-  left: (
-    <GoBackButton
-      targetPath={['/', '/featured', '/author/:authorName', '/search']}
-    />
-  )
+  left: <GoBackButton />
 };
 
 const chapterPlaceHolders = Array.from({ length: 30 }, (_, idx) => ({
