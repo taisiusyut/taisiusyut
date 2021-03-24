@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { ClientHeader } from '@/components/client/ClientLayout';
+import {
+  ClientHeader,
+  ClientLeftPanelProps
+} from '@/components/client/ClientLayout';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { withDesktopHeaderBtn } from '@/components/BlankButton';
 import { useSearchResult } from './useSearchResult';
@@ -14,13 +17,11 @@ import { ClientSearchItem } from './ClientSearchItem';
 import { ClientSearchNotFound } from './ClientSearchNotFound';
 import classes from './ClientSearch.module.scss';
 
-interface Props {
-  onLeave: () => void;
-}
+interface Props extends ClientLeftPanelProps {}
 
 const SearchButton = withDesktopHeaderBtn(ButtonPopover);
 
-export function ClientSearch({ onLeave }: Props) {
+export function ClientSearchPanel({ onLeave }: Props) {
   const router = useRouter();
   const { asPath, query } = router;
   const [form] = useForm();

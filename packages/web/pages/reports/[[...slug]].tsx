@@ -1,11 +1,15 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { ClientLayout } from '@/components/client/ClientLayout';
+import { Meta } from '@/components/Meta';
 import {
+  ClientLayout,
+  ClientLayoutProps
+} from '@/components/client/ClientLayout';
+import {
+  ClientReportsPanel,
   ClientReportDetail,
   ClientReportDetailProps
-} from '@/components/client/ClientReports/ClientReportDetail';
-import { Meta } from '@/components/Meta';
+} from '@/components/client/ClientReports';
 
 type Param = {
   slug: string[];
@@ -34,4 +38,9 @@ export default function ClientReportPage(props: ClientReportDetailProps) {
   );
 }
 
+const layoutProps: ClientLayoutProps = {
+  leftPanel: ClientReportsPanel
+};
+
 ClientReportPage.layout = ClientLayout;
+ClientReportPage.layoutProps = layoutProps;

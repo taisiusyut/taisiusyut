@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { ClientHeader } from '@/components/client/ClientLayout';
+import {
+  ClientHeader,
+  ClientLeftPanelProps
+} from '@/components/client/ClientLayout';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import { createBugReport } from '@/service';
@@ -11,9 +14,7 @@ import { useClientReportDialog, icon, title } from './useClientReportDialog';
 import { useClientReports } from './useClientReports';
 import classes from './ClientReports.module.scss';
 
-export interface ClientReportsProps {
-  onLeave: () => void;
-}
+export interface ClientReportsProps extends ClientLeftPanelProps {}
 
 const AuthRequiredButton = withAuthRequired(ButtonPopover);
 

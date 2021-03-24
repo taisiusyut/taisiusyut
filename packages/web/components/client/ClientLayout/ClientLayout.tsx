@@ -10,68 +10,49 @@ import {
 } from '@/hooks/useClientPreferences';
 import { BookShelf } from '../BookShelf';
 import { BottomNavigation } from '../BottomNavigation';
-import { ClientLeftPanelContent } from './ClientLeftPanelContent';
 import classes from './ClientLayout.module.scss';
+
+export interface ClientLeftPanelProps {
+  onLeave: () => void;
+}
 
 export interface ClientLayoutProps {
   children?: ReactNode;
+  leftPanel?: React.ComponentType<ClientLeftPanelProps>;
   disableScrollRestoration?: boolean;
 }
 
-function isPathEqual(pathname: string, asPath: string) {
-  return pathname === asPath.replace(/\?.*/, '');
-}
-
-function isPathMatch(pathname: string, asPath: string) {
-  return asPath.startsWith(`${pathname}`);
-}
-
-function shouldShowLeftPanel(asPath: string, pagingDisplay: boolean) {
-  return ['/search', '/reports'].some(pathname =>
-    pagingDisplay
-      ? isPathMatch(pathname, asPath)
-      : isPathEqual(pathname, asPath)
-  );
-}
-
-function getState(
-  asPath: string,
-  usePagingDisplay: boolean,
-  isSearching?: boolean
-) {
-  const isHome = isPathEqual('/', asPath);
-  const isSearch = isPathMatch('/search', asPath);
-  const isFeatured = isPathEqual('/featured', asPath);
+function getFlags(asPath: string, isPagingDisplay: boolean) {
+  const isHome = asPath === '/';
+  const isSearch = asPath.startsWith('/search');
+  const isFeatured = asPath.startsWith('/featured');
   const mountBottomNav = isHome || isFeatured || isSearch;
 
   const common = {
     isHome,
-    isSearch,
+    isFeatured,
     mountBottomNav
   };
 
-  if (usePagingDisplay) {
-    const showBookShelf =
-      !shouldShowLeftPanel(asPath, usePagingDisplay) && !isSearching;
+  if (isPagingDisplay) {
     return {
       ...common,
       showLeftPanel: true,
-      showRightPanel: true,
-      showBookShelf
+      showRightPanel: true
     };
   }
-  const showLeftPanel = isHome || shouldShowLeftPanel(asPath, usePagingDisplay);
 
+  const showLeftPanel = !isFeatured && asPath.lastIndexOf('/') === 0;
   return {
     ...common,
     showLeftPanel,
-    showRightPanel: !showLeftPanel,
-    showBookShelf: isHome
+    showRightPanel: !showLeftPanel
   };
 }
 
 function ClientLayoutContent({
   children,
+  leftPanel,
   disableScrollRestoration = false
 }: ClientLayoutProps) {
   const { asPath, events } = useRouter();
@@ -79,34 +60,35 @@ function ClientLayoutContent({
   const { pagingDisplay } = useClientPreferencesState();
   const [breakPoint, mounted] = useBreakPoints();
 
-  const [
-    {
-      isHome,
-      isSearch,
-      showLeftPanel,
-      showBookShelf,
-      showRightPanel,
-      mountBottomNav
-    },
-    setState
-  ] = useState(getState(asPath, true));
-  const [isSearching, setIsSearching] = useState(isSearch);
+  // set `isPagingDisplay` to true make sure right panel will mount while build
+  const [flags, setFlags] = useState(getFlags(asPath, true));
+  const { isHome, showRightPanel, showLeftPanel, mountBottomNav } = flags;
 
-  const [leaveOtherContent] = useState(() => () =>
-    goBack({ targetPath: ['/', '/featured'] }).then(() => setIsSearching(false))
+  const [leaveOtherLeftPanel] = useState(() => () =>
+    goBack({ targetPath: ['/', '/featured'] }).then(() => {
+      setLeftPanel(() => BookShelf);
+    })
   );
+
+  const [LeftPanel, setLeftPanel] = useState(() => leftPanel || BookShelf);
+
+  useEffect(() => {
+    leftPanel && setLeftPanel(() => leftPanel);
+  }, [leftPanel]);
 
   // scroll restoration for single page display
   useScrollRestoration(disableScrollRestoration);
 
   useEffect(() => {
     const handler = (pathname: string) => {
-      const usePagingDisplay = pagingDisplay && breakPoint > 768;
-      const newState = getState(pathname, usePagingDisplay, isSearching);
-      setState(newState);
-      setIsSearching(isSearching =>
-        usePagingDisplay ? isSearching || newState.isSearch : isSearching
-      );
+      const isPagingDisplay = pagingDisplay && breakPoint > 768;
+      const newState = getFlags(pathname, isPagingDisplay);
+
+      if (newState.isHome || newState.isFeatured) {
+        setLeftPanel(() => BookShelf);
+      }
+
+      setFlags(newState);
     };
 
     handler(router.asPath);
@@ -114,7 +96,7 @@ function ClientLayoutContent({
     return () => {
       events.off('routeChangeComplete', handler);
     };
-  }, [events, pagingDisplay, isSearching, breakPoint]);
+  }, [events, pagingDisplay, breakPoint]);
 
   return (
     <div className={[classes['layout']].join(' ').trim()}>
@@ -123,19 +105,9 @@ function ClientLayoutContent({
             because the first-time rendering and scroll position restoration will not smooth */}
         <div
           className={classes['left-panel']}
-          hidden={!isHome && (!mounted || !showLeftPanel || !showBookShelf)}
+          hidden={!isHome && (!mounted || !LeftPanel || !showLeftPanel)}
         >
-          <BookShelf />
-        </div>
-        <div
-          className={classes['left-panel']}
-          hidden={!mounted || !showLeftPanel || showBookShelf}
-        >
-          <ClientLeftPanelContent
-            asPath={asPath}
-            isSearching={isSearching}
-            onLeave={leaveOtherContent}
-          />
+          <LeftPanel onLeave={leaveOtherLeftPanel} />
         </div>
         {showRightPanel && (
           <div className={classes['right-panel']}>{children}</div>

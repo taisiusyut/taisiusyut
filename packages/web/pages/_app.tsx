@@ -57,11 +57,12 @@ function AppContent(props: ExtendAppProps) {
   }
 
   if (!access || (user && access.includes(user.role))) {
-    const Layout = Component.layout || React.Fragment;
-    return (
-      <Layout {...Component.layoutProps}>
-        <Component {...pageProps} />
-      </Layout>
+    const components = <Component {...pageProps} />;
+    const Layout = Component.layout;
+    return Layout ? (
+      <Layout {...Component.layoutProps}>{components}</Layout>
+    ) : (
+      components
     );
   }
 

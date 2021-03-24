@@ -1,1 +1,1 @@
-export * from './ClientSearch';
+export * from './ClientSearchPanel';

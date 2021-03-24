@@ -89,7 +89,9 @@ export default function ClientChapterPage(props: Props) {
   );
 }
 
-ClientChapterPage.layout = ClientLayout;
-ClientChapterPage.layoutProps = {
+const layoutProps: ClientLayoutProps = {
   disableScrollRestoration: true
-} as ClientLayoutProps;
+};
+
+ClientChapterPage.layout = ClientLayout;
+ClientChapterPage.layoutProps = layoutProps;
