@@ -119,21 +119,13 @@ export function testGetBooks() {
       expect(response.body.data).toHaveLength(length);
       expect(response.body.total).toBe(length);
 
-      if (user === 'client') {
-        expect(response.body.data).not.toContainObject({
-          id: expect.anything(),
-          email: expect.anything(),
-          username: expect.anything(),
-          password: expect.anything()
-        });
-      } else if (user === 'author') {
-      } else {
+      if (user === 'root' || user === 'admin') {
         expect(response.body.data).toContainObject({
-          author: expect.objectContaining({
-            id: expect.any(String),
-            username: expect.any(String),
-            email: expect.any(String)
-          })
+          author: expect.any(String)
+        });
+      } else {
+        expect(response.body.data).not.toContainObject({
+          author: expect.anything()
         });
       }
     }

@@ -6,6 +6,7 @@ import { User } from '@/modules/user/schemas/user.schema';
 import { Schema$Book, BookStatus, Category } from '@/typings';
 import { Max_Book_Description } from '@/constants';
 import { BookAuthor } from './book-author';
+import { Group } from '@/utils/access';
 
 @Schema({
   timestamps: true,
@@ -40,12 +41,13 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   @Prop({
     type: Types.ObjectId,
     ref: User.name,
-    required: true,
-    autopopulate: { maxDepth: 1 }
+    required: true
   })
   @Type(() => BookAuthor)
+  @Group(['Root', 'Admin'])
   author: BookAuthor | string;
 
+  // for fuzzy search ??
   @Prop({ type: String, required: true, trim: true })
   authorName: string;
 

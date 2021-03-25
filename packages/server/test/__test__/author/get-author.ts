@@ -17,6 +17,7 @@ export function testGetAuthor() {
       createdAt: expect.anything(),
       updatedAt: expect.anything()
     });
+    expect(response.body).not.toHaveProperty('email');
     expect(response.body).not.toHaveProperty('password');
   });
 

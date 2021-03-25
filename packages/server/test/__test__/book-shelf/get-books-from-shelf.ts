@@ -44,6 +44,10 @@ export function testGetBooksFromShelf() {
         {} as Record<keyof typeof bookSelect, any>
       )
     );
+
+    expect(response.body).not.toContainObject({
+      author: expect.anything()
+    });
   });
 
   test(`deleted book in shelf will not be null`, async () => {

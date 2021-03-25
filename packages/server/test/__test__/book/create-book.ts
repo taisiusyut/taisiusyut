@@ -25,16 +25,12 @@ export function testCreateBook() {
 
     for (const payload of params) {
       const response = await createBook(author.token, payload);
-      expect(response.error).toBeFalse();
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toMatchObject({
         ...payload,
         status: BookStatus.Private
       });
-      expect(response.body.author).toEqual({
-        nickname: author.user.nickname,
-        description: expect.any(String)
-      });
+      expect(response.body).not.toHaveProperty('author');
     }
   });
 

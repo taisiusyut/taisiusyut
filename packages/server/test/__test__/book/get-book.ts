@@ -55,29 +55,18 @@ function createGetBookTest(getBook: GetBook) {
       async user => {
         for (const book of books) {
           const response = await getBook(getGlobalUser(user).token, book);
-          const noPermission = user === 'author' || user === 'client';
+          const isAdmin = user === 'root' || user === 'admin';
+
+          if (!isAdmin) {
+            expect(response.body).not.toHaveProperty('author');
+          }
 
           if (
-            book.status === BookStatus.Public ||
-            book.status === BookStatus.Finished
+            book.status !== BookStatus.Public &&
+            book.status !== BookStatus.Finished
           ) {
-            if (noPermission) {
-              expect(response.body.author).not.toMatchObject({
-                id: expect.anything(),
-                email: expect.anything(),
-                username: expect.anything(),
-                password: expect.anything()
-              });
-            } else {
-              expect(response.body.author).toMatchObject({
-                id: expect.any(String),
-                email: expect.any(String),
-                username: expect.any(String)
-              });
-            }
-          } else {
             expect(response.status).toBe(
-              noPermission ? HttpStatus.NOT_FOUND : HttpStatus.OK
+              isAdmin ? HttpStatus.OK : HttpStatus.NOT_FOUND
             );
           }
         }
@@ -88,12 +77,7 @@ function createGetBookTest(getBook: GetBook) {
       for (const book of books) {
         const response = await getBook(mockAuthor.token, book);
         expect(response.status).toBe(HttpStatus.OK);
-        expect(response.body.author).not.toMatchObject({
-          id: expect.anything(),
-          email: expect.anything(),
-          username: expect.anything(),
-          password: expect.anything()
-        });
+        expect(response.body).not.toHaveProperty('author');
       }
     });
 

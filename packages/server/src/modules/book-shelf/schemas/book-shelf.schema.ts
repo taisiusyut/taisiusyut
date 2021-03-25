@@ -59,7 +59,7 @@ export class BookShelf
     required: true,
     autopopulate: {
       match: bookQuery,
-      select: { ...bookSelect, author: 0 }
+      select: bookSelect
     }
   })
   @Type(() => ShelfBook)

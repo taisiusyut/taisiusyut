@@ -51,10 +51,7 @@ export function testUpdateBook() {
       });
 
       if (user === 'author') {
-        expect(response.body.author).toEqual({
-          nickname: author.user.nickname,
-          description: expect.any(String)
-        });
+        expect(response.body).not.toHaveProperty('author');
       }
     }
   });
