@@ -1,17 +1,15 @@
-// @ts-check
+/* eslint-disable no-var  */
 
-/**
- * @typedef {{
- *  theme?: Theme,
- *  accentColor?: AccentColor,
- *  fixWidth?: boolean,
- *  pagingDisplay?: boolean
- *  fontSize?: number
- *  lineHeight?: string
- * }} Preferences
- */
+interface IPreferences {
+  theme?: Theme;
+  accentColor?: AccentColor;
+  fixWidth?: boolean;
+  pagingDisplay?: boolean;
+  fontSize?: number;
+  lineHeight?: string;
+}
 
-(function () {
+export function preload() {
   window.__setTheme = function (theme) {
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.classList[theme === 'dark' ? 'add' : 'remove'](
@@ -37,8 +35,7 @@
     );
   };
 
-  /** @type {Preferences}} */
-  var preferences = {};
+  var preferences: IPreferences = {};
   try {
     var keys = {
       root: 'taisiusyut',
@@ -46,18 +43,18 @@
       client: 'client'
     };
 
-    /** @type {Record<string, Record<string, any>>} */
-    var rootStorage = JSON.parse(localStorage.getItem(keys.root) || '{}');
+    var rootStorage: Record<string, Record<string, any>> = JSON.parse(
+      localStorage.getItem(keys.root) || '{}'
+    );
     var storageKey = /^\/admin/.test(window.location.pathname)
       ? keys.admin
       : keys.client;
 
-    /** @type {{ preferences?: Preferences }} */
     var storage = rootStorage[storageKey] || {};
 
-    /** @type {Preferences}} */
     preferences = storage['preferences'] || {};
   } catch (error) {
+    // eslint-disable-next-line
     console.log(error);
   }
 
@@ -85,7 +82,6 @@
     var fontSize = preferences['fontSize'];
     var lineHeight = preferences['lineHeight'];
     if (fontSize || lineHeight) {
-      /** @type {HTMLElement[]} */
       var els = Array.prototype.slice.call(
         document.querySelectorAll('[id^="chapter-"]')
       );
@@ -121,7 +117,6 @@
     if (getScrollbarWidth()) {
       document.documentElement.setAttribute('custom-scrollbar', '');
     }
-
     handleChapterContentStyle();
   });
-})();
+}
