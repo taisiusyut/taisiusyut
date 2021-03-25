@@ -1,30 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { Subject, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { Card, Icon } from '@blueprintjs/core';
-import { calcWordCount } from '@taisiusyut/server/dist/utils/caclWordCount';
+import { switchMap } from 'rxjs/operators';
+import { Button, Card, Icon } from '@blueprintjs/core';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
-  Schema$Chapter,
   ChapterType,
   Param$CreateChapter,
   Param$UpdateChapter
 } from '@/typings';
 import { ApiError, createChapter, updateChapter } from '@/service';
 import { useGoBack } from '@/hooks/useGoBack';
-import { createChapterSotrage } from '@/utils/storage';
 import { Toaster } from '@/utils/toaster';
-import { ChapterForm, ChapterState } from './ChapterForm';
+import {
+  getFileFromEvent,
+  readFileText,
+  useFileUpload
+} from '@/hooks/useFileUpload';
+import { useBoolean } from '@/hooks/useBoolean';
+import { useChapterStat, ChapterStatProps } from './useChapterStat';
+import { useForm, ChapterForm } from './ChapterForm';
+import { ChapterDropArea } from './ChapterDropArea';
+import classes from './Chapter.module.scss';
 
-// TODO: upload
-interface Props {
-  bookID: string;
-  chapterID?: string;
-  chapter?: Schema$Chapter;
-}
-
-export const change$ = new Subject<ChapterState>();
+interface Props extends ChapterStatProps {}
 
 function request(payload: Param$CreateChapter | Param$UpdateChapter) {
   return 'chapterID' in payload
@@ -38,19 +36,20 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     ? ['更新章節', '更新']
     : ['新增章節', '確認'];
 
-  const storageRef = useRef(
-    createChapterSotrage<ChapterState | null>(chapterID || bookID, null)
-  );
+  const [form] = useForm();
+
+  const { saved, wordCount, onChange, storage } = useChapterStat({
+    bookID,
+    chapterID,
+    chapter
+  });
 
   const { goBack } = useGoBack();
 
-  const [saved, setSaved] = useState<Partial<ChapterState> | null>();
-  const [wordCount, setWordCount] = useState<number | null>(null);
-
-  const [{ onSuccess, onFailure }] = useState(() => {
+  const [asyncProps] = useState(() => {
     return {
       onSuccess: () => {
-        storageRef.current.clear();
+        storage.clear();
         goBack({ targetPath: `/admin/book/${bookID}` });
         Toaster.success({ message: `${prefix} chapter success` });
       },
@@ -61,52 +60,33 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
   });
 
   const [{ loading }, { fetch }] = useRxAsync(request, {
-    defer: true,
-    onSuccess,
-    onFailure
+    ...asyncProps,
+    defer: true
   });
 
-  // initialize
+  const [fileUpload$, upload] = useFileUpload();
+  const [dropArea, dragOver, dragEnd] = useBoolean();
+
   useEffect(() => {
-    const state: Partial<ChapterState> = {
+    const subscription = fileUpload$
+      .pipe(switchMap(file => readFileText(file)))
+      .subscribe(value => {
+        form.setFieldsValue(value);
+        onChange(value);
+      });
+    return () => subscription.unsubscribe();
+  }, [fileUpload$, form, onChange]);
+
+  useEffect(() => {
+    form.setFieldsValue({
       type: ChapterType.Free,
       ...chapter,
-      ...storageRef.current.get()
-    };
-    setSaved(state);
-    setWordCount(state.content ? calcWordCount(state.content) : 0);
-  }, [chapter]);
-
-  // handle onchange
-  useEffect(() => {
-    const storage = storageRef.current;
-    const subscription = change$.pipe(debounceTime(2000)).subscribe(chapter => {
-      try {
-        storage.save(chapter);
-        setSaved(chapter);
-        setWordCount(calcWordCount(chapter.content));
-      } catch (error) {
-        Toaster.apiError(error, `Save content failure`);
-      }
+      ...storage.get()
     });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!saved && process.env.NODE_ENV === 'production') {
-      const subscription = fromEvent<BeforeUnloadEvent>(
-        window,
-        'beforeunload'
-      ).subscribe(event => {
-        event.preventDefault();
-        event.returnValue = 'Changes you made may not be saved.';
-      });
-      return () => subscription.unsubscribe();
-    }
-  }, [saved]);
+  }, [form, chapter, storage]);
 
   return (
-    <Card>
+    <Card style={{ position: 'relative' }} onDragOver={dragOver}>
       <PageHeader title={title} targetPath={`/admin/book/${bookID}`}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {saved ? (
@@ -122,22 +102,39 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
       <ChapterForm
         // for update chapter, this reset the initialValues
         key={JSON.stringify(chapter)}
-        loading={loading}
+        form={form}
         wordCount={wordCount}
-        initialValues={{
-          type: ChapterType.Free,
-          ...chapter,
-          ...storageRef.current.get()
-        }}
-        onValuesChange={(_, state) => {
-          setSaved(null);
-          setWordCount(null);
-          change$.next(state);
-        }}
+        onValuesChange={(_, state) => onChange(state)}
         onFinish={payload =>
           fetch({ bookID, ...payload, ...(chapterID && { chapterID }) })
         }
-        submitText={submitText}
+      >
+        <div className={classes['footer']}>
+          <Button minimal icon="upload" text="上傳" onClick={upload} />
+          <div className={classes['spacer']}></div>
+          <Button
+            disabled={loading}
+            onClick={() => {
+              onChange({});
+              form.resetFields(['name', 'content']);
+            }}
+          >
+            重設
+          </Button>
+          <Button type="submit" intent="primary" loading={loading}>
+            {submitText}
+          </Button>
+        </div>
+      </ChapterForm>
+
+      <ChapterDropArea
+        usePortal={false}
+        isOpen={dropArea}
+        onClose={dragEnd}
+        onDrop={event => {
+          dragEnd();
+          fileUpload$.next(getFileFromEvent(event));
+        }}
       />
     </Card>
   );

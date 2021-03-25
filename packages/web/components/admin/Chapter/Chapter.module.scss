@@ -26,4 +26,22 @@
       margin-left: 10px;
     }
   }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.drop-area {
+  position: absolute;
+}
+
+.drop-area-content {
+  @include sq-dimen(100%);
+  @include flex(center, center, column);
+}
+
+.drop-area-text {
+  font-size: 18px;
+  margin-top: 1em;
 }

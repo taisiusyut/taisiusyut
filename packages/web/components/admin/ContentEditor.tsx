@@ -12,7 +12,6 @@ import { Control } from '@/utils/form';
 import 'draft-js/dist/Draft.css';
 
 const tabCharacter = '	';
-
 export interface ContentEditorProps
   extends Control<string>,
     Partial<Omit<EditorProps, 'onChange'>> {
@@ -31,14 +30,17 @@ const absoluteStyle: CSSProperties = {
   left: 0
 };
 
+const createFromText = (value?: string) =>
+  EditorState.createWithContent(ContentState.createFromText(value || ''));
+
 export function ContentEditor({
   className = '',
   value,
   onChange,
   ...props
 }: ContentEditorProps) {
-  const [editorState, setEditorState] = React.useState(() =>
-    EditorState.createWithContent(ContentState.createFromText(value || ''))
+  const [editorState, setEditorState] = React.useState<EditorState>(() =>
+    createFromText(value)
   );
 
   const editor = React.useRef<Editor>(null);

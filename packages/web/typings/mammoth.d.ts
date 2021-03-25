@@ -7,7 +7,7 @@ declare module 'mammoth' {
     path?: string;
 
     /** The buffer containing the .docx file, if path is not specified. */
-    buffer?: ArrayBuffer;
+    arrayBuffer?: ArrayBuffer;
   };
 
   /** Conversion options. */
@@ -67,6 +67,11 @@ declare module 'mammoth' {
    * @param input An object containing the path or buffer.
    */
   export function convertToHtml(
+    input: Input,
+    options?: Options
+  ): Promise<Result>;
+
+  export function convertToMarkdown(
     input: Input,
     options?: Options
   ): Promise<Result>;
