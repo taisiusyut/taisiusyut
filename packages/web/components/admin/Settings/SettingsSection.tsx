@@ -3,7 +3,7 @@ import { Card, Divider, H4 } from '@blueprintjs/core';
 import classes from './Settings.module.scss';
 
 interface SectionProps {
-  title?: string;
+  title: string;
   className?: string;
   children?: React.ReactNode;
 }

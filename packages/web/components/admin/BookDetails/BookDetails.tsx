@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Card } from '@blueprintjs/core';
+import { Button, Card } from '@blueprintjs/core';
 import { createFilter } from '@/components/Filter';
 import { BookInfoCard } from '@/components/BookInfoCard';
 import { PageHeader } from '@/components/admin/PageHeader';
-import { ChapterStatusSelect, ChapterTypeSelect } from '@/components/Select';
-import { ButtonPopover } from '@/components/ButtonPopover';
+import { ChapterStatusSelect } from '@/components/Select';
 import { useAuthState } from '@/hooks/useAuth';
 import {
   createUsePaginationLocal,
@@ -69,10 +68,10 @@ export function BookDetails({ book, onSuccess }: Props) {
       <Card className={classes['chapters']}>
         <PageHeader title="章節列表">
           {isAuthor && (
-            <ButtonPopover
-              minimal
+            <Button
               icon="plus"
-              content="新增章節"
+              intent="primary"
+              text="新增章節"
               onClick={() => gotoChapter(book.id)}
             />
           )}
@@ -83,9 +82,6 @@ export function BookDetails({ book, onSuccess }: Props) {
           <FilterInput name="name" label="名稱" />
           <FormItem name="status" label="狀態">
             <ChapterStatusSelect />
-          </FormItem>
-          <FormItem name="type" label="類型">
-            <ChapterTypeSelect />
           </FormItem>
           <FilterDateRange name="createdAt" label="創建時間" />
           <FilterDateRange name="updatedAt" label="更新時間" />

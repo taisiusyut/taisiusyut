@@ -115,7 +115,7 @@ export function ClientReportDetail({ reportId }: ClientReportDetailProps) {
             {report.version}
           </Item>
           <div className={classes['detial-content-desc']}>
-            <div>描述:</div>
+            <div>問題描述/建議:</div>
             <div>{report.description}</div>
           </div>
         </Card>

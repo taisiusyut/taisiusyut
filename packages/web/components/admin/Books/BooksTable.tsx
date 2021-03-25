@@ -52,7 +52,7 @@ const bookColumns: Columns = [
   },
   {
     id: 'tags',
-    Header: '',
+    Header: '標籤',
     accessor: book =>
       book.tags ? (
         book.tags.length ? (

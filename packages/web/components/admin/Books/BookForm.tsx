@@ -28,7 +28,7 @@ export const BookName = () => (
 export const BookDescription = () => (
   <FormItem
     name="description"
-    label="描述"
+    label="簡介"
     validators={[
       validators.required('Please enter the book description'),
       validators.maxLength(

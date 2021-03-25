@@ -57,13 +57,13 @@ export function ChapterMenu({
         <Menu onClick={event => onClose && onClose(event)}>
           <MenuItem
             icon="edit"
-            text="編輯"
+            text="編輯章節"
             onClick={() => gotoChapter(bookID, chapter.id)}
           />
           {chapter.status === ChapterStatus.Private && (
             <MenuItem
               {...props}
-              text="發佈"
+              text="發佈章節"
               icon="globe-network"
               onClick={() =>
                 publishChapter({ bookID, chapterID: chapter.id })
