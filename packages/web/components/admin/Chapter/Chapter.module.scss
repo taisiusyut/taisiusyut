@@ -5,13 +5,8 @@
 }
 
 .editor-container {
-  $line-height: 1.8em;
-
-  height: auto;
+  @include editor-style(10);
   font-size: 16px;
-  line-height: $line-height;
-  min-height: $line-height * 10;
-  padding: 15px;
 }
 
 .content-label {

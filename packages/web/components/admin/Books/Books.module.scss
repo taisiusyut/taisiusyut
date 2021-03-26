@@ -43,9 +43,5 @@
 }
 
 .description {
-  $line-height: 1.8em;
-  height: auto;
-  line-height: $line-height;
-  min-height: $line-height * 6;
-  padding: 0.5em 0.7em;
+  @include editor-style(6);
 }

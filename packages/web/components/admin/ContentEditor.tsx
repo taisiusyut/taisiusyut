@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   Editor,
   EditorState,
@@ -18,18 +18,6 @@ export interface ContentEditorProps
   className?: string;
 }
 
-const relativeStyle: CSSProperties = {
-  position: 'relative'
-};
-
-const absoluteStyle: CSSProperties = {
-  width: '100%',
-  height: '100%',
-  position: 'absolute',
-  top: 0,
-  left: 0
-};
-
 const createFromText = (value: string) =>
   EditorState.createWithContent(ContentState.createFromText(value));
 
@@ -45,12 +33,7 @@ export function ContentEditor({
     createFromText(value)
   );
 
-  const { focusEditor, keyBindingFn, handlePastedText } = useMemo(() => {
-    function focusEditor() {
-      editor.current?.focus();
-      setEditorState(editorState => EditorState.moveFocusToEnd(editorState));
-    }
-
+  const { keyBindingFn, handlePastedText } = useMemo(() => {
     function keyBindingFn(event: React.KeyboardEvent<{}>) {
       if (event.key === 'Tab') {
         setEditorState(editorState => {
@@ -88,7 +71,7 @@ export function ContentEditor({
       return 'handled';
     };
 
-    return { focusEditor, keyBindingFn, handlePastedText };
+    return { keyBindingFn, handlePastedText };
   }, []);
 
   const handleChange = onChange || (() => void 0);
@@ -110,8 +93,7 @@ export function ContentEditor({
   }, [value, handlePastedText]);
 
   return (
-    <div className={[Classes.INPUT, className].join(' ')} style={relativeStyle}>
-      <div style={absoluteStyle} onClick={focusEditor}></div>
+    <div className={[Classes.INPUT, className].join(' ')}>
       <Editor
         {...props}
         ref={editor}

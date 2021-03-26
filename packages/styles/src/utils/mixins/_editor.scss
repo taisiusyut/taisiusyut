@@ -1,0 +1,9 @@
+@mixin editor-style($num-of-line: 5, $line-height: 1.8em) {
+  height: auto;
+  line-height: $line-height;
+  padding: 1em;
+
+  :global(.public-DraftEditor-content) {
+    min-height: $line-height * $num-of-line;
+  }
+}

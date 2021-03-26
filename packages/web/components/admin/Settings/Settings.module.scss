@@ -22,11 +22,7 @@
 
 .profile {
   .description {
-    $line-height: 1.8em;
-    min-height: 200px;
-    line-height: $line-height;
-    min-height: $line-height * 4;
-    padding: 0.5em 0.7em;
+    @include editor-style();
   }
 
   .footer {
