@@ -32,9 +32,14 @@ export function setupApp(app: NestFastifyApplication): void {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      // Since validation pipe cannot assign `group` option dynamically
-      // We need to whitelist by default and filter out by `access.pipe`
-      transformOptions: { groups } // for access.pipe.ts
+      whitelist: true,
+      transformOptions: {
+        // Since validation pipe cannot assign `group` option dynamically
+        // We need to whitelist by default then filter out by `access.pipe`
+        groups,
+        exposeUnsetFields: false,
+        excludePrefixes: ['$'] // for mongo operator
+      }
     })
   );
   app.useGlobalFilters(new MongooseExceptionFilter());

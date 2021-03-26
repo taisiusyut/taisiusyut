@@ -46,8 +46,9 @@ export class MongooseSerializerInterceptor extends ClassSerializerInterceptor {
       map((res: Res) =>
         this.serialize(res, {
           ...options,
+          exposeUnsetFields: false,
           // remove _id field
-          excludePrefixes: ['_']
+          excludePrefixes: ['_', ...(options.excludePrefixes || [])]
         })
       )
     );
