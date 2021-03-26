@@ -8,7 +8,7 @@ import {
   IOverlayProps,
   MenuDivider
 } from '@blueprintjs/core';
-import { ChapterStatus, Schema$Chapter } from '@/typings';
+import { ChapterStatus, Schema$Book, Schema$Chapter } from '@/typings';
 import { publishChapter } from '@/service';
 import { createOpenOverlay } from '@/utils/openOverlay';
 import {
@@ -20,7 +20,7 @@ import { Toaster } from '@/utils/toaster';
 
 interface ChapterMenuProps extends Partial<IOverlayProps> {
   offset: { top: number; left: number };
-  bookID: string;
+  book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
   title?: string;
   chapter: Schema$Chapter;
   actions: Dispatched<
@@ -39,8 +39,8 @@ export const gotoChapter = (bookID: string, chapterID?: string) => {
 };
 
 export function ChapterMenu({
+  book,
   offset,
-  bookID,
   chapter,
   onClose,
   actions,
@@ -58,15 +58,21 @@ export function ChapterMenu({
           <MenuItem
             icon="edit"
             text="編輯章節"
-            onClick={() => gotoChapter(bookID, chapter.id)}
+            onClick={() => gotoChapter(book.id, chapter.id)}
+          />
+          <MenuItem
+            icon="share"
+            text="瀏覽章節"
+            onClick={() =>
+              window.open(`/book/${book.name}/chapter/${chapter.number}`)
+            }
           />
           {chapter.status === ChapterStatus.Private && (
             <MenuItem
-              {...props}
               text="發佈章節"
               icon="globe-network"
               onClick={() =>
-                publishChapter({ bookID, chapterID: chapter.id })
+                publishChapter({ bookID: book.id, chapterID: chapter.id })
                   .then(actions.update)
                   .catch(error => Toaster.apiError(`發佈章節失敗`, error))
               }

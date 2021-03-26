@@ -75,6 +75,11 @@ export function BookDetails({ book, onSuccess }: Props) {
               onClick={() => gotoChapter(book.id)}
             />
           )}
+          <Button
+            text="瀏覽"
+            style={{ marginLeft: 5 }}
+            onClick={() => window.open(`/book/${book.name}`)}
+          />
         </PageHeader>
 
         <Filter initialValues={state.params} className={classes['filter']}>
@@ -95,7 +100,7 @@ export function BookDetails({ book, onSuccess }: Props) {
             if (Object.keys(row.original).length > 0) {
               openChapterMenu({
                 actions,
-                bookID: book.id,
+                book,
                 title: row.original.name,
                 offset: { top: event.pageY, left: event.pageX },
                 onClose: () => row.toggleRowSelected(),
