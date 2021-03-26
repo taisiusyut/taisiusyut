@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import {
   Editor,
   EditorState,
@@ -52,6 +52,16 @@ export function ContentEditor({
 
   const handleChange = onChange || (() => void 0);
 
+  useEffect(() => {
+    const newState = createFromText(value);
+    setEditorState(editorState => {
+      const isEqual =
+        newState.getCurrentContent().getPlainText() ===
+        editorState.getCurrentContent().getPlainText();
+      return isEqual ? editorState : newState;
+    });
+  }, [value]);
+
   return (
     <div className={[Classes.INPUT, className].join(' ')} style={relativeStyle}>
       <div style={absoluteStyle} onClick={focusEditor}></div>
@@ -61,11 +71,7 @@ export function ContentEditor({
         editorState={editorState}
         onChange={state => {
           setEditorState(state);
-          const isEqual =
-            state.getCurrentContent() === editorState.getCurrentContent();
-          if (!isEqual) {
-            handleChange(state.getCurrentContent().getPlainText());
-          }
+          handleChange(state.getCurrentContent().getPlainText());
         }}
         keyBindingFn={event => {
           if (event.key === 'Tab') {

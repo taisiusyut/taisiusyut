@@ -119,7 +119,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
               form.resetFields(['name', 'content']);
             }}
           >
-            重設
+            清除
           </Button>
           <Button type="submit" intent="primary" loading={loading}>
             {submitText}
