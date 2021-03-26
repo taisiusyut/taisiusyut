@@ -15,7 +15,7 @@ export default function FAQPage() {
           textAlign: 'center'
         }}
       >
-        Working In Progress
+        未諗到
       </div>
     </>
   );

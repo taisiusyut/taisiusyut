@@ -4,9 +4,8 @@
   --accent-color: #{$pt-intent-primary};
   --primary-color: #fff;
   --secondary-color: #f6f6f6;
-  --text-color: #202124;
+  --text-color: #393939;
   --text-light-color: #999;
-  --icon-color: #{lighten(#000, 30%)};
   --divider-color: #{$pt-divider-black};
   --shadow-color: #ccc;
   --placeholder-color: #e0e0e0;
@@ -26,7 +25,6 @@
   --secondary-color: #{lighten(#222, 1%)};
   --text-color: #dfdedb;
   --text-light-color: #a09c97;
-  --icon-color: #{darken(#dfdedb, 30%)};
   --divider-color: #{$pt-dark-divider-black};
   --shadow-color: #191919;
   --placeholder-color: #888;

@@ -103,8 +103,9 @@ export function ClientPreferencesProvider({ children }: Props) {
 
   useEffect(() => {
     const theme = document.documentElement.getAttribute('data-theme') as Theme;
-    const storage = clientPreferencesStorage.get();
-    setState({ ...storage, theme });
+    const newState = { ...clientPreferencesStorage.get(), theme };
+    setState(newState);
+    clientPreferencesStorage.save(newState);
   }, []);
 
   return React.createElement(

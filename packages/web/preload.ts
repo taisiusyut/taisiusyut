@@ -64,7 +64,7 @@ export function preload() {
 
   window.__setTheme(
     preferences['theme'] ||
-      (supportsColorSchemeQuery ? (mql.media as Theme) : 'dark')
+      (!supportsColorSchemeQuery || mql.matches ? 'dark' : 'light')
   );
   window.__setAccentColor(preferences['accentColor'] || 'blue');
   window.__setFixWidth(

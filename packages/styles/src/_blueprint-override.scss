@@ -70,3 +70,7 @@ a:hover,
 .#{$ns}-overlay-open {
   user-select: none;
 }
+
+.#{$ns}-heading {
+  color: var(--text-color);
+}

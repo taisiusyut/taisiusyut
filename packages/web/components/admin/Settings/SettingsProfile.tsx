@@ -88,7 +88,7 @@ export function SettingsProfile() {
 
         <div className={classes['footer']}>
           <Button onClick={() => form.resetFields()} disabled={profile.loading}>
-            重設
+            恢復
           </Button>
           <Button type="submit" intent="primary" loading={profile.loading}>
             更新

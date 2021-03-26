@@ -82,8 +82,9 @@ export function AdminPreferencesProvider({ children }: Props) {
 
   useEffect(() => {
     const theme = document.documentElement.getAttribute('data-theme') as Theme;
-    const storage = adminPreferencesStorage.get();
-    setState({ ...storage, theme });
+    const newState = { ...adminPreferencesStorage.get(), theme };
+    setState(newState);
+    adminPreferencesStorage.save(newState);
   }, []);
 
   return React.createElement(
