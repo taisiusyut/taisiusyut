@@ -19,9 +19,7 @@ export class JWTSignDto implements JWTSignPayload {
   }
 }
 
-export const formatJWTSignPayload = <T extends JWTSignPayload>(
-  payload: T
-): JWTSignPayload =>
+export const formatJWTSignPayload = <T extends JWTSignPayload>(payload: T) =>
   classToPlain(new JWTSignDto(payload), {
     strategy: 'excludeAll'
   }) as JWTSignPayload;

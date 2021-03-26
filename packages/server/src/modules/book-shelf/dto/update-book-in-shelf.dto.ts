@@ -38,7 +38,7 @@ class UpdateBookInShelf
   @IsOptional()
   @IsInt()
   @Min(1)
-  @Transform(({ value }) => value && JSON.parse(value))
+  @Transform(({ value }) => value && Number(value))
   lastVisit?: number;
 }
 
