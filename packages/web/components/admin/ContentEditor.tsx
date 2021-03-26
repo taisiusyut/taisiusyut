@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect } from 'react';
+import React, { CSSProperties, useEffect, useMemo, useRef } from 'react';
 import {
   Editor,
   EditorState,
@@ -30,37 +30,84 @@ const absoluteStyle: CSSProperties = {
   left: 0
 };
 
-const createFromText = (value?: string) =>
-  EditorState.createWithContent(ContentState.createFromText(value || ''));
+const createFromText = (value: string) =>
+  EditorState.createWithContent(ContentState.createFromText(value));
 
 export function ContentEditor({
   className = '',
-  value,
+  value = '',
   onChange,
   ...props
 }: ContentEditorProps) {
+  const editor = React.useRef<Editor>(null);
+  const prev = useRef<string>(value);
   const [editorState, setEditorState] = React.useState<EditorState>(() =>
     createFromText(value)
   );
 
-  const editor = React.useRef<Editor>(null);
+  const { focusEditor, keyBindingFn, handlePastedText } = useMemo(() => {
+    function focusEditor() {
+      editor.current?.focus();
+      setEditorState(editorState => EditorState.moveFocusToEnd(editorState));
+    }
 
-  function focusEditor() {
-    editor.current?.focus();
-    setEditorState(EditorState.moveFocusToEnd(editorState));
-  }
+    function keyBindingFn(event: React.KeyboardEvent<{}>) {
+      if (event.key === 'Tab') {
+        setEditorState(editorState => {
+          const contentState = Modifier.replaceText(
+            editorState.getCurrentContent(),
+            editorState.getSelection(),
+            tabCharacter
+          );
+          return EditorState.push(
+            editorState,
+            contentState,
+            'insert-characters'
+          );
+        });
+        return 'handled';
+      }
+      return getDefaultKeyBinding(event);
+    }
+
+    const handlePastedText: EditorProps['handlePastedText'] = (
+      text,
+      _html,
+      editorState
+    ) => {
+      // https://stackoverflow.com/a/58234972/9633867
+      const pastedBlocks = ContentState.createFromText(text).getBlockMap();
+      const contentState = Modifier.replaceWithFragment(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        pastedBlocks
+      );
+      setEditorState(
+        EditorState.push(editorState, contentState, 'change-block-data')
+      );
+      return 'handled';
+    };
+
+    return { focusEditor, keyBindingFn, handlePastedText };
+  }, []);
 
   const handleChange = onChange || (() => void 0);
 
+  // for value change by form instance (e.g. file upload)
   useEffect(() => {
-    const newState = createFromText(value);
     setEditorState(editorState => {
-      const isEqual =
-        newState.getCurrentContent().getPlainText() ===
-        editorState.getCurrentContent().getPlainText();
-      return isEqual ? editorState : newState;
+      if (prev.current === value) {
+        return editorState;
+      }
+      prev.current = value;
+
+      return EditorState.push(
+        editorState,
+        ContentState.createFromText(value),
+        'change-block-data'
+      );
     });
-  }, [value]);
+  }, [value, handlePastedText]);
 
   return (
     <div className={[Classes.INPUT, className].join(' ')} style={relativeStyle}>
@@ -69,46 +116,17 @@ export function ContentEditor({
         {...props}
         ref={editor}
         editorState={editorState}
+        keyBindingFn={keyBindingFn}
+        handlePastedText={handlePastedText}
         onChange={state => {
-          setEditorState(state);
-          handleChange(state.getCurrentContent().getPlainText());
-        }}
-        keyBindingFn={event => {
-          if (event.key === 'Tab') {
-            const newState = Modifier.replaceText(
-              editorState.getCurrentContent(),
-              editorState.getSelection(),
-              tabCharacter
-            );
-            const newEditorState = EditorState.push(
-              editorState,
-              newState,
-              'insert-characters'
-            );
-            setEditorState(newEditorState);
-            return 'handled';
+          const text = state.getCurrentContent().getPlainText();
+          prev.current = text;
+
+          // prevent change event trigger by focus
+          if (text !== editorState.getCurrentContent().getPlainText()) {
+            setEditorState(state);
+            handleChange(state.getCurrentContent().getPlainText());
           }
-          return getDefaultKeyBinding(event);
-        }}
-        handlePastedText={(text: string, _html, editorState) => {
-          // https://stackoverflow.com/a/58234972/9633867
-          const pastedBlocks = ContentState.createFromText(text).getBlockMap();
-          const newState = Modifier.replaceWithFragment(
-            editorState.getCurrentContent(),
-            editorState.getSelection(),
-            pastedBlocks
-          );
-          const newEditorState = EditorState.push(
-            editorState,
-            newState,
-            'insert-fragment'
-          );
-
-          setEditorState(newEditorState);
-
-          handleChange(text);
-
-          return 'handled';
         }}
       />
     </div>
