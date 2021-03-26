@@ -19,22 +19,22 @@
 .cover {
   @include dimen(120px);
   @include relative();
+  @include shadow-border();
   background-color: var(--primary-color);
-  box-shadow: $pt-dark-elevation-shadow-0;
   cursor: pointer;
 
   &.uploaded {
     box-shadow: 0px 0px 3px 1px var(--shadow-color);
   }
 
-  &:before {
+  &:after {
     content: '';
     display: block;
     height: 0;
     padding-bottom: 4/3 * 100%;
   }
 
-  &:after {
+  &:before {
     @include absolute(0, 0, 0, 0);
     @include flex(center, center);
     content: '+';
@@ -46,6 +46,6 @@
   $line-height: 1.8em;
   height: auto;
   line-height: $line-height;
-  min-height: $line-height * 4;
+  min-height: $line-height * 6;
   padding: 0.5em 0.7em;
 }

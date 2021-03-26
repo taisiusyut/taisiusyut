@@ -50,12 +50,12 @@ export function CreateBook({ onCreate }: CreateBookProps) {
       <div style={{ display: 'flex' }}>
         <div style={{ flex: '1 1 auto' }}>
           <BookName />
+          <BookDescription />
         </div>
-        <div style={{ marginLeft: 15 }}>
+        <div style={{ marginLeft: 20 }}>
           <BookCover />
         </div>
       </div>
-      <BookDescription />
       <BookTags />
     </Form>
   );

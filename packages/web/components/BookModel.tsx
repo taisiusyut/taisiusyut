@@ -76,10 +76,6 @@ export function BookModel({
               transform: rotateY(0deg) rotateX(0deg);
             }
 
-            .front:not(:empty) {
-              padding: 7.5%;
-            }
-
             .front .name:not(:empty) {
               writing-mode: vertical-rl;
               white-space: break-spaces;

@@ -1,55 +1,35 @@
-import React, {
-  useRef,
-  useEffect,
-  ChangeEvent,
-  ClipboardEvent,
-  DragEvent
-} from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
-import { Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import {
-  fromDropImageEvent,
-  fromChangeEvent,
-  RxFileToImageState,
-  useRxFileToImage
-} from 'use-rx-hooks';
+import { switchMap } from 'rxjs/operators';
 import { Control } from '@/utils/form';
+import { useFileUpload, getBase64ImageURL } from '@/hooks/useFileUpload';
 import classes from './Books.module.scss';
 
-type UploadEvent = ChangeEvent | ClipboardEvent | DragEvent;
-
-function mapEvent(event: UploadEvent) {
-  if (event.type === 'drop') {
-    return fromDropImageEvent(event as DragEvent);
-  }
-  return fromChangeEvent(event as ChangeEvent<HTMLInputElement>);
+interface State {
+  file: File;
+  url: string;
 }
 
-const upload = new Subject<UploadEvent>();
-const upload$ = upload.pipe(map(mapEvent));
-
-export function BookCoverUpload(
-  props: Control<RxFileToImageState | string | null>
-) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const state$ = useRxFileToImage(upload$);
+export function BookCoverUpload(props: Control<State | string | null>) {
+  const [fileUpload$, upload] = useFileUpload();
   const { value, onChange } = props;
 
   useEffect(() => {
-    const subscription = state$.subscribe(([value]) => {
-      onChange && onChange(value);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    });
+    const subscription = fileUpload$
+      .pipe(
+        switchMap(async file => ({
+          url: await getBase64ImageURL(file),
+          file
+        }))
+      )
+      .subscribe(onChange);
     return () => subscription.unsubscribe();
-  }, [state$, onChange]);
+  }, [fileUpload$, onChange]);
 
   return (
     <div
       className={`${classes['cover']} ${!!value ? classes['uploaded'] : ''}`}
-      onClick={() => fileInputRef.current?.click()}
+      onClick={upload}
     >
       {value && (
         <Image
@@ -59,13 +39,6 @@ export function BookCoverUpload(
           unoptimized
         />
       )}
-      <input
-        type="file"
-        accept="images/*"
-        ref={fileInputRef}
-        onChange={(event: UploadEvent) => upload.next(event)}
-        hidden
-      />
     </div>
   );
 }
