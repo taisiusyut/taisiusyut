@@ -8,7 +8,7 @@ import {
   IOverlayProps,
   MenuDivider
 } from '@blueprintjs/core';
-import { ChapterStatus, Schema$Book, Schema$Chapter } from '@/typings';
+import { ChapterStatus, Schema$Chapter } from '@/typings';
 import { publishChapter } from '@/service';
 import { createOpenOverlay } from '@/utils/openOverlay';
 import {
@@ -17,10 +17,10 @@ import {
   Dispatched
 } from '@/hooks/crud-reducer';
 import { Toaster } from '@/utils/toaster';
+import { Book } from '../BookActions';
 
-interface ChapterMenuProps extends Partial<IOverlayProps> {
+interface ChapterMenuProps extends Book, Partial<IOverlayProps> {
   offset: { top: number; left: number };
-  book: Partial<Schema$Book> & Pick<Schema$Book, 'id'>;
   title?: string;
   chapter: Schema$Chapter;
   actions: Dispatched<

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
+import { merge, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Button, Card, Icon } from '@blueprintjs/core';
+import { Button, Card } from '@blueprintjs/core';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
   ChapterType,
@@ -17,12 +18,18 @@ import {
   useFileUpload
 } from '@/hooks/useFileUpload';
 import { useBoolean } from '@/hooks/useBoolean';
-import { useChapterStat, ChapterStatProps } from './useChapterStat';
-import { useForm, ChapterForm } from './ChapterForm';
+import { createChapterSotrage } from '@/utils/storage';
+import { calcWordCount } from '@taisiusyut/server/dist/utils/caclWordCount';
+import { Schema$Chapter } from '@/typings';
+import { useForm, ChapterForm, ChapterState } from './ChapterForm';
 import { ChapterDropArea } from './ChapterDropArea';
 import classes from './Chapter.module.scss';
 
-interface Props extends ChapterStatProps {}
+interface Props {
+  bookID: string;
+  chapterID?: string;
+  chapter?: Schema$Chapter;
+}
 
 function request(payload: Param$CreateChapter | Param$UpdateChapter) {
   return 'chapterID' in payload
@@ -30,26 +37,40 @@ function request(payload: Param$CreateChapter | Param$UpdateChapter) {
     : createChapter(payload);
 }
 
+function isModified(a: any, b: any) {
+  for (const k in a) {
+    if (a[k] !== b[k]) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export const chapterState$ = new Subject<Partial<ChapterState>>();
+
 export function Chapter({ bookID, chapterID, chapter }: Props) {
-  const prefix = chapterID ? 'Update' : 'Create';
-  const [title, submitText] = chapterID
-    ? ['更新章節', '更新']
-    : ['新增章節', '確認'];
+  const [prefix, title, submitText, resetText] = chapterID
+    ? (['Update', '編輯章節', '編輯', '恢復'] as const)
+    : (['Create', '新增章節', '新增', '清除'] as const);
 
   const [form] = useForm();
 
-  const { saved, wordCount, onChange, storage } = useChapterStat({
-    bookID,
-    chapterID,
-    chapter
-  });
+  const storageRef = useRef(
+    createChapterSotrage<Partial<ChapterState> | null>(
+      chapterID || bookID,
+      null
+    )
+  );
+
+  const [wordCount, setWordCount] = useState(0);
+  const [modified, setModified] = useState(false);
 
   const { goBack } = useGoBack();
 
   const [asyncProps] = useState(() => {
     return {
       onSuccess: () => {
-        storage.clear();
+        storageRef.current.clear();
         goBack({ targetPath: `/admin/book/${bookID}` });
         Toaster.success({ message: `${prefix} chapter success` });
       },
@@ -68,43 +89,38 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
   const [dropArea, dragOver, dragEnd] = useBoolean();
 
   useEffect(() => {
-    const subscription = fileUpload$
-      .pipe(switchMap(file => readFileText(file)))
-      .subscribe(value => {
-        form.setFieldsValue(value);
-        onChange(value);
-      });
+    const subscription = merge(
+      fileUpload$.pipe(switchMap(file => readFileText(file))),
+      chapterState$
+    ).subscribe(value => {
+      const state = { ...form.getFieldsValue(), ...value };
+      setModified(true);
+      form.setFieldsValue(state);
+      storageRef.current.save(state);
+      setWordCount(calcWordCount(state.content || ''));
+    });
     return () => subscription.unsubscribe();
-  }, [fileUpload$, form, onChange]);
+  }, [fileUpload$, form]);
 
   useEffect(() => {
-    form.setFieldsValue({
-      type: ChapterType.Free,
-      ...chapter,
-      ...storage.get()
-    });
-  }, [form, chapter, storage]);
+    const cache = storageRef.current.get();
+    if (chapter) {
+      chapterState$.next({ ...chapter, ...cache, type: ChapterType.Free });
+      setModified(isModified(cache || {}, chapter));
+    }
+  }, [form, chapter]);
 
   return (
     <Card style={{ position: 'relative' }} onDragOver={dragOver}>
-      <PageHeader title={title} targetPath={`/admin/book/${bookID}`}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {saved ? (
-            <Icon icon="saved" iconSize={14}></Icon>
-          ) : (
-            <Icon icon="refresh" iconSize={12}></Icon>
-          )}
-          &nbsp;
-          {saved ? '已儲存' : '儲存中...'}
-        </div>
-      </PageHeader>
+      <PageHeader title={title} targetPath={`/admin/book/${bookID}`} />
 
       <ChapterForm
         // for update chapter, this reset the initialValues
         key={JSON.stringify(chapter)}
         form={form}
+        initialValues={chapter}
         wordCount={wordCount}
-        onValuesChange={(_, state) => onChange(state)}
+        onValuesChange={(_, state) => chapterState$.next(state)}
         onFinish={payload =>
           fetch({ bookID, ...payload, ...(chapterID && { chapterID }) })
         }
@@ -113,15 +129,22 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
           <Button minimal icon="upload" text="上傳" onClick={upload} />
           <div className={classes['spacer']}></div>
           <Button
-            disabled={loading}
+            disabled={loading || !modified}
             onClick={() => {
-              onChange({});
-              form.resetFields(['name', 'content']);
+              form.resetFields();
+              storageRef.current.get();
+              chapterState$.next(chapter || {});
+              setModified(false);
             }}
           >
-            清除
+            {resetText}
           </Button>
-          <Button type="submit" intent="primary" loading={loading}>
+          <Button
+            type="submit"
+            intent="primary"
+            loading={loading}
+            disabled={!modified}
+          >
             {submitText}
           </Button>
         </div>

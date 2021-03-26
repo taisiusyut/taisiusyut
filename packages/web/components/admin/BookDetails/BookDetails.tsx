@@ -102,7 +102,7 @@ export function BookDetails({ book, onSuccess }: Props) {
                 actions,
                 book,
                 title: row.original.name,
-                offset: { top: event.pageY, left: event.pageX },
+                offset: { top: event.clientY, left: event.clientX },
                 onClose: () => row.toggleRowSelected(),
                 chapter: row.original as Schema$Chapter
               });
