@@ -40,6 +40,7 @@ function useRecentUpdate(pageSize: number) {
   const [, { fetch }] = useRxAsync(request, {
     defer: true,
     onSuccess: setBooks,
+    // for window resize
     mapOperator: exhaustMap
   });
 
@@ -58,13 +59,18 @@ export function Featured({ data }: FeaturedProps) {
   useEffect(() => {
     const el = contentRef.current;
     if (el && !loaded) {
-      const handler = () => {
-        const visible = !!el.offsetWidth;
-        visible && fetch();
-      };
-      handler();
-      window.addEventListener('resize', handler);
-      return () => window.removeEventListener('resize', handler);
+      const timeout = setTimeout(() => {
+        const handler = () => {
+          const visible = !!el.offsetWidth;
+          visible && fetch();
+        };
+        handler();
+
+        // for responsive
+        window.addEventListener('resize', handler);
+        return () => window.removeEventListener('resize', handler);
+      }, 0);
+      return () => clearTimeout(timeout);
     }
   }, [loaded, asPath, fetch]);
 

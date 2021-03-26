@@ -64,7 +64,7 @@ function ClientLayoutContent({
 
   // set `isPagingDisplay` to true make sure right panel will mount while build
   const [flags, setFlags] = useState(getFlags(asPath, true));
-  const { isHome, showRightPanel, showLeftPanel, mountBottomNav } = flags;
+  const { showRightPanel, showLeftPanel, mountBottomNav } = flags;
 
   const [leaveOtherLeftPanel] = useState(() => () =>
     goBack({ targetPath: ['/', '/featured'] }).then(() => {
@@ -107,12 +107,14 @@ function ClientLayoutContent({
             because the first-time rendering and scroll position restoration will not smooth */}
         <div
           className={classes['left-panel']}
-          hidden={!isHome && (!mounted || !LeftPanel || !showLeftPanel)}
+          hidden={!mounted || !LeftPanel || !showLeftPanel}
         >
           <LeftPanel onLeave={leaveOtherLeftPanel} />
         </div>
         {showRightPanel && (
-          <div className={classes['right-panel']}>{children}</div>
+          <div className={classes['right-panel']} hidden={!mounted}>
+            {children}
+          </div>
         )}
       </div>
       <div className={classes['bottom-navigation']}>

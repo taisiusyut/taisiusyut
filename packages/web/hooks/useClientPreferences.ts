@@ -102,12 +102,9 @@ export function ClientPreferencesProvider({ children }: Props) {
   );
 
   useEffect(() => {
-    const doc = document.documentElement;
-    const theme = doc.getAttribute('data-theme') as Theme;
-    const fixWidth = doc.getAttribute('data-width') === 'fixed';
-    const pagingDisplay = doc.getAttribute('data-display') === 'paging';
+    const theme = document.documentElement.getAttribute('data-theme') as Theme;
     const storage = clientPreferencesStorage.get();
-    setState({ ...storage, theme, fixWidth, pagingDisplay });
+    setState({ ...storage, theme });
   }, []);
 
   return React.createElement(
