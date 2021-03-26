@@ -56,6 +56,8 @@ export function CommonMeta() {
           content="initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no, user-scalable=no, width=device-width, viewport-fit=cover"
         />
 
+        <meta name="color-scheme" content="dark light" />
+
         <meta name="google" content="notranslate" />
 
         <meta name="application-name" content="睇小說" />

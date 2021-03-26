@@ -58,7 +58,14 @@ export function preload() {
     console.log(error);
   }
 
-  window.__setTheme(preferences['theme'] || 'dark');
+  var preferDarkQuery = '(prefers-color-scheme: dark)';
+  var mql = window.matchMedia(preferDarkQuery);
+  var supportsColorSchemeQuery = mql.media === preferDarkQuery;
+
+  window.__setTheme(
+    preferences['theme'] ||
+      (supportsColorSchemeQuery ? (mql.media as Theme) : 'dark')
+  );
   window.__setAccentColor(preferences['accentColor'] || 'blue');
   window.__setFixWidth(
     typeof preferences['fixWidth'] === 'undefined'
