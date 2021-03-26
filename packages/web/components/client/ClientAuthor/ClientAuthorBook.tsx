@@ -59,7 +59,7 @@ export function ClientAuthorBook({
           }
 
           return (
-            <Link key={book.id} href={`/book/${book.name}`}>
+            <Link key={book.id} href={`/book/${book.name}`} prefetch={false}>
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <a>{content}</a>
             </Link>

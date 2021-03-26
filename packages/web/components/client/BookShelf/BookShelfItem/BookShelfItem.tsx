@@ -98,7 +98,7 @@ export function BookShelfItem({ data }: Props) {
           .join(' ')
           .trim()}
       >
-        <Link href={`${basePath}/chapter/${_lastVisit}`}>
+        <Link href={`${basePath}/chapter/${_lastVisit}`} prefetch={false}>
           {/* Should not use <a /> since it have conflict with context menu in In iPhone safari */}
           {content(active, true)}
         </Link>

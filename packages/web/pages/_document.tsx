@@ -18,13 +18,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html
-        lang="zh-hk"
-        className="bp3-dark"
-        data-theme="dark"
-        data-width="fixed"
-        data-display="paging"
-      >
+      <Html lang="zh-hk">
         <Head>
           <InlineScript fn={preload} />
         </Head>
