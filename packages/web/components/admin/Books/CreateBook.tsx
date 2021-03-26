@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button, IconName } from '@blueprintjs/core';
 import { openConfirmDialog } from '@/components/ConfirmDialog';
-import { Schema$Book, Param$CreateBook, Category } from '@/typings';
+import { Schema$Book, Param$CreateBook } from '@/typings';
 import { createBook } from '@/service';
 import { Toaster } from '@/utils/toaster';
-import { rid } from '@/utils/rid';
 import {
   useForm,
   Form,
@@ -22,13 +21,6 @@ interface CreateBookProps extends OnCreate {}
 
 const icon: IconName = 'book';
 const title = '新增書籍';
-
-//The maximum is inclusive and the minimum is inclusive
-const getRandomIntInclusive = (min: number, max: number) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
 
 export function CreateBook({ onCreate }: CreateBookProps) {
   const [form] = useForm();
@@ -66,18 +58,7 @@ export function CreateBook({ onCreate }: CreateBookProps) {
       title,
       children,
       onConfirm,
-      onClosed: () => form.resetFields(),
-      onOpening: () => {
-        process.env.NODE_ENV === 'development' &&
-          form.setFieldsValue({
-            name: rid(8),
-            description: `${rid(10)}\n${rid(20)}\n${rid(30)}`,
-            category: Category['玄幻'],
-            tags: Array.from({ length: getRandomIntInclusive(0, 5) }, () =>
-              rid(getRandomIntInclusive(4, 8))
-            )
-          });
-      }
+      onClosed: () => form.resetFields()
     });
   }
 
