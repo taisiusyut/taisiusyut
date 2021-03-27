@@ -2,7 +2,7 @@ import { MouseEvent, ChangeEvent } from 'react';
 import { ControlProps } from '@/utils/form';
 import { Checkbox } from '@blueprintjs/core';
 import { openMixedConfirmOverlay } from '@/components/MixedOverlay';
-import TNC from '@/tnc.md';
+import TNC from '@/guide/tnc.md';
 import classes from './TNC.module.scss';
 
 interface TNCCheckboxProps extends ControlProps<boolean> {}

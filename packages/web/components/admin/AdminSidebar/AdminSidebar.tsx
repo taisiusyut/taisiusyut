@@ -11,12 +11,6 @@ interface ItemOptions extends SidebarItemProps {
 }
 
 const itemsOptions: ItemOptions[] = [
-  // {
-  //   href: '/admin',
-  //   icon: 'home',
-  //   text: '首頁',
-  //   access: [UserRole.Root, UserRole.Admin, UserRole.Author]
-  // },
   {
     href: '/admin/book',
     icon: 'book',
@@ -42,6 +36,12 @@ const itemsOptions: ItemOptions[] = [
     href: '/admin/settings',
     icon: 'cog',
     text: '設定',
+    access: [UserRole.Root, UserRole.Admin, UserRole.Author]
+  },
+  {
+    href: '/admin/faq',
+    icon: 'help',
+    text: '常見問題',
     access: [UserRole.Root, UserRole.Admin, UserRole.Author]
   }
 ];

@@ -1,0 +1,25 @@
+@import '~styles/utils';
+
+.admin-faq {
+  padding: 30px;
+
+  h2,
+  h3 {
+    margin-top: 0;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    line-height: 1.5em;
+    padding-left: 1.5em;
+
+    + h3 {
+      margin-top: 3em;
+    }
+  }
+
+  li + li {
+    margin-top: 1em;
+  }
+}
