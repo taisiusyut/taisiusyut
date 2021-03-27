@@ -3,6 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { Button, Icon } from '@blueprintjs/core';
 import { getChapterByNo, getErrorMessage } from '@/service';
 import { Schema$Chapter } from '@/typings';
+import { useAuthState } from '@/hooks/useAuth';
 import classes from './ClientChapterContent.module.scss';
 
 export interface Props {
@@ -18,21 +19,41 @@ export const ClientChapterContentLoading = (
 
 export const ClientChapterContent = React.memo(
   ({ bookID, chapterNo, onLoaded, defaultChapter }: Props) => {
+    const { loginStatus } = useAuthState();
+    const waitingAuth = loginStatus === 'unknown' || loginStatus === 'loading';
     const request = useCallback(() => getChapterByNo({ bookID, chapterNo }), [
       bookID,
       chapterNo
     ]);
 
-    const [
-      { data: chapter = defaultChapter, loading, error },
-      { fetch }
-    ] = useRxAsync(request, {
-      defer: !!defaultChapter,
-      onSuccess: onLoaded
-    });
+    const [{ data: chapter = defaultChapter, error }, { fetch }] = useRxAsync(
+      request,
+      {
+        defer: !!defaultChapter || waitingAuth,
+        onSuccess: onLoaded
+      }
+    );
 
-    if (loading) {
-      return ClientChapterContentLoading;
+    if (error) {
+      const handleRetry = (event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation(); // prevent trigger showOverlay in `ClientChapter`
+        event.preventDefault();
+        fetch();
+      };
+
+      return (
+        <div className={classes['error']}>
+          <div>
+            <div>
+              <Icon icon="warning-sign" iconSize={50} intent="warning" />
+            </div>
+            <div>{error ? getErrorMessage(error) : '未知錯誤'}</div>
+            <Button intent="primary" onClick={handleRetry}>
+              重試
+            </Button>
+          </div>
+        </div>
+      );
     }
 
     if (chapter) {
@@ -50,24 +71,8 @@ export const ClientChapterContent = React.memo(
       );
     }
 
-    const handleRetry = (event: React.MouseEvent<HTMLElement>) => {
-      event.stopPropagation(); // prevent trigger showOverlay in `ClientChapter`
-      event.preventDefault();
-      fetch();
-    };
-
-    return (
-      <div className={classes['error']}>
-        <div>
-          <div>
-            <Icon icon="warning-sign" iconSize={50} intent="warning" />
-          </div>
-          <div>{error ? getErrorMessage(error) : '未知錯誤'}</div>
-          <Button intent="primary" onClick={handleRetry}>
-            重試
-          </Button>
-        </div>
-      </div>
-    );
+    return ClientChapterContentLoading;
   }
 );
+
+ClientChapterContent.displayName = 'ClientChapterContent';
