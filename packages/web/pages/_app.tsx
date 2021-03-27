@@ -29,7 +29,7 @@ interface ExtendAppProps extends AppProps {
   };
 }
 
-function Unthorized({ redirect, role }: UnthorizedProps) {
+function UnAuthorized({ redirect, role }: UnthorizedProps) {
   useEffect(() => {
     const isAdminPage = router.asPath.startsWith(`/admin`);
     const pathname = redirect || isAdminPage ? '/admin/login' : '/';
@@ -38,7 +38,12 @@ function Unthorized({ redirect, role }: UnthorizedProps) {
       Toaster.failure({ message: 'Permission denied' });
     }
 
-    router.push({ pathname, query: { from: router.asPath } }, pathname);
+    const { href, origin } = window.location;
+
+    router.push(
+      { pathname, query: { from: href.slice(origin.length) } },
+      pathname
+    );
   }, [redirect, role]);
   return <div hidden />;
 }
@@ -70,7 +75,7 @@ function AppContent(props: ExtendAppProps) {
     return null;
   }
 
-  return <Unthorized role={user?.role} redirect={Component.redirect} />;
+  return <UnAuthorized role={user?.role} redirect={Component.redirect} />;
 }
 
 function App(props: ExtendAppProps) {
