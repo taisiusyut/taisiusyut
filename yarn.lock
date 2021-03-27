@@ -3513,6 +3513,13 @@
   resolved "https://registry.yarnpkg.com/@types/dom4/-/dom4-2.0.1.tgz#506d5781b9bcab81bd9a878b198aec7dee2a6033"
   integrity sha512-kSkVAvWmMZiCYtvqjqQEwOmvKwcH+V4uiv3qPQ8pAh1Xl39xggGEo8gHUqV4waYGHezdFw0rKBR8Jt0CrQSDZA==
 
+"@types/dompurify@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.2.1.tgz#eebf3af8afe2f577a53acab9d98a3a4cb04bbbe7"
+  integrity sha512-3JwbEeRVQ3n6+JgBW/hCdkydRk9/vWT+UEglcXEJqLJEcUganDH37zlfLznxPKTZZfDqA9K229l1qN458ubcOQ==
+  dependencies:
+    "@types/trusted-types" "*"
+
 "@types/draft-js@^0.10.44":
   version "0.10.44"
   resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.44.tgz#7cd59d1cc335df31a92e86d09429ea22ce2f6a4f"
@@ -3648,6 +3655,15 @@
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
 
+"@types/jsdom@^16.2.8":
+  version "16.2.8"
+  resolved "https://registry.yarnpkg.com/@types/jsdom/-/jsdom-16.2.8.tgz#f2f06d64ccc9c3773669a26257155504bb0ebf69"
+  integrity sha512-s+Ll9m1ZYrIPzXSXUeN/j+0hGjTXD4+ecKB+xBAv2fdvEuRSv5VQJz80+Uth+V9lKvZG1fV+C23EfQpDHaRXMg==
+  dependencies:
+    "@types/node" "*"
+    "@types/parse5" "*"
+    "@types/tough-cookie" "*"
+
 "@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6":
   version "7.0.7"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.7.tgz#98a993516c859eb0d5c4c8f098317a9ea68db9ad"
@@ -3736,6 +3752,11 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
+"@types/parse5@*":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@types/parse5/-/parse5-6.0.0.tgz#38590dc2c3cf5717154064e3ee9b6947ee21b299"
+  integrity sha512-oPwPSj4a1wu9rsXTEGIJz91ISU725t0BmSnUhb57sI+M8XEmvUop84lzuiYdq0Y5M6xLY8DBPg0C2xEQKLyvBA==
 
 "@types/parse5@^5.0.0":
   version "5.0.3"
@@ -3960,6 +3981,16 @@
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@types/tmp/-/tmp-0.2.0.tgz#e3f52b4d7397eaa9193592ef3fdd44dc0af4298c"
   integrity sha512-flgpHJjntpBAdJD43ShRosQvNC0ME97DCfGvZEDlAThQmnerRXrLbX6YgzRBQCZTthET9eAWFAMaYP0m0Y4HzQ==
+
+"@types/tough-cookie@*":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.0.tgz#fef1904e4668b6e5ecee60c52cc6a078ffa6697d"
+  integrity sha512-I99sngh224D0M7XgW1s120zxCt3VYQ3IQsuw3P3jbq5GG4yc79+ZjyKznyOGIQrflfylLgcfekeZW/vk0yng6A==
+
+"@types/trusted-types@*":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.0.tgz#aee6e868fcef74f2b8c71614b6df81a601a42f17"
+  integrity sha512-I8MnZqNXsOLHsU111oHbn3khtvKMi5Bn4qVFsIWSJcCP1KKDiXX5AEw8UPk0nSopeC+Hvxt6yAy1/a5PailFqg==
 
 "@types/uglify-js@*":
   version "3.13.0"
@@ -6838,6 +6869,11 @@ domhandler@^2.3.0:
   integrity sha512-JiK04h0Ht5u/80fdLMCEmV4zkNh2BcoMFBmZ/91WtYZ8qVXSKjiw7fXMgFPnHcSZgOo3XdinHvmnDUeMf5R4wA==
   dependencies:
     domelementtype "1"
+
+dompurify@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.7.tgz#a5f055a2a471638680e779bd08fc334962d11fd8"
+  integrity sha512-jdtDffdGNY+C76jvodNTu9jt5yYj59vuTUyx+wXdzcSwAGTYZDAQkQ7Iwx9zcGrA4ixC1syU4H3RZROqRxokxg==
 
 domutils@1.5.1:
   version "1.5.1"
@@ -10058,7 +10094,7 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-jsdom@^16.4.0:
+jsdom@^16.4.0, jsdom@^16.5.1:
   version "16.5.1"
   resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-16.5.1.tgz#4ced6bbd7b77d67fb980e64d9e3e6fb900f97dd6"
   integrity sha512-pF73EOsJgwZekbDHEY5VO/yKXUkab/DuvrQB/ANVizbr6UAHJsDdHXuotZYwkJSGQl1JM+ivXaqY+XBDDL4TiA==

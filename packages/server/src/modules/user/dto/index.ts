@@ -2,6 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { UserRole, UserStatus } from '@/typings';
+import { DOMPurify } from '@/decorators';
 import { Max_Author_Description } from '@/constants';
 
 export function IsNickname(): ReturnType<typeof applyDecorators> {
@@ -9,7 +10,11 @@ export function IsNickname(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsDescription(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), MaxLength(Max_Author_Description));
+  return applyDecorators(
+    IsString(),
+    MaxLength(Max_Author_Description),
+    DOMPurify()
+  );
 }
 
 export function IsUserRole(): ReturnType<typeof applyDecorators> {

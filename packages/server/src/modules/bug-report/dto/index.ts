@@ -1,6 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsString, MaxLength } from 'class-validator';
+import { DOMPurify } from '@/decorators';
 import { Max_Bug_Report_Title, Max_Bug_Report_Description } from '@/constants';
 import { BugReportStatus } from '@/typings';
 
@@ -9,7 +10,11 @@ export function IsTitle(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsDescription(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), MaxLength(Max_Bug_Report_Description));
+  return applyDecorators(
+    IsString(),
+    MaxLength(Max_Bug_Report_Description),
+    DOMPurify()
+  );
 }
 
 export function IsBugReportStatus(): ReturnType<typeof applyDecorators> {

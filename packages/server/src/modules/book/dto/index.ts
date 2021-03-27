@@ -9,6 +9,7 @@ import {
   MaxLength
 } from 'class-validator';
 import { Category } from '@/typings';
+import { DOMPurify } from '@/decorators';
 import { Max_Tags, Max_Book_Description } from '@/constants';
 
 export function IsBookName(): ReturnType<typeof applyDecorators> {
@@ -23,7 +24,11 @@ export function IsCategory(): ReturnType<typeof applyDecorators> {
 }
 
 export function IsDescription(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), MaxLength(Max_Book_Description));
+  return applyDecorators(
+    IsString(),
+    MaxLength(Max_Book_Description),
+    DOMPurify()
+  );
 }
 
 export function IsTags(): ReturnType<typeof applyDecorators> {
