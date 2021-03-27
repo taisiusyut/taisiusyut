@@ -15,7 +15,7 @@ export function Meta({
   children,
   title = '睇小說',
   keywords = '睇小說',
-  description = '是咁的，我係一個網絡小說平台',
+  description = '是咁的，整緊個網絡小說平台',
   robots = 'all'
 }: Props) {
   return (
