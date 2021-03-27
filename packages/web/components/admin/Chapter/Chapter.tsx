@@ -3,7 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { merge, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Button, Card } from '@blueprintjs/core';
-import { calcWordCount } from '@taisiusyut/server';
+import { calcWordCount } from '@taisiusyut/server/dist/utils/caclWordCount';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
   ChapterType,
@@ -50,8 +50,8 @@ export const chapterState$ = new Subject<Partial<ChapterState>>();
 
 export function Chapter({ bookID, chapterID, chapter }: Props) {
   const [prefix, title, submitText, resetText] = chapterID
-    ? (['Update', '編輯章節', '編輯', '恢復'] as const)
-    : (['Create', '新增章節', '新增', '清除'] as const);
+    ? (['Update', '編輯章節', '更新', '恢復'] as const)
+    : (['Create', '新增章節', '提交', '清除'] as const);
 
   const [form] = useForm();
 

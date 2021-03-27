@@ -101,12 +101,14 @@ export function ContentEditor({
         keyBindingFn={keyBindingFn}
         handlePastedText={handlePastedText}
         onChange={state => {
+          // should not set state only if plainText changed. It may cause selection worng
+          setEditorState(state);
+
           const text = state.getCurrentContent().getPlainText();
           prev.current = text;
 
           // prevent change event trigger by focus
           if (text !== editorState.getCurrentContent().getPlainText()) {
-            setEditorState(state);
             handleChange(state.getCurrentContent().getPlainText());
           }
         }}
