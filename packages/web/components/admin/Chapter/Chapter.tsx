@@ -3,7 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { merge, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Button, Card } from '@blueprintjs/core';
-import { calcWordCount } from '@taisiusyut/server/dist/utils/caclWordCount';
+import { calcWordCount } from '@taisiusyut/server/dist/utils/calc-word-count';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
   ChapterType,

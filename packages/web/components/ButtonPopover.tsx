@@ -5,7 +5,7 @@ import {
   IButtonProps,
   IPopoverProps
 } from '@blueprintjs/core';
-import { isTouchable } from '@/constants';
+import { isTouchable } from '@/utils/isTouchable';
 
 export interface ButtonPopoverProps
   extends IButtonProps,

@@ -6,7 +6,7 @@ import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
 import { BookShelf, useBookShelf } from '@/hooks/useBookShelf';
 import { useContextMenu, UseContextMenuEvent } from '@/hooks/useContextMenu';
-import { isTouchable } from '@/constants';
+import { isTouchable } from '@/utils/isTouchable';
 import { lastVisitStorage } from '@/utils/storage';
 import { openBookShelfItemActions, Offset } from '../openBookShelfItemActions';
 import { RequiredProps } from '../BookShelfItemActions';
