@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { HttpStatus } from '@nestjs/common';
 import { BookStatus, ChapterStatus, ChapterType, Schema$Book } from '@/typings';
-import { calcWordCount } from '@/utils/caclWordCount';
+import { calcWordCount } from '@/utils/calc-word-count';
 import { createBook, updateBook } from '../../service/book';
 import { getGlobalUser, setupUsers } from '../../service/auth';
 import {

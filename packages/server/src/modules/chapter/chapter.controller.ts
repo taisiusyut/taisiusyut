@@ -22,7 +22,7 @@ import { Book } from '@/modules/book/schemas/book.schema';
 import { BookService } from '@/modules/book/book.service';
 import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
-import { calcWordCount } from '@/utils/caclWordCount';
+import { calcWordCount } from '@/utils/calc-word-count';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
 import { PublishChapterEvent } from './event';

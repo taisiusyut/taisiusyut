@@ -3,6 +3,7 @@ import { useRxAsync } from 'use-rx-hooks';
 import { merge, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Button, Card } from '@blueprintjs/core';
+import { calcWordCount } from '@taisiusyut/server';
 import { PageHeader } from '@/components/admin/PageHeader';
 import {
   ChapterType,
@@ -19,7 +20,6 @@ import {
 } from '@/hooks/useFileUpload';
 import { useBoolean } from '@/hooks/useBoolean';
 import { createChapterSotrage } from '@/utils/storage';
-import { calcWordCount } from '@taisiusyut/server/dist/utils/caclWordCount';
 import { Schema$Chapter } from '@/typings';
 import { useForm, ChapterForm, ChapterState } from './ChapterForm';
 import { ChapterDropArea } from './ChapterDropArea';

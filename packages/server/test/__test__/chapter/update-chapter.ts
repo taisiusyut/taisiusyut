@@ -23,7 +23,7 @@ import {
   getChapter,
   updateChapter
 } from '../../service/chapter';
-import { calcWordCount } from '@/utils/caclWordCount';
+import { calcWordCount } from '@/utils/calc-word-count';
 
 export function testUpdateChapter() {
   let book: Schema$Book;
