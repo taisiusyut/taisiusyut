@@ -24,6 +24,7 @@ interface Props {
   bookName: string;
   lastVisit?: number;
   chapters: PaginateResult<Schema$Chapter> | null;
+  pageSize: number;
 }
 
 interface ChaptersGridProps {
@@ -93,13 +94,14 @@ export function ClientBookChaptersGrid({
   bookID,
   bookName,
   lastVisit,
+  pageSize,
   chapters: initialChapters
 }: Props) {
   const [useChapters] = useState(() => {
     const request = (params?: Param$GetChapters) =>
       getChapters({ ...params, bookID, sort: { createdAt: Order.ASC } });
     return createUsePaginationLocal('id', request, {
-      defaultState: { pageSize: initialChapters?.pageSize },
+      defaultState: { pageSize },
       initializer: initialChapters
         ? (state, reducer) =>
             reducer(state, {

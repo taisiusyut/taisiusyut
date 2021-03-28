@@ -23,12 +23,11 @@ export type ClientBookDetailsParams = {
   bookName: string;
 };
 
-export interface ClientBookDetailsData extends ClientBookDetailsParams {
+export interface ClientBookDetailsProps extends ClientBookDetailsParams {
   book: Schema$Book | null;
   chapters: PaginateResult<Schema$Chapter> | null;
+  pageSize: number;
 }
-
-export interface ClientBookDetailsProps extends ClientBookDetailsData {}
 
 const DesktopBookShelfToggle = withDesktopHeaderBtn(BookShelfToggle);
 
@@ -52,7 +51,8 @@ const onTagClick = (tag: unknown) => {
 export function ClientBookDetailsComponent({
   bookName,
   book: initialBook,
-  chapters: initialChapters
+  chapters: initialChapters,
+  pageSize
 }: ClientBookDetailsProps) {
   const bookState = useGetBookByName(bookName, !!initialBook);
   const shelf = useBookShelfState();
@@ -96,6 +96,7 @@ export function ClientBookDetailsComponent({
           bookName={book.name}
           lastVisit={lastVisit}
           chapters={initialChapters}
+          pageSize={pageSize}
         />
         <ClientBookChaptersDrawer book={book} lastVisit={lastVisit} />
       </div>

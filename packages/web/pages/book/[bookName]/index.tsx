@@ -60,13 +60,15 @@ export const getStaticProps: GetStaticProps<
     .then(book => book && serialize<Schema$Book | null>(book))
     .catch(() => null);
 
+  const pageSize = 30;
+
   const chapters =
     book &&
     book.status &&
     [BookStatus.Public, BookStatus.Finished].includes(book.status)
       ? await chapterController
           .getAll({} as any, book.id, {
-            pageSize: 30,
+            pageSize,
             status: ChapterStatus.Public,
             sort: { createdAt: Order.ASC },
             ...query
@@ -80,7 +82,8 @@ export const getStaticProps: GetStaticProps<
     props: {
       book,
       bookName,
-      chapters
+      chapters,
+      pageSize
     }
   };
 };
