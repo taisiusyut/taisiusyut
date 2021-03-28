@@ -44,7 +44,6 @@ function ActionButton(props: RequiredProps) {
 }
 
 const bookModelWidth = 55;
-// const RemoveBookButton = withRemoveBookFromShelf(Button);
 
 export function BookShelfItem({ data }: Props) {
   const [shelf, actions] = useBookShelf();
@@ -88,7 +87,7 @@ export function BookShelfItem({ data }: Props) {
 
   if (book) {
     const basePath = `/book/${book.name}`;
-    const active = decodeURIComponent(asPath).startsWith(basePath);
+    const active = decodeURIComponent(asPath).startsWith(basePath + '/');
     const _lastVisit = lastVisit || lastVisitStorage.get(book.name, 1);
 
     return (
