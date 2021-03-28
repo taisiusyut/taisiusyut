@@ -7,7 +7,7 @@ export function FinishBookDialog(props: BookActionDialogProps) {
   return (
     <BookActionDialog {...props} intent="danger" request={finishBook}>
       <div className={classes['dialog']}>
-        書籍完結後，無法創建付費章節，你確認要完結「{props.book.name}」嗎?
+        你確認要完結「{props.book.name}」嗎?
       </div>
     </BookActionDialog>
   );
