@@ -19,6 +19,7 @@ import {
   ClientPreferencesOverlayTitle
 } from '@/components/client/ClientPreferencesOverlay';
 import { Github } from '@/components/Icon/Github';
+import { Telegram } from '@/components/Icon/Telegram';
 import { withAuthRequired } from '@/components/client/withAuthRequired';
 import { AuthorRequest } from '@/components/client/AuthorRequest';
 import { useBoolean } from '@/hooks/useBoolean';
@@ -91,17 +92,6 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         搜索書籍
       </ListItem>
 
-      <ListItem
-        icon="annotation"
-        rightElement={chevron}
-        onClick={() => {
-          props.onClose();
-          router.push('/reports');
-        }}
-      >
-        問題/建議
-      </ListItem>
-
       {!auth.user || auth.user.role === UserRole.Client ? (
         <AuthorRequest icon="draw" rightElement={chevron} />
       ) : (
@@ -113,6 +103,17 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
           寫文
         </ListItem>
       )}
+
+      <ListItem
+        icon="annotation"
+        rightElement={chevron}
+        onClick={() => {
+          props.onClose();
+          router.push('/reports');
+        }}
+      >
+        問題/建議
+      </ListItem>
 
       <ListItem
         icon="help"
@@ -142,6 +143,22 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
         onClick={() => window.open(`https://github.com/Pong420/taisiusyut`)}
       >
         Github
+      </ListItem>
+
+      <ListItem
+        icon={<Telegram />}
+        rightElement={chevron}
+        onClick={() => window.open(`https://t.me/taisiusyut`)}
+      >
+        Telegram
+      </ListItem>
+
+      <ListItem
+        icon="envelope"
+        rightElement={chevron}
+        onClick={() => (window.location.href = `mailto:taisiusyut@gmail.com`)}
+      >
+        taisiusyut@gmail.com
       </ListItem>
 
       <ListSpacer />
