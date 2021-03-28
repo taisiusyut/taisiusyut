@@ -122,7 +122,12 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
         wordCount={wordCount}
         onValuesChange={(_, state) => chapterState$.next(state)}
         onFinish={payload =>
-          fetch({ bookID, ...payload, ...(chapterID && { chapterID }) })
+          fetch({
+            bookID,
+            ...payload,
+            ...(chapterID && { chapterID }),
+            type: ChapterType.Free
+          })
         }
       >
         <div className={classes['footer']}>

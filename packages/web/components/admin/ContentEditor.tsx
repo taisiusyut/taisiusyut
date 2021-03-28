@@ -74,8 +74,6 @@ export function ContentEditor({
     return { keyBindingFn, handlePastedText };
   }, []);
 
-  const handleChange = onChange || (() => void 0);
-
   // for value change by form instance (e.g. file upload)
   useEffect(() => {
     setEditorState(editorState => {
@@ -90,7 +88,15 @@ export function ContentEditor({
         'change-block-data'
       );
     });
-  }, [value, handlePastedText]);
+  }, [value]);
+
+  useEffect(() => {
+    const text = editorState.getCurrentContent().getPlainText();
+    if (prev.current !== text) {
+      prev.current = text;
+      onChange && onChange(text);
+    }
+  }, [editorState, onChange]);
 
   return (
     <div className={[Classes.INPUT, className].join(' ')}>
@@ -100,18 +106,7 @@ export function ContentEditor({
         editorState={editorState}
         keyBindingFn={keyBindingFn}
         handlePastedText={handlePastedText}
-        onChange={state => {
-          // should not set state only if plainText changed. It may cause selection worng
-          setEditorState(state);
-
-          const text = state.getCurrentContent().getPlainText();
-          prev.current = text;
-
-          // prevent change event trigger by focus
-          if (text !== editorState.getCurrentContent().getPlainText()) {
-            handleChange(state.getCurrentContent().getPlainText());
-          }
-        }}
+        onChange={setEditorState}
       />
     </div>
   );
