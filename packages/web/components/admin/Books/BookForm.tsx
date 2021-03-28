@@ -4,7 +4,7 @@ import { CategorySelect } from '@/components/Select';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Param$CreateBook, Param$UpdateBook } from '@/typings';
 import { createForm, validators, FormItemProps } from '@/utils/form';
-import { Max_Tags, Max_Book_Description } from '@/constants';
+import { Max_Tags, Max_Book_Name, Max_Book_Description } from '@/constants';
 import { BookCoverUpload } from './BookCoverUpload';
 import classes from './Books.module.scss';
 
@@ -19,7 +19,10 @@ export const BookName = () => (
   <FormItem
     name="name"
     label="名稱"
-    validators={[validators.required('Please enter the book name')]}
+    validators={[
+      validators.required('Please enter the book name'),
+      validators.maxLength(Max_Book_Name, `cannot longer then ${Max_Book_Name}`)
+    ]}
   >
     <Input />
   </FormItem>

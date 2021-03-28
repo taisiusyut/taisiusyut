@@ -10,10 +10,10 @@ import {
 } from 'class-validator';
 import { Category } from '@/typings';
 import { DOMPurify } from '@/decorators';
-import { Max_Tags, Max_Book_Description } from '@/constants';
+import { Max_Tags, Max_Book_Name, Max_Book_Description } from '@/constants';
 
 export function IsBookName(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), IsNotEmpty(), MaxLength(15));
+  return applyDecorators(IsString(), IsNotEmpty(), MaxLength(Max_Book_Name));
 }
 
 export function IsCategory(): ReturnType<typeof applyDecorators> {

@@ -2,6 +2,7 @@ import React from 'react';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Input } from '@/components/Input';
 import { Schema$Chapter } from '@/typings';
+import { Max_Chapter_Name } from '@/constants';
 import { createForm, FormProps, validators } from '@/utils/form';
 import classes from './Chapter.module.scss';
 
@@ -32,7 +33,13 @@ export function ChapterForm({ wordCount, children, ...props }: Props) {
       <FormItem
         name="name"
         label="名稱"
-        validators={[validators.required('Please enter a chapter name')]}
+        validators={[
+          validators.required('Please enter a chapter name'),
+          validators.maxLength(
+            Max_Chapter_Name,
+            `cannot longer then ${Max_Chapter_Name}`
+          )
+        ]}
       >
         <Input />
       </FormItem>

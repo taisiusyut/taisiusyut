@@ -11,9 +11,10 @@ import {
   ValidateIf
 } from 'class-validator';
 import { ChapterType, ChapterStatus } from '@/typings';
+import { Max_Chapter_Name } from '@/constants';
 
 export function IsChapterName(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), IsNotEmpty(), MaxLength(15));
+  return applyDecorators(IsString(), IsNotEmpty(), MaxLength(Max_Chapter_Name));
 }
 
 export function IsContent(): ReturnType<typeof applyDecorators> {
