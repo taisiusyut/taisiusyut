@@ -94,7 +94,7 @@ export default function ClientBookDetailsPage(props: Props) {
     <Meta
       title={`${book.name} | ${book.authorName} | 睇小說`}
       keywords={book.name}
-      description={book.description}
+      description={book.description.replace(/\n/g, '')}
     />
   ) : null;
 

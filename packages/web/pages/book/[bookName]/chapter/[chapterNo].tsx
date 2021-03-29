@@ -77,7 +77,7 @@ export default function ClientChapterPage(props: Props) {
     <Meta
       keywords={bookName}
       title={formatChapterTitle(chapter.number, bookName)}
-      description={chapter.content.trim().slice(0, 100)}
+      description={chapter.content.trim().slice(0, 100).replace(/\n/g, '')}
     />
   ) : null;
 
