@@ -91,6 +91,12 @@ function ClientLayoutContent({
       }
 
       setFlags(newState);
+
+      // Fix for ClientSearch style removeal while item is active (production only)
+      // https://github.com/vercel/next.js/issues/17464#issuecomment-711330281
+      document
+        .querySelectorAll('style[media="x"]')
+        .forEach(el => el.removeAttribute('media'));
     };
 
     handler(router.asPath);
