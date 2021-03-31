@@ -12,6 +12,7 @@
     "server": "yarn workspace @taisiusyut/server",
     "style": "yarn workspace @taisiusyut/style",
     "web": "yarn workspace @taisiusyut/web",
+    "app": "yarn workspace @taisiusyut/app",
     "component": "node ./scripts/component.js",
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build --stream",
