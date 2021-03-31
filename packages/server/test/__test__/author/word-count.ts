@@ -28,33 +28,22 @@ export function testAuthorWordCount() {
   let book: Schema$Book;
   let chapters: Schema$Chapter[] = [];
 
-  const publicChapters = async () => {
-    for (let i = 0; i < chapters.length; i++) {
-      const response = await publishChapter(
-        localAuthor.token,
-        book.id,
-        chapters[i].id
-      );
-      expect(response.body.status).toBe(ChapterStatus.Public);
-      expect(response.body.wordCount).toBe(chapters[i].wordCount);
-      chapters[i] = response.body;
-    }
-  };
   const getTotalWordCount = (payload: { wordCount: number }[]) =>
     payload.reduce((count, c) => count + c.wordCount, 0);
 
   beforeAll(async () => {
     await setupUsers();
-    const response = await createUserAndLogin(root.token, {
-      role: UserRole.Author
-    });
-    localAuthor = response.body;
   });
 
   beforeEach(async () => {
     await app.get(BookService).clear();
 
-    let response = await createBook(localAuthor.token);
+    let response = await createUserAndLogin(root.token, {
+      role: UserRole.Author
+    });
+    localAuthor = response.body;
+
+    response = await createBook(localAuthor.token);
     book = response.body;
     response = await publishBook(localAuthor.token, book.id);
     book = response.body;
@@ -63,11 +52,15 @@ export function testAuthorWordCount() {
     chapters = [];
 
     for (let i = 0; i < 3; i++) {
-      const response = await createChapter(localAuthor.token, book.id);
-      expect(response.body.wordCount).toBeGreaterThan(0);
+      let response = await createChapter(localAuthor.token, book.id);
+      const chapter = response.body;
+      expect(chapter.wordCount).toBeGreaterThan(0);
+
+      response = await publishChapter(localAuthor.token, book.id, chapter.id);
+      expect(response.body.status).toBe(ChapterStatus.Public);
+
       chapters.push(response.body);
     }
-    await publicChapters();
   });
 
   test('author word count will be update after chapter publish', async () => {

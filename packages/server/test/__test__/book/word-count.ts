@@ -31,7 +31,7 @@ export function testWordCount() {
   let book: Schema$Book;
   let chapters: Schema$Chapter[] = [];
 
-  const publicChapters = async () => {
+  const publishChapters = async () => {
     if (chapters.every(c => c.status === ChapterStatus.Public)) return;
     for (let i = 0; i < chapters.length; i++) {
       const response = await publishChapter(
@@ -72,7 +72,7 @@ export function testWordCount() {
       expect(response.body.wordCount).toBeGreaterThan(0);
       chapters.push(response.body);
     }
-    await publicChapters();
+    await publishChapters();
   });
 
   test(`book word count will be update after chapter publish`, async () => {
