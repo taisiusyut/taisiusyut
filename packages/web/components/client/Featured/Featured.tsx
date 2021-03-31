@@ -59,18 +59,19 @@ export function Featured({ data }: FeaturedProps) {
   useEffect(() => {
     const el = contentRef.current;
     if (el && !loaded) {
-      const timeout = setTimeout(() => {
-        const handler = () => {
-          const visible = !!el.offsetWidth;
-          visible && fetch();
-        };
-        handler();
+      const handler = () => {
+        const visible = !!el.offsetWidth;
+        visible && !loaded && fetch();
+      };
 
-        // for responsive
-        window.addEventListener('resize', handler);
-        return () => window.removeEventListener('resize', handler);
-      }, 0);
-      return () => clearTimeout(timeout);
+      const timeout = setTimeout(handler, 0);
+
+      window.addEventListener('resize', handler);
+
+      return () => {
+        clearTimeout(timeout);
+        window.removeEventListener('resize', handler);
+      };
     }
   }, [loaded, asPath, fetch]);
 
