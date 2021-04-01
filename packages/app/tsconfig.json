@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "es5",
+    "target": "esnext",
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,

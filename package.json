@@ -13,6 +13,7 @@
     "style": "yarn workspace @taisiusyut/style",
     "web": "yarn workspace @taisiusyut/web",
     "app": "yarn workspace @taisiusyut/app",
+    "common": "yarn workspace @taisiusyut/common",
     "component": "node ./scripts/component.js",
     "dev": "lerna run dev --stream --parallel --ignore @taisiusyut/app",
     "dev:app": "lerna run dev --stream --parallel --ignore @taisiusyut/web --ignore @taisiusyut/style",
@@ -30,6 +31,7 @@
     "node_modules",
     "packages/server/node_modules",
     "packages/styles/node_modules",
+    "packages/common/node_modules",
     "packages/web/node_modules",
     "packages/web/.next"
   ],
