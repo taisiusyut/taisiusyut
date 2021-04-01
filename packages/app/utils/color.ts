@@ -36,3 +36,17 @@ export const darken = (input: string, percent: number) =>
 export function rgbToHex(r: number, g: number, b: number): string {
   return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
+
+export const gradientLighten = (color: string) => [
+  lighten(color, 40),
+  lighten(color, 20),
+  color
+];
+
+export const gradientDarken = (color: string) => [
+  color,
+  darken(color, 10),
+  darken(color, 20),
+  darken(color, 30),
+  darken(color, 20)
+];
