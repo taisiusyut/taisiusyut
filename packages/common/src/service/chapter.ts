@@ -1,4 +1,3 @@
-import { routes } from '@/constants';
 import {
   PaginateResult,
   Param$GetChapters,
@@ -8,6 +7,7 @@ import {
   Schema$Chapter
 } from '@/typings';
 import { api } from './api';
+import { routes } from './routes';
 
 export interface Pram$GetChapter {
   bookID: string;

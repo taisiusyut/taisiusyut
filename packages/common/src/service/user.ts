@@ -6,7 +6,7 @@ import type {
   Schema$Author,
   PaginateResult
 } from '@/typings';
-import { routes } from '@/constants';
+import { routes } from './routes';
 import { api } from './api';
 
 export const createUser = (payload: Param$CreateUser) =>

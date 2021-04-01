@@ -1,4 +1,3 @@
-import { routes } from '@/constants';
 import {
   Schema$Announcement,
   Param$CreateAnnouncement,
@@ -7,6 +6,7 @@ import {
   Param$UpdateAnnouncement
 } from '@/typings';
 import { api } from './api';
+import { routes } from './routes';
 
 export function createAnnouncement(payload: Param$CreateAnnouncement) {
   return api.post<Schema$Announcement>(routes.create_announcement, payload);

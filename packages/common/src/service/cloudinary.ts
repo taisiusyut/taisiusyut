@@ -7,8 +7,6 @@ import {
   retry,
   concatMap
 } from 'rxjs/operators';
-import { RxFileToImageState } from 'use-rx-hooks';
-import { routes } from '@/constants';
 import {
   Param$CloudinaryUpload,
   Param$CloudinarySign,
@@ -17,6 +15,7 @@ import {
 } from '@/typings';
 import { api } from './api';
 import { createFormData } from './createFormData';
+import { routes } from './routes';
 import axios from 'axios';
 
 // https://cloudinary.com/documentation/upload_images#uploading_with_a_direct_call_to_the_rest_api
@@ -43,7 +42,9 @@ export const cloudinaryUpload = ({
   );
 };
 
-type State = RxFileToImageState | string | null;
+type FileState = { file: File; url: string };
+
+type State = FileState | string | null;
 
 export function handleCloudinaryUpload(
   payload: State,
@@ -61,7 +62,7 @@ export function handleCloudinaryUpload(
     retry(2),
     mergeMap(signPayload => {
       const handler = pipe(
-        filter((i: State): i is RxFileToImageState =>
+        filter((i: State): i is FileState =>
           i && typeof i === 'object' ? true : false
         ),
         concatMap(({ file }) => {

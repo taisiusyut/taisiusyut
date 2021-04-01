@@ -1,4 +1,3 @@
-import { routes } from '@/constants';
 import {
   Param$CreateBook,
   Param$GetBooks,
@@ -7,6 +6,7 @@ import {
   PaginateResult
 } from '@/typings';
 import { api } from './api';
+import { routes } from './routes';
 import { handleCloudinaryUpload } from './cloudinary';
 
 export const createBook = async (payload: Param$CreateBook) => {

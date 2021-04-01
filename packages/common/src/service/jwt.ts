@@ -1,6 +1,6 @@
 import type { Param$Login, Schema$Authenticated } from '@/typings';
-import { routes } from '@/constants';
 import { api } from './api';
+import { routes } from './routes';
 import { login, refreshToken } from './auth';
 
 let jwtToken: Schema$Authenticated | null = null;

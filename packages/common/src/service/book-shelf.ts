@@ -1,10 +1,10 @@
-import { routes } from '@/constants';
 import {
   Param$GetBooksFromShelf,
   Param$UpdateBookInShelf,
   Schema$BookShelf
 } from '@/typings';
 import { api } from './api';
+import { routes } from './routes';
 
 export const getBookShelf = (params?: Param$GetBooksFromShelf) =>
   api.get<Schema$BookShelf[]>(routes.get_books_from_shelf, { params });

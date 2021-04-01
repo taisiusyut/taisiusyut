@@ -8,7 +8,7 @@ import type {
   Schema$User,
   Schema$LoginRecord
 } from '@/typings';
-import { routes } from '@/constants';
+import { routes } from './routes';
 import { api } from './api';
 
 export const login = (params: Param$Login) =>
