@@ -1,19 +1,24 @@
 import * as Linking from 'expo-linking';
 
-const LinkingConfig = {
+export const LinkingConfiguration = {
   prefixes: [Linking.makeUrl('/')],
   config: {
     screens: {
       Root: {
         screens: {
-          TabOne: {
+          BookShelf: {
             screens: {
-              TabOneScreen: 'one'
+              BookShelfScreen: 'one'
             }
           },
-          TabTwo: {
+          Featured: {
             screens: {
-              TabTwoScreen: 'two'
+              FeaturedScreen: 'two'
+            }
+          },
+          Search: {
+            screens: {
+              Search: 'two'
             }
           }
         }
@@ -22,5 +27,3 @@ const LinkingConfig = {
     }
   }
 };
-
-export default LinkingConfig;
