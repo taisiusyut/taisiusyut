@@ -1,0 +1,38 @@
+// https://stackoverflow.com/a/57401891/9633867
+export function shadeColor(input: string, percent: number) {
+  let color = '';
+  if (input.startsWith('#')) {
+    color = input.length === 4 ? input + input.slice(1) : input;
+  } else if (input.startsWith('rgb')) {
+    const matches = input.match(/\d{1,3}/g) || [];
+    if (matches.length >= 3) {
+      const [r, g, b] = matches.map(Number);
+      color = rgbToHex(r, g, b);
+    }
+  }
+
+  if (!color) {
+    throw new Error(`invalid color input ${input}`);
+  }
+
+  return (
+    '#' +
+    color
+      .replace(/^#/, '')
+      .replace(/../g, color =>
+        (
+          '0' +
+          Math.min(255, Math.max(0, parseInt(color, 16) + percent)).toString(16)
+        ).substr(-2)
+      )
+  );
+}
+
+export const lighten = shadeColor;
+
+export const darken = (input: string, percent: number) =>
+  shadeColor(input, percent * -1);
+
+export function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
