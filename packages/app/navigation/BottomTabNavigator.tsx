@@ -2,9 +2,6 @@ import React, { ComponentProps } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
 import { BookShelf } from '../screens/BookShelf';
 import { Featured } from '../screens/Featured';
 import { Search } from '../screens/Search';
@@ -55,12 +52,10 @@ const tabs: ComponentProps<typeof BottomTab.Screen>[] = [
 ];
 
 export function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="BookShelf"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+      tabBarOptions={{ activeTintColor: `#2f95dc` }}
     >
       {tabs.map(props => (
         <BottomTab.Screen key={props.name} {...props} />
