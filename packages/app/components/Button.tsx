@@ -4,7 +4,8 @@ import {
   Text,
   ViewStyle,
   TextStyle,
-  PressableProps
+  PressableProps,
+  ActivityIndicator
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { shadow } from '../utils/shadow';
@@ -29,6 +30,7 @@ export type ButtonIntent = 'primary' | 'danger' | 'none';
 export interface ButtonProps extends PressableProps {
   intent?: ButtonIntent;
   text?: string;
+  loading?: boolean;
 }
 
 const buttonStyles: ViewStyle = {
@@ -88,17 +90,22 @@ const styles: Record<ButtonIntent, ButtonStyles> = {
 export function Button({
   intent = 'none',
   text = 'Button',
+  loading,
+  disabled,
   ...props
 }: ButtonProps) {
   const { gradient, borderColor, shadowColor, text: _textStyle } = styles[
     intent
   ];
 
+  const isDisabled = disabled || loading;
+
   const pressable: PressableProps['style'] = ({ pressed }) => ({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    ...(pressed ? {} : shadow(8, { shadowColor }))
+    ...(isDisabled ? { opacity: 0.5 } : {}),
+    ...(pressed || isDisabled ? {} : shadow(8, { shadowColor }))
   });
 
   const gradientColors = (pressed?: boolean) =>
@@ -112,10 +119,14 @@ export function Button({
   const textStyle: TextStyle = { fontSize: 16, ..._textStyle };
 
   return (
-    <Pressable {...props} style={pressable} onPress={() => void 0}>
+    <Pressable {...props} style={pressable} disabled={isDisabled}>
       {({ pressed }) => (
         <LinearGradient colors={gradientColors(pressed)} style={gradientStyle}>
-          <Text style={textStyle}>{text}</Text>
+          {loading ? (
+            <ActivityIndicator color={textStyle.color} />
+          ) : (
+            <Text style={textStyle}>{text}</Text>
+          )}
         </LinearGradient>
       )}
     </Pressable>
