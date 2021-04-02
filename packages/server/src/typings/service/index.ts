@@ -1,5 +1,3 @@
-import { AxiosError, AxiosResponse } from 'axios';
-
 export * from './auth';
 export * from './announcement';
 export * from './book';
@@ -9,11 +7,6 @@ export * from './cloudinary';
 export * from './user';
 export * from './payment';
 export * from './shelf';
-
-export interface ApiResponse<T> {
-  statusCode: number;
-  data: T;
-}
 
 export interface PaginateApiResponse<T> {
   statusCode: number;
@@ -59,16 +52,6 @@ export interface Pagination<T = any> {
 
 export interface Search {
   search?: string;
-}
-
-interface ApiErrorValue {
-  statusCode: number;
-  message: string | string[];
-  error?: string;
-}
-
-export interface ApiError extends Omit<AxiosError, 'response'> {
-  response?: AxiosResponse<ApiErrorValue | string>;
 }
 
 export type UnionKeys<T> = T extends any ? keyof T : never;
