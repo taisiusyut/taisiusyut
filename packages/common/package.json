@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tsc -p tsconfig.json --watch",
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf ./*.tsbuildinfo && tsc -p tsconfig.json",
     "postinstall": "yarn build"
   },
   "dependencies": {
