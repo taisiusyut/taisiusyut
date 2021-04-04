@@ -1,4 +1,4 @@
-import { JSONParse } from './JSONParse';
+import { JSONParse } from '@taisiusyut/common/utils/JSONParse';
 
 export interface IStorage<T> {
   key: string;

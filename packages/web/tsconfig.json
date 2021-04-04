@@ -15,7 +15,7 @@
     "jsx": "preserve",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*", "../../node_modules/@taisiusyut/common/*"]
     }
   },
   "include": ["/*.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],
