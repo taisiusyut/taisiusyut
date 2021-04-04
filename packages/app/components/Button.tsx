@@ -8,8 +8,8 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { shadow } from '../utils/shadow';
-import { darken, gradientLighten, gradientDarken } from '../utils/color';
+import { shadow } from '@/utils/shadow';
+import { darken, gradientLighten, gradientDarken } from '@/utils/color';
 
 export interface ButtonStyles extends ViewStyle {
   fill?: boolean;

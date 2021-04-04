@@ -1,8 +1,7 @@
 import React from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { RootStackParamList } from '../types';
+import { RootStackParamList } from '@/types';
 
 export function NotFoundScreen({
   navigation

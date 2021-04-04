@@ -2,15 +2,15 @@ import React, { ComponentProps } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { BookShelf } from '../screens/BookShelf';
-import { Featured } from '../screens/Featured';
-import { Search } from '../screens/Search';
+import { BookShelf } from '@/screens/BookShelf';
+import { Featured } from '@/screens/Featured';
+import { Search } from '@/screens/Search';
 import {
   BottomTabParamList,
   BookShelfParamList,
   FeaturedParamList,
   SearchParamList
-} from '../types';
+} from '@/types';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 

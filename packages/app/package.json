@@ -4,7 +4,7 @@
   "license": "MIT",
   "main": "__generated__/AppEntry.js",
   "scripts": {
-    "dev": "expo start",
+    "dev": "expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -16,12 +16,12 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@taisiusyut/common": "1.0.0",
     "@expo/vector-icons": "^12.0.4",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "5.11.8",
     "@react-navigation/native": "~5.9.3",
     "@react-navigation/stack": "~5.14.3",
+    "@taisiusyut/common": "1.0.0",
     "expo": "~40.0.1",
     "expo-asset": "~8.2.2",
     "expo-constants": "~9.3.3",
