@@ -7,7 +7,7 @@ import {
   ViewStyle
 } from 'react-native';
 import { shadow } from '@/utils/shadow';
-import { lighten } from '@/utils/color';
+import { lighten, colors } from '@/utils/color';
 import { ControlProps } from '@/utils/form';
 
 interface StylesOption {
@@ -26,7 +26,7 @@ const height = 34;
 const fontSize = 16;
 
 const getStyles = ({ hasError, focused }: StylesOption = {}) => {
-  const color = hasError ? '#cc0c0c' : '#2974FA';
+  const color = hasError ? colors.red : colors.blue;
 
   let container: ViewStyle = {
     flexDirection: 'row',

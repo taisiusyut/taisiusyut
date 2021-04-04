@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { shadow } from '@/utils/shadow';
-import { darken, gradientLighten, gradientDarken } from '@/utils/color';
+import { colors, darken, gradientLighten, gradientDarken } from '@/utils/color';
 
 export interface ButtonStyles extends ViewStyle {
   fill?: boolean;
@@ -42,19 +42,15 @@ const buttonStyles: ViewStyle = {
   borderWidth: 1
 };
 
-const colors: Record<ButtonIntent, string> = {
-  none: `#f5f8fa`,
-  primary: `#2974FA`,
-  danger: `#cc0c0c`
-};
+const defaultColor = `#f5f8fa`;
 
 const styles: Record<ButtonIntent, ButtonStyles> = {
   none: {
-    color: colors.none,
-    borderColor: darken(colors.none, 45),
+    color: defaultColor,
+    borderColor: darken(defaultColor, 45),
     gradient: {
-      defaults: gradientDarken(colors.none),
-      pressed: gradientDarken(darken(colors.none, 30))
+      defaults: gradientDarken(defaultColor),
+      pressed: gradientDarken(darken(defaultColor, 30))
     },
     shadowColor: `#999`,
     text: {
@@ -62,25 +58,25 @@ const styles: Record<ButtonIntent, ButtonStyles> = {
     }
   },
   primary: {
-    color: colors.primary,
-    borderColor: colors.primary,
+    color: colors.blue,
+    borderColor: colors.blue,
     gradient: {
-      defaults: gradientLighten(colors.primary),
-      pressed: gradientLighten(darken(colors.primary, 30))
+      defaults: gradientLighten(colors.blue),
+      pressed: gradientLighten(darken(colors.blue, 30))
     },
-    shadowColor: colors.primary,
+    shadowColor: colors.blue,
     text: {
       color: '#fff'
     }
   },
   danger: {
-    color: colors.danger,
-    borderColor: colors.danger,
+    color: colors.red,
+    borderColor: colors.red,
     gradient: {
-      defaults: gradientLighten(colors.danger),
-      pressed: gradientLighten(darken(colors.danger, 30))
+      defaults: gradientLighten(colors.red),
+      pressed: gradientLighten(darken(colors.red, 30))
     },
-    shadowColor: colors.danger,
+    shadowColor: colors.red,
     text: {
       color: '#fff'
     }
