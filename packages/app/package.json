@@ -4,10 +4,10 @@
   "license": "MIT",
   "main": "__generated__/AppEntry.js",
   "scripts": {
-    "dev": "expo start --clear",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "dev": "NODE_ENV=development expo start --clear",
+    "android": "NODE_ENV=development expo start --android",
+    "ios": "NODE_ENV=development expo start --ios",
+    "web": "NODE_ENV=development expo start --web",
     "eject": "expo eject",
     "test": "jest --watchAll",
     "postinstall": "expo-yarn-workspaces postinstall"
