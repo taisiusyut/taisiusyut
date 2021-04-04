@@ -5,6 +5,7 @@ import {
   ViewStyle,
   TextStyle,
   PressableProps,
+  StyleSheet,
   ActivityIndicator
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,15 +33,6 @@ export interface ButtonProps extends PressableProps {
   text?: string;
   loading?: boolean;
 }
-
-const buttonStyles: ViewStyle = {
-  borderRadius: 5,
-  height: 40,
-  width: '100%',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderWidth: 1
-};
 
 const defaultColor = `#f5f8fa`;
 
@@ -85,9 +77,10 @@ const styles: Record<ButtonIntent, ButtonStyles> = {
 
 export function Button({
   intent = 'none',
-  text = 'Button',
+  children,
   loading,
   disabled,
+  style,
   ...props
 }: ButtonProps) {
   const { gradient, borderColor, shadowColor, text: _textStyle } = styles[
@@ -96,16 +89,27 @@ export function Button({
 
   const isDisabled = disabled || loading;
 
-  const pressable: PressableProps['style'] = ({ pressed }) => ({
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...(isDisabled ? { opacity: 0.5 } : {}),
-    ...(pressed || isDisabled ? {} : shadow(8, { shadowColor }))
-  });
+  const pressable: PressableProps['style'] = props => {
+    return StyleSheet.compose(
+      {
+        alignSelf: 'stretch',
+        ...(isDisabled ? { opacity: 0.5 } : {}),
+        ...(props.pressed || isDisabled ? {} : shadow(8, { shadowColor }))
+      },
+      typeof style === 'function' ? style(props) : style
+    );
+  };
 
   const gradientColors = (pressed?: boolean) =>
     pressed ? gradient.pressed : gradient.defaults;
+
+  const buttonStyles: ViewStyle = {
+    borderWidth: 1,
+    borderRadius: 5,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
 
   const gradientStyle: ViewStyle = {
     ...buttonStyles,
@@ -121,7 +125,7 @@ export function Button({
           {loading ? (
             <ActivityIndicator color={textStyle.color} />
           ) : (
-            <Text style={textStyle}>{text}</Text>
+            <Text style={textStyle}>{children}</Text>
           )}
         </LinearGradient>
       )}
