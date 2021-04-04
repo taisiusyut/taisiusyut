@@ -29,10 +29,9 @@ module.exports = function (api) {
               );
               const filePath = path.join(__dirname, pathname.slice(1));
 
-              for (const p of [commonFilePath, filePath]) {
+              for (const p of [filePath, commonFilePath]) {
                 try {
                   const resolved = resolve.sync(p, { extensions });
-                  console.log('module-resolver', resolved);
                   return resolved;
                 } catch (error) {}
               }

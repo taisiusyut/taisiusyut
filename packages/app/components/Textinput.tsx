@@ -27,13 +27,14 @@ const fontSize = 16;
 
 const getStyles = ({ hasError, focused }: StylesOption = {}) => {
   const color = hasError ? colors.red : colors.blue;
+  const borderColor = hasError ? colors.red : `#c7c7c7`;
 
   let container: ViewStyle = {
     flexDirection: 'row',
-    borderRadius: 5,
     backgroundColor: '#fff',
+    borderRadius: 5,
     borderWidth: 1,
-    borderColor: `#c7c7c7`
+    borderColor
   };
 
   let inner: ViewStyle = {
