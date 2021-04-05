@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Pong <samfunghp@gmail.com>",
   "repository": {
-    "url": "https://github.com/Pong420/taisiusyut"
+    "url": "https://github.com/taisiusyut/taisiusyut"
   },
   "scripts": {
     "start": "yarn web start",
@@ -17,7 +17,7 @@
     "component": "node ./scripts/component.js",
     "dev": "lerna run dev --stream --parallel --ignore @taisiusyut/app",
     "dev:app": "lerna run dev --stream --parallel --ignore @taisiusyut/web --ignore @taisiusyut/style",
-    "build": "lerna run build --stream",
+    "build": "lerna run build --include-dependencies --stream",
     "postinstall": "lerna run postinstall --stream --parallel",
     "heroku-postbuild": "yarn build",
     "prepare": "husky install"
@@ -32,6 +32,7 @@
     "packages/server/node_modules",
     "packages/styles/node_modules",
     "packages/common/node_modules",
+    "packages/app/node_modules",
     "packages/web/node_modules",
     "packages/web/.next"
   ],
