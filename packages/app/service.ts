@@ -2,9 +2,12 @@ import Constants from 'expo-constants';
 import { api } from '@taisiusyut/common/service';
 import { ValidationHeader } from '@taisiusyut/server/dist/constants';
 
-const { PORT = 5000, VALIDATION_HEADER } = Constants.manifest;
+const { PORT = 5000, debuggerHost, VALIDATION_HEADER } = Constants.manifest;
 
-const baseURL = __DEV__ ? `http://localhost:${PORT}` : 'https://taisiusyut.com';
+const localhost = debuggerHost?.split(':')[0] || 'localhost';
+const baseURL = __DEV__
+  ? `http://${localhost}:${PORT}`
+  : 'https://taisiusyut.com';
 
 api.defaults.baseURL = baseURL.replace(/\/$/, '') + api.defaults.baseURL;
 
