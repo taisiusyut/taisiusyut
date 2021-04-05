@@ -1,5 +1,6 @@
 export type RootStackParamList = {
   Root: undefined;
+  MainMenu: undefined;
   NotFound: undefined;
 };
 
@@ -7,7 +8,7 @@ export type BottomTabParamList = {
   BookShelf: undefined;
   Featured: undefined;
   Search: undefined;
-  MainMenu: undefined;
+  _MainMenu: undefined;
 };
 
 export type BookShelfParamList = {
@@ -20,4 +21,8 @@ export type FeaturedParamList = {
 
 export type SearchParamList = {
   SearchScreen: undefined;
+};
+
+export type MainMenuParamList = {
+  MainMenuScreen: undefined;
 };

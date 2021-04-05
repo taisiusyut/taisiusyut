@@ -10,7 +10,9 @@ import {
   BookShelfParamList,
   FeaturedParamList,
   SearchParamList
-} from '@/types';
+} from './routes';
+import { colors } from '@/utils/color';
+import { MainMenuNavigator } from './MainMenuNavigator';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -42,12 +44,18 @@ const tabs: ComponentProps<typeof BottomTab.Screen>[] = [
     }
   },
   {
-    name: 'MainMenu',
-    component: BookShelfNavigator,
+    name: '_MainMenu',
+    component: MainMenuNavigator,
     options: {
       tabBarLabel: '選項',
       tabBarIcon: ({ color }) => <TabBarIcon name="menu" color={color} />
-    }
+    },
+    listeners: ({ navigation }) => ({
+      tabPress: e => {
+        e.preventDefault();
+        navigation.navigate('MainMenu');
+      }
+    })
   }
 ];
 
@@ -55,7 +63,7 @@ export function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="BookShelf"
-      tabBarOptions={{ activeTintColor: `#2f95dc` }}
+      tabBarOptions={{ activeTintColor: colors.blue }}
     >
       {tabs.map(props => (
         <BottomTab.Screen key={props.name} {...props} />
