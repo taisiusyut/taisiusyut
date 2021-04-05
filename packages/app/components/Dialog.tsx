@@ -17,11 +17,11 @@ import {
   Platform
 } from 'react-native';
 import { Subject } from 'rxjs';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { ColorSchemeName, useColorScheme } from '@/hooks/useColorScheme';
 import { shadow } from '@/utils/shadow';
 import { colors, darken, lighten } from '@/utils/color';
-import { ScrollView } from 'react-native-gesture-handler';
 
 export interface DialogProps {
   children?: ReactNode;
@@ -63,7 +63,10 @@ export function DialogContainer() {
             { ...last, props: { ...last.props, visible: false } }
           ];
         }),
-      onClosed: () => setProps(props => props.slice(0, -1))
+      onClosed: () =>
+        setProps(props => {
+          return props.filter(({ props }) => props.visible);
+        })
     }),
     []
   );
@@ -88,7 +91,7 @@ export function DialogContainer() {
   );
 }
 
-const duration = 300;
+const duration = 250;
 const borderRadius = 6;
 export const space = 20;
 
@@ -119,7 +122,7 @@ const getStyles = (theme: NonNullable<ColorSchemeName>) => {
     header: {
       paddingVertical: 10,
       paddingHorizontal: space,
-      height: 50,
+      height: 55,
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: color.primary,
@@ -164,8 +167,8 @@ export function Dialog({
 
   useLayoutEffect(() => {
     Animated.timing(anim.current, {
-      toValue: visible ? 1 : 0,
       duration,
+      toValue: visible ? 1 : 0,
       useNativeDriver: true
     }).start(() => {
       !visible && onClosed && onClosed();
@@ -179,17 +182,17 @@ export function Dialog({
         style={styles.keyboard}
       >
         <View style={styles.centeredView}>
-          <TouchableWithoutFeedback onPress={onClose}>
-            <Animated.View
-              style={[styles.backdrop, { opacity: anim.current }]}
-            ></Animated.View>
-          </TouchableWithoutFeedback>
-
           <ScrollView
             bounces={false}
             style={styles.scrollView}
             contentContainerStyle={styles.scrollViewContent}
           >
+            <TouchableWithoutFeedback onPress={onClose}>
+              <Animated.View
+                style={[styles.backdrop, { opacity: anim.current }]}
+              ></Animated.View>
+            </TouchableWithoutFeedback>
+
             <Animated.View
               style={[
                 styles.dialog,
