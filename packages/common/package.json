@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tsc -p tsconfig.json --watch",
-    "build": "rm -rf ./*.tsbuildinfo && tsc -p tsconfig.json",
-    "postinstall": "yarn build"
+    "build": "rm -rf ./*.tsbuildinfo && tsc -p tsconfig.json"
   },
   "dependencies": {
     "@taisiusyut/server": "1.0.0",
