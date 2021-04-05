@@ -270,7 +270,9 @@ export function createForm<S extends {} = Store, V = S>({
         KeyboardAvoidingView,
         {
           ...keyboardViewProps,
-          style: StyleSheet.compose(keyboardViewProps?.style, { flex: 1 }),
+          style: StyleSheet.compose(keyboardViewProps?.style, {
+            flexShrink: 0
+          }),
           behavior: Platform.OS === 'ios' ? 'padding' : 'height'
         },
         React.createElement(

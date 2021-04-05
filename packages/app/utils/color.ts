@@ -1,11 +1,18 @@
 export const colors = {
-  black: '#182026',
-  blue: '#137cbd',
-  red: '#db3737',
-  yellow: '#d9822b',
-  green: '#0f9960',
-  divider: '#ddd',
-  textMuted: '#8a9ba8'
+  blue: '#137CBD',
+  red: '#DB3737',
+  light: {
+    primary: '#fff',
+    secondary: '#f6f6f6',
+    text: '#393939',
+    textMuted: '#999'
+  },
+  dark: {
+    primary: '#2f2f2f',
+    secondary: '#252525',
+    text: '#dfdedb',
+    textMuted: '#a09c97'
+  }
 };
 
 // https://stackoverflow.com/a/57401891/9633867

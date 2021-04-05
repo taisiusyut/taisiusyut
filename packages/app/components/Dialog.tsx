@@ -9,15 +9,23 @@ import React, {
 import {
   Animated,
   View,
+  Modal,
+  Text,
   StyleSheet,
   TouchableWithoutFeedback
 } from 'react-native';
 import { Subject } from 'rxjs';
+import { Feather } from '@expo/vector-icons';
 import { shadow } from '@/utils/shadow';
+import { colors } from '@/utils/color';
 
 export interface DialogProps {
   children?: ReactNode;
   onClose?: () => void;
+  onClosed?: () => void;
+  visible?: boolean;
+  title?: string;
+  icon?: React.ComponentProps<typeof Feather>['name'];
 }
 
 interface State<P extends DialogProps = any> {
@@ -40,9 +48,17 @@ export const openDialog = createDialogHandler(Dialog);
 
 export function DialogContainer() {
   const [props, setProps] = useState<State[]>([]);
-  const { onClose } = useMemo(
+  const { onClose, onClosed } = useMemo(
     () => ({
-      onClose: () => setProps(props => props.slice(0, -1))
+      onClose: () =>
+        setProps(props => {
+          const last = props.slice(-1)[0];
+          return [
+            ...props.slice(0, props.length - 1),
+            { ...last, props: { ...last.props, visible: false } }
+          ];
+        }),
+      onClosed: () => setProps(props => props.slice(0, -1))
     }),
     []
   );
@@ -50,7 +66,10 @@ export function DialogContainer() {
   useEffect(() => {
     setProps([]);
     const subscription = subject.subscribe(newProps => {
-      setProps(props => [...props, newProps]);
+      setProps(props => [
+        ...props,
+        { ...newProps, props: { ...newProps.props, visible: true } }
+      ]);
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -58,7 +77,7 @@ export function DialogContainer() {
   return (
     <>
       {props.map(({ component: Component, props }, idx) => (
-        <Component key={idx} {...props} onClose={onClose} />
+        <Component key={idx} {...props} onClose={onClose} onClosed={onClosed} />
       ))}
     </>
   );
@@ -66,51 +85,60 @@ export function DialogContainer() {
 
 const duration = 300;
 
-export function Dialog({ onClose, children }: DialogProps) {
+export function Dialog({
+  icon,
+  title,
+  visible,
+  onClose,
+  onClosed,
+  children
+}: DialogProps) {
   const anim = useRef(new Animated.Value(0));
-
-  const { current: handleClose } = useRef(() =>
-    Animated.timing(anim.current, {
-      toValue: 0,
-      duration,
-      useNativeDriver: true
-    }).start(() => onClose && onClose())
-  );
 
   useLayoutEffect(() => {
     Animated.timing(anim.current, {
-      toValue: 1,
+      toValue: visible ? 1 : 0,
       duration,
       useNativeDriver: true
-    }).start();
-  }, []);
+    }).start(() => {
+      !visible && onClosed && onClosed();
+    });
+  }, [visible, onClosed]);
 
   return (
-    <View style={StyleSheet.absoluteFill}>
-      <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={handleClose}>
+    <Modal animationType="none" transparent onRequestClose={onClose}>
+      <View style={styles.centeredView}>
+        <TouchableWithoutFeedback onPress={onClose}>
           <Animated.View
-            style={{ ...styles.backdrop, opacity: anim.current }}
-          />
+            style={[styles.backdrop, { opacity: anim.current }]}
+          ></Animated.View>
         </TouchableWithoutFeedback>
+
         <Animated.View
-          style={{
-            ...styles.dialog,
-            opacity: anim.current,
-            transform: [
-              {
-                translateY: anim.current.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [100, 0]
-                })
-              }
-            ]
-          }}
+          style={[
+            styles.dialog,
+            {
+              opacity: anim.current,
+              transform: [
+                {
+                  translateY: anim.current.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [100, 0]
+                  })
+                }
+              ]
+            }
+          ]}
         >
+          <View style={styles.header}>
+            {icon && <Feather name={icon} size={22} />}
+            <Text style={styles.titleText}>{title || ''}</Text>
+            <Feather name="x" size={22} onPress={onClose} />
+          </View>
           <View>{children}</View>
         </Animated.View>
       </View>
-    </View>
+    </Modal>
   );
 }
 
@@ -125,19 +153,33 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0
   },
-  container: {
+  centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
+  },
+  header: {
+    paddingVertical: 10,
+    paddingHorizontal: space,
+    height: 50,
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: space
+    backgroundColor: colors.light.primary,
+    borderBottomColor: colors.light.textMuted,
+    borderBottomWidth: 1
+  },
+  titleText: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    marginLeft: 5
   },
   dialog: {
     alignSelf: 'stretch',
-    backgroundColor: '#fff',
-    borderRadius: 3,
-    marginBottom: 90,
-    paddingTop: space * 0.75,
+    borderRadius: 6,
+    backgroundColor: colors.light.secondary,
     paddingBottom: space,
+    margin: space,
+    overflow: 'hidden',
     ...shadow(7)
   }
 });

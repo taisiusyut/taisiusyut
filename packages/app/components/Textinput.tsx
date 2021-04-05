@@ -38,13 +38,12 @@ const getStyles = ({ hasError, focused }: StylesOption = {}) => {
   };
 
   let inner: ViewStyle = {
-    width: '100%',
-    paddingVertical: (height - fontSize) / 2,
+    flex: 1,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: 'transparent',
-    paddingLeft: 10,
-    paddingRight: 10
+    paddingHorizontal: 10,
+    paddingVertical: (height - fontSize) / 2
   };
 
   if (focused) {

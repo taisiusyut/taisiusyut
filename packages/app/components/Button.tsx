@@ -32,6 +32,7 @@ export interface ButtonProps extends PressableProps {
   intent?: ButtonIntent;
   text?: string;
   loading?: boolean;
+  shadow?: boolean;
 }
 
 const defaultColor = `#f5f8fa`;
@@ -46,7 +47,7 @@ const styles: Record<ButtonIntent, ButtonStyles> = {
     },
     shadowColor: `#999`,
     text: {
-      color: '#333'
+      color: colors.light.text
     }
   },
   primary: {
@@ -58,7 +59,7 @@ const styles: Record<ButtonIntent, ButtonStyles> = {
     },
     shadowColor: colors.blue,
     text: {
-      color: '#fff'
+      color: colors.dark.text
     }
   },
   danger: {
@@ -70,7 +71,7 @@ const styles: Record<ButtonIntent, ButtonStyles> = {
     },
     shadowColor: colors.red,
     text: {
-      color: '#fff'
+      color: colors.dark.text
     }
   }
 };
@@ -80,6 +81,7 @@ export function Button({
   children,
   loading,
   disabled,
+  shadow: showShadow,
   style,
   ...props
 }: ButtonProps) {
@@ -94,7 +96,9 @@ export function Button({
       {
         alignSelf: 'stretch',
         ...(isDisabled ? { opacity: 0.5 } : {}),
-        ...(props.pressed || isDisabled ? {} : shadow(8, { shadowColor }))
+        ...(props.pressed || isDisabled || !showShadow
+          ? {}
+          : shadow(8, { shadowColor }))
       },
       typeof style === 'function' ? style(props) : style
     );
