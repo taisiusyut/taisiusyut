@@ -36,7 +36,6 @@ export interface Gradient {
 export type ButtonIntent = 'primary' | 'danger' | 'none';
 
 export interface ButtonProps extends PressableProps {
-  fill?: boolean;
   intent?: ButtonIntent;
   width?: number;
   text?: string;
@@ -105,7 +104,6 @@ const getStyles = ({ darkMode, intent = 'none' }: GetStylesOptions) => {
 };
 
 export function Button({
-  fill = true,
   intent = 'none',
   width,
   children,
@@ -133,8 +131,8 @@ export function Button({
   const pressable: PressableProps['style'] = props => {
     return StyleSheet.compose(
       {
-        alignSelf: fill ? 'stretch' : 'auto',
-        width: fill ? undefined : width,
+        alignSelf: width ? 'auto' : 'stretch',
+        width,
         ...(isDisabled ? { opacity: 0.5 } : {}),
         ...(props.pressed || isDisabled || !showShadow
           ? {}
