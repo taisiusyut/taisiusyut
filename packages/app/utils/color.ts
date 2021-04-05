@@ -1,5 +1,5 @@
 export const colors = {
-  blue: '#2965CC',
+  blue: '#4285f4',
   red: '#DB3737',
   light: {
     primary: '#fff',
@@ -11,7 +11,7 @@ export const colors = {
   dark: {
     primary: '#161b22',
     secondary: '#0d1117',
-    text: '#dfdedb',
+    text: '#fff',
     textMuted: '#a09c97',
     border: `#3f444b`
   }

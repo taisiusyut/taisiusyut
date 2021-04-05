@@ -12,13 +12,16 @@ import {
   Modal,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { Subject } from 'rxjs';
 import { Feather } from '@expo/vector-icons';
 import { ColorSchemeName, useColorScheme } from '@/hooks/useColorScheme';
 import { shadow } from '@/utils/shadow';
-import { colors } from '@/utils/color';
+import { colors, darken, lighten } from '@/utils/color';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export interface DialogProps {
   children?: ReactNode;
@@ -27,6 +30,7 @@ export interface DialogProps {
   visible?: boolean;
   title?: string;
   icon?: React.ComponentProps<typeof Feather>['name'];
+  maxWidth?: number;
 }
 
 interface State<P extends DialogProps = any> {
@@ -86,10 +90,12 @@ export function DialogContainer() {
 
 const duration = 300;
 const borderRadius = 6;
+export const space = 20;
 
 const getStyles = (theme: NonNullable<ColorSchemeName>) => {
   const color = colors[theme];
   return StyleSheet.create({
+    keyboard: { flex: 1 },
     backdrop: {
       backgroundColor:
         theme === 'dark' ? `rgba(16,22,26,.5)` : `rgba(0,0,0,0.5)`,
@@ -101,6 +107,13 @@ const getStyles = (theme: NonNullable<ColorSchemeName>) => {
     },
     centeredView: {
       flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    scrollView: { alignSelf: 'stretch' },
+    scrollViewContent: {
+      flexGrow: 1,
+      alignItems: 'center',
       justifyContent: 'center'
     },
     header: {
@@ -125,7 +138,10 @@ const getStyles = (theme: NonNullable<ColorSchemeName>) => {
     dialog: {
       alignSelf: 'stretch',
       borderRadius: borderRadius,
-      backgroundColor: color.secondary,
+      backgroundColor:
+        theme === 'dark'
+          ? lighten(color.primary, 15)
+          : darken(color.primary, 10),
       paddingBottom: space,
       margin: space,
       ...shadow(1, {})
@@ -137,6 +153,7 @@ export function Dialog({
   icon,
   title,
   visible,
+  maxWidth,
   onClose,
   onClosed,
   children
@@ -157,46 +174,60 @@ export function Dialog({
 
   return (
     <Modal animationType="none" transparent onRequestClose={onClose}>
-      <View style={styles.centeredView}>
-        <TouchableWithoutFeedback onPress={onClose}>
-          <Animated.View
-            style={[styles.backdrop, { opacity: anim.current }]}
-          ></Animated.View>
-        </TouchableWithoutFeedback>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboard}
+      >
+        <View style={styles.centeredView}>
+          <TouchableWithoutFeedback onPress={onClose}>
+            <Animated.View
+              style={[styles.backdrop, { opacity: anim.current }]}
+            ></Animated.View>
+          </TouchableWithoutFeedback>
 
-        <Animated.View
-          style={[
-            styles.dialog,
-            {
-              opacity: anim.current,
-              transform: [
+          <ScrollView
+            bounces={false}
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollViewContent}
+          >
+            <Animated.View
+              style={[
+                styles.dialog,
+                maxWidth ? { maxWidth, width: '100%', alignSelf: 'auto' } : {},
                 {
-                  translateY: anim.current.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [100, 0]
-                  })
+                  opacity: anim.current,
+                  transform: [
+                    {
+                      translateY: anim.current.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [100, 0]
+                      })
+                    }
+                  ]
                 }
-              ]
-            }
-          ]}
-        >
-          <View style={styles.header}>
-            {icon && (
-              <Feather name={icon} size={22} color={styles.titleText.color} />
-            )}
-            <Text style={styles.titleText}>{title || ''}</Text>
-            <Feather
-              name="x"
-              size={22}
-              color={styles.titleText.color}
-              onPress={onClose}
-            />
-          </View>
-          <View>{children}</View>
-        </Animated.View>
-      </View>
+              ]}
+            >
+              <View style={styles.header}>
+                {icon && (
+                  <Feather
+                    name={icon}
+                    size={22}
+                    color={styles.titleText.color}
+                  />
+                )}
+                <Text style={styles.titleText}>{title || ''}</Text>
+                <Feather
+                  name="x"
+                  size={22}
+                  color={styles.titleText.color}
+                  onPress={onClose}
+                />
+              </View>
+              <View>{children}</View>
+            </Animated.View>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
-
-export const space = 20;

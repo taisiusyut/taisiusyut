@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { ReactElement, ReactNode } from 'react';
-import { Text, TextProps, TextStyle, ViewProps } from 'react-native';
+import { TextStyle, ViewProps } from 'react-native';
 import RcForm, { Field as RcField, useForm as RcUseForm } from 'rc-field-form';
 import { FormProps as RcFormProps } from 'rc-field-form/es/Form';
 import { FieldProps as RcFieldProps } from 'rc-field-form/es/Field';
@@ -27,6 +27,7 @@ import {
   compose as composeValidator
 } from '@taisiusyut/common/utils/form/validators';
 import { colors } from '@/utils/color';
+import { Text, TextProps } from '@/components/Text';
 
 export * from '@taisiusyut/common/utils/form';
 
@@ -202,7 +203,7 @@ export function createForm<S extends {} = Store, V = S>({
 
         const labelProps: TextProps = {
           style: StyleSheet.compose<TextStyle>(
-            { fontSize: 16, marginBottom: 4, marginLeft: 2 },
+            { marginBottom: 4, marginLeft: 2 },
             itemStyles?.label
           )
         };
@@ -211,7 +212,6 @@ export function createForm<S extends {} = Store, V = S>({
           style: StyleSheet.compose<TextStyle>(
             {
               color: colors.red,
-              fontSize: 16,
               minHeight: 20,
               marginLeft: 2,
               marginTop: 4,
@@ -271,7 +271,7 @@ export function createForm<S extends {} = Store, V = S>({
         {
           ...keyboardViewProps,
           style: StyleSheet.compose(keyboardViewProps?.style, {
-            flexShrink: 0
+            flex: 1
           }),
           behavior: Platform.OS === 'ios' ? 'padding' : 'height'
         },

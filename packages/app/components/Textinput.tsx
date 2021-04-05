@@ -9,11 +9,12 @@ import {
 import { shadow } from '@/utils/shadow';
 import { lighten, colors } from '@/utils/color';
 import { ControlProps } from '@/utils/form';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 interface StylesOption {
-  // color: string;
   hasError?: boolean;
   focused?: boolean;
+  darkMode?: boolean;
 }
 
 export interface TextInputProps
@@ -25,13 +26,13 @@ export interface TextInputProps
 const height = 34;
 const fontSize = 16;
 
-const getStyles = ({ hasError, focused }: StylesOption = {}) => {
+const getStyles = ({ hasError, focused, darkMode }: StylesOption = {}) => {
   const color = hasError ? colors.red : colors.blue;
-  const borderColor = hasError ? colors.red : `#c7c7c7`;
+  const borderColor = hasError ? colors.red : darkMode ? `#474747` : `#c7c7c7`;
 
   let container: ViewStyle = {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: darkMode ? `#252525` : `#fff`,
     borderRadius: 5,
     borderWidth: 1,
     borderColor
@@ -60,14 +61,16 @@ const getStyles = ({ hasError, focused }: StylesOption = {}) => {
     container,
     inner,
     input: {
-      fontSize
+      fontSize,
+      color: darkMode ? colors.dark.text : colors.light.text
     }
   });
 };
 
 export function TextInput({ onChange, hasError, ...props }: TextInputProps) {
+  const darkMode = useColorScheme() === 'dark';
   const [focused, setFocused] = useState(false);
-  const [styles, setStyles] = useState(() => getStyles());
+  const [styles, setStyles] = useState(() => getStyles({ darkMode }));
   const { onFocus, onBlur } = useMemo<TextInputProps>(() => {
     return {
       onFocus: () => setFocused(true),
@@ -76,8 +79,8 @@ export function TextInput({ onChange, hasError, ...props }: TextInputProps) {
   }, []);
 
   useEffect(() => {
-    setStyles(getStyles({ focused, hasError }));
-  }, [hasError, focused]);
+    setStyles(getStyles({ focused, hasError, darkMode }));
+  }, [hasError, focused, darkMode]);
 
   return (
     <View style={styles.container}>
