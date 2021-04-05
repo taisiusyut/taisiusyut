@@ -6,10 +6,12 @@ import {
   TextStyle,
   PressableProps,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  View
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { shadow } from '@/utils/shadow';
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { colors, darken, gradientLighten, gradientDarken } from '@/utils/color';
 
 export interface ButtonStyles extends ViewStyle {
@@ -19,6 +21,11 @@ export interface ButtonStyles extends ViewStyle {
   gradient: Gradient;
   shadowColor: string;
   text: TextStyle;
+}
+
+interface GetStylesOptions {
+  darkMode?: boolean;
+  intent?: ButtonIntent;
 }
 
 export interface Gradient {
@@ -36,44 +43,63 @@ export interface ButtonProps extends PressableProps {
 }
 
 const defaultColor = `#f5f8fa`;
+const defaultDarkColor = `#21262d`;
 
-const styles: Record<ButtonIntent, ButtonStyles> = {
-  none: {
-    color: defaultColor,
-    borderColor: darken(defaultColor, 45),
-    gradient: {
-      defaults: gradientDarken(defaultColor),
-      pressed: gradientDarken(darken(defaultColor, 30))
-    },
-    shadowColor: `#999`,
-    text: {
-      color: colors.light.text
-    }
+const defaultLightStyle: ButtonStyles = {
+  color: defaultColor,
+  borderColor: colors.light.border,
+  gradient: {
+    defaults: gradientDarken(defaultColor),
+    pressed: gradientDarken(darken(defaultColor, 30))
   },
-  primary: {
-    color: colors.blue,
-    borderColor: colors.blue,
-    gradient: {
-      defaults: gradientLighten(colors.blue),
-      pressed: gradientLighten(darken(colors.blue, 30))
-    },
-    shadowColor: colors.blue,
-    text: {
-      color: colors.dark.text
-    }
-  },
-  danger: {
-    color: colors.red,
-    borderColor: colors.red,
-    gradient: {
-      defaults: gradientLighten(colors.red),
-      pressed: gradientLighten(darken(colors.red, 30))
-    },
-    shadowColor: colors.red,
-    text: {
-      color: colors.dark.text
-    }
+  shadowColor: `#999`,
+  text: {
+    color: colors.light.text
   }
+};
+
+const defaultDarkStyle: ButtonStyles = {
+  color: defaultDarkColor,
+  borderColor: colors.dark.border,
+  gradient: {
+    defaults: gradientLighten(defaultDarkColor),
+    pressed: gradientLighten(darken(defaultDarkColor, 30))
+  },
+  shadowColor: `#999`,
+  text: {
+    color: colors.dark.text
+  }
+};
+
+const getStyles = ({ darkMode, intent = 'none' }: GetStylesOptions) => {
+  const palette = {
+    none: darkMode ? defaultDarkStyle : defaultLightStyle,
+    primary: {
+      color: colors.blue,
+      borderColor: colors.blue,
+      gradient: {
+        defaults: gradientLighten(colors.blue),
+        pressed: gradientLighten(darken(colors.blue, 30))
+      },
+      shadowColor: colors.blue,
+      text: {
+        color: colors.dark.text
+      }
+    },
+    danger: {
+      color: colors.red,
+      borderColor: colors.red,
+      gradient: {
+        defaults: gradientLighten(colors.red),
+        pressed: gradientLighten(darken(colors.red, 30))
+      },
+      shadowColor: colors.red,
+      text: {
+        color: colors.dark.text
+      }
+    }
+  };
+  return palette[intent];
 };
 
 export function Button({
@@ -85,9 +111,18 @@ export function Button({
   style,
   ...props
 }: ButtonProps) {
-  const { gradient, borderColor, shadowColor, text: _textStyle } = styles[
-    intent
-  ];
+  const darkMode = useColorScheme() === 'dark';
+
+  const {
+    color,
+    gradient,
+    borderColor,
+    shadowColor,
+    text: _textStyle
+  } = getStyles({
+    intent,
+    darkMode
+  });
 
   const isDisabled = disabled || loading;
 
@@ -108,31 +143,42 @@ export function Button({
     pressed ? gradient.pressed : gradient.defaults;
 
   const buttonStyles: ViewStyle = {
-    borderWidth: 1,
-    borderRadius: 5,
     height: 40,
     alignItems: 'center',
-    justifyContent: 'center'
-  };
-
-  const gradientStyle: ViewStyle = {
-    ...buttonStyles,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 5,
     borderColor: borderColor
   };
 
   const textStyle: TextStyle = { fontSize: 16, ..._textStyle };
 
+  const content = loading ? (
+    <ActivityIndicator color={textStyle.color} />
+  ) : typeof children === 'string' ? (
+    <Text style={textStyle}>{children}</Text>
+  ) : (
+    children
+  );
+
   return (
     <Pressable {...props} style={pressable} disabled={isDisabled}>
-      {({ pressed }) => (
-        <LinearGradient colors={gradientColors(pressed)} style={gradientStyle}>
-          {loading ? (
-            <ActivityIndicator color={textStyle.color} />
-          ) : (
-            <Text style={textStyle}>{children}</Text>
-          )}
-        </LinearGradient>
-      )}
+      {({ pressed }) =>
+        darkMode ? (
+          <View
+            style={[
+              buttonStyles,
+              { backgroundColor: pressed ? darken(color, 25) : color }
+            ]}
+          >
+            {content}
+          </View>
+        ) : (
+          <LinearGradient colors={gradientColors(pressed)} style={buttonStyles}>
+            {content}
+          </LinearGradient>
+        )
+      }
     </Pressable>
   );
 }

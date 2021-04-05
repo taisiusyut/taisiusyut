@@ -15,7 +15,18 @@ import { BottomTabNavigator } from './BottomTabNavigator';
 export function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+      theme={
+        colorScheme === 'dark'
+          ? {
+              ...DarkTheme,
+              colors: {
+                ...DarkTheme.colors,
+                card: `#222`,
+                background: `#111`
+              }
+            }
+          : DefaultTheme
+      }
     >
       <RootNavigator />
     </NavigationContainer>

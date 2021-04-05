@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { Subject } from 'rxjs';
 import { Feather } from '@expo/vector-icons';
+import { ColorSchemeName, useColorScheme } from '@/hooks/useColorScheme';
 import { shadow } from '@/utils/shadow';
 import { colors } from '@/utils/color';
 
@@ -84,6 +85,53 @@ export function DialogContainer() {
 }
 
 const duration = 300;
+const borderRadius = 6;
+
+const getStyles = (theme: NonNullable<ColorSchemeName>) => {
+  const color = colors[theme];
+  return StyleSheet.create({
+    backdrop: {
+      backgroundColor:
+        theme === 'dark' ? `rgba(16,22,26,.5)` : `rgba(0,0,0,0.5)`,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center'
+    },
+    header: {
+      paddingVertical: 10,
+      paddingHorizontal: space,
+      height: 50,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: color.primary,
+      borderBottomWidth: 1,
+      borderBottomColor: color.border,
+      borderTopLeftRadius: borderRadius,
+      borderTopRightRadius: borderRadius
+    },
+    titleText: {
+      flex: 1,
+      fontSize: 18,
+      fontWeight: '500',
+      marginLeft: 5,
+      color: color.text
+    },
+    dialog: {
+      alignSelf: 'stretch',
+      borderRadius: borderRadius,
+      backgroundColor: color.secondary,
+      paddingBottom: space,
+      margin: space,
+      ...shadow(1, {})
+    }
+  });
+};
 
 export function Dialog({
   icon,
@@ -93,7 +141,9 @@ export function Dialog({
   onClosed,
   children
 }: DialogProps) {
+  const theme = useColorScheme();
   const anim = useRef(new Animated.Value(0));
+  const styles = getStyles(theme);
 
   useLayoutEffect(() => {
     Animated.timing(anim.current, {
@@ -131,9 +181,16 @@ export function Dialog({
           ]}
         >
           <View style={styles.header}>
-            {icon && <Feather name={icon} size={22} />}
+            {icon && (
+              <Feather name={icon} size={22} color={styles.titleText.color} />
+            )}
             <Text style={styles.titleText}>{title || ''}</Text>
-            <Feather name="x" size={22} onPress={onClose} />
+            <Feather
+              name="x"
+              size={22}
+              color={styles.titleText.color}
+              onPress={onClose}
+            />
           </View>
           <View>{children}</View>
         </Animated.View>
@@ -143,43 +200,3 @@ export function Dialog({
 }
 
 export const space = 20;
-
-const styles = StyleSheet.create({
-  backdrop: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center'
-  },
-  header: {
-    paddingVertical: 10,
-    paddingHorizontal: space,
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.light.primary,
-    borderBottomColor: colors.light.textMuted,
-    borderBottomWidth: 1
-  },
-  titleText: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: '500',
-    marginLeft: 5
-  },
-  dialog: {
-    alignSelf: 'stretch',
-    borderRadius: 6,
-    backgroundColor: colors.light.secondary,
-    paddingBottom: space,
-    margin: space,
-    overflow: 'hidden',
-    ...shadow(7)
-  }
-});

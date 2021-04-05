@@ -1,17 +1,19 @@
 export const colors = {
-  blue: '#137CBD',
+  blue: '#2965CC',
   red: '#DB3737',
   light: {
     primary: '#fff',
-    secondary: '#f6f6f6',
+    secondary: '#f2f2f2',
     text: '#393939',
-    textMuted: '#999'
+    textMuted: '#999',
+    border: '#c8cbcd'
   },
   dark: {
-    primary: '#2f2f2f',
-    secondary: '#252525',
+    primary: '#161b22',
+    secondary: '#0d1117',
     text: '#dfdedb',
-    textMuted: '#a09c97'
+    textMuted: '#a09c97',
+    border: `#3f444b`
   }
 };
 
