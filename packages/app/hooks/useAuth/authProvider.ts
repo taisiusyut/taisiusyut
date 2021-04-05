@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { defer, fromEvent, Observable, throwError } from 'rxjs';
+import { defer, Observable, throwError } from 'rxjs';
 import { catchError, switchMap, mergeMap } from 'rxjs/operators';
 import {
   Param$Login,
@@ -133,18 +133,6 @@ export function AuthProvider({ children }: { children?: React.ReactNode }) {
       // set loginStatus to 'required'
       dispatch({ type: 'AUTHENTICATE_FAILURE' });
     }
-  }, [authActions]);
-
-  useEffect(() => {
-    // logout current page when user is logout at other tab/page or clear all storage
-    const subscription = fromEvent<StorageEvent>(window, 'storage').subscribe(
-      event => {
-        if (event.key === LOGGED_IN && event.newValue === null) {
-          authActions.logout({ slient: true });
-        }
-      }
-    );
-    return () => subscription.unsubscribe();
   }, [authActions]);
 
   return React.createElement(
