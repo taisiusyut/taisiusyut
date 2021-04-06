@@ -6,14 +6,35 @@ A project for learning full-stack development
 
 ## Goal
 
-| Status |      -      | Tech                                            | Preview                                              | Description                         |
+| Status |      -      | Stack                                           | Preview                                              | Description                         |
 | :----: | :---------: | ----------------------------------------------- | ---------------------------------------------------- | ----------------------------------- |
-|  WIP   |   Server    | [NestJS](https://nestjs.com/), Fastify, MongoDB | -                                                    |
-|  WIP   | Admin Panel | [NextJS](https://nextjs.org/)                   | [Link](https://taisiusyut-demo.herokuapp.com/admin/) | login as `guest123` and `a12345678` |
-|  WIP   | Web Client  | [NextJS](https://nextjs.org/), PWA              | [Link](https://taisiusyut-demo.herokuapp.com/)       |                                     |
-|   -    |     App     | React Native, Expo                              | -                                                    |
+|  DONE  |   Server    | [NestJS](https://nestjs.com/), Fastify, MongoDB | -                                                    |
+|  DONE  | Admin Panel | [NextJS](https://nextjs.org/)                   | [Link](https://taisiusyut-demo.herokuapp.com/admin/) | login as `guest123` and `a12345678` |
+|  DONE  | Web Client  | [NextJS](https://nextjs.org/)                   | [Link](https://taisiusyut-demo.herokuapp.com/)       |                                     |
+|  WIP   |     App     | React Native, Expo                              | [Link](./packages/app/README.md)                     |
 
 ## Development
+
+if you are first time clone the project, run
+
+```bash
+yarn server build
+yarn common build
+```
+
+start web development
+
+```bash
+yarn dev
+
+```
+
+start app development
+
+```bash
+yarn dev
+
+```
 
 ### Mongodb
 
@@ -24,24 +45,18 @@ or create a `.env.local` file under `packages/server` and `packages/web` add
 MONGODB_URI=mongodb://YOUR_MONGODB_URL
 ```
 
-then
-
-```
-yarn dev
-```
-
 ### Image upload
 
 Currently, images are upload to [Cloudinary](https://cloudinary.com/), <br />
 If you are Heroku user, you could enable the [Cloudinary Add-ons](https://elements.heroku.com/addons/cloudinary). <br />
 
-1. create a `.env.development.local` file under `packages/server` and add your `<cloudinary_url>`
+1. create a `.env.local` file under `packages/server` and add your `<cloudinary_url>`
 
 ```
 CLOUDINARY_URL = cloudinary://<api_key>:<api_secret>@<cloud_name>
 ```
 
-2. create a `.env.local` / `.env.development.local` file under `packages/web` and add your `api_key` and `cloud_name`
+2. create a `.env.local` file under `packages/web` and add your `api_key` and `cloud_name`
 
 ```
 NEXT_PUBLIC_CLOUDINARY_API_KEY = <api_key>
