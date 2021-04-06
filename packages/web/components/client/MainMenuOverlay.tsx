@@ -105,28 +105,6 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
       )}
 
       <ListItem
-        icon="annotation"
-        rightElement={chevron}
-        onClick={() => {
-          props.onClose();
-          router.push('/reports');
-        }}
-      >
-        問題/建議
-      </ListItem>
-
-      <ListItem
-        icon="help"
-        rightElement={chevron}
-        onClick={() => {
-          props.onClose();
-          router.push('/faq');
-        }}
-      >
-        常見問題
-      </ListItem>
-
-      <ListItem
         icon="info-sign"
         rightElement={chevron}
         onClick={() => {
