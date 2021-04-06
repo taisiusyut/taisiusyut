@@ -1,8 +1,18 @@
+import path from 'path';
 import Joi from '@hapi/joi';
 import { ConfigService as DefaultConfigService } from '@nestjs/config';
 import { ValidationHeader } from '@/constants';
 
 export type Config = { [x in keyof typeof configValidation]?: any };
+
+export const envFilePath = [
+  `.env.${process.env.NODE_ENV || 'development'}.local`,
+  `.env.${process.env.NODE_ENV || 'development'}`,
+  '.env.local',
+  '.env'
+].map(pathname =>
+  path.resolve(path.resolve(process.cwd(), '../../'), pathname)
+);
 
 export const configValidation = {
   NODE_ENV: Joi.string()
@@ -21,8 +31,6 @@ export const configValidation = {
   WEB_VERSION: Joi.string(),
   VALIDATION_HEADER: Joi.string().default(ValidationHeader)
 };
-
-// type T1 =  new (internalConfig?: Config)
 
 export * from '@nestjs/config';
 

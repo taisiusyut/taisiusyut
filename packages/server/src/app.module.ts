@@ -1,4 +1,3 @@
-import path from 'path';
 import mongoose from 'mongoose';
 import Joi from '@hapi/joi';
 import { Module, DynamicModule } from '@nestjs/common';
@@ -6,7 +5,8 @@ import {
   ConfigModule,
   ConfigService,
   configValidation,
-  Config
+  Config,
+  envFilePath
 } from '@/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
@@ -22,13 +22,6 @@ import { PaymentModule } from '@/modules/payment/payment.module';
 import { BookShelfModule } from '@/modules/book-shelf/book-shelf.module';
 import { BugReportModule } from '@/modules/bug-report/bug-report.module';
 import { AnnouncementModule } from '@/modules/announcement/announcement.module';
-
-const envFilePath = [
-  `.env.${process.env.NODE_ENV || 'development'}.local`,
-  `.env.${process.env.NODE_ENV || 'development'}`,
-  '.env.local',
-  '.env'
-].map(pathname => path.resolve(process.cwd(), pathname));
 
 @Module({
   imports: [
@@ -65,6 +58,7 @@ export class AppModule {
         ConfigModule.forRoot({
           isGlobal: true,
           envFilePath,
+          expandVariables: true,
           validationSchema: Joi.object(configValidation),
           load: [() => ({ WEB_VERSION })]
         }),

@@ -39,7 +39,7 @@ yarn dev
 ### Mongodb
 
 Start local mongodb `mongodb://localhost:27017/` <br />
-or create a `.env.local` file under `packages/server` and `packages/web` add
+or create a `.env.local` file at the project root directory
 
 ```
 MONGODB_URI=mongodb://YOUR_MONGODB_URL
@@ -50,15 +50,11 @@ MONGODB_URI=mongodb://YOUR_MONGODB_URL
 Currently, images are upload to [Cloudinary](https://cloudinary.com/), <br />
 If you are Heroku user, you could enable the [Cloudinary Add-ons](https://elements.heroku.com/addons/cloudinary). <br />
 
-1. create a `.env.local` file under `packages/server` and add your `<cloudinary_url>`
-
-```
-CLOUDINARY_URL = cloudinary://<api_key>:<api_secret>@<cloud_name>
-```
-
-2. create a `.env.local` file under `packages/web` and add your `api_key` and `cloud_name`
+create a `.env.local` file at the project root directory
 
 ```
 NEXT_PUBLIC_CLOUDINARY_API_KEY = <api_key>
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = <cloud_name>
+
+CLOUDINARY_URL = cloudinary://<api_key>:<api_secret>@<cloud_name>
 ```

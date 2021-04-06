@@ -4,9 +4,14 @@ const withPWA = require('next-pwa');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
+const { loadEnvConfig } = require('./env');
 
 /** @typedef {typeof import('webpack')} Webapck */
 /** @typedef {import('webpack').Configuration} Configuration */
+
+loadEnvConfig();
+
+const ServerPort = process.env.PORT || 5000;
 
 module.exports = withPlugins(
   [
@@ -57,7 +62,7 @@ module.exports = withPlugins(
       if (process.env.NODE_ENV === 'development') {
         payload.push({
           source: '/api/:path*',
-          destination: 'http://localhost:5000/api/:path*'
+          destination: `http://localhost:${ServerPort}/api/:path*`
         });
       }
 

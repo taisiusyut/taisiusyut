@@ -1,9 +1,8 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { fastifyAdapter, setupApp } from './setup';
-
-const PORT = Number(process.env.PORT) || 5000;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -15,6 +14,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  const configService = app.get(ConfigService);
+
+  const PORT = configService.get<number>('PORT', 5000);
+
   await app.listen(PORT, '0.0.0.0');
+
+  // eslint-disable-next-line
+  console.log(`server listening on port ${PORT}`);
 }
 bootstrap();
