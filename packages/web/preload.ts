@@ -78,11 +78,12 @@ export function preload() {
       : preferences['pagingDisplay']
   );
 
+  // for mobile browser
+  // Note: `window.innerHeight` in iOS is not correct before `onload` event
   function setViewHeightVariable() {
     var vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', vh + 'px');
   }
-  setViewHeightVariable();
   window.addEventListener('resize', setViewHeightVariable);
 
   function handleChapterContentStyle() {
@@ -124,6 +125,7 @@ export function preload() {
     if (getScrollbarWidth()) {
       document.documentElement.setAttribute('custom-scrollbar', '');
     }
+    setViewHeightVariable();
     handleChapterContentStyle();
   });
 }
