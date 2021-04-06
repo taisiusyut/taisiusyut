@@ -4,7 +4,7 @@
   @include dimen(100%);
   @include padding-x(5%);
   box-shadow: 0px 0px 8px -2px var(--book-model-shadow-color);
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   padding-top: 5px;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }

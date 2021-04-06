@@ -22,7 +22,7 @@
 
 [data-theme^='dark'] {
   --primary-color: #{lighten(#222, 5%)};
-  --secondary-color: #{lighten(#222, 1%)};
+  --secondary-color: #222;
   --text-color: #dfdedb;
   --text-light-color: #a09c97;
   --divider-color: #{$pt-dark-divider-black};

@@ -81,3 +81,17 @@
 .not-found {
   flex: 1 1 auto;
 }
+
+@mixin single-page {
+  .search {
+    background-color: var(--secondary-color);
+  }
+}
+
+:global([data-display='single']) {
+  @include single-page;
+}
+
+@media (max-width: $break-point) {
+  @include single-page;
+}

@@ -7,6 +7,20 @@
   background-color: var(--primary-color);
 }
 
+@mixin single-page {
+  .book-shelf {
+    background-color: var(--secondary-color);
+  }
+}
+
+:global([data-display='single']) {
+  @include single-page;
+}
+
+@media (max-width: $break-point) {
+  @include single-page;
+}
+
 .border {
   border-top: 1px solid var(--primary-color);
   position: relative;
