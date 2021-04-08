@@ -24,8 +24,11 @@ export interface ClientLayoutProps {
   disableScrollRestoration?: boolean;
 }
 
+const isPathEqual = (asPath: string, target: string) =>
+  asPath.replace(/\?.*/, '') === target;
+
 function getFlags(asPath: string, isPagingDisplay: boolean) {
-  const isHome = asPath === '/';
+  const isHome = isPathEqual(asPath, '/');
   const isSearch = asPath.startsWith('/search');
   const isFeatured = asPath.startsWith('/featured');
   const mountBottomNav = isHome || isFeatured || isSearch;
@@ -44,7 +47,8 @@ function getFlags(asPath: string, isPagingDisplay: boolean) {
     };
   }
 
-  const showLeftPanel = !isFeatured && asPath.lastIndexOf('/') === 0;
+  const showLeftPanel =
+    (isHome || isPathEqual(asPath, '/search')) && !isFeatured;
   return {
     ...common,
     showLeftPanel,
