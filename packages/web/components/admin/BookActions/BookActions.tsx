@@ -57,7 +57,7 @@ export function BookActions({ role, book, onSuccess }: BookActionsProps) {
         role === UserRole.Author &&
         book.status !== BookStatus.Deleted
       ) {
-        items.push(create('Update', '更新書籍', UpdateBookDialog));
+        items.push(create('Update', '編輯書籍', UpdateBookDialog));
         book.status === BookStatus.Public &&
           items.push(create('Finish', '完結書籍', FinishBookDialog));
         book.status === BookStatus.Private &&
