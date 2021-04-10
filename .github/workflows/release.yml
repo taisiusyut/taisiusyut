@@ -1,8 +1,12 @@
 name: CI
 
 on:
-  tags:
-    - '*.*.*'
+  push:
+  pull_request:
+    branches:
+      - master
+    tags:
+      - '*.*.*'
 
 jobs:
   test:
