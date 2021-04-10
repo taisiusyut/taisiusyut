@@ -12,13 +12,14 @@ import {
 } from 'class-validator';
 import { ChapterType, ChapterStatus } from '@/typings';
 import { Max_Chapter_Name } from '@/constants';
+import { DOMPurify } from '@/decorators';
 
 export function IsChapterName(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), IsNotEmpty(), MaxLength(Max_Chapter_Name));
 }
 
 export function IsContent(): ReturnType<typeof applyDecorators> {
-  return applyDecorators(IsString(), IsNotEmpty());
+  return applyDecorators(IsString(), IsNotEmpty(), DOMPurify());
 }
 
 export function IsChapterType(): ReturnType<typeof applyDecorators> {
