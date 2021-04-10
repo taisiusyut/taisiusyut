@@ -5,12 +5,20 @@
 }
 
 .editor-container {
-  @include editor-style(10);
-  font-size: 16px;
-}
+  .head {
+    @include flex(center, space-between);
+    margin: -0.5em;
+    margin-bottom: 0.5em;
+    padding-right: 0.5em;
+    border-bottom: 1px solid var(--divider-color);
 
-.content-label {
-  @include flex(center, space-between);
+    font-size: 14px;
+  }
+
+  .editor {
+    @include editor-style(10);
+    font-size: 16px;
+  }
 }
 
 .footer {
@@ -31,12 +39,28 @@
   position: absolute;
 }
 
-.drop-area-content {
-  @include sq-dimen(100%);
-  @include flex(center, center, column);
+.insert-image-divider {
+  @include flex(center);
+  @include margin-y(15px);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    border-bottom: 1px solid var(--text-light-color);
+    width: 100%;
+  }
+
+  span {
+    padding: 0 10px;
+  }
 }
 
-.drop-area-text {
-  font-size: 18px;
-  margin-top: 1em;
+.image-drop-area {
+  position: relative;
+  padding-bottom: 56.25%;
+}
+
+.image-drop-area-content {
+  position: absolute;
 }

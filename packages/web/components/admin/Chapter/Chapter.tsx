@@ -5,6 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { Button, Card } from '@blueprintjs/core';
 import { calcWordCount } from '@taisiusyut/server/dist/utils/calc-word-count';
 import { PageHeader } from '@/components/admin/PageHeader';
+import { DropAreaOverlay } from '@/components/DropArea';
 import {
   ChapterType,
   Param$CreateChapter,
@@ -22,7 +23,6 @@ import { useBoolean } from '@/hooks/useBoolean';
 import { createChapterSotrage } from '@/utils/storage';
 import { Schema$Chapter } from '@/typings';
 import { useForm, ChapterForm, ChapterState } from './ChapterForm';
-import { ChapterDropArea } from './ChapterDropArea';
 import classes from './Chapter.module.scss';
 
 interface Props {
@@ -110,6 +110,17 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     }
   }, [form, chapter]);
 
+  useEffect(() => {
+    window.addEventListener('drop', dragEnd);
+    window.addEventListener('dragover', dragOver);
+    window.addEventListener('mouseout', dragEnd);
+    return () => {
+      window.removeEventListener('drop', dragEnd);
+      window.removeEventListener('dragover', dragOver);
+      window.removeEventListener('mouseout', dragEnd);
+    };
+  }, [dragOver, dragEnd]);
+
   return (
     <Card style={{ position: 'relative' }} onDragOver={dragOver}>
       <PageHeader title={title} targetPath={`/admin/book/${bookID}`} />
@@ -155,7 +166,9 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
         </div>
       </ChapterForm>
 
-      <ChapterDropArea
+      <DropAreaOverlay
+        className={classes['drop-area']}
+        text="將文字檔案拖放到此處"
         usePortal={false}
         isOpen={dropArea}
         onClose={dragEnd}

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Input } from '@/components/Input';
 import { Schema$Chapter } from '@/typings';
 import { Max_Chapter_Name } from '@/constants';
 import { createForm, FormProps, validators } from '@/utils/form';
+import { ChapterContentEditor } from './ChapterContentEditor';
 import classes from './Chapter.module.scss';
 
 export type ChapterState = Schema$Chapter;
@@ -17,19 +17,16 @@ const { Form, FormItem, useForm } = createForm<ChapterState>();
 export { useForm };
 
 export function ChapterForm({ wordCount, children, ...props }: Props) {
-  const contentLabel = (
-    <div className={classes['content-label']}>
-      內容
-      <div>{typeof wordCount === 'number' ? `${wordCount} 字` : ''}</div>
-    </div>
-  );
-
   return (
     <Form
       validateTrigger="onSubmit"
       className={classes['chapter-content']}
       {...props}
     >
+      <FormItem name="type" noStyle>
+        <div hidden />
+      </FormItem>
+
       <FormItem
         name="name"
         label="名稱"
@@ -46,14 +43,14 @@ export function ChapterForm({ wordCount, children, ...props }: Props) {
 
       <FormItem
         name="content"
-        label={contentLabel}
+        label="內容"
         validators={[validators.required('Please enter chapter content')]}
       >
-        <ContentEditor className={classes['editor-container']} />
-      </FormItem>
-
-      <FormItem name="type" noStyle>
-        <div hidden />
+        <ChapterContentEditor
+          rightElement={
+            <div>{typeof wordCount === 'number' ? `${wordCount} 字` : ''}</div>
+          }
+        />
       </FormItem>
 
       {children}

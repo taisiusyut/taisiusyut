@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useImperativeHandle,
+  ReactNode
+} from 'react';
 import {
   Editor,
   EditorState,
@@ -16,17 +22,29 @@ export interface ContentEditorProps
   extends Control<string>,
     Partial<Omit<EditorProps, 'onChange'>> {
   className?: string;
+  children?: ReactNode;
 }
+
+export type ContentEditorRef = {
+  insertText: (text: string) => void;
+};
 
 const createFromText = (value: string) =>
   EditorState.createWithContent(ContentState.createFromText(value));
 
-export function ContentEditor({
-  className = '',
-  value = '',
-  onChange,
-  ...props
-}: ContentEditorProps) {
+export function inserText(editorState: EditorState, text: string) {
+  const contentState = Modifier.replaceText(
+    editorState.getCurrentContent(),
+    editorState.getSelection(),
+    text
+  );
+  return EditorState.push(editorState, contentState, 'insert-characters');
+}
+
+export const ContentEditor = React.forwardRef<
+  ContentEditorRef,
+  ContentEditorProps
+>(({ className = '', value = '', onChange, children, ...props }, ref) => {
   const editor = React.useRef<Editor>(null);
   const prev = useRef<string>(value);
   const [editorState, setEditorState] = React.useState<EditorState>(() =>
@@ -36,18 +54,7 @@ export function ContentEditor({
   const { keyBindingFn, handlePastedText } = useMemo(() => {
     function keyBindingFn(event: React.KeyboardEvent<{}>) {
       if (event.key === 'Tab') {
-        setEditorState(editorState => {
-          const contentState = Modifier.replaceText(
-            editorState.getCurrentContent(),
-            editorState.getSelection(),
-            tabCharacter
-          );
-          return EditorState.push(
-            editorState,
-            contentState,
-            'insert-characters'
-          );
-        });
+        setEditorState(editorState => inserText(editorState, tabCharacter));
         return 'handled';
       }
       return getDefaultKeyBinding(event);
@@ -73,6 +80,12 @@ export function ContentEditor({
 
     return { keyBindingFn, handlePastedText };
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    insertText: (text: string) => {
+      setEditorState(editorState => inserText(editorState, text));
+    }
+  }));
 
   // for value change by form instance (e.g. file upload)
   useEffect(() => {
@@ -100,6 +113,7 @@ export function ContentEditor({
 
   return (
     <div className={[Classes.INPUT, className].join(' ')}>
+      {children}
       <Editor
         {...props}
         ref={editor}
@@ -110,4 +124,4 @@ export function ContentEditor({
       />
     </div>
   );
-}
+});

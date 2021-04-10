@@ -1,0 +1,31 @@
+@import '~styles/utils';
+
+.drop-area {
+  @include sq-dimen(100%);
+  @include flex(center, center, column);
+  border: 2px dashed var(--text-light-color);
+  border-radius: 5px;
+  user-select: none;
+
+  span svg {
+    width: 1.5em;
+    height: 1.5em;
+  }
+
+  &:not(.disabled) {
+    cursor: pointer;
+
+    &:hover {
+      border-color: $pt-intent-primary;
+    }
+  }
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.drop-area-text {
+  font-size: 1em;
+  margin-top: 1em;
+}

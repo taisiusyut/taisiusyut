@@ -17,6 +17,7 @@ export interface ConfirmDialogProps extends IDialogProps {
   onConfirm?: () => Promise<unknown>;
   onCancel?: () => unknown | Promise<unknown>;
   onClose?: () => void;
+  loading?: boolean;
 }
 
 const asyncFn = () => Promise.resolve();
@@ -30,6 +31,7 @@ export function createConfirmDialog<P extends IDialogProps>(
     onClose,
     onConfirm,
     onCancel,
+    loading: loadingFromProps,
     confirmText = '確認',
     cancelText = '取消',
     intent = 'primary',
@@ -39,6 +41,7 @@ export function createConfirmDialog<P extends IDialogProps>(
       defer: true,
       onSuccess: onClose
     });
+    const isLoading = loadingFromProps || loading;
 
     async function handleCancel() {
       const cancel = onCancel && onCancel();
@@ -50,18 +53,18 @@ export function createConfirmDialog<P extends IDialogProps>(
       <Component
         {...(props as P)}
         onClose={onClose}
-        canEscapeKeyClose={!loading}
-        canOutsideClickClose={!loading}
+        canEscapeKeyClose={!isLoading}
+        canOutsideClickClose={!isLoading}
         className={className}
       >
         <div className={Classes.DIALOG_BODY}>{children}</div>
         <div className={Classes.DIALOG_FOOTER}>
           <div>
-            <Button fill intent={intent} onClick={fetch} loading={loading}>
+            <Button fill intent={intent} onClick={fetch} loading={isLoading}>
               {confirmText}
             </Button>
             <div style={{ margin: '10px 0' }}></div>
-            <Button fill disabled={loading} onClick={handleCancel}>
+            <Button fill disabled={isLoading} onClick={handleCancel}>
               {cancelText}
             </Button>
           </div>
