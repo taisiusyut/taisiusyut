@@ -57,12 +57,12 @@ jobs:
           yarn install --prefer-offline
 
       - name: Build project
-        environament:
+        environment:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: yarn build
 
       - name: Run test
-        environament:
+        environment:
           CI: true
         run: |
           yarn server test:e2e
