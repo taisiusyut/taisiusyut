@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
 import { Button, Icon } from '@blueprintjs/core';
 import { getChapterByNo, getErrorMessage } from '@/service';
 import { Schema$Chapter } from '@/typings';
+import { parseChapterContent } from '@/utils/chapterContent';
 import { useAuthState } from '@/hooks/useAuth';
+import { Paragraph } from './Paragraph';
 import classes from './ClientChapterContent.module.scss';
 
 export interface Props {
@@ -34,6 +36,11 @@ export const ClientChapterContent = React.memo(
       }
     );
 
+    const content = useMemo(
+      () => (chapter ? parseChapterContent(chapter.content) : []),
+      [chapter]
+    );
+
     if (error) {
       const handleRetry = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation(); // prevent trigger showOverlay in `ClientChapter`
@@ -62,10 +69,12 @@ export const ClientChapterContent = React.memo(
           <div className={classes['chapter-name']}>
             {`第${chapterNo}章 ${chapter.name}`}
           </div>
-          {chapter.content.split('\n').map((paramgraph, idx) => (
-            <p key={idx} className={classes['paragraph']}>
-              {paramgraph}
-            </p>
+          {content.map((content, idx) => (
+            <Paragraph
+              key={idx}
+              className={classes['paragraph']}
+              content={content}
+            />
           ))}
         </>
       );

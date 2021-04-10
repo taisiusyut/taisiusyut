@@ -17,6 +17,7 @@ import {
   serialize
 } from '@/service/server';
 import { Schema$Book, Schema$Chapter } from '@/typings';
+import { removeTags } from '@/utils/chapterContent';
 
 interface Props extends ClientChapterData {}
 
@@ -77,7 +78,10 @@ export default function ClientChapterPage(props: Props) {
     <Meta
       keywords={bookName}
       title={formatChapterTitle(chapter.number, bookName)}
-      description={chapter.content.trim().slice(0, 100).replace(/\n/g, '')}
+      description={removeTags(chapter.content)
+        .trim()
+        .replace(/\n/g, '')
+        .slice(0, 100)}
     />
   ) : null;
 
