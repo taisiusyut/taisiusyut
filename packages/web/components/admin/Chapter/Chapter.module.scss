@@ -64,3 +64,24 @@
 .image-drop-area-content {
   position: absolute;
 }
+
+.preview {
+  position: relative;
+}
+
+.preview-control {
+  @include absolute(0, 0, 0, 0);
+  @include flex(center, center);
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: 0.3s ease;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.preview-image {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+}

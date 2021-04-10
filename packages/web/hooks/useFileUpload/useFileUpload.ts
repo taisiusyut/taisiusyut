@@ -33,6 +33,7 @@ export function useFileUpload({ accept }: UseFileUploadOptions = {}) {
     input.addEventListener('change', handleChange);
     inputRef.current = input;
     document.body.appendChild(input);
+
     return () => {
       input.removeEventListener('change', handleChange);
       document.body.removeChild(input);

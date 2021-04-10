@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRxAsync } from 'use-rx-hooks';
-import { merge, Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { Button, Card } from '@blueprintjs/core';
 import { calcWordCount } from '@taisiusyut/server/dist/utils/calc-word-count';
 import { PageHeader } from '@/components/admin/PageHeader';
-import { DropAreaOverlay } from '@/components/DropArea';
 import {
   ChapterType,
   Param$CreateChapter,
@@ -14,12 +12,6 @@ import {
 import { ApiError, createChapter, updateChapter } from '@/service';
 import { useGoBack } from '@/hooks/useGoBack';
 import { Toaster } from '@/utils/toaster';
-import {
-  getFileFromEvent,
-  readFileText,
-  useFileUpload
-} from '@/hooks/useFileUpload';
-import { useBoolean } from '@/hooks/useBoolean';
 import { createChapterSotrage } from '@/utils/storage';
 import { Schema$Chapter } from '@/typings';
 import { useForm, ChapterForm, ChapterState } from './ChapterForm';
@@ -85,14 +77,8 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     defer: true
   });
 
-  const [fileUpload$, upload] = useFileUpload();
-  const [dropArea, dragOver, dragEnd] = useBoolean();
-
   useEffect(() => {
-    const subscription = merge(
-      fileUpload$.pipe(switchMap(file => readFileText(file))),
-      chapterState$
-    ).subscribe(value => {
+    const subscription = chapterState$.subscribe(value => {
       const state = { ...form.getFieldsValue(), ...value };
       setModified(true);
       form.setFieldsValue(state);
@@ -100,7 +86,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
       setWordCount(calcWordCount(state.content || ''));
     });
     return () => subscription.unsubscribe();
-  }, [fileUpload$, form]);
+  }, [form]);
 
   useEffect(() => {
     const cache = storageRef.current.get();
@@ -110,19 +96,8 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
     }
   }, [form, chapter]);
 
-  useEffect(() => {
-    window.addEventListener('drop', dragEnd);
-    window.addEventListener('dragover', dragOver);
-    window.addEventListener('mouseout', dragEnd);
-    return () => {
-      window.removeEventListener('drop', dragEnd);
-      window.removeEventListener('dragover', dragOver);
-      window.removeEventListener('mouseout', dragEnd);
-    };
-  }, [dragOver, dragEnd]);
-
   return (
-    <Card style={{ position: 'relative' }} onDragOver={dragOver}>
+    <Card style={{ position: 'relative' }}>
       <PageHeader title={title} targetPath={`/admin/book/${bookID}`} />
 
       <ChapterForm
@@ -142,7 +117,6 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
         }
       >
         <div className={classes['footer']}>
-          <Button minimal icon="upload" text="上傳" onClick={upload} />
           <div className={classes['spacer']}></div>
           <Button
             disabled={loading || !modified}
@@ -165,18 +139,6 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
           </Button>
         </div>
       </ChapterForm>
-
-      <DropAreaOverlay
-        className={classes['drop-area']}
-        text="將文字檔案拖放到此處"
-        usePortal={false}
-        isOpen={dropArea}
-        onClose={dragEnd}
-        onDrop={event => {
-          dragEnd();
-          fileUpload$.next(getFileFromEvent(event));
-        }}
-      />
     </Card>
   );
 }
