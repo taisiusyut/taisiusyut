@@ -4,7 +4,6 @@ const path = require('path');
 const { default: next } = require('next');
 const { NestFactory } = require('@nestjs/core');
 const { AppModule, fastifyAdapter, setupApp } = require('@taisiusyut/server');
-const pkg = require('./package.json');
 
 /** @type {string[]} */
 const blackListedUserAgent = (process.env.BLACK_LISTED_UA || '')
@@ -24,10 +23,7 @@ async function startServer({ dev, port }) {
     await nextApp.prepare();
 
     /** @type {import('@nestjs/platform-fastify').NestFastifyApplication} */
-    const nest = await NestFactory.create(
-      AppModule.init({ WEB_VERSION: pkg.version }),
-      fastifyAdapter()
-    );
+    const nest = await NestFactory.create(AppModule.init(), fastifyAdapter());
 
     setupApp(nest);
 

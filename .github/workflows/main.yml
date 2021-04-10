@@ -1,4 +1,4 @@
-name: Test
+name: CI
 
 on:
   push:
@@ -9,10 +9,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-18.04
-
     steps:
       - name: Setup repo
         uses: actions/checkout@v2
+
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -55,11 +57,33 @@ jobs:
           yarn install --prefer-offline
 
       - name: Build project
-        run: |
-          export MONGODB_URI="${{ secrets.MONGODB_URI }}"
-          yarn build
+        environament:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: yarn build
 
       - name: Run test
+        environament:
+          CI: true
         run: |
-          export CI=true
           yarn server test:e2e
+
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Get Tag Name
+        id: get_tag
+        # reference:  https://stackoverflow.com/a/58869470
+        run: |
+          if [[ ${{ github.ref }} =~ ^refs/tags/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo ::set-output name=version::${GITHUB_REF/refs\/tags\//}
+          fi
+      - name: Deploy
+        if: ${{ steps.get_tag.outputs.version != null }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            sh build.sh ${{ steps.get_tag.outputs.version }}
