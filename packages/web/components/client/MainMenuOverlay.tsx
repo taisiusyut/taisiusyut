@@ -26,7 +26,7 @@ import { useBoolean } from '@/hooks/useBoolean';
 import { useAuth } from '@/hooks/useAuth';
 import { useClientPreferences } from '@/hooks/useClientPreferences';
 import { UserRole } from '@/typings';
-import pkg from '@/package.json';
+import { version } from '@/constants';
 
 interface MainMenuDialogProps extends ListViewDialogProps {}
 
@@ -141,7 +141,7 @@ export function MainMenuOverlay(props: MainMenuDialogProps) {
 
       <ListSpacer />
 
-      <ListItem icon="code" rightElement={pkg.version}>
+      <ListItem icon="code" rightElement={version}>
         Version
       </ListItem>
 
