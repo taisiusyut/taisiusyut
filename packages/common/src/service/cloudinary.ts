@@ -42,7 +42,7 @@ export const cloudinaryUpload = ({
   );
 };
 
-type FileState = { file: File; url: string };
+type FileState = { file: File; url?: string };
 
 type State = FileState | string | null;
 

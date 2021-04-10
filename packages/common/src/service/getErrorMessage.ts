@@ -6,8 +6,12 @@ export interface ApiErrorValue {
   error?: string;
 }
 
+interface CloudinaryError {
+  error: { message: string };
+}
+
 export interface ApiError extends Omit<AxiosError, 'response'> {
-  response?: AxiosResponse<ApiErrorValue | string>;
+  response?: AxiosResponse<ApiErrorValue | CloudinaryError | string>;
 }
 
 export function getErrorMessage(error: ApiError): string {
@@ -16,8 +20,15 @@ export function getErrorMessage(error: ApiError): string {
     if (typeof data === 'string') {
       return error.response.statusText;
     }
-    const { message } = data;
-    return Array.isArray(message) ? message[0] : message;
+
+    if ('message' in data) {
+      const { message } = data;
+      return Array.isArray(message) ? message[0] : message;
+    }
+
+    if (data.error.message) {
+      return data.error.message;
+    }
   }
 
   if (error instanceof Error) {

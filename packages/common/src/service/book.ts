@@ -16,6 +16,16 @@ export const createBook = async (payload: Param$CreateBook) => {
   return api.post<Schema$Book>(routes.create_book, payload);
 };
 
+export const updateBook = async ({ id, ...payload }: Param$UpdateBook) => {
+  if (payload.cover && typeof payload.cover !== 'string') {
+    payload.cover = await handleCloudinaryUpload(payload.cover).toPromise();
+  }
+  return api.patch<Schema$Book>(
+    routes.update_book.generatePath({ id }),
+    payload
+  );
+};
+
 export const getBooks = (params?: Param$GetBooks) =>
   api.get<PaginateResult<Schema$Book>>(routes.get_books, { params });
 
@@ -26,9 +36,6 @@ export const getBookByName = ({ bookName }: { bookName: string }) =>
   api.get<Schema$Book>(
     routes.get_book_by_name.generatePath({ name: bookName })
   );
-
-export const updateBook = ({ id, ...payload }: Param$UpdateBook) =>
-  api.patch<Schema$Book>(routes.update_book.generatePath({ id }), payload);
 
 export const publishBook = ({ id }: { id: string }) =>
   api.post<Schema$Book>(

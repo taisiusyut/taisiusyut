@@ -9,3 +9,4 @@ export * from './jwt';
 export * from './user';
 export * from './getErrorMessage';
 export * from './routes';
+export * from './cloudinary';
