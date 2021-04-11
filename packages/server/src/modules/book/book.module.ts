@@ -36,7 +36,7 @@ import paginate from 'mongoose-paginate-v2';
 
           async function removeImageFromCloudinary(
             // eslint-disable-next-line
-            this: Query<Book, Document, {}>
+            this: Query<Book>
           ) {
             const model: Model<Book & Document> = (this as any).model;
             const book = await model.findOne(this.getFilter());
@@ -49,7 +49,7 @@ import paginate from 'mongoose-paginate-v2';
           BookSchema.pre(
             'findOneAndUpdate',
             // eslint-disable-next-line
-            async function (this: Query<Book, Document, {}>) {
+            async function (this: Query<Book>) {
               const changes = this.getUpdate();
               if (changes && typeof changes !== 'undefined') {
                 await removeImageFromCloudinary.call(this);
