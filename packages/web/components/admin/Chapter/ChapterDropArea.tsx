@@ -12,21 +12,22 @@ export function ChapterDropArea({ onDrop }: ChapterDropAreaProps) {
   const [showDropArea, dragOver, dragEnd] = useBoolean();
 
   useEffect(() => {
+    document.body.addEventListener('dragover', dragOver);
     window.addEventListener('drop', dragEnd);
-    window.addEventListener('dragover', dragOver);
     window.addEventListener('mouseout', dragEnd);
     return () => {
+      document.body.removeEventListener('dragover', dragOver);
       window.removeEventListener('drop', dragEnd);
-      window.removeEventListener('dragover', dragOver);
       window.removeEventListener('mouseout', dragEnd);
     };
   }, [dragOver, dragEnd]);
 
   return (
     <DropAreaOverlay
-      className={classes['drop-area']}
-      text="將文字檔案拖放到此處"
+      active
       usePortal={false}
+      text="將文字檔案拖放到此處"
+      className={classes['drop-area']}
       isOpen={showDropArea}
       onClose={dragEnd}
       onDrop={event => {

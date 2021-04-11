@@ -1,19 +1,27 @@
-import { useEffect, HTMLAttributes } from 'react';
+import { useEffect, HTMLAttributes, DragEventHandler } from 'react';
 import { Icon, IOverlayProps, Overlay } from '@blueprintjs/core';
 import classes from './DropArea.module.scss';
 
-export interface DropAreaProps extends HTMLAttributes<HTMLDivElement> {
+interface BasicDropAreaProps {
   text?: string;
+  active?: boolean;
   disabled?: boolean;
 }
 
+export interface DropAreaProps
+  extends BasicDropAreaProps,
+    HTMLAttributes<HTMLDivElement> {}
+
 export interface DropAreaOverlayProps
   extends IOverlayProps,
-    Pick<DropAreaProps, 'text' | 'onDrop'> {}
+    BasicDropAreaProps {
+  onDrop: DragEventHandler;
+}
 
 export function DropArea({
   text,
   onDrop,
+  active,
   disabled,
   onClick,
   className = '',
@@ -34,7 +42,7 @@ export function DropArea({
   const classNames = [
     className,
     classes['drop-area'],
-    disabled ? classes['disabled'] : ''
+    disabled ? classes['disabled'] : active ? classes['active'] : ''
   ];
 
   return (
@@ -52,12 +60,19 @@ export function DropArea({
 
 export function DropAreaOverlay({
   text,
+  active,
+  disabled,
   onDrop,
   ...props
 }: DropAreaOverlayProps) {
   return (
     <Overlay {...props} transitionDuration={0}>
-      <DropArea text={text} onDrop={onDrop} />
+      <DropArea
+        text={text}
+        active={active}
+        disabled={disabled}
+        onDrop={onDrop}
+      />
     </Overlay>
   );
 }

@@ -71,6 +71,10 @@ export function InsertImage({ onInsert, onClose, ...props }: InsertImageProps) {
       loading={loading}
       onConfirm={onConfirm}
       style={{ maxWidth: 500 }}
+      // prevent trigger the `ChapterDropArea.tsx`
+      portalContainer={
+        typeof document === 'undefined' ? undefined : document.documentElement
+      }
     >
       <Input
         placeholder="輸入圖片網址"

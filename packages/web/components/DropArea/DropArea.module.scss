@@ -4,7 +4,7 @@
   @include sq-dimen(100%);
   @include flex(center, center, column);
   border: 2px dashed var(--text-light-color);
-  border-radius: 5px;
+  border-radius: 4px;
   user-select: none;
 
   span svg {
@@ -15,6 +15,7 @@
   &:not(.disabled) {
     cursor: pointer;
 
+    &.active,
     &:hover {
       border-color: $pt-intent-primary;
     }
