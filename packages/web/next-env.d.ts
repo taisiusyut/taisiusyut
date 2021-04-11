@@ -18,14 +18,6 @@ declare interface Window {
   __setPagingDisplay: (flag: boolean) => void;
 }
 
-// for `styled-jsx` width `@types/react@^17.0.0`
-declare namespace React {
-  interface StyleHTMLAttributes<T> extends HTMLAttributes<T> {
-    jsx?: boolean;
-    global?: boolean;
-  }
-}
-
 declare module '*.md' {
   let MDXComponent: (props) => JSX.Element;
   export default MDXComponent;

@@ -21,6 +21,7 @@ import {
 } from '@/hooks/useClientPreferences';
 import { createForm, FormItemProps, ControlProps } from '@/utils/form';
 import { createOpenOverlay } from '@/utils/openOverlay';
+import classes from './ClientPreferencesOverlay.module.scss';
 
 interface ClientPreferencesOverlayProps extends ListViewOverlayProps {
   preferences: Preferences;
@@ -121,20 +122,10 @@ export function ClientPreferencesOverlay({
 
         <ListItem
           rightElement={
-            <div className="numeric-input">
+            <div className={classes['numeric-input']}>
               <FormItem name="fontSize">
                 <NumericInput fill minorStepSize={1} />
               </FormItem>
-              <style jsx>
-                {`
-                  .numeric-input :global(.#{$ns}-input-group) {
-                    width: 50px;
-                    :global(input) {
-                      text-align: center;
-                    }
-                  }
-                `}
-              </style>
             </div>
           }
         >

@@ -41,7 +41,6 @@
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
     "@types/react-table": "^7.0.29",
-    "@types/react-virtualized": "^9.21.11",
-    "@types/styled-jsx": "^2.2.8"
+    "@types/react-virtualized": "^9.21.11"
   }
 }

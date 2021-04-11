@@ -1,0 +1,20 @@
+@import '~styles/utils';
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  margin-bottom: 50px;
+
+  :global(button + button) {
+    margin-top: 15px;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+
+  :global(h5) {
+    white-space: break-spaces;
+  }
+}

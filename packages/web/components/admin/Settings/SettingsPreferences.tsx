@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { ThemeSelector } from '@/components/ThemeSelector';
 import {
   adminPreferencesStorage,
   Preferences,
   useAdminPreferencesActions
 } from '@/hooks/useAdminPreferences';
-import { SettingsSection } from './SettingsSection';
 import { createForm } from '@/utils/form';
+import { SettingsSection } from './SettingsSection';
+import { ThemeSelector } from './ThemeSelector';
 import classes from './Settings.module.scss';
 
 const { Form, FormItem, useForm } = createForm<Preferences>({ inline: true });

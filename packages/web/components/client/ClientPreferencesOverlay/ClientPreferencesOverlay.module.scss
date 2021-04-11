@@ -1,0 +1,8 @@
+@import '~styles/utils';
+
+.numeric-input :global(.#{$ns}-input-group) {
+  width: 50px;
+  :global(input) {
+    text-align: center;
+  }
+}

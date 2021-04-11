@@ -1,0 +1,7 @@
+@import '~styles/utils';
+
+.container {
+  @include absolute(0, null, null 0);
+  @include sq-dimen(100%);
+  @include flex(center, center);
+}

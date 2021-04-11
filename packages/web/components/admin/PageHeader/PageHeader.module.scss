@@ -1,0 +1,18 @@
+@import '~styles/utils';
+
+.header {
+  @include flex(center, space-between);
+}
+
+.title {
+  @include flex(center);
+}
+
+.h4 {
+  margin-bottom: 0;
+}
+
+.button {
+  margin-right: 5px;
+  margin-left: -5px;
+}

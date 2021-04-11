@@ -22,35 +22,21 @@ export const ButtonPopover = React.forwardRef<any, ButtonPopoverProps>(
       setDisablePopover(isTouchable());
     }, []);
 
-    return (
-      <>
-        {content && !disablePopover ? (
-          <Popover
-            popoverClassName={'button-popover'}
-            interactionKind="hover-target"
-            hoverOpenDelay={0}
-            hoverCloseDelay={0}
-            content={content}
-            position={position}
-            disabled={disabled}
-            {...popoverProps}
-          >
-            {button}
-          </Popover>
-        ) : (
-          button
-        )}
-        <style jsx global>
-          {`
-            .button-popover {
-              .#{$ns}-popover-content {
-                padding: $pt-grid-size/2 $pt-grid-size;
-                white-space: nowrap;
-              }
-            }
-          `}
-        </style>
-      </>
+    return content && !disablePopover ? (
+      <Popover
+        popoverClassName={'button-popover'}
+        interactionKind="hover-target"
+        hoverOpenDelay={0}
+        hoverCloseDelay={0}
+        content={content}
+        position={position}
+        disabled={disabled}
+        {...popoverProps}
+      >
+        {button}
+      </Popover>
+    ) : (
+      button
     );
   }
 );
