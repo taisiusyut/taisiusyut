@@ -239,7 +239,7 @@ export class ChapterController {
       );
     }
 
-    this.eventEmitter.emit(PublishChapterEvent.name, chapter);
+    await this.eventEmitter.emitAsync(PublishChapterEvent.name, chapter);
 
     if (chapter.number > 1) {
       await this.chapterService.updateOne(
