@@ -38,12 +38,13 @@ export function testGetBooksFromShelf() {
     const auth = getGlobalUser(user);
     const response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(length);
-    expect(response.body[0].book).toEqual(
-      Object.keys(bookSelect).reduce(
+    expect(response.body[0].book).toEqual({
+      ...Object.keys(bookSelect).reduce(
         (result, k) => ({ ...result, [k]: expect.anything() }),
         {} as Record<keyof typeof bookSelect, any>
-      )
-    );
+      ),
+      cover: undefined
+    });
 
     expect(response.body).not.toContainObject({
       author: expect.anything()
