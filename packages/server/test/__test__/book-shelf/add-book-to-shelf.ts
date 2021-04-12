@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import { BookStatus, Schema$Book, Schema$Chapter, UserRole } from '@/typings';
 import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
-import { addBookToShelf, mapToLatestChapter } from '../../service/book-shelf';
+import { addBookToShelf } from '../../service/book-shelf';
 import {
   createUserAndLogin,
   getGlobalUser,
@@ -52,20 +52,16 @@ export function testAddBookToShelf() {
   test.each(['root', 'admin', 'author'])(
     `%s can add public/private book to shelf`,
     async user => {
-      for (const [k, book] of Object.entries(books)) {
+      for (const [, book] of Object.entries(books)) {
         if (
           book.status === BookStatus.Public ||
           book.status === BookStatus.Private
         ) {
-          const chapter = { ...chapters[Number(k)] };
           const response = await addBookToShelf(
             getGlobalUser(user).token,
             book.id
           );
           expect(response.status).toBe(HttpStatus.CREATED);
-          expect(response.body.latestChapter).toEqual(
-            mapToLatestChapter(chapter)
-          );
         }
       }
     }
@@ -77,9 +73,6 @@ export function testAddBookToShelf() {
 
     response = await addBookToShelf(client.token, books[2].id);
     expect(response.status).toBe(HttpStatus.CREATED);
-    expect(response.body.latestChapter).toEqual(
-      mapToLatestChapter(chapters[2])
-    );
   });
 
   test(`other author can add public book to shelf but not private`, async () => {
@@ -93,9 +86,6 @@ export function testAddBookToShelf() {
 
     response = await addBookToShelf(otherAuthor.token, books[2].id);
     expect(response.status).toBe(HttpStatus.CREATED);
-    expect(response.body.latestChapter).toEqual(
-      mapToLatestChapter(chapters[2])
-    );
   });
 
   test(`cannot add a book to shelf twice`, async () => {
@@ -107,9 +97,6 @@ export function testAddBookToShelf() {
         books[2].id
       );
       expect(response.status).toBe(HttpStatus.CREATED);
-      expect(response.body.latestChapter).toEqual(
-        mapToLatestChapter(chapters[2])
-      );
 
       response = await addBookToShelf(getGlobalUser(user).token, books[2].id);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);

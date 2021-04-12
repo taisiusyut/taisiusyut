@@ -19,9 +19,6 @@ class Excluded
 
   @Exclude()
   lastVisit: undefined;
-
-  @Exclude()
-  latestChapter: undefined;
 }
 
 class GetBooksFromShelf

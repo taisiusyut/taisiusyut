@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BookModule } from '@/modules/book/book.module';
-import { ChapterModule } from '@/modules/chapter/chapter.module';
 import { BookShelfService } from './book-shelf.service';
 import { BookShelfController } from './book-shelf.controller';
-import { BookShelfEventConsumer } from './book-shelf.event-consumer';
 import { BookShelf, BookShelfSchema } from './schemas';
 import autopopulate from 'mongoose-autopopulate';
 
@@ -19,11 +17,10 @@ import autopopulate from 'mongoose-autopopulate';
         }
       }
     ]),
-    BookModule,
-    ChapterModule
+    BookModule
   ],
   controllers: [BookShelfController],
-  providers: [BookShelfService, BookShelfEventConsumer],
+  providers: [BookShelfService],
   exports: [BookShelfService]
 })
 export class BookShelfModule {}

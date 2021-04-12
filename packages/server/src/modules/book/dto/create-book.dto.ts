@@ -29,6 +29,9 @@ class Excluded implements Partial<Schema$Book> {
   numOfCollection?: undefined;
 
   @Exclude()
+  latestChapter?: undefined;
+
+  @Exclude()
   category?: Category;
 }
 

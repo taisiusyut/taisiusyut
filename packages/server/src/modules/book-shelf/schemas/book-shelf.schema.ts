@@ -1,34 +1,24 @@
 import { FilterQuery, Types } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { PickType } from '@nestjs/mapped-types';
 import { User } from '@/modules/user/schemas/user.schema';
 import { Book } from '@/modules/book/schemas/book.schema';
-import { Chapter } from '@/modules/chapter/schemas/chapter.schema';
-import { BookStatus, Schema$Book, Schema$BookShelf } from '@/typings';
-
-type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
-
-class ShelfBook
-  extends PickType(Book, ['id', 'name', 'authorName', 'status', 'cover'])
-  implements NonNullable<Schema$BookShelf['book']> {}
+import {
+  BookStatus,
+  BookInShelf,
+  Schema$Book,
+  Schema$BookShelf
+} from '@/typings';
 
 export const bookSelect: {
-  [X in keyof ShelfBook]: 1;
+  [X in keyof Required<BookInShelf>]: 1;
 } = {
   id: 1,
   name: 1,
   authorName: 1,
   status: 1,
-  cover: 1
-};
-
-export const latestChapterSelect: {
-  [X in keyof LatestChapter]: 1;
-} = {
-  id: 1,
-  name: 1,
-  number: 1
+  cover: 1,
+  latestChapter: 1
 };
 
 const bookQuery: FilterQuery<Schema$Book> = {
@@ -63,24 +53,13 @@ export class BookShelf
       select: bookSelect
     }
   })
-  @Type(() => ShelfBook)
-  book: string | ShelfBook;
+  book: string | BookInShelf;
 
   @Prop({ type: Boolean, default: false })
   pin?: boolean;
 
   @Prop({ type: Number })
   lastVisit?: number;
-
-  @Prop({
-    type: Types.ObjectId,
-    ref: Chapter.name,
-    autopopulate: {
-      maxDepth: 1,
-      select: latestChapterSelect
-    }
-  })
-  latestChapter?: string | null;
 
   @Transform(({ value }) => value && Number(value))
   createdAt: string;

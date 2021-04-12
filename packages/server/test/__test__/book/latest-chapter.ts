@@ -1,13 +1,7 @@
-import { HttpStatus } from '@nestjs/common';
-import { BookShelfService } from '@/modules/book-shelf/book-shelf.service';
 import { Schema$Book } from '@/typings';
-import {
-  addBookToShelf,
-  getBooksFromShelf,
-  mapToLatestChapter
-} from '../../service/book-shelf';
+import { mapToLatestChapter } from '../../service/book-shelf';
 import { getGlobalUser, setupUsers } from '../../service/auth';
-import { createBook, publishBook } from '../../service/book';
+import { createBook, getBook, publishBook } from '../../service/book';
 import { createChapter, publishChapter } from '../../service/chapter';
 
 export function testLatestChapter() {
@@ -25,31 +19,18 @@ export function testLatestChapter() {
       await publishBook(author.token, book.id);
       books.push(book);
     }
-
-    await app.get(BookShelfService).clear();
-
-    for (const user of users) {
-      const response = await addBookToShelf(
-        getGlobalUser(user).token,
-        books[0].id
-      );
-      expect(response.status).toBe(HttpStatus.CREATED);
-    }
   });
 
   test('latest chapter will be update after author publish the chapter', async () => {
     const response = await createChapter(author.token, books[0].id);
     const chapter = response.body;
-    expect(chapter).toHaveProperty('id', expect.any(String));
 
     await publishChapter(author.token, books[0].id, chapter.id);
 
     for (const user of users) {
-      const response = await getBooksFromShelf(getGlobalUser(user).token);
-      expect(response.body[0].latestChapter).toBeDefined();
-      expect(response.body[0].latestChapter).toEqual(
-        mapToLatestChapter(chapter)
-      );
+      const response = await getBook(getGlobalUser(user).token, books[0].id);
+      expect(response.body.latestChapter).toBeDefined();
+      expect(response.body.latestChapter).toEqual(mapToLatestChapter(chapter));
     }
   });
 }

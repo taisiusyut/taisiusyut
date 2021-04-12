@@ -9,14 +9,12 @@ import {
   Body,
   Query,
   ForbiddenException,
-  BadRequestException,
-  InternalServerErrorException
+  BadRequestException
 } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
-import { ChapterService } from '@/modules/chapter/chapter.service';
 import { ObjectId } from '@/decorators';
 import { routes } from '@/constants';
-import { BookStatus, Order } from '@/typings';
+import { BookStatus } from '@/typings';
 import { Access } from '@/utils/access';
 import { BookShelfService } from './book-shelf.service';
 import { GetBooksFromShelfDto, UpdateBookInShelfDto } from './dto';
@@ -27,8 +25,7 @@ import { BookShelf } from './schemas';
 export class BookShelfController {
   constructor(
     private readonly bookService: BookService,
-    private readonly bookShelfService: BookShelfService,
-    private readonly chapterService: ChapterService
+    private readonly bookShelfService: BookShelfService
   ) {}
 
   @Get(routes.book_shelf.get_books_from_shelf)
@@ -65,23 +62,6 @@ export class BookShelfController {
         user: req.user?.user_id,
         book: bookID
       };
-
-      const chapters = await this.chapterService.findAll(
-        { ...this.chapterService.getRoleBasedQuery(req.user), book: bookID },
-        null,
-        { limit: 1, sort: { createdAt: Order.DESC } }
-      );
-
-      const [chapter] = chapters;
-
-      if (chapters.length > 1) {
-        throw new InternalServerErrorException(`chapters more then one`);
-      }
-
-      const latestChapter = chapter?._id;
-      if (latestChapter) {
-        payload.latestChapter = latestChapter;
-      }
 
       return this.bookShelfService.create(payload);
     }

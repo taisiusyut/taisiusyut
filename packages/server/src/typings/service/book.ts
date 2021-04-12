@@ -1,5 +1,11 @@
 import { Timestamp, Pagination, Search, DateRange } from './';
 import { Schema$Author } from './user';
+import { Schema$Chapter } from './chapter';
+
+export type LatestChapter = Pick<
+  Schema$Chapter,
+  'id' | 'name' | 'number' | 'updatedAt'
+>;
 
 export enum BookStatus {
   Pending = 1,
@@ -41,6 +47,7 @@ export interface Schema$Book extends Timestamp {
   status?: BookStatus;
   wordCount: number;
   numOfCollection: number;
+  latestChapter?: LatestChapter | null;
 }
 
 export interface Param$CreateBook {

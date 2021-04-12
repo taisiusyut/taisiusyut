@@ -25,7 +25,10 @@ export class BookEventConsumer {
   async onPublishChapater(payload: PublishChapterEvent) {
     await this.bookService.updateOne(
       { _id: String(payload.book) },
-      { $inc: { wordCount: payload.wordCount } }
+      {
+        latestChapter: String(payload._id),
+        $inc: { wordCount: payload.wordCount }
+      }
     );
 
     await this.userService.updateOne(

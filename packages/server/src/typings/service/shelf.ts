@@ -1,17 +1,17 @@
 import { Timestamp, Pagination } from './index';
 import { Schema$Book } from './book';
-import { Schema$Chapter } from './chapter';
+
+export type BookInShelf = Pick<
+  Schema$Book,
+  'id' | 'name' | 'authorName' | 'status' | 'cover' | 'latestChapter'
+>;
 
 export interface Schema$BookShelf extends Timestamp {
   id: string;
   user: string;
-  book: Pick<
-    Schema$Book,
-    'id' | 'name' | 'authorName' | 'status' | 'cover'
-  > | null;
+  book: BookInShelf | null;
   pin?: boolean;
   lastVisit?: number | null;
-  latestChapter?: Pick<Schema$Chapter, 'id' | 'name' | 'number'> | null;
 }
 
 export interface Param$GetBooksFromShelf extends Pagination {}

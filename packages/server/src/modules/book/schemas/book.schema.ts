@@ -3,10 +3,19 @@ import { Types } from 'mongoose';
 import { Transform, Type } from 'class-transformer';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { User } from '@/modules/user/schemas/user.schema';
-import { Schema$Book, BookStatus, Category } from '@/typings';
+import { Schema$Book, BookStatus, Category, LatestChapter } from '@/typings';
+import { Group } from '@/utils/access';
 import { Max_Book_Description } from '@/constants';
 import { BookAuthor } from './book-author';
-import { Group } from '@/utils/access';
+
+export const latestChapterSelect: {
+  [X in keyof LatestChapter]: 1;
+} = {
+  id: 1,
+  name: 1,
+  number: 1,
+  updatedAt: 1
+};
 
 @Schema({
   timestamps: true,
@@ -63,6 +72,16 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
 
   @Prop({ type: Number, required: true, min: 0 })
   numOfCollection?: number;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: 'Chapter',
+    autopopulate: {
+      maxDepth: 1,
+      select: latestChapterSelect
+    }
+  })
+  latestChapter?: string | null;
 
   @Transform(({ value }) => value && Number(value))
   createdAt: string;

@@ -24,6 +24,9 @@ class Excluded
 
   @Exclude()
   category?: Category;
+
+  @Exclude()
+  latestChapter?: undefined;
 }
 
 class GetBooks
