@@ -1,6 +1,12 @@
 import { Exclude } from 'class-transformer';
 import { ChapterType, Param$CreateChapter, Schema$Chapter } from '@/typings';
-import { IsChapterName, IsContent, IsChapterType, IsPrice } from './';
+import {
+  IsChapterName,
+  IsContent,
+  IsChapterType,
+  IsPrice,
+  IsChapterPrefix
+} from './';
 
 class Excluded implements Partial<Schema$Chapter> {
   @Exclude()
@@ -39,6 +45,9 @@ class CreateChapter
   implements
     Partial<Omit<Param$CreateChapter, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
+  @IsChapterPrefix()
+  prefix?: string;
+
   @IsPrice()
   price?: number;
 }

@@ -8,6 +8,7 @@ import {
 } from '@/typings';
 import { Group } from '@/utils/access';
 import {
+  IsChapterPrefix,
   IsChapterName,
   IsChapterStatus,
   IsChapterType,
@@ -49,6 +50,9 @@ class UpdateChapter
   implements
     Partial<Omit<Param$UpdateChapter, keyof Excluded>>,
     Partial<Omit<Schema$Chapter, keyof Excluded>> {
+  @IsChapterPrefix()
+  prefix?: string;
+
   @IsOptional()
   @IsChapterName()
   name?: string;

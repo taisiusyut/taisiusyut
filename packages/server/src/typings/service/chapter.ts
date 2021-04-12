@@ -13,6 +13,7 @@ export enum ChapterType {
 }
 
 export interface Schema$Chapter extends Timestamp {
+  prefix?: string;
   number: number;
   id: string;
   name: string;

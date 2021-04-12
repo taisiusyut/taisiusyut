@@ -8,11 +8,21 @@ import {
   MaxLength,
   Max,
   Min,
-  ValidateIf
+  ValidateIf,
+  IsOptional
 } from 'class-validator';
 import { ChapterType, ChapterStatus } from '@/typings';
-import { Max_Chapter_Name } from '@/constants';
+import { Max_Chapter_Name, Max_Chapter_Prefix } from '@/constants';
 import { DOMPurify } from '@/decorators';
+
+export function IsChapterPrefix(): ReturnType<typeof applyDecorators> {
+  return applyDecorators(
+    IsOptional(),
+    IsString(),
+    IsNotEmpty(),
+    MaxLength(Max_Chapter_Prefix)
+  );
+}
 
 export function IsChapterName(): ReturnType<typeof applyDecorators> {
   return applyDecorators(IsString(), IsNotEmpty(), MaxLength(Max_Chapter_Name));

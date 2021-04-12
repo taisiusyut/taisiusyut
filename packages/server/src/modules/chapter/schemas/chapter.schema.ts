@@ -20,6 +20,9 @@ export class Chapter implements Schema$Chapter {
   @Prop({ type: Number, required: true })
   number: number;
 
+  @Prop({ type: String, trim: true })
+  prefix?: string;
+
   @Prop({ type: String, required: true, trim: true })
   name: string;
 
