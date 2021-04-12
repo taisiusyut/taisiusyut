@@ -10,7 +10,7 @@ import { BookStatus, Schema$Book, Schema$BookShelf } from '@/typings';
 type LatestChapter = NonNullable<Schema$BookShelf['latestChapter']>;
 
 class ShelfBook
-  extends PickType(Book, ['id', 'name', 'authorName', 'status'])
+  extends PickType(Book, ['id', 'name', 'authorName', 'status', 'cover'])
   implements NonNullable<Schema$BookShelf['book']> {}
 
 export const bookSelect: {
@@ -19,7 +19,8 @@ export const bookSelect: {
   id: 1,
   name: 1,
   authorName: 1,
-  status: 1
+  status: 1,
+  cover: 1
 };
 
 export const latestChapterSelect: {

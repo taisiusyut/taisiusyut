@@ -5,7 +5,10 @@ import { Schema$Chapter } from './chapter';
 export interface Schema$BookShelf extends Timestamp {
   id: string;
   user: string;
-  book: Pick<Schema$Book, 'id' | 'name' | 'authorName' | 'status'> | null;
+  book: Pick<
+    Schema$Book,
+    'id' | 'name' | 'authorName' | 'status' | 'cover'
+  > | null;
   pin?: boolean;
   lastVisit?: number | null;
   latestChapter?: Pick<Schema$Chapter, 'id' | 'name' | 'number'> | null;

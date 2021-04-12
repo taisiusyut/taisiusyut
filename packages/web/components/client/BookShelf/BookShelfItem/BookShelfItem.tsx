@@ -63,10 +63,14 @@ export function BookShelfItem({ data }: Props) {
 
   const className = classes['item'];
 
-  // if `skelecton` is a space can disable `Skelecton` fallback
+  // disableSkelecton for value is empty
   const content = (flatten: boolean, disableSkelecton = false) => (
     <div className={classes['item-body']}>
-      <BookModel width={bookModelWidth} flatten={flatten} />
+      <BookModel
+        cover={data.book?.cover}
+        width={bookModelWidth}
+        flatten={flatten}
+      />
       <div className={classes['item-content']}>
         <div className={classes['book-name']}>
           <Skelecton length={3}>{book?.name}</Skelecton>
