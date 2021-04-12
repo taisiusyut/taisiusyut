@@ -101,6 +101,7 @@ export function Chapter({ bookID, chapterID, chapter }: Props) {
       <PageHeader title={title} targetPath={`/admin/book/${bookID}`} />
 
       <ChapterForm
+        showPrefixField
         // for update chapter, this reset the initialValues
         key={JSON.stringify(chapter)}
         form={form}

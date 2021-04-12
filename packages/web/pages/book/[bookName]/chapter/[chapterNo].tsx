@@ -6,7 +6,7 @@ import {
   ClientLayoutProps
 } from '@/components/client/ClientLayout';
 import {
-  formatChapterTitle,
+  chapterDocumentTitle,
   ClientChapter,
   ClientChapterData,
   ClientChapterParams
@@ -77,7 +77,7 @@ export default function ClientChapterPage(props: Props) {
   const head = chapter ? (
     <Meta
       keywords={bookName}
-      title={formatChapterTitle(chapter.number, bookName)}
+      title={chapterDocumentTitle(chapter.number, bookName, chapter?.prefix)}
       description={removeTags(chapter.content)
         .trim()
         .replace(/\n/g, '')

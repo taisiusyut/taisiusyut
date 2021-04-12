@@ -32,13 +32,14 @@ function NavigateButton({
 }: {
   bookName: string;
   chapterNo: number;
+  prefix?: string;
 }) {
   return (
     <Link href={`/book/${bookName}/chapter/${chapterNo}`}>
       <Button
         fill
         intent="primary"
-        text={chapterNo === 1 ? '第一章' : '繼續閱讀'}
+        text={chapterNo === 1 ? '開始閱讀' : '繼續閱讀'}
       />
     </Link>
   );

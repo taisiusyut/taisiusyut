@@ -65,8 +65,11 @@ const getMarginY = (el: Element) => {
   return parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 };
 
-export const formatChapterTitle = (chapterNo: number, bookName: string) =>
-  `${bookName} | 第${chapterNo}章 | 睇小說`;
+export const chapterDocumentTitle = (
+  chapterNo: number,
+  bookName: string,
+  prefix = `第${chapterNo}章`
+) => `${bookName} | ${prefix} | 睇小說`;
 
 const goBackButton = (
   <GoBackButton targetPath={['/', `/book/:bookName`, '/featured']} />
@@ -302,7 +305,7 @@ function ClientChapterComponment({
   }, [data, currentChapter]);
 
   useEffect(() => {
-    document.title = formatChapterTitle(currentChapter, bookName);
+    document.title = `${bookName} | 第${currentChapter}章 | 睇小說`;
     lastVisitStorage.set(bookName, currentChapter);
   }, [currentChapter, bookName]);
 
@@ -320,9 +323,10 @@ function ClientChapterComponment({
   }, []);
 
   if (bookID) {
-    const chapterName =
-      data[currentChapter]?.name || chapters[currentChapter - 1]?.name || '';
-    const title = `第${currentChapter}章 ${chapterName}`;
+    const { name: chapterName = '', prefix: chapterPrefix } =
+      data[currentChapter] || chapters[currentChapter - 1];
+    const prefix = chapterPrefix || `第${currentChapter}章`;
+    const title = `${prefix} ${chapterName}`;
     const content = chapterNums.map(chapterNo => (
       <div
         key={chapterNo}

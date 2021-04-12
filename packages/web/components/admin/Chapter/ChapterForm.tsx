@@ -8,7 +8,7 @@ import {
   ContentEditorRef
 } from '@/components/admin/ContentEditor';
 import { Schema$Chapter } from '@/typings';
-import { Max_Chapter_Name } from '@/constants';
+import { Max_Chapter_Name, Max_Chapter_Prefix } from '@/constants';
 import { createForm, FormInstance, FormProps, validators } from '@/utils/form';
 import { Toaster } from '@/utils/toaster';
 import { readFileText, useFileUpload } from '@/hooks/useFileUpload';
@@ -20,6 +20,7 @@ export type ChapterState = Schema$Chapter;
 
 interface Props extends FormProps<ChapterState> {
   wordCount?: number | null;
+  showPrefixField?: boolean;
 }
 
 const { Form, FormItem, useForm } = createForm<ChapterState>();
@@ -33,7 +34,12 @@ const accept = [
   `text/plain`
 ].join(',');
 
-export function ChapterForm({ wordCount, children, ...props }: Props) {
+export function ChapterForm({
+  wordCount,
+  children,
+  showPrefixField,
+  ...props
+}: Props) {
   const editor = useRef<ContentEditorRef>(null);
   const formRef = useRef<FormInstance<ChapterState>>(null);
   const [fileUpload$, upload] = useFileUpload({ accept });
@@ -66,6 +72,21 @@ export function ChapterForm({ wordCount, children, ...props }: Props) {
       <FormItem name="type" noStyle>
         <div hidden />
       </FormItem>
+
+      {showPrefixField && (
+        <FormItem
+          name="prefix"
+          label="前綴 (可選)"
+          validators={[
+            validators.maxLength(
+              Max_Chapter_Prefix,
+              `cannot longer then ${Max_Chapter_Prefix}`
+            )
+          ]}
+        >
+          <Input placeholder="章節名稱前綴，默認顯示「第一章」，可輸入「序章」/「楔子」等等" />
+        </FormItem>
+      )}
 
       <FormItem
         name="name"

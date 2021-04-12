@@ -64,10 +64,12 @@ export const ClientChapterContent = React.memo(
     }
 
     if (chapter) {
+      const prefix = chapter.prefix || `第${chapterNo}章`;
+
       return (
         <>
           <div className={classes['chapter-name']}>
-            {`第${chapterNo}章 ${chapter.name}`}
+            {`${prefix} ${chapter.name}`}
           </div>
           {content.map((content, idx) => (
             <Paragraph
