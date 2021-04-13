@@ -27,6 +27,7 @@ export class BookEventConsumer {
       { _id: String(payload.book) },
       {
         latestChapter: String(payload._id),
+        lastPublishedAt: Date.now(),
         $inc: { wordCount: payload.wordCount }
       }
     );

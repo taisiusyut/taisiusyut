@@ -29,8 +29,8 @@ export function testLatestChapter() {
 
     for (const user of users) {
       const response = await getBook(getGlobalUser(user).token, books[0].id);
-      expect(response.body.latestChapter).toBeDefined();
       expect(response.body.latestChapter).toEqual(mapToLatestChapter(chapter));
+      expect(response.body.lastPublishedAt).toEqual(expect.any(Number));
     }
   });
 }

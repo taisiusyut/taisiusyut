@@ -31,6 +31,9 @@ class Excluded implements Partial<Record<keyof Schema$Book, unknown>> {
 
   @Exclude()
   latestChapter?: undefined;
+
+  @Exclude()
+  lastPublishedAt?: undefined;
 }
 
 class UpdateBook

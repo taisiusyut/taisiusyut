@@ -27,6 +27,9 @@ class Excluded
 
   @Exclude()
   latestChapter?: undefined;
+
+  @Exclude()
+  lastPublishedAt?: undefined;
 }
 
 class GetBooks

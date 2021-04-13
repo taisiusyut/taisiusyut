@@ -48,6 +48,7 @@ export interface Schema$Book extends Timestamp {
   wordCount: number;
   numOfCollection: number;
   latestChapter?: LatestChapter | null;
+  lastPublishedAt?: number | null;
 }
 
 export interface Param$CreateBook {

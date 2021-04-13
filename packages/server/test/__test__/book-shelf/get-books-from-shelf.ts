@@ -11,6 +11,14 @@ export function testGetBooksFromShelf() {
   const length = 3;
   const users = ['root', 'admin', 'author', 'client'];
 
+  const bookValue = Object.keys(bookSelect).reduce(
+    (result, k) => ({ ...result, [k]: expect.anything() }),
+    {} as Record<keyof typeof bookSelect, any>
+  );
+
+  delete bookValue['cover'];
+  delete bookValue['latestChapter'];
+
   beforeAll(async () => {
     await setupUsers();
 
@@ -38,13 +46,7 @@ export function testGetBooksFromShelf() {
     const auth = getGlobalUser(user);
     const response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(length);
-    expect(response.body[0].book).toEqual({
-      ...Object.keys(bookSelect).reduce(
-        (result, k) => ({ ...result, [k]: expect.anything() }),
-        {} as Record<keyof typeof bookSelect, any>
-      ),
-      cover: undefined
-    });
+    expect(response.body[0].book).toEqual(bookValue);
 
     expect(response.body).not.toContainObject({
       author: expect.anything()

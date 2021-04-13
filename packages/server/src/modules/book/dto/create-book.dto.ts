@@ -33,6 +33,9 @@ class Excluded implements Partial<Schema$Book> {
 
   @Exclude()
   category?: Category;
+
+  @Exclude()
+  lastPublishedAt?: undefined;
 }
 
 class CreateBook

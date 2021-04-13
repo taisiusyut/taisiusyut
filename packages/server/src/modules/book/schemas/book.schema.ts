@@ -23,7 +23,7 @@ export const latestChapterSelect: {
     transform: (_model, raw) => new Book(raw)
   }
 })
-export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
+export class Book implements Record<keyof Schema$Book, unknown> {
   _id: ObjectId;
 
   id: string;
@@ -35,7 +35,7 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   description: string;
 
   @Prop({ type: String })
-  cover?: string | null;
+  cover: string | null;
 
   @Prop({
     type: Number,
@@ -67,11 +67,11 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
   })
   status: BookStatus;
 
-  @Prop({ type: Number, required: true, min: 0 })
+  @Prop({ type: Number, required: true, min: 0, default: 0 })
   wordCount: number;
 
-  @Prop({ type: Number, required: true, min: 0 })
-  numOfCollection?: number;
+  @Prop({ type: Number, required: true, min: 0, default: 0 })
+  numOfCollection: number;
 
   @Prop({
     type: Types.ObjectId,
@@ -81,7 +81,10 @@ export class Book implements Partial<Record<keyof Schema$Book, unknown>> {
       select: latestChapterSelect
     }
   })
-  latestChapter?: string | null;
+  latestChapter: string | null;
+
+  @Prop({ type: Number })
+  lastPublishedAt: number | undefined | null;
 
   @Transform(({ value }) => value && Number(value))
   createdAt: string;
