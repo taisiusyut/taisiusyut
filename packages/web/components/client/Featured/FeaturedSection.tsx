@@ -5,6 +5,7 @@ import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
 import { Schema$Book } from '@/typings';
 import { useBoolean } from '@/hooks/useBoolean';
+import dayjs from 'dayjs';
 import classes from './Featured.module.scss';
 
 export type Book =
@@ -26,9 +27,11 @@ function SectionItem({ book }: { book: Book }) {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div>
-        <BookModel cover={book.cover} flatten={flatten} />
-      </div>
+      <BookModel
+        className={classes['book-model']}
+        cover={book.cover}
+        flatten={flatten}
+      />
       <div className={classes['book-info']}>
         <div className={classes['book-name']}>
           <Skelecton length={5}>{book.name}</Skelecton>
@@ -36,6 +39,12 @@ function SectionItem({ book }: { book: Book }) {
         <div className={classes['book-author']}>
           <Skelecton length={3}>
             {book?.authorName && `${book.authorName} 著`}
+          </Skelecton>
+        </div>
+        <div className={classes['book-last-published-at']}>
+          <Skelecton length={3}>
+            {book.lastPublishedAt &&
+              `上次更新: ${dayjs(book.lastPublishedAt).fromNow()}`}
           </Skelecton>
         </div>
       </div>

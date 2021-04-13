@@ -31,7 +31,7 @@ function useRecentUpdate(pageSize: number) {
 
   const [request] = useState(() => async () => {
     const response = await getBooks({
-      sort: { updatedAt: Order.DESC },
+      sort: { lastPublishedAt: Order.DESC },
       pageSize
     });
     return response.data;

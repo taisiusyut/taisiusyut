@@ -1,7 +1,7 @@
 @import '~styles/utils';
 
 .item {
-  @include flex();
+  @include flex(center);
   @include relative();
   cursor: pointer;
   user-select: none;

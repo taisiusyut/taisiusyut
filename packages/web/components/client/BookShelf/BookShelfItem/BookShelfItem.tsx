@@ -48,7 +48,8 @@ const bookModelWidth = 55;
 export function BookShelfItem({ data }: Props) {
   const [shelf, actions] = useBookShelf();
   const { asPath } = useRouter();
-  const { book, latestChapter, lastVisit } = data;
+  const { book, lastVisit } = data;
+  const latestChapter = book?.latestChapter;
 
   const [ref] = useContextMenu<HTMLDivElement>(
     event =>

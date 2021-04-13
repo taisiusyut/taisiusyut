@@ -17,6 +17,10 @@
   }
 }
 
+.book-model {
+  margin-left: 7.5px;
+}
+
 .section-content {
   display: grid;
   grid-gap: 20px;
@@ -30,19 +34,17 @@
 .section-card {
   @include flex(center);
   @include sq-dimen(100%);
-  padding-left: 30px;
 }
 
 .book-info {
   $line-height: 1.765em;
   $min-height: 1em;
-
   line-height: $line-height;
   flex: 1 1 auto;
-  padding-top: 3px;
 
   .book-author,
-  .book-category {
+  .book-category,
+  .book-last-published-at {
     color: var(--text-light-color);
   }
 }
