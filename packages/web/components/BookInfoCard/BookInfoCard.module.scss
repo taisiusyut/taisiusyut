@@ -42,12 +42,29 @@
 
   @media (min-width: 481px) {
     white-space: break-spaces;
-    overflow: hidden;
+    // overflow: hidden;
   }
 }
 
-.book-model {
-  @include margin-x(5px 10px);
+.book-model-container {
   float: left;
+}
+
+.book-model {
+  left: 0;
   margin-bottom: 10px;
+}
+
+.footer {
+  @include flex(center, flex-end);
+  margin-top: 20px;
+  font-size: 14px;
+  position: relative;
+  bottom: -10px;
+  right: -5px;
+  color: var(--text-light-color);
+
+  > * {
+    margin-left: 10px;
+  }
 }

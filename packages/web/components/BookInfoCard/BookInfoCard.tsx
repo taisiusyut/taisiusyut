@@ -32,12 +32,14 @@ export function BookInfoCard({
 
   return (
     <Card {...props} className={`${classes['book']} ${className}`.trim()}>
-      <BookModel
-        width={bookModelSize}
-        flatten={flatten}
-        className={classes['book-model']}
-        cover={book.cover}
-      />
+      <div className={classes['book-model-container']}>
+        <BookModel
+          width={bookModelSize}
+          flatten={flatten}
+          cover={book.cover}
+          className={classes['book-model']}
+        />
+      </div>
 
       <div className={classes['content']}>
         <div className={classes['header']}>
@@ -61,6 +63,12 @@ export function BookInfoCard({
 
         <div className={classes['description']}>
           <Skelecton length={60}>{book.description}</Skelecton>
+        </div>
+
+        <div className={classes['footer']}>
+          <div>{book.numOfCollection} 收藏</div>
+          <div>|</div>
+          <div>{book.wordCount} 字</div>
         </div>
       </div>
 
