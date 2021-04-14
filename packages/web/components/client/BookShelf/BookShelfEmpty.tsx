@@ -2,10 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { Button, NonIdealState } from '@blueprintjs/core';
 import { useAuthState } from '@/hooks/useAuth';
-import { withAuthRequired } from '@/components/client/withAuthRequired';
 import classes from './BookShelf.module.scss';
-
-const LoginButton = withAuthRequired(Button);
 
 export function BookShelfEmpty() {
   const router = useRouter();
@@ -15,27 +12,18 @@ export function BookShelfEmpty() {
     return null;
   }
 
-  let content = (
-    <NonIdealState
-      description="尚未加入書籍📚"
-      action={
-        <Button
-          text="搜索書籍"
-          intent="primary"
-          onClick={() => router.push(`/search`)}
-        />
-      }
-    />
-  );
-
-  if (auth.loginStatus !== 'loggedIn') {
-    content = (
+  return (
+    <div className={classes['book-shelf-empty']}>
       <NonIdealState
-        description="請先登入"
-        action={<LoginButton text="登入" intent="primary" />}
+        description="尚未加入書籍📚"
+        action={
+          <Button
+            text="搜索書籍"
+            intent="primary"
+            onClick={() => router.push(`/search`)}
+          />
+        }
       />
-    );
-  }
-
-  return <div className={classes['book-shelf-empty']}>{content}</div>;
+    </div>
+  );
 }
