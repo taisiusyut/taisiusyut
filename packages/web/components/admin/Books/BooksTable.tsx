@@ -3,6 +3,7 @@ import { Schema$Book } from '@/typings';
 import { Table, TableProps, SortableHeader, Column } from '@/components/Table';
 import { BookModel } from '@/components/BookModel';
 import { Tags, BookStatusTag } from '@/components/Tags';
+import { numberFormat } from '@/utils/numberFormat';
 import dayjs from 'dayjs';
 
 type BookTableProps = Omit<TableProps<Partial<Schema$Book>>, 'columns'> & {
@@ -14,12 +15,14 @@ type Columns = (Column<Partial<Schema$Book>> & {
 })[];
 
 const noWrap: React.CSSProperties = { whiteSpace: 'nowrap' };
-const numFormat = new Intl.NumberFormat();
 
-function NumberFormat({ value }: { value?: number }) {
-  const num = typeof value === 'number' ? numFormat.format(value) : value;
-  return <div style={{ textAlign: 'center' }}>{num}</div>;
-}
+const NumberFormat: React.FC = ({ children }) => {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      {typeof children === 'number' ? numberFormat(children) : children}
+    </div>
+  );
+};
 
 const bookColumns: Columns = [
   {
@@ -67,7 +70,7 @@ const bookColumns: Columns = [
   {
     id: 'word-count',
     accessor: 'wordCount',
-    Cell: props => <NumberFormat {...props} />,
+    Cell: props => <NumberFormat>{props.value}</NumberFormat>,
     Header: () => (
       <SortableHeader field="wordCount" style={noWrap}>
         字數
@@ -77,7 +80,7 @@ const bookColumns: Columns = [
   {
     id: 'collection',
     accessor: 'numOfCollection',
-    Cell: props => <NumberFormat {...props} />,
+    Cell: props => <NumberFormat>{props.value}</NumberFormat>,
     Header: () => <SortableHeader field="numOfCollection">收藏</SortableHeader>
   },
   {

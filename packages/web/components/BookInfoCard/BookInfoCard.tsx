@@ -4,6 +4,7 @@ import { BookModel } from '@/components/BookModel';
 import { Skelecton } from '@/components/Skelecton';
 import { TagsProps } from '@/components/Tags';
 import { AuthorLink } from '@/components/client/AuthorLink';
+import { numberFormat } from '@/utils/numberFormat';
 import { BookTags } from './BookTags';
 import { Schema$Book } from '@/typings';
 import defaultClasses from './BookInfoCard.module.scss';
@@ -66,9 +67,9 @@ export function BookInfoCard({
         </div>
 
         <div className={classes['footer']}>
-          <div>{book.numOfCollection} 收藏</div>
+          <div>{numberFormat(book.numOfCollection)} 收藏</div>
           <div>|</div>
-          <div>{book.wordCount} 字</div>
+          <div>{numberFormat(book.wordCount)} 字</div>
         </div>
       </div>
 
