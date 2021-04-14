@@ -42,7 +42,7 @@
 
   @media (min-width: 481px) {
     white-space: break-spaces;
-    // overflow: hidden;
+    overflow: hidden;
   }
 }
 
@@ -64,7 +64,13 @@
   right: -5px;
   color: var(--text-light-color);
 
-  > * {
-    margin-left: 10px;
+  > div {
+    line-height: 1em;
+
+    & + div {
+      border-left: 1px solid var(--text-light-color);
+      margin-left: 10px;
+      padding-left: 10px;
+    }
   }
 }

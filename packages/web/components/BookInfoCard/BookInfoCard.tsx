@@ -8,6 +8,7 @@ import { numberFormat } from '@/utils/numberFormat';
 import { BookTags } from './BookTags';
 import { Schema$Book } from '@/typings';
 import defaultClasses from './BookInfoCard.module.scss';
+import dayjs from 'dayjs';
 
 interface Props extends ICardProps, Pick<TagsProps, 'onTagClick'> {
   author?: boolean;
@@ -29,7 +30,7 @@ export function BookInfoCard({
   ...props
 }: Props) {
   const [classes] = useState(() => ({ ...defaultClasses, ..._classes }));
-  const { authorName } = book;
+  const { authorName, lastPublishedAt } = book;
 
   return (
     <Card {...props} className={`${classes['book']} ${className}`.trim()}>
@@ -67,8 +68,10 @@ export function BookInfoCard({
         </div>
 
         <div className={classes['footer']}>
+          {lastPublishedAt && (
+            <div>上次更新: {dayjs(lastPublishedAt).fromNow()}</div>
+          )}
           <div>{numberFormat(book.numOfCollection)} 收藏</div>
-          <div>|</div>
           <div>{numberFormat(book.wordCount)} 字</div>
         </div>
       </div>
