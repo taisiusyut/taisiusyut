@@ -8,35 +8,36 @@ import {
   removeBookFromShelfById
 } from '../../service/book-shelf';
 import { getGlobalUser, setupUsers } from '../../service/auth';
-import { createBook, publishBook } from '../../service/book';
+import { createBook, getBook, publishBook } from '../../service/book';
 
 export function testRemoveBookFromShelf() {
   const length = 1;
-  const books: Schema$Book[] = [];
+  let book: Schema$Book;
 
   const users = ['root', 'admin', 'author', 'client'];
 
   beforeAll(async () => {
     await setupUsers();
-
-    for (let i = 0; i < length; i++) {
-      const response = await createBook(author.token);
-      const book = response.body;
-      await publishBook(author.token, book.id);
-      books.push(book);
-    }
   });
 
   beforeEach(async () => {
     await app.get(BookShelfService).clear();
 
+    for (let i = 0; i < length; i++) {
+      const response = await createBook(author.token);
+      book = response.body;
+      await publishBook(author.token, book.id);
+      book = response.body;
+    }
+
     for (const user of users) {
-      const response = await addBookToShelf(
-        getGlobalUser(user).token,
-        books[0].id
-      );
+      const response = await addBookToShelf(getGlobalUser(user).token, book.id);
       expect(response.status).toBe(HttpStatus.CREATED);
     }
+
+    const response = await getBook(root.token, book.id);
+    book = response.body;
+    expect(book.numOfCollection).toBe(users.length);
   });
 
   test.each(users)(`%s can remove book from shelf`, async user => {
@@ -44,8 +45,12 @@ export function testRemoveBookFromShelf() {
     let response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(1);
 
-    response = await removeBookFromShelf(auth.token, books[0].id);
+    response = await removeBookFromShelf(auth.token, book.id);
     expect(response.status).toBe(HttpStatus.OK);
+
+    book.numOfCollection--;
+    response = await getBook(root.token, book.id);
+    expect(response.body.numOfCollection).toBe(book.numOfCollection);
 
     response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(0);
@@ -58,6 +63,10 @@ export function testRemoveBookFromShelf() {
 
     response = await removeBookFromShelfById(auth.token, response.body[0].id);
     expect(response.status).toBe(HttpStatus.OK);
+
+    // numOfCollection should not change
+    response = await getBook(root.token, book.id);
+    expect(response.body.numOfCollection).toBe(book.numOfCollection);
 
     response = await getBooksFromShelf(auth.token);
     expect(response.body).toHaveLength(0);

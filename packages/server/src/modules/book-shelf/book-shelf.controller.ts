@@ -63,18 +63,28 @@ export class BookShelfController {
         book: bookID
       };
 
-      return this.bookShelfService.create(payload);
+      const result = await this.bookShelfService.create(payload);
+      await this.bookService.updateOne(
+        { _id: bookID },
+        { $inc: { numOfCollection: 1 } }
+      );
+      return result;
     }
 
     throw new BadRequestException(`book not found`);
   }
 
   @Delete(routes.book_shelf.remove_book_from_shelf)
-  remove(@Req() req: FastifyRequest, @ObjectId('bookID') bookID: string) {
-    return this.bookShelfService.delete({
+  async remove(@Req() req: FastifyRequest, @ObjectId('bookID') bookID: string) {
+    const result = await this.bookShelfService.delete({
       user: req.user?.user_id,
       book: bookID
     });
+    await this.bookService.updateOne(
+      { _id: bookID },
+      { $inc: { numOfCollection: -1 } }
+    );
+    return result;
   }
 
   // for remove delted book from shelf

@@ -17,11 +17,18 @@ import { createChapter, publishChapter } from '../../service/chapter';
 
 export function testAddBookToShelf() {
   const length = 4;
-  const books: Schema$Book[] = [];
-  const chapters: Schema$Chapter[] = [];
+  let books: Schema$Book[] = [];
+  let chapters: Schema$Chapter[] = [];
 
   beforeAll(async () => {
     await setupUsers();
+  });
+
+  beforeEach(async () => {
+    books = [];
+    chapters = [];
+
+    await app.get(BookShelfService).clear();
 
     for (let i = 0; i < length; i++) {
       const response = await createBook(author.token);
@@ -57,22 +64,36 @@ export function testAddBookToShelf() {
           book.status === BookStatus.Public ||
           book.status === BookStatus.Private
         ) {
-          const response = await addBookToShelf(
+          let response = await addBookToShelf(
             getGlobalUser(user).token,
             book.id
           );
           expect(response.status).toBe(HttpStatus.CREATED);
+
+          response = await getBook(root.token, book.id);
+          expect(response.body.numOfCollection).toBe(book.numOfCollection + 1);
+          book.numOfCollection + 1;
         }
       }
     }
   );
 
   test(`client can add public book to shelf but not private`, async () => {
-    let response = await addBookToShelf(client.token, books[0].id);
+    let book = books[0];
+    let response = await addBookToShelf(client.token, book.id);
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
 
-    response = await addBookToShelf(client.token, books[2].id);
+    response = await getBook(root.token, book.id);
+    expect(response.body.numOfCollection).toBe(book.numOfCollection);
+
+    book = books[2];
+
+    response = await addBookToShelf(client.token, book.id);
     expect(response.status).toBe(HttpStatus.CREATED);
+
+    book.numOfCollection++;
+    response = await getBook(root.token, book.id);
+    expect(response.body.numOfCollection).toBe(book.numOfCollection);
   });
 
   test(`other author can add public book to shelf but not private`, async () => {
@@ -80,37 +101,54 @@ export function testAddBookToShelf() {
       role: UserRole.Author
     });
     const otherAuthor = response.body;
+    let book = books[0];
 
-    response = await addBookToShelf(otherAuthor.token, books[0].id);
+    response = await addBookToShelf(otherAuthor.token, book.id);
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
 
-    response = await addBookToShelf(otherAuthor.token, books[2].id);
+    response = await getBook(root.token, book.id);
+    expect(response.body.numOfCollection).toBe(book.numOfCollection);
+
+    book = books[2];
+
+    response = await addBookToShelf(otherAuthor.token, book.id);
     expect(response.status).toBe(HttpStatus.CREATED);
+
+    book.numOfCollection++;
+    response = await getBook(root.token, book.id);
+    expect(response.body.numOfCollection).toBe(book.numOfCollection);
   });
 
   test(`cannot add a book to shelf twice`, async () => {
-    await app.get(BookShelfService).clear();
-
+    const book = books[2];
     for (const user of ['root', 'admin', 'author', 'client']) {
-      let response = await addBookToShelf(
-        getGlobalUser(user).token,
-        books[2].id
-      );
+      let response = await addBookToShelf(getGlobalUser(user).token, book.id);
       expect(response.status).toBe(HttpStatus.CREATED);
 
-      response = await addBookToShelf(getGlobalUser(user).token, books[2].id);
+      book.numOfCollection++;
+      response = await getBook(root.token, book.id);
+      expect(response.body.numOfCollection).toBe(book.numOfCollection);
+
+      response = await addBookToShelf(getGlobalUser(user).token, book.id);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+      response = await getBook(root.token, book.id);
+      expect(response.body.numOfCollection).toBe(book.numOfCollection);
     }
   });
 
   test(`cannot add deleted book to shelf`, async () => {
-    const response = await getBook(root.token, books[3].id);
+    const book = books[3];
+    const response = await getBook(root.token, book.id);
     expect(response.body).toHaveProperty('status', BookStatus.Deleted);
 
     for (const user of ['root', 'admin', 'author', 'client']) {
       const auth = getGlobalUser(user);
-      const response = await addBookToShelf(auth.token, books[3].id);
+      let response = await addBookToShelf(auth.token, book.id);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+      response = await getBook(root.token, book.id);
+      expect(response.body.numOfCollection).toBe(book.numOfCollection);
     }
   });
 }
