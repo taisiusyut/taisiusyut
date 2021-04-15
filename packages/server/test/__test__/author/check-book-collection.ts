@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import { BookService } from '@/modules/book/book.service';
 import { Schema$Authenticated, Schema$Book, UserRole } from '@/typings';
 import {
@@ -8,7 +9,11 @@ import {
 import { createBook, getBook, publishBook } from '../../service/book';
 import { checkBookCollectionCount } from '../../service/author';
 import { addBookToShelf } from '../../service/book-shelf';
-import { HttpStatus } from '@nestjs/common';
+
+/**
+ * Since book collection will be updated after book add/remove from shelf
+ * these tests seems not meaningful
+ */
 
 export function testUpdateBookCollection() {
   let localAuthor: Schema$Authenticated;
@@ -50,7 +55,7 @@ export function testUpdateBookCollection() {
           ? [localAuthor]
           : [getGlobalUser(user), localAuthor.user.user_id];
       let response = await getBook(auth.token, book.id);
-      expect(response.body.numOfCollection).toBe(0);
+      expect(response.body.numOfCollection).toBe(clients.length);
 
       response = await checkBookCollectionCount(auth.token, authorId);
       expect(response.status).toBe(HttpStatus.OK);
@@ -67,7 +72,7 @@ export function testUpdateBookCollection() {
     ${'client'} | ${'the'}   | ${HttpStatus.FORBIDDEN}
   `(`$user cannot update $msg book collection`, async ({ user, status }) => {
     let response = await getBook(root.token, book.id);
-    expect(response.body.numOfCollection).toBe(0);
+    expect(response.body.numOfCollection).toBe(clients.length);
 
     response = await checkBookCollectionCount(
       getGlobalUser(user).token,
@@ -76,6 +81,6 @@ export function testUpdateBookCollection() {
     expect(response.status).toBe(status);
 
     response = await getBook(root.token, book.id);
-    expect(response.body.numOfCollection).toBe(0);
+    expect(response.body.numOfCollection).toBe(clients.length);
   });
 }

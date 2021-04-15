@@ -10,7 +10,6 @@ import { Schema$Book } from '@/typings';
 import { Book, BookSchema } from './schemas/book.schema';
 import { BookService } from './book.service';
 import { BookController } from './book.controller';
-import { BookEventConsumer } from './book.event-consumer';
 import autopopulate from 'mongoose-autopopulate';
 import paginate from 'mongoose-paginate-v2';
 
@@ -63,7 +62,7 @@ import paginate from 'mongoose-paginate-v2';
     ])
   ],
   controllers: [BookController],
-  providers: [BookService, BookEventConsumer],
+  providers: [BookService],
   exports: [BookService]
 })
 export class BookModule {}

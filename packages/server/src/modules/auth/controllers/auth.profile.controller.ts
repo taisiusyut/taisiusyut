@@ -8,22 +8,21 @@ import {
   HttpStatus,
   InternalServerErrorException
 } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FastifyRequest } from 'fastify';
 import { routes } from '@/constants';
 import { UserRole } from '@/typings';
 import { UserService } from '@/modules/user/user.service';
+import { BookService } from '@/modules/book/book.service';
 import { Access, AccessPipe } from '@/utils/access';
 import { RefreshTokenService } from '../refresh-token.service';
 import { UpdateProfileDto } from '../dto';
-import { AuthorNameUpdateEvent } from '../event';
 
 @Controller(routes.auth.prefix)
 export class AuthProfileController {
   constructor(
     private readonly userService: UserService,
-    private readonly refreshTokenService: RefreshTokenService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly bookService: BookService,
+    private readonly refreshTokenService: RefreshTokenService
   ) {}
 
   @Access('Auth')
@@ -63,12 +62,9 @@ export class AuthProfileController {
     if (nicknameHasChanged && req.user.role === UserRole.Author) {
       const tokenFromCookies = this.refreshTokenService.getCookie(req);
 
-      this.eventEmitter.emit(
-        AuthorNameUpdateEvent.name,
-        new AuthorNameUpdateEvent({
-          authorId: req.user.user_id,
-          authorName: result.nickname
-        })
+      await this.bookService.updateMany(
+        { author: req.user.user_id },
+        { authorName: result.nickname }
       );
 
       await this.refreshTokenService.findOneAndUpdate(

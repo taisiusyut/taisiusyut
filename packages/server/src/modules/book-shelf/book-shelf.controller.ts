@@ -81,7 +81,7 @@ export class BookShelfController {
       book: bookID
     });
     await this.bookService.updateOne(
-      { _id: bookID },
+      { _id: bookID, numOfCollection: { $gte: 0 } },
       { $inc: { numOfCollection: -1 } }
     );
     return result;

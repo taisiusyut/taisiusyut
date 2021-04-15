@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@/config';
 import { UserModule } from '@/modules/user/user.module';
+import { BookModule } from '@/modules/book/book.module';
 import { LocalStrategy, JwtStrategy } from './strategy';
 import {
   AuthController,
@@ -20,6 +21,7 @@ import {
 @Module({
   imports: [
     forwardRef(() => UserModule),
+    forwardRef(() => BookModule),
     PassportModule,
     MongooseModule.forFeature([
       {

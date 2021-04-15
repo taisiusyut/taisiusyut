@@ -11,7 +11,6 @@ import {
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseSerializerInterceptor } from '@/utils/mongoose';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AccessGuard } from '@/utils/access';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UserModule } from '@/modules/user/user.module';
@@ -33,8 +32,7 @@ import { AnnouncementModule } from '@/modules/announcement/announcement.module';
     PaymentModule,
     BookShelfModule,
     BugReportModule,
-    AnnouncementModule,
-    EventEmitterModule.forRoot()
+    AnnouncementModule
   ],
   providers: [
     {

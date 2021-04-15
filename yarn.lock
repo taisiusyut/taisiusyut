@@ -4083,13 +4083,6 @@
     tslib "2.1.0"
     uuid "8.3.2"
 
-"@nestjs/event-emitter@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/event-emitter/-/event-emitter-0.0.3.tgz#c8f88351564c0ecd87fb8f70cfba9dddd3da12db"
-  integrity sha512-ggVMXdu80VN62rXMtfbQ7XTu3k4t0UUFn4DNQyQee5NTRCcRpT1ZmYR/qt0Exh9JiNvzYDR9TYRr20GU40n6fg==
-  dependencies:
-    eventemitter2 "6.4.3"
-
 "@nestjs/jwt@^7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@nestjs/jwt/-/jwt-7.2.0.tgz#d55d15c861b3e0d67a852cbe6131b14c85246852"
@@ -9407,11 +9400,6 @@ event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
-
-eventemitter2@6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-6.4.3.tgz#35c563619b13f3681e7eb05cbdaf50f56ba58820"
-  integrity sha512-t0A2msp6BzOf+QAcI6z9XMktLj52OjGQg+8SJH6v5+3uxNpWYRR3wQmfA+6xtMU9kOC59qk9licus5dYcrYkMQ==
 
 eventemitter3@^3.0.0, eventemitter3@^3.1.0:
   version "3.1.2"

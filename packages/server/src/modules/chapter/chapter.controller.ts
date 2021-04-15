@@ -13,27 +13,26 @@ import {
   Param,
   ParseIntPipe
 } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { FastifyRequest } from 'fastify';
 import { FilterQuery } from 'mongoose';
 import { routes } from '@/constants';
 import { ObjectId } from '@/decorators';
 import { Book } from '@/modules/book/schemas/book.schema';
 import { BookService } from '@/modules/book/book.service';
+import { UserService } from '@/modules/user/user.service';
 import { BookStatus, ChapterStatus, ChapterType, UserRole } from '@/typings';
 import { Access, AccessPipe } from '@/utils/access';
 import { calcWordCount } from '@/utils/calc-word-count';
 import { ChapterService } from './chapter.service';
 import { Chapter } from './schemas/chapter.schema';
-import { PublishChapterEvent } from './event';
 import { CreateChapterDto, GetChaptersDto, UpdateChapterDto } from './dto';
 
 @Controller(routes.chapter.prefix)
 export class ChapterController {
   constructor(
+    private readonly userService: UserService,
     private readonly bookService: BookService,
-    private readonly chapterService: ChapterService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly chapterService: ChapterService
   ) {}
 
   getBookQuery(bookID: string, author?: string, chapterType?: ChapterType) {
@@ -239,7 +238,20 @@ export class ChapterController {
       );
     }
 
-    await this.eventEmitter.emitAsync(PublishChapterEvent.name, chapter);
+    await Promise.all([
+      this.bookService.updateOne(
+        { _id: bookID },
+        {
+          latestChapter: String(chapter._id),
+          lastPublishedAt: Date.now(),
+          $inc: { wordCount: chapter.wordCount }
+        }
+      ),
+      this.userService.updateOne(
+        { _id: String(chapter.author), role: UserRole.Author },
+        { $inc: { wordCount: chapter.wordCount } }
+      )
+    ]);
 
     if (chapter.number > 1) {
       await this.chapterService.updateOne(
