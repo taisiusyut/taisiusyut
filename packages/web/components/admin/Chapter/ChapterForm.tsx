@@ -1,6 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { EMPTY } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { Input } from '@/components/Input';
 import { ButtonPopover } from '@/components/ButtonPopover';
 import {
@@ -10,10 +8,9 @@ import {
 import { Schema$Chapter } from '@/typings';
 import { Max_Chapter_Name, Max_Chapter_Prefix } from '@/constants';
 import { createForm, FormInstance, FormProps, validators } from '@/utils/form';
-import { Toaster } from '@/utils/toaster';
-import { readFileText, useFileUpload } from '@/hooks/useFileUpload';
 import { ChapterDropArea } from './ChapterDropArea';
 import { openInsertImageDialog } from './InsertImage';
+import { useChapterUpload } from './ChapterUpload';
 import classes from './Chapter.module.scss';
 
 export type ChapterState = Schema$Chapter;
@@ -27,13 +24,6 @@ const { Form, FormItem, useForm } = createForm<ChapterState>();
 
 export { useForm };
 
-const accept = [
-  `.doc`,
-  `.docx`,
-  `application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document`,
-  `text/plain`
-].join(',');
-
 export function ChapterForm({
   wordCount,
   children,
@@ -42,25 +32,14 @@ export function ChapterForm({
 }: Props) {
   const editor = useRef<ContentEditorRef>(null);
   const formRef = useRef<FormInstance<ChapterState>>(null);
-  const [fileUpload$, upload] = useFileUpload({ accept });
+  const { fileUpload$, chapterUpload$, uploadChpater } = useChapterUpload();
 
   useEffect(() => {
-    const subscription = fileUpload$
-      .pipe(
-        switchMap(file => {
-          if (!file.type || accept.includes(file.type)) {
-            return readFileText(file);
-          } else {
-            Toaster.apiError(`upload failure`, `unknown file type`);
-          }
-          return EMPTY;
-        })
-      )
-      .subscribe(value => {
-        formRef.current?.setFieldsValue(value);
-      });
+    const subscription = chapterUpload$.subscribe(value => {
+      formRef.current?.setFieldsValue(value);
+    });
     return () => subscription.unsubscribe();
-  }, [fileUpload$]);
+  }, [chapterUpload$]);
 
   return (
     <Form
@@ -84,7 +63,7 @@ export function ChapterForm({
             )
           ]}
         >
-          <Input placeholder="章節名稱前綴，默認顯示「第一章」，可輸入「序章」/「楔子」等等" />
+          <Input placeholder="章節名稱前綴，默認顯示「第X章」，可輸入「序章」/「楔子」等等" />
         </FormItem>
       )}
 
@@ -115,7 +94,7 @@ export function ChapterForm({
                 minimal
                 icon="upload"
                 content="上傳文字檔案"
-                onClick={upload}
+                onClick={uploadChpater}
               />
               <ButtonPopover
                 minimal

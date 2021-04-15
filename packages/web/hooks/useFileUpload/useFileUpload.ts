@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { getFileFromEvent, UploadEvent } from './uploadFile';
 
-interface UseFileUploadOptions {
+export interface UseFileUploadOptions {
   accept?: string;
 }
 
