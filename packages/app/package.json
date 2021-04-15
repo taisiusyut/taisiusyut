@@ -9,7 +9,7 @@
     "ios": "NODE_ENV=development expo start --ios",
     "web": "NODE_ENV=development expo start --web",
     "eject": "expo eject",
-    "gh-pages": "node ./gh-pages",
+    "gh-pages": "node ./scripts/gh-pages",
     "test": "jest --watchAll",
     "postinstall": "expo-yarn-workspaces postinstall"
   },
