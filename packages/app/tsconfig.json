@@ -16,7 +16,11 @@
     "jsx": "react-native",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./*", "../../node_modules/@taisiusyut/common/*"]
+      "@/*": [
+        "./*",
+        "../../node_modules/@taisiusyut/common/*",
+        "../../node_modules/@taisiusyut/server/dist/*"
+      ]
     }
   },
   "include": ["/*.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],
