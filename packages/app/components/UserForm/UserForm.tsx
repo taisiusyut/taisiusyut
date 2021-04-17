@@ -6,9 +6,9 @@ import {
   Param$ModifyPassword
 } from '@/typings';
 import { createForm, validators, FormProps, FormItemProps } from '@/utils/form';
-import { TextInput } from '@/components/Textinput';
+import { TextInput, TextInputProps } from '@/components/Textinput';
 import { PasswordInput } from '@/components/PasswordInput';
-//
+
 type UserFormSchema = Param$CreateUser &
   Partial<Omit<Param$UpdateUser, 'id'>> &
   Partial<Omit<Param$UpdateAuthor, 'id'>> &
@@ -31,38 +31,29 @@ export function createUserForm({ ...itemProps }: UserFormItemProps = {}) {
 
   const Username = ({ label = 'Username', ...props }: UserFormItemProps) => (
     <FormItem {...props} name="username" label={label}>
-      <TextInput autoCompleteType="username" />
+      <TextInput autoCompleteType="username" textContentType="username" />
     </FormItem>
   );
 
   const Password = ({
     visible,
+    textContentType,
     label = 'Password',
     ...props
   }: UserFormItemProps & {
     visible?: boolean;
-  } = {}) => (
-    <FormItem {...props} name="password" label={label}>
-      <PasswordInput visible={visible} autoCompleteType="password" />
-    </FormItem>
-  );
-
-  const ConfirmPassword = () => (
-    <FormItem
-      name="confirmNewPassword"
-      label="Confirm Password"
-      deps={['password']}
-      validators={({ password }) => [
-        validators.required('Please input the password again'),
-        validators.shouldBeEqual(
-          password,
-          'Confirm password is not equal to the above password'
-        )
-      ]}
-    >
-      <PasswordInput autoCompleteType="password" />
-    </FormItem>
-  );
+    textContentType?: TextInputProps['textContentType'];
+  } = {}) => {
+    return (
+      <FormItem name="password" label={label} {...props}>
+        <PasswordInput
+          visible={visible}
+          autoCompleteType="password"
+          textContentType={textContentType}
+        />
+      </FormItem>
+    );
+  };
 
   const Email = ({ label = 'Email', ...props }: UserFormItemProps = {}) => (
     <FormItem
@@ -74,7 +65,11 @@ export function createUserForm({ ...itemProps }: UserFormItemProps = {}) {
         validators.emailFormat()
       ]}
     >
-      <TextInput autoCompleteType="email" />
+      <TextInput
+        autoCompleteType="email"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+      />
     </FormItem>
   );
 
@@ -83,7 +78,7 @@ export function createUserForm({ ...itemProps }: UserFormItemProps = {}) {
     ...props
   }: UserFormItemProps = {}) => (
     <FormItem {...props} name="nickname" label={label}>
-      <TextInput />
+      <TextInput textContentType="nickname" />
     </FormItem>
   );
 
@@ -91,7 +86,6 @@ export function createUserForm({ ...itemProps }: UserFormItemProps = {}) {
     ...components,
     Username,
     Password,
-    ConfirmPassword,
     Email,
     Nickname
   };

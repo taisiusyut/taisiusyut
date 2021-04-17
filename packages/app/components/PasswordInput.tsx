@@ -6,5 +6,11 @@ export interface PasswordInputProps extends TextInputProps {
 }
 
 export function PasswordInput({ visible, ...props }: PasswordInputProps) {
-  return <TextInput {...props}></TextInput>;
+  return (
+    <TextInput
+      textContentType="password"
+      secureTextEntry={!visible}
+      {...props}
+    />
+  );
 }

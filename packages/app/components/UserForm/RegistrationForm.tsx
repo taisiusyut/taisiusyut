@@ -1,11 +1,12 @@
 import React from 'react';
+import { validators } from '@/utils/form';
 import { createUserForm, userValidators, UserFormProps } from './UserForm';
 
 interface Props extends UserFormProps {
   head?: React.ReactNode;
 }
 
-const { Form, Username, Password, ConfirmPassword, Email } = createUserForm();
+const { Form, Username, Password, Email } = createUserForm();
 
 export function RegistrationForm({ head, children, ...props }: Props) {
   return (
@@ -21,6 +22,7 @@ export function RegistrationForm({ head, children, ...props }: Props) {
 
       <Password
         deps={['username']}
+        textContentType="newPassword"
         validators={({ username }) => [
           userValidators.password.required,
           userValidators.password.format,
@@ -28,7 +30,19 @@ export function RegistrationForm({ head, children, ...props }: Props) {
         ]}
       />
 
-      <ConfirmPassword />
+      <Password
+        deps={['password']}
+        name="confirmNewPassword"
+        label="Confirm Password"
+        textContentType="newPassword"
+        validators={({ password }) => [
+          validators.required('Please input the password again'),
+          validators.shouldBeEqual(
+            password,
+            'Confirm password is not equal to the above password'
+          )
+        ]}
+      />
 
       <Email />
 
