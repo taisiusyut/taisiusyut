@@ -6,6 +6,12 @@ import { AuthProvider } from './hooks/useAuth';
 import { useCachedResources } from './hooks/useCachedResources';
 import { useColorScheme } from './hooks/useColorScheme';
 import { Navigation } from './navigation';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/zh-tw';
+
+dayjs.locale('zh-tw');
+dayjs.extend(relativeTime);
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

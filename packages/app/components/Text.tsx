@@ -4,7 +4,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { colors } from '@/utils/color';
 
 export interface TextProps extends RNTextProps {
-  children?: string;
+  children?: string | string[];
 }
 
 export function Text({ style, ...props }: TextProps) {

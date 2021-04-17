@@ -15,7 +15,7 @@ function createAliasHandler(suffix) {
   function handler([pathname]) {
     const targetFilePath = path.join(
       __dirname,
-      `../../node_modules/@taisiusyut/${suffix}`,
+      `../${suffix}`,
       pathname.slice(1)
     );
     const defaultFilePath = path.join(__dirname, pathname.slice(1));
