@@ -12,12 +12,10 @@ import {
   Modal,
   Text,
   StyleSheet,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform
+  TouchableWithoutFeedback
 } from 'react-native';
 import { Subject } from 'rxjs';
-import { ScrollView } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather } from '@expo/vector-icons';
 import { ColorSchemeName, useColorScheme } from '@/hooks/useColorScheme';
 import { shadow } from '@/utils/shadow';
@@ -98,7 +96,6 @@ export const space = 20;
 const getStyles = (theme: NonNullable<ColorSchemeName>) => {
   const color = colors[theme];
   return StyleSheet.create({
-    keyboard: { flex: 1 },
     backdrop: {
       backgroundColor:
         theme === 'dark' ? `rgba(16,22,26,.5)` : `rgba(0,0,0,0.5)`,
@@ -177,60 +174,51 @@ export function Dialog({
 
   return (
     <Modal animationType="none" transparent onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboard}
-      >
-        <View style={styles.centeredView}>
-          <ScrollView
-            bounces={false}
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollViewContent}
-          >
-            <TouchableWithoutFeedback onPress={onClose}>
-              <Animated.View
-                style={[styles.backdrop, { opacity: anim.current }]}
-              ></Animated.View>
-            </TouchableWithoutFeedback>
-
+      <View style={styles.centeredView}>
+        <KeyboardAwareScrollView
+          bounces={false}
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
+        >
+          <TouchableWithoutFeedback onPress={onClose}>
             <Animated.View
-              style={[
-                styles.dialog,
-                maxWidth ? { maxWidth, width: '100%', alignSelf: 'auto' } : {},
-                {
-                  opacity: anim.current,
-                  transform: [
-                    {
-                      translateY: anim.current.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [100, 0]
-                      })
-                    }
-                  ]
-                }
-              ]}
-            >
-              <View style={styles.header}>
-                {icon && (
-                  <Feather
-                    name={icon}
-                    size={22}
-                    color={styles.titleText.color}
-                  />
-                )}
-                <Text style={styles.titleText}>{title || ''}</Text>
-                <Feather
-                  name="x"
-                  size={22}
-                  color={styles.titleText.color}
-                  onPress={onClose}
-                />
-              </View>
-              <View>{children}</View>
-            </Animated.View>
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
+              style={[styles.backdrop, { opacity: anim.current }]}
+            ></Animated.View>
+          </TouchableWithoutFeedback>
+
+          <Animated.View
+            style={[
+              styles.dialog,
+              maxWidth ? { maxWidth, width: '100%', alignSelf: 'auto' } : {},
+              {
+                opacity: anim.current,
+                transform: [
+                  {
+                    translateY: anim.current.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [100, 0]
+                    })
+                  }
+                ]
+              }
+            ]}
+          >
+            <View style={styles.header}>
+              {icon && (
+                <Feather name={icon} size={22} color={styles.titleText.color} />
+              )}
+              <Text style={styles.titleText}>{title || ''}</Text>
+              <Feather
+                name="x"
+                size={22}
+                color={styles.titleText.color}
+                onPress={onClose}
+              />
+            </View>
+            <View>{children}</View>
+          </Animated.View>
+        </KeyboardAwareScrollView>
+      </View>
     </Modal>
   );
 }

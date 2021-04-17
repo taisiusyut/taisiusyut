@@ -1,19 +1,33 @@
 import React from 'react';
 import { validators } from '@/utils/form';
-import { createUserForm, userValidators, UserFormProps } from './UserForm';
+import { useFocusNextHandler } from '@/hooks/useFocusNextHandler';
+import {
+  createUserForm,
+  userValidators,
+  UserFormProps,
+  UserFormSchema
+} from './UserForm';
 
 interface Props extends UserFormProps {
   head?: React.ReactNode;
 }
 
-const { Form, Username, Password, Email } = createUserForm();
+const { useForm, Form, Username, Password, Email } = createUserForm();
 
 export function RegistrationForm({ head, children, ...props }: Props) {
+  const {
+    //
+    refProps,
+    focusNextProps
+  } = useFocusNextHandler<keyof UserFormSchema>();
+  const [form] = useForm();
+
   return (
-    <Form {...props}>
+    <Form {...props} form={form}>
       {head}
 
       <Username
+        inputProps={focusNextProps('password')}
         validators={[
           userValidators.username.required,
           userValidators.username.format
@@ -22,7 +36,11 @@ export function RegistrationForm({ head, children, ...props }: Props) {
 
       <Password
         deps={['username']}
-        textContentType="newPassword"
+        inputRef={refProps('password')}
+        inputProps={{
+          textContentType: 'newPassword',
+          ...focusNextProps('confirmNewPassword')
+        }}
         validators={({ username }) => [
           userValidators.password.required,
           userValidators.password.format,
@@ -31,10 +49,14 @@ export function RegistrationForm({ head, children, ...props }: Props) {
       />
 
       <Password
-        deps={['password']}
         name="confirmNewPassword"
         label="Confirm Password"
-        textContentType="newPassword"
+        deps={['password']}
+        inputRef={refProps('confirmNewPassword')}
+        inputProps={{
+          textContentType: 'newPassword',
+          ...focusNextProps('email')
+        }}
         validators={({ password }) => [
           validators.required('Please input the password again'),
           validators.shouldBeEqual(
@@ -44,7 +66,13 @@ export function RegistrationForm({ head, children, ...props }: Props) {
         ]}
       />
 
-      <Email />
+      <Email
+        inputRef={refProps('email')}
+        inputProps={{
+          returnKeyType: 'send',
+          onSubmitEditing: () => form.submit()
+        }}
+      />
 
       {children}
     </Form>

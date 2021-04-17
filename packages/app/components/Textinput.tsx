@@ -67,32 +67,35 @@ const getStyles = ({ hasError, focused, darkMode }: StylesOption = {}) => {
   });
 };
 
-export function TextInput({ onChange, hasError, ...props }: TextInputProps) {
-  const darkMode = useColorScheme() === 'dark';
-  const [focused, setFocused] = useState(false);
-  const [styles, setStyles] = useState(() => getStyles({ darkMode }));
-  const { onFocus, onBlur } = useMemo<TextInputProps>(() => {
-    return {
-      onFocus: () => setFocused(true),
-      onBlur: () => setFocused(false)
-    };
-  }, []);
+export const TextInput = React.forwardRef<RNTextInput, TextInputProps>(
+  ({ onChange, hasError, ...props }, ref) => {
+    const darkMode = useColorScheme() === 'dark';
+    const [focused, setFocused] = useState(false);
+    const [styles, setStyles] = useState(() => getStyles({ darkMode }));
+    const { onFocus, onBlur } = useMemo<TextInputProps>(() => {
+      return {
+        onFocus: () => setFocused(true),
+        onBlur: () => setFocused(false)
+      };
+    }, []);
 
-  useEffect(() => {
-    setStyles(getStyles({ focused, hasError, darkMode }));
-  }, [hasError, focused, darkMode]);
+    useEffect(() => {
+      setStyles(getStyles({ focused, hasError, darkMode }));
+    }, [hasError, focused, darkMode]);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.inner}>
-        <RNTextInput
-          autoCapitalize="none"
-          style={styles.input}
-          onChangeText={onChange}
-          {...{ onFocus, onBlur }}
-          {...props}
-        />
+    return (
+      <View style={styles.container}>
+        <View style={styles.inner}>
+          <RNTextInput
+            autoCapitalize="none"
+            style={styles.input}
+            onChangeText={onChange}
+            ref={ref}
+            {...{ onFocus, onBlur }}
+            {...props}
+          />
+        </View>
       </View>
-    </View>
-  );
-}
+    );
+  }
+);
