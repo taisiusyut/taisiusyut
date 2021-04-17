@@ -11,7 +11,7 @@ interface Props extends UserFormProps {
   head?: React.ReactNode;
 }
 
-const { useForm, Form, Username, Password } = createUserForm();
+const { Form, Username, Password } = createUserForm();
 
 export function LoginForm({ head, children, ...props }: Props) {
   const {
@@ -19,10 +19,9 @@ export function LoginForm({ head, children, ...props }: Props) {
     refProps,
     focusNextProps
   } = useFocusNextHandler<keyof UserFormSchema>();
-  const [form] = useForm();
 
   return (
-    <Form {...props} form={form}>
+    <Form {...props}>
       {head}
       <Username
         validators={[userValidators.username.required]}
@@ -33,7 +32,7 @@ export function LoginForm({ head, children, ...props }: Props) {
         inputRef={refProps('password')}
         inputProps={{
           returnKeyType: 'send',
-          onSubmitEditing: () => form.submit()
+          onSubmitEditing: () => props.form?.submit()
         }}
       />
       {children}

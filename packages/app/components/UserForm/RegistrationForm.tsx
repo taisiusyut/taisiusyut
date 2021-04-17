@@ -12,7 +12,7 @@ interface Props extends UserFormProps {
   head?: React.ReactNode;
 }
 
-const { useForm, Form, Username, Password, Email } = createUserForm();
+const { Form, Username, Password, Email } = createUserForm();
 
 export function RegistrationForm({ head, children, ...props }: Props) {
   const {
@@ -20,10 +20,9 @@ export function RegistrationForm({ head, children, ...props }: Props) {
     refProps,
     focusNextProps
   } = useFocusNextHandler<keyof UserFormSchema>();
-  const [form] = useForm();
 
   return (
-    <Form {...props} form={form}>
+    <Form {...props}>
       {head}
 
       <Username
@@ -70,7 +69,7 @@ export function RegistrationForm({ head, children, ...props }: Props) {
         inputRef={refProps('email')}
         inputProps={{
           returnKeyType: 'send',
-          onSubmitEditing: () => form.submit()
+          onSubmitEditing: () => props.form?.submit()
         }}
       />
 
