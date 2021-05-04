@@ -11,7 +11,7 @@ import {
   FeaturedParamList,
   SearchParamList
 } from './routes';
-import { colors } from '@/utils/color';
+import { colors } from '@/styles';
 import { MainMenuNavigator } from './MainMenuNavigator';
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();

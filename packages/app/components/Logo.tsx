@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Svg, { SvgProps, G, Path, Rect, Polygon } from 'react-native-svg';
 import { Text } from '@/components/Text';
-import { shadow } from '@/utils/shadow';
+import { shadow } from '@/styles';
 
 const size = 120;
 

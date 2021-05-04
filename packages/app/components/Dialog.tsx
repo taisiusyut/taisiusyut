@@ -18,8 +18,7 @@ import { Subject } from 'rxjs';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather } from '@expo/vector-icons';
 import { ColorSchemeName, useColorScheme } from '@/hooks/useColorScheme';
-import { shadow } from '@/utils/shadow';
-import { colors, darken, lighten } from '@/utils/color';
+import { shadow, darken, lighten, darkTheme, lightTheme } from '@/styles';
 
 export interface DialogProps {
   children?: ReactNode;
@@ -94,7 +93,7 @@ const borderRadius = 6;
 export const space = 20;
 
 const getStyles = (theme: NonNullable<ColorSchemeName>) => {
-  const color = colors[theme];
+  const color = theme === 'dark' ? darkTheme : lightTheme;
   return StyleSheet.create({
     backdrop: {
       backgroundColor:

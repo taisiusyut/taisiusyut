@@ -10,9 +10,16 @@ import {
   View
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { shadow } from '@/utils/shadow';
+import {
+  shadow,
+  colors,
+  darken,
+  gradientLighten,
+  gradientDarken,
+  lightTheme,
+  darkTheme
+} from '@/styles';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { colors, darken, gradientLighten, gradientDarken } from '@/utils/color';
 
 export interface ButtonStyles extends ViewStyle {
   fill?: boolean;
@@ -48,27 +55,27 @@ const defaultDarkColor = `#21262d`;
 
 const defaultLightStyle: ButtonStyles = {
   color: defaultColor,
-  borderColor: colors.light.border,
+  borderColor: lightTheme.border,
   gradient: {
     defaults: gradientDarken(defaultColor),
     pressed: gradientDarken(darken(defaultColor, 30))
   },
   shadowColor: `#999`,
   text: {
-    color: colors.light.text
+    color: lightTheme.text
   }
 };
 
 const defaultDarkStyle: ButtonStyles = {
   color: defaultDarkColor,
-  borderColor: colors.dark.border,
+  borderColor: darkTheme.border,
   gradient: {
     defaults: gradientLighten(defaultDarkColor),
     pressed: gradientLighten(darken(defaultDarkColor, 30))
   },
   shadowColor: `#999`,
   text: {
-    color: colors.dark.text
+    color: darkTheme.text
   }
 };
 
@@ -84,7 +91,7 @@ const getStyles = ({ darkMode, intent = 'none' }: GetStylesOptions) => {
       },
       shadowColor: colors.blue,
       text: {
-        color: colors.dark.text
+        color: darkTheme.text
       }
     },
     danger: {
@@ -96,7 +103,7 @@ const getStyles = ({ darkMode, intent = 'none' }: GetStylesOptions) => {
       },
       shadowColor: colors.red,
       text: {
-        color: colors.dark.text
+        color: darkTheme.text
       }
     }
   };

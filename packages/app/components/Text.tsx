@@ -1,16 +1,16 @@
 import React from 'react';
 import { Text as RNText, TextProps as RNTextProps } from 'react-native';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { colors } from '@/utils/color';
+import { StyleService } from '@/styles';
 
 export interface TextProps extends RNTextProps {
   children?: string | string[];
 }
 
 export function Text({ style, ...props }: TextProps) {
-  const theme = useColorScheme();
-  const color = colors[theme];
   return (
-    <RNText {...props} style={[{ color: color.text, fontSize: 16 }, style]} />
+    <RNText
+      {...props}
+      style={[{ color: StyleService.get('text'), fontSize: 16 }, style]}
+    />
   );
 }

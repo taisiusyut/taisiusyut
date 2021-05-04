@@ -26,7 +26,7 @@ import {
   Validator,
   compose as composeValidator
 } from '@taisiusyut/common/utils/form/validators';
-import { colors } from '@/utils/color';
+import { colors } from '@/styles';
 import { Text, TextProps } from '@/components/Text';
 
 export * from '@taisiusyut/common/utils/form';

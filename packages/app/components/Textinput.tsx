@@ -6,8 +6,7 @@ import {
   TextInputProps as RNTextInputProps,
   ViewStyle
 } from 'react-native';
-import { shadow } from '@/utils/shadow';
-import { lighten, colors } from '@/utils/color';
+import { shadow, lighten, colors, StyleService } from '@/styles';
 import { ControlProps } from '@/utils/form';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -62,7 +61,7 @@ const getStyles = ({ hasError, focused, darkMode }: StylesOption = {}) => {
     inner,
     input: {
       fontSize,
-      color: darkMode ? colors.dark.text : colors.light.text
+      color: StyleService.get('text')
     }
   });
 };

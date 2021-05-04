@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { Schema$Book } from '@/typings';
 import { Text } from '@/components/Text';
-import { shadow } from '@/utils/shadow';
+import { shadow } from '@/styles';
 import dayjs from 'dayjs';
 
 export interface FeaturedItemProps {

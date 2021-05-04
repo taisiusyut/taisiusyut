@@ -18,7 +18,7 @@ export function Featured() {
   return (
     <View style={styles.container}>
       {sections.map(props => (
-        <FeaturedSection {...props}></FeaturedSection>
+        <FeaturedSection key={props.title} {...props}></FeaturedSection>
       ))}
     </View>
   );
