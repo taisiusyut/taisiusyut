@@ -1,30 +1,21 @@
 import React from 'react';
-import { validators } from '@/utils/form';
-import { useFocusNextHandler } from '@/hooks/useFocusNextHandler';
+import { useFocusNext } from '@/hooks/useFocusNext';
 import {
   createUserForm,
   userValidators,
-  UserFormProps,
   UserFormSchema
-} from './UserForm';
+} from '@/components/UserForm';
+import { validators } from '@/utils/form';
+import { AuthScreen } from './AuthScreen';
 
-interface Props extends UserFormProps {
-  head?: React.ReactNode;
-}
+const { useForm, Username, Password, Email } = createUserForm();
 
-const { Form, Username, Password, Email } = createUserForm();
-
-export function RegistrationForm({ head, children, ...props }: Props) {
-  const {
-    //
-    refProps,
-    focusNextProps
-  } = useFocusNextHandler<keyof UserFormSchema>();
+export function Registration() {
+  const { refProps, focusNextProps } = useFocusNext<keyof UserFormSchema>();
+  const [form] = useForm();
 
   return (
-    <Form {...props}>
-      {head}
-
+    <AuthScreen form={form} nextScreen="LoginScreen">
       <Username
         inputProps={focusNextProps('password')}
         validators={[
@@ -69,11 +60,9 @@ export function RegistrationForm({ head, children, ...props }: Props) {
         inputRef={refProps('email')}
         inputProps={{
           returnKeyType: 'send',
-          onSubmitEditing: () => props.form?.submit()
+          onSubmitEditing: () => form.submit()
         }}
       />
-
-      {children}
-    </Form>
+    </AuthScreen>
   );
 }

@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Root: undefined;
   MainMenu: undefined;
+  Auth: undefined;
   NotFound: undefined;
 };
 
@@ -13,6 +14,11 @@ export type BottomTabParamList = {
 
 export type BookShelfParamList = {
   BookShelfScreen: undefined;
+};
+
+export type AuthParamList = {
+  LoginScreen: undefined;
+  RegistrationScreen: undefined;
 };
 
 export type FeaturedParamList = {

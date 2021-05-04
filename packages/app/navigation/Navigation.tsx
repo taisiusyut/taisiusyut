@@ -10,6 +10,7 @@ import { NotFoundScreen } from '@/screens/NotFoundScreen';
 import { RootStackParamList } from './routes';
 import { BottomTabNavigator } from './BottomTabNavigator';
 import { MainMenuNavigator } from './MainMenuNavigator';
+import { AuthNavigator } from './AuthNavigator';
 
 const CustomDarkTheme: typeof DarkTheme = {
   ...DarkTheme,
@@ -41,6 +42,7 @@ function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Screen name="MainMenu" component={MainMenuNavigator} />
+      <Stack.Screen name="Auth" component={AuthNavigator} />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
