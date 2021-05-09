@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { Schema$Book } from '@/typings';
 import { Text } from '@/components/Text';
-import { shadow } from '@/styles';
+import { makeStyles, shadow } from '@/styles';
 import dayjs from 'dayjs';
 
 export interface FeaturedItemProps {
@@ -10,7 +10,18 @@ export interface FeaturedItemProps {
   style?: ViewStyle;
 }
 
+const useStyles = makeStyles(theme => ({
+  item: {
+    ...shadow(1, { shadowOffsetY: 3 }),
+    backgroundColor: theme.secondary,
+    width: 240,
+    padding: 15,
+    borderRadius: 5
+  }
+}));
+
 export function FeaturedItem({ book, style }: FeaturedItemProps) {
+  const styles = useStyles();
   return (
     <View style={[styles.item, style]}>
       <Text>{book.name}</Text>
@@ -21,13 +32,3 @@ export function FeaturedItem({ book, style }: FeaturedItemProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  item: {
-    ...shadow(2, { shadowOffsetY: 5 }),
-    backgroundColor: `#fff`,
-    width: 240,
-    padding: 15,
-    borderRadius: 5
-  }
-});

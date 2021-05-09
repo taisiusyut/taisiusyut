@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,14 +6,13 @@ import {
   TextInputProps as RNTextInputProps,
   ViewStyle
 } from 'react-native';
-import { shadow, lighten, colors, StyleService } from '@/styles';
+import { shadow, lighten, colors, useTheme, Theme } from '@/styles';
 import { ControlProps } from '@/utils/form';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 interface StylesOption {
   hasError?: boolean;
   focused?: boolean;
-  darkMode?: boolean;
+  theme: Theme;
 }
 
 export interface TextInputProps
@@ -25,7 +24,8 @@ export interface TextInputProps
 const height = 34;
 const fontSize = 16;
 
-const getStyles = ({ hasError, focused, darkMode }: StylesOption = {}) => {
+const getStyles = ({ hasError, focused, theme }: StylesOption) => {
+  const darkMode = theme.type === 'dark';
   const color = hasError ? colors.red : colors.blue;
   const borderColor = hasError ? colors.red : darkMode ? `#474747` : `#c7c7c7`;
 
@@ -61,26 +61,26 @@ const getStyles = ({ hasError, focused, darkMode }: StylesOption = {}) => {
     inner,
     input: {
       fontSize,
-      color: StyleService.get('text')
+      color: theme.text
     }
   });
 };
 
 export const TextInput = React.forwardRef<RNTextInput, TextInputProps>(
   ({ onChange, hasError, ...props }, ref) => {
-    const darkMode = useColorScheme() === 'dark';
     const [focused, setFocused] = useState(false);
-    const [styles, setStyles] = useState(() => getStyles({ darkMode }));
     const { onFocus, onBlur } = useMemo<TextInputProps>(() => {
       return {
         onFocus: () => setFocused(true),
         onBlur: () => setFocused(false)
       };
     }, []);
-
-    useEffect(() => {
-      setStyles(getStyles({ focused, hasError, darkMode }));
-    }, [hasError, focused, darkMode]);
+    const theme = useTheme();
+    const styles = useMemo(() => getStyles({ theme, focused, hasError }), [
+      theme,
+      focused,
+      hasError
+    ]);
 
     return (
       <View style={styles.container}>

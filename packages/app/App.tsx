@@ -5,6 +5,7 @@ import { DialogContainer } from './components/Dialog';
 import { AuthProvider } from './hooks/useAuth';
 import { useCachedResources } from './hooks/useCachedResources';
 import { useColorScheme } from './hooks/useColorScheme';
+import { ThemeProvider } from './styles/ThemeProvider';
 import { Navigation } from './navigation';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -22,11 +23,13 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <AuthProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-          <DialogContainer />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <Navigation colorScheme={colorScheme} />
+            <StatusBar />
+            <DialogContainer />
+          </AuthProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     );
   }

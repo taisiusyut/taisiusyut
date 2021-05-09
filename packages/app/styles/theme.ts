@@ -8,6 +8,7 @@ export const colors = {
 
 export const lightTheme = {
   ...colors,
+  type: 'light',
   accent: colors.blue,
   primary: '#fff',
   secondary: '#f2f2f2',
@@ -19,6 +20,7 @@ export const lightTheme = {
 
 export const darkTheme: Theme = {
   ...colors,
+  type: 'dark',
   accent: colors.blue,
   primary: '#121212',
   secondary: '#222',
